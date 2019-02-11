@@ -5,7 +5,7 @@
   <!-- /.login-logo -->
   <div class="login-box-body">
     <p class="login-box-msg">Sign in to start your session</p>
-
+    <?php echo validation_errors(); ?>
     <form action="<?php echo base_url('admin/login/check_login'); ?>" method="post">
       <div class="form-group has-feedback">
         <input type="email" class="form-control" placeholder="Email" name="email">

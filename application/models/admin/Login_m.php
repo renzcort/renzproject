@@ -2,14 +2,25 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Login_m extends CI_Model {
-  protected $TABLE = 'renz_users';  
+  protected $_table = 'users';  
 
   public function check_login($email, $password)
   {
-    var_dump('tesss');
-    die;
-    $query = '$this->db->get($TABLE)';
-    return $query;
+    /*$query = $this->db->query("SELECT * FROM {$this->db->dbprefix($this->_table)} WHERE email = '{$email}' AND password = md5('{$password}')");
+    if ($query->num_rows > 1) {
+      $data = $query->row();
+      return $data;
+    } else {
+      return FALSE;
+    }*/ 
+    $this->db->where('username', $email);
+    $this->db->where('password', md5($password));
+    $result = $this->db->get($this->db->dbprefix($this->_table));
+    if ($result->num_rows() > 0) {
+      return $result->row();
+    } else {
+      return $this->db->error();
+    }
   }
 }
 

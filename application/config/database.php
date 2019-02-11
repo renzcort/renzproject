@@ -80,7 +80,7 @@ $db['default'] = array(
 	'password' => '',
 	'database' => 'dbrenzproject',
 	'dbdriver' => 'mysqli',
-	'dbprefix' => '',
+	'dbprefix' => 'renz_',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),
 	'cache_on' => FALSE,
