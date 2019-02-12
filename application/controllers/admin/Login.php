@@ -63,11 +63,10 @@ class Login extends MY_Controller {
         $data = array(
           'username'   =>  $this->input->post('username'),
           'email'      =>  $this->input->post('email'),
-          'password'   =>  $this->input->post('password'),
-          'created_at' => date('Y-m-d'), 
-          'updated_at' => date('Y-m-d'), 
+          'password'   =>  md5($this->input->post('password')),
+          'created_at' => mdate("%Y-%m-%d %H:%i:%s"), 
+          'updated_at' => mdate("%Y-%m-%d %H:%i:%s"), 
         );
-        var_dump($data); die();
         $this->login_m->create($data);
         $this->session->set_flashdata('message', 'data has successfully created');
         redirect('admin/home','refresh');
