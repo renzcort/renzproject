@@ -4,7 +4,12 @@
   </div>
   <!-- /.login-logo -->
   <div class="login-box-body">
-    <p class="login-box-msg">Sign in to start your session</p>
+
+    <?php if ($this->session->flashdata('failed')) { ?>
+    <p class="login-box-msg">
+      <?php echo $this->session->flashdata('failed'); ?>
+    </p>
+    <?php } ?>
     <?php echo validation_errors(); ?>
     <form action="<?php echo base_url('admin/login/check_login'); ?>" method="post">
       <div class="form-group has-feedback">

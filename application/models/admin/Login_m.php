@@ -13,7 +13,7 @@ class Login_m extends CI_Model {
     } else {
       return FALSE;
     }*/ 
-    $this->db->where('username', $email);
+    $this->db->where('email', $email);
     $this->db->where('password', md5($password));
     $result = $this->db->get($this->db->dbprefix($this->_table));
     if ($result->num_rows() > 0) {
@@ -22,6 +22,14 @@ class Login_m extends CI_Model {
       return $this->db->error();
     }
   }
+
+  // register
+  public function create($data) 
+  {
+    $this->db->insert($this->db->dbprefix($this->_table, $data));
+  }
+
+  
 }
 
 /* End of file Login_m.php */
