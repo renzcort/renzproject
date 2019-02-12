@@ -29,9 +29,9 @@ class Login extends MY_Controller {
     );
 
     if ($this->form_validation->run() == TRUE) {
-      $email    = $this->input->post('email');
-      $password = $this->input->post('password');
-      $result = $this->login_m->check_login($email, $password);
+      $email   = $this->input->post('email');
+      $password= $this->input->post('password');
+      $result  = $this->login_m->check_login($email, $password);
       if ($result) {
         $this->session->set_userdata('logged_in', $result);
         $this->session->set_flashdata('message', 'Welcome to your dashboard');
@@ -60,12 +60,14 @@ class Login extends MY_Controller {
 
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
+        $this->send_email();
+        die;
         $data = array(
-          'username'   =>  $this->input->post('username'),
-          'email'      =>  $this->input->post('email'),
-          'password'   =>  md5($this->input->post('password')),
-          'created_at' => mdate("%Y-%m-%d %H:%i:%s"), 
-          'updated_at' => mdate("%Y-%m-%d %H:%i:%s"), 
+          'username'  =>  $this->input->post('username'),
+          'email'     =>  $this->input->post('email'),
+          'password'  =>  md5($this->input->post('password')),
+          'created_at'=> mdate("%Y-%m-%d %H:%i:%s"), 
+          'updated_at'=> mdate("%Y-%m-%d %H:%i:%s"), 
         );
         $this->login_m->create($data);
         $this->session->set_flashdata('message', 'data has successfully created');
@@ -81,6 +83,41 @@ class Login extends MY_Controller {
     }
   }
 
+  public function send_email()
+  {
+    $config = array(
+      'protocol' => 'smtp',
+      'smtp_host'=> 'ssl://smtp.googlemail.com',
+      'smtp_port'=> 465,
+      'smtp_user'=> 'renzcoding@gmail.com',
+      'smtp_pass'=> 'Kepompong1',
+      'mailtype' => 'html', 
+      'charset'  => 'iso-8859-1',
+      'wordwrap' =>  TRUE,
+    );
+    $this->email->initialize($config);
+    
+    $this->email->from('renzcoding@gmail.com', 'Rendi');
+    $this->email->to('kharenputra@gmail.com');
+    // $this->email->cc('another@example.com');
+    // $this->email->bcc('and@another.com');
+    
+    $this->email->subject('subject Test');
+    $this->email->message('message tester');
+    if ($this->email->send()) {
+        echo 'Email sent.';
+    } else {
+        show_error($this->email->print_debugger());
+    }
+  }
+
+  /*Logout*/
+  public function logout()
+  {
+    $this->session->unset_userdata('logged_in');
+    $this->session->sess_destroy();
+    redirect('admin','refresh');
+  }
 }
 
 /* End of file Login.php */
