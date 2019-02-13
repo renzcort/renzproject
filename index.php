@@ -304,6 +304,10 @@ switch (ENVIRONMENT)
 	}
 
 	define('VIEWPATH', $view_folder.DIRECTORY_SEPARATOR);
+	if( ! ini_get('date.timezone') )
+	{
+	   date_default_timezone_set('GMT');
+	} 
 
 /*
  * --------------------------------------------------------------------

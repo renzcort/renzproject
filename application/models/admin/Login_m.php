@@ -6,27 +6,27 @@ class Login_m extends CI_Model {
 
   public function check_login($email, $password)
   {
-    /*$query = $this->db->query("SELECT * FROM {$this->db->dbprefix($this->_table)} WHERE email = '{$email}' AND password = md5('{$password}')");
-    if ($query->num_rows > 1) {
-      $data = $query->row();
-      return $data;
-    } else {
-      return FALSE;
-    }*/ 
+    $this->db->select('*');
     $this->db->where('email', $email);
     $this->db->where('password', md5($password));
-    $result = $this->db->get($this->db->dbprefix($this->_table));
-    if ($result->num_rows() > 0) {
-      return $result->row();
+    $row = $this->db->get($this->db->dbprefix($this->_table));
+    if ($row->num_rows() == 1) {
+      /**
+       * Update Last Login
+       * @var [type]
+       */
+      $result = $row->row();
+      $this->db->update($this->db->dbprefix($this->_table), array('last_login' => mdate("%Y-%m-%d %H:%i:%s")), "id = '{$result->id}'");
+      return $result;
     } else {
-      return $this->db->error();
+      return false;
     }
   }
 
   // register
   public function create($data) 
   {
-    $this->db->insert($this->db->dbprefix($this->_table, $data));
+    $this->db->insert($this->db->dbprefix($this->_table), $data);
   }
 
   
