@@ -60,15 +60,16 @@ class Login extends MY_Controller {
 
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
-        $this->send_email();
-        die;
         $data = array(
-          'username'  =>  $this->input->post('username'),
-          'email'     =>  $this->input->post('email'),
-          'password'  =>  md5($this->input->post('password')),
-          'created_at'=> mdate("%Y-%m-%d %H:%i:%s"), 
-          'updated_at'=> mdate("%Y-%m-%d %H:%i:%s"), 
+          'username'        =>  $this->input->post('username'),
+          'email'           =>  $this->input->post('email'),
+          'password'        =>  md5($this->input->post('password')),
+          'created_at'      => mdate("%Y-%m-%d %H:%i:%s"), 
+          'updated_at'      => mdate("%Y-%m-%d %H:%i:%s"), 
+          'activation_code' =>  random_string('alnum', 30),
         );
+        $this->send_email($data);
+        die;
         $this->login_m->create($data);
         $this->session->set_flashdata('message', 'data has successfully created');
         redirect('admin/home','refresh');
@@ -83,32 +84,24 @@ class Login extends MY_Controller {
     }
   }
 
-  public function send_email()
+  public function send_email($data)
   {
-    $config = array(
-      'protocol' => 'smtp',
-      'smtp_host'=> 'ssl://smtp.googlemail.com',
-      'smtp_port'=> 465,
-      'smtp_user'=> 'renzcoding@gmail.com',
-      'smtp_pass'=> 'Kepompong1',
-      'mailtype' => 'html', 
-      'charset'  => 'iso-8859-1',
-      'wordwrap' =>  TRUE,
-    );
-    $this->email->initialize($config);
-    
-    $this->email->from('renzcoding@gmail.com', 'Rendi');
-    $this->email->to('kharenputra@gmail.com');
-    // $this->email->cc('another@example.com');
-    // $this->email->bcc('and@another.com');
-    
-    $this->email->subject('subject Test');
-    $this->email->message('message tester');
+    die;
+    $email = $this->config->item('setting_email');
+    $this->email->initialize($email);
+    $this->email->from($email['smtp_user'], 'Rendi');
+    $this->email->to($data['email']); 
+    // $this->email->cc('renzcort@gmail.com');
+    // $this->email->bcc('rendi@maksimaselarasabadi.co.id');
+
+    $this->email->subject('Email Test');
+    $this->email->message('Testing the email class.');  
     if ($this->email->send()) {
-        echo 'Email sent.';
+      echo "send oke";
     } else {
-        show_error($this->email->print_debugger());
+      echo $this->email->print_debugger();
     }
+    
   }
 
   /*Logout*/
