@@ -27,6 +27,6 @@
       'smtp_pass'    => 'Kepompong1',
       'charset'      => 'utf-8',
       'newline'      => "\r\n",
-      'mailtype'     => 'text', // or html
+      'mailtype'     => 'html', // or html
       'validation'   => TRUE, // bool whether to validate email or not      
   );

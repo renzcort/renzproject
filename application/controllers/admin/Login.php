@@ -86,16 +86,17 @@ class Login extends MY_Controller {
 
   public function send_email($data)
   {
-    die;
+    // call congig email
     $email = $this->config->item('setting_email');
     $this->email->initialize($email);
     $this->email->from($email['smtp_user'], 'Rendi');
     $this->email->to($data['email']); 
     // $this->email->cc('renzcort@gmail.com');
     // $this->email->bcc('rendi@maksimaselarasabadi.co.id');
+    $msg = $this->load->view('admin/partial/email-template', $data, TRUE);
 
     $this->email->subject('Email Test');
-    $this->email->message('Testing the email class.');  
+    $this->email->message($msg);  
     if ($this->email->send()) {
       echo "send oke";
     } else {
