@@ -52,6 +52,32 @@ class Test extends CI_Controller {
     }
   }
 
+  public function test_composer()
+  {
+    $pdf = new FPDF();
+    $pdf->AddPage();
+    $pdf->setFont('Arial', 'B', 16);
+    $pdf->Cell(40, 10, 'Hello World');
+    $pdf->output();
+  }
+
+  public function test_log(){
+    $some_var = "";
+    if ($some_var == "") {
+      log_message('error', 'Some variable did not contain a value.');
+    }
+    else {
+      log_message('debug', 'Some variable was correctly set');
+    }
+
+    log_message('info', 'The purpose of some variable is to provide some value.');
+    log_message('error', 'error message in this line');
+
+    log_message('debug', 'debug message in this line');
+
+    log_message('info', 'info message in this line');
+  }
+
 }
 
 /* End of file Test.php */

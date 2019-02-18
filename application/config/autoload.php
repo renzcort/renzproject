@@ -62,7 +62,8 @@ $autoload['libraries'] = array(
 													'database', 
 													'form_validation', 
 													'session', 
-													'email'
+													'email',
+                          'parser'
 												);
 
 /*
@@ -99,7 +100,8 @@ $autoload['helper'] = array(
 												'form', 
 												'date',
 												'email',
-                        'string'
+                        'string',
+                        'log'
 											);
 
 /*

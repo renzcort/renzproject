@@ -35,8 +35,9 @@ class Login extends MY_Controller {
       if ($result) {
         $this->session->set_userdata('logged_in', $result);
         $this->session->set_flashdata('message', 'Welcome to your dashboard');
+        helper_log('login', "login {$email} successfully");
         redirect('admin/home','refresh');
-      } else {
+      } else {  
         $this->session->set_flashdata('message', 'Invalid Username and Password');
         redirect('admin', 'refresh');
       }
@@ -69,10 +70,9 @@ class Login extends MY_Controller {
           'activation_code' =>  random_string('alnum', 30),
         );
         $this->send_email($data);
-        die;
         $this->login_m->create($data);
         $this->session->set_flashdata('message', 'data has successfully created');
-        redirect('admin/home','refresh');
+        redirect("admin/validation-token/?username={$data['username']}&token={$data['activation_code']}","refresh");
       } else {
         $this->session->set_flashdata('message', 'Please correct your data');
         $data['content']  = 'admin/register';
@@ -85,7 +85,7 @@ class Login extends MY_Controller {
   }
 
   public function send_email($data)
-  {
+  {    
     // call congig email
     $email = $this->config->item('setting_email');
     $this->email->initialize($email);
@@ -98,10 +98,16 @@ class Login extends MY_Controller {
     $this->email->subject('Email Test');
     $this->email->message($msg);  
     if ($this->email->send()) {
-      echo "send oke";
+      log_message('info', 'Send Email OK');
     } else {
       echo $this->email->print_debugger();
-    }
+    } 
+  }
+
+  /*validation token*/
+  public function validation_token($token='') {  
+    $params   = $_SERVER['QUERY_STRING'];
+    parse_str($params, $data);
     
   }
 

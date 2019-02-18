@@ -11,14 +11,13 @@ class Login_m extends CI_Model {
     $this->db->where('password', md5($password));
     $row = $this->db->get($this->db->dbprefix($this->_table));
     if ($row->num_rows() == 1) {
-      /**
-       * Update Last Login
-       * @var [type]
-       */
+      // Update Last Login
       $result = $row->row();
       $this->db->update($this->db->dbprefix($this->_table), array('last_login' => mdate("%Y-%m-%d %H:%i:%s")), "id = '{$result->id}'");
+      // end last login
       return $result;
     } else {
+      log_message('debug', 'sql query fail in... ', false);
       return false;
     }
   }
