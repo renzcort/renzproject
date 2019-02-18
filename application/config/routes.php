@@ -57,4 +57,5 @@ $route['admin']                  = 'admin/login';
 $route['admin/check_login']      = 'admin/login/check_login';
 $route['admin/register']         = 'admin/login/register';
 $route['admin/validation-token'] = 'admin/login/validation_token';
+$route['admin/activated']	=	'admin/login/activated';
 

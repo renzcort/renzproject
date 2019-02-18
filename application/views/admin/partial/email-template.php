@@ -8,7 +8,14 @@
 <body>
 		<div>
 			hi, <strong><?php echo $username ?></strong>
-			<p>Welocme to the activation code, please click link, <a href="#"><i>http://renzproject.localhost/admin/activation/<?php echo $activation_code ?></i></a></p>
+			<p>Welocme to the renzproject, please click link, 
+				<a href="<?php echo base_url("admin/activated/?username={$username}&token={$token}"); ?>">
+					<i>http://renzproject.localhost/admin/validation-token/?username=<?php echo $username; ?>&token=<?php echo $token; ?></i>
+				</a>
+			</p>
+		</div>
+		<div>
+			<p>Enter your activation code <?php echo $activation_code; ?></p>
 		</div>
 </body>
 </html>

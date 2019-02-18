@@ -67,12 +67,15 @@ class Login extends MY_Controller {
           'password'        =>  md5($this->input->post('password')),
           'created_at'      => mdate("%Y-%m-%d %H:%i:%s"), 
           'updated_at'      => mdate("%Y-%m-%d %H:%i:%s"), 
-          'activation_code' =>  random_string('alnum', 30),
+          'token'           =>  random_string('alnum', 30),
+          'activation_code' =>  random_string('numeric', 6),
         );
         $this->send_email($data);
+        // save log
+        helper_log('register', "register {$data['username']} successfully");
         $this->login_m->create($data);
         $this->session->set_flashdata('message', 'data has successfully created');
-        redirect("admin/validation-token/?username={$data['username']}&token={$data['activation_code']}","refresh");
+        redirect("admin/validation-token/?username={$data['username']}&token={$data['token']}","refresh");
       } else {
         $this->session->set_flashdata('message', 'Please correct your data');
         $data['content']  = 'admin/register';
@@ -98,6 +101,7 @@ class Login extends MY_Controller {
     $this->email->subject('Email Test');
     $this->email->message($msg);  
     if ($this->email->send()) {
+      helper_log('email', "Send Email {$data['email']} successfully");
       log_message('info', 'Send Email OK');
     } else {
       echo $this->email->print_debugger();
@@ -108,7 +112,32 @@ class Login extends MY_Controller {
   public function validation_token($token='') {  
     $params   = $_SERVER['QUERY_STRING'];
     parse_str($params, $data);
-    
+
+    if (isset($_POST['submit'])) {
+      $data['code'] = $this->input->post('code');
+      $activated = $this->login_m->activated($data);
+      if ($activated) {
+        $data['content']  = 'admin/activated';
+        $this->load->view('admin/layout/_default', $data);
+      } else {
+        $this->session->set_flashdata('message', 'please correct, your code not valid');
+        $data['content']  = 'admin/activation-code';
+        $this->load->view('admin/layout/_default', $data);
+      }
+    } else {
+      $data['params']  = $params;
+      $data['content'] = 'admin/activation-code';
+      $this->load->view('admin/layout/_default', $data);
+    }     
+  }
+
+  /*activated*/
+  public function activated() {
+    $params   = $_SERVER['QUERY_STRING'];
+    parse_str($params, $data);
+    $this->login_m->activated($data);
+    $data['content']  = 'admin/activated';
+    $this->load->view('admin/layout/_default', $data);
   }
 
   /*Logout*/
