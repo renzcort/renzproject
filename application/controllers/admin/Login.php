@@ -151,8 +151,7 @@ class Login extends MY_Controller {
       if (isset($_POST['submit'])) {
         $data = array(
           'email'                   => $this->input->post('email'),
-          'forgotten_password_code' => random_string('alnum', 30),
-          'updated_at'              => mdate("%Y-%m-%d %H:%i:%s"), 
+          'forgotten_password_code' => random_string('alnum', 30), 
         );
         $forgot_password = $this->login_m->forgot_password($data);
         if ($forgot_password) {
@@ -185,8 +184,7 @@ class Login extends MY_Controller {
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['submit'])) {
         $data = array_merge($data, array(
-          'password'   => md5($this->input->post('password')),
-          'updated_at' => mdate("%Y-%m-%d %H:%i:%s"),
+          'password'   => md5($this->input->post('password'))
         ));
         $new_password = $this->login_m->forgot_password($data, TRUE);
         helper_log('success', "reset password {$data['email']} successfully");
