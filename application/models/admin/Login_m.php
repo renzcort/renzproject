@@ -56,6 +56,26 @@ class Login_m extends CI_Model {
     }
   }
 
+  /*forgoted password*/
+  public function forgot_password($data, $reset = FALSE)
+  {
+    // check email
+    $query = $this->db->get_where($this->db->dbprefix($this->_table), array('email' => $data['email']));
+
+    if ($query->num_rows() > 0) {
+      $result = $query->row();
+      if ($reset) {
+        $data['forgotten_password_time'] = $result->forgotten_password_time + 1;
+      }
+      // update forgoted token
+      $this->db->where('id', $result->id);
+      $this->db->update($this->db->dbprefix($this->_table), $data);
+      return $result;
+    } else {
+      return FALSE;
+    }
+  }
+
   
 }
 

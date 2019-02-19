@@ -70,7 +70,7 @@ class Login extends MY_Controller {
           'token'           =>  random_string('alnum', 30),
           'activation_code' =>  random_string('numeric', 6),
         );
-        $this->send_email($data);
+        $this->send_email($data, TRUE);
         // save log
         helper_log('register', "register {$data['username']} successfully");
         $this->login_m->create($data);
@@ -87,21 +87,25 @@ class Login extends MY_Controller {
     }
   }
 
-  public function send_email($data)
-  {    
+  public function send_email($data, $register=FALSE) {  
     // call congig email
     $email = $this->config->item('setting_email');
     $this->email->initialize($email);
     $this->email->from($email['smtp_user'], 'Rendi');
-    $this->email->to($data['email']); 
+    $this->email->to($data->email); 
     // $this->email->cc('renzcort@gmail.com');
     // $this->email->bcc('rendi@maksimaselarasabadi.co.id');
-    $msg = $this->load->view('admin/partial/email-template', $data, TRUE);
+    if ($register == TRUE) {
+      $msg = $this->load->view('admin/email-activation-template', $data, TRUE);
+      $this->email->subject('Activation Code');
+    } else {
+      $this->email->subject('Reset Password');
+      $msg = $this->load->view('admin/email-forgot-template', $data, TRUE);
+    }
 
-    $this->email->subject('Email Test');
     $this->email->message($msg);  
     if ($this->email->send()) {
-      helper_log('email', "Send Email {$data['email']} successfully");
+      helper_log('email', "Send Email {$data->email} successfully");
       log_message('info', 'Send Email OK');
     } else {
       echo $this->email->print_debugger();
@@ -138,6 +142,62 @@ class Login extends MY_Controller {
     $this->login_m->activated($data);
     $data['content']  = 'admin/activated';
     $this->load->view('admin/layout/_default', $data);
+  }
+
+  /*Forgoted password*/
+  public function forgot_password() {
+    $this->form_validation->set_rules('email', 'Email', 'trim|required');
+    if ($this->form_validation->run() == TRUE) {
+      if (isset($_POST['submit'])) {
+        $data = array(
+          'email'                   => $this->input->post('email'),
+          'forgotten_password_code' => random_string('alnum', 30),
+          'updated_at'              => mdate("%Y-%m-%d %H:%i:%s"), 
+        );
+        $forgot_password = $this->login_m->forgot_password($data);
+        if ($forgot_password) {
+          $this->send_email($forgot_password);  
+          helper_log('forgot_password', "Forgoted password {$data['email']} successfully send email");
+          $this->session->set_flashdata('message', 'Reset your password send by your email');      
+          $data['content'] = 'admin/forgot-password-confirm';
+        } else {
+          helper_log('forgot-password', "Your Email {$data['email']} invalid");
+          $this->session->set_flashdata('message', 'Your email is invalid');
+          $data['content'] = 'admin/forgot-password';
+        }
+        $this->load->view('admin/layout/_default', $data);
+      }     
+    } 
+    $data['content'] = 'admin/forgot-password';
+    $this->load->view('admin/layout/_default', $data);
+  }
+
+  /*reset password*/
+  public function reset_password() {
+    $params = $_SERVER['QUERY_STRING'];
+    parse_str($params, $data);
+
+    $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]', 
+      array('required' => 'You must provide a %s.')
+    );
+    $this->form_validation->set_rules('passconf', 'Password Confirmation', 'trim|required|matches[password]');
+  
+    if ($this->form_validation->run() == TRUE) {
+      if (isset($_POST['submit'])) {
+        $data = array_merge($data, array(
+          'password'   => md5($this->input->post('password')),
+          'updated_at' => mdate("%Y-%m-%d %H:%i:%s"),
+        ));
+        $new_password = $this->login_m->forgot_password($data, TRUE);
+        helper_log('success', "reset password {$data['email']} successfully");
+        $this->session->set_flashdata('message', 'Your Password has changes');
+        redirect('admin','refresh');
+      }
+    }     
+    $data['params']  = $params;
+    $data['content'] = 'admin/reset-password.php';
+    $this->load->view('admin/layout/_default', $data);
+  
   }
 
   /*Logout*/

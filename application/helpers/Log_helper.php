@@ -27,6 +27,18 @@
     {
       $type = 6;
     } 
+    elseif (strtolower($type) == 'forgot-password') 
+    {
+      $type = 7;
+    } 
+    elseif (strtolower($type) == 'Success') 
+    {
+      $type = 10;
+    } 
+    elseif (strtolower($type) == 'failed') 
+    {
+      $type = 11;
+    } 
     else 
     {
       $type = 0;
