@@ -72,8 +72,8 @@ class Login extends MY_Controller {
         );
         $this->send_email($data, TRUE);
         // save log
-        helper_log('register', "register {$data['username']} successfully");
         $this->login_m->create($data);
+        helper_log('register', "register {$data['username']} successfully");
         $this->session->set_flashdata('message', 'data has successfully created');
         redirect("admin/validation-token/?username={$data['username']}&token={$data['token']}","refresh");
       } else {
@@ -92,7 +92,7 @@ class Login extends MY_Controller {
     $email = $this->config->item('setting_email');
     $this->email->initialize($email);
     $this->email->from($email['smtp_user'], 'Rendi');
-    $this->email->to($data->email); 
+    $this->email->to($data['email']); 
     // $this->email->cc('renzcort@gmail.com');
     // $this->email->bcc('rendi@maksimaselarasabadi.co.id');
     if ($register == TRUE) {
@@ -105,7 +105,7 @@ class Login extends MY_Controller {
 
     $this->email->message($msg);  
     if ($this->email->send()) {
-      helper_log('email', "Send Email {$data->email} successfully");
+      helper_log('email', "Send Email {$data['email']} successfully");
       log_message('info', 'Send Email OK');
     } else {
       echo $this->email->print_debugger();

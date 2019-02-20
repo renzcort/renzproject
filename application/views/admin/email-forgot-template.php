@@ -9,8 +9,8 @@
     <div>
       hi, <strong><?php echo $username ?></strong>
       <p>Welcome to the renzproject, please click link, 
-        <a href="<?php echo base_url("admin/reset-password/?email={$email}&forgotten_password_code={$forgotten_password_code}"); ?>">
-          <i>http://renzproject.localhost/admin/reset-password/?email=<?php echo $email; ?>&forgotten_password_code=<?php echo $forgotten_password_code; ?></i>
+        <a href="<?php echo prep_url(base_url("admin/reset-password/?email={$email}&forgotten_password_code={$forgotten_password_code}")); ?>">
+          <i><?php echo base_url("admin/reset-password/?email={$email}&forgotten_password_code={$forgotten_password_code}"); ?></i>
         </a>
       </p>
     </div>

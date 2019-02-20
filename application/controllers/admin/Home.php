@@ -6,7 +6,11 @@ class Home extends MY_Controller {
   public function index()
   {
     $logged_in = $this->session->userdata('logged_in');
-    $data['content'] = 'admin/home';
+    $data = array(
+      'content'  => 'admin/home',
+      'title'    =>  'Dashboard',
+      'subtitle' =>  'Control Panel,'
+    );
     $this->load->view('admin/layout/_default', $data);
   }
 

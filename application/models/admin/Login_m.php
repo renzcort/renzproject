@@ -64,12 +64,12 @@ class Login_m extends CI_Model {
 
     if ($query->num_rows() > 0) {
       $data['updated_at'] = mdate("%Y-%m-%d %H:%i:%s");
-      $result = $query->row();
+      $result = $query->row_array();
       if ($reset) {
-        $data['forgotten_password_time'] = intval($result->forgotten_password_time) + 1;
+        $data['forgotten_password_time'] = intval($result['forgotten_password_time']) + 1;
       }
       // update forgoted token
-      $this->db->where('id', $result->id);
+      $this->db->where('id', $result['id']);
       $this->db->update($this->db->dbprefix($this->_table), $data);
       return $result;
     } else {

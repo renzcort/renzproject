@@ -11,7 +11,7 @@
     </p>
     <?php } ?>
     <?php //echo validation_errors(); ?>
-    <form action="<?php echo base_url('admin/check_login'); ?>" method="post">
+    <form action="<?php echo base_url('admin/check-login'); ?>" method="post">
       <div class="form-group has-feedback">
         <input type="email" class="form-control" placeholder="Email" name="email" value="<?php echo set_value('email'); ?>">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
