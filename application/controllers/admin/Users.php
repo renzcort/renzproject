@@ -68,27 +68,57 @@ class Users extends My_Controller {
   public function role_create() {
     $settings = array(
       'header'     =>  'Role',
-      'subheader'  =>  'Create',
+      'subheader'  =>  'create',
       'content'    =>  'admin/users/role/create',
       'table'      =>  'users_role',
     );
 
-    if (isset($_POST['create'])) {
-      $this->form_validation->set_rules('name', 'Name', 'trim|required');
-      if ($this->form_validation->run() == TRUE) {
+    $this->form_validation->set_rules('name', 'Name', 'trim|required');
+    if ($this->form_validation->run() == TRUE) {
+      if (isset($_POST['create'])) {
         $config = array(
           'name'        => $this->input->post('name'),
           'description' => $this->input->post('description'),
-          'created_by'  => $this->data['id'],
+          'created_by'  => $this->data['userdata']['id'],
         );  
         $this->general_m->create($settings['table'], $config);
         helper_log('add', "add users role successfully");
         $this->session->set_flashdata('message', 'Data has created');
-        redirect('admin/users/role','refresh');
+        redirect('admin/users/role');
       } 
     } else {
       $data = array_merge($settings, $this->data);
       $this->load->view('admin/layout/_default', $data);      
+    }
+  }
+
+  /*Update Users Role*/
+  public function role_update($id = ''){
+        // var_dump($this->data['userdata']['id']);die;
+    $settings = array(
+      'header'         =>  'Role',
+      'subheader'      =>  'edit',
+      'content'        =>  'admin/users/role/edit',
+      'table'          =>  'users_role',
+    );
+    $settings['getdataby_id'] =  $this->general_m->get_data_by_id($settings['table'], $id);
+    $this->form_validation->set_rules('name', 'Name', 'trim|required');
+    if ($this->form_validation->run() == TRUE) {
+      if (isset($_POST['edit'])) {
+    // var_dump($settings['getdataby_id']);die;
+        $config = array(
+          'name'           =>  $this->input->post('name'),
+          'description'    =>  $this->input->post('description'),
+          'created_by'     =>  $this->data['userdata']['id'],
+        );
+        $this->general_m->update($settings['table'], $config, $id);
+        helper_log('update', 'update users role has successfully');
+        $this->session->set_flashdata('message', 'Data has Updated');
+        redirect('admin/users/role');
+      }
+    } else {
+      $data = array_merge($settings, $this->data);
+      $this->load->view('admin/layout/_default', $data);
     }
   }
 

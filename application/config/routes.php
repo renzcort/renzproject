@@ -61,4 +61,5 @@ $route['admin/activated']         =	 'admin/login/activated';
 $route['admin/forgot-password']   =  'admin/login/forgot_password';
 $route['admin/reset-password']    =  'admin/login/reset_password';
 $route['admin/users/role']        =  'admin/users/role';
-$route['admin/users/create']      =  'admin/users/role_create';
+$route['admin/users/role/create'] =  'admin/users/role_create';
+$route['admin/users/role/edit/(:num)']		=  'admin/users/role_update/$1';
