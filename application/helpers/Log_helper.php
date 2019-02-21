@@ -46,7 +46,7 @@
 
     // parameter
     $logged_in = $CI->session->userdata('logged_in');
-    $param['username']  = ($logged_in ? $logged_in->username : NULL );
+    $param['username']  = (isset($logged_in) ? $logged_in['username'] : NULL );
     $param['type']  = $type;
     $param['desc']  = $str;
     $param['query'] = $CI->db->last_query();

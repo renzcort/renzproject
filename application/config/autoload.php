@@ -63,7 +63,8 @@ $autoload['libraries'] = array(
 													'form_validation', 
 													'session', 
 													'email',
-                          'parser'
+                          'parser',
+                          'pagination'
 												);
 
 /*

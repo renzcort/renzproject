@@ -7,11 +7,16 @@ class My_Controller extends CI_Controller {
   {
     parent::__construct();
     //Do your magic here
+    if ($this->session->userdata('logged_in')) {
+      $this->first_load();
+    } else {
+      redirect('admin','refresh');
+    }
   }
 
-  public function index()
+  public function first_load()
   {
-    
+    return $this->session->userdata('logged_in');
   }
 
 }

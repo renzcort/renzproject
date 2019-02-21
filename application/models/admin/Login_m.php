@@ -12,8 +12,8 @@ class Login_m extends CI_Model {
     $query = $this->db->get($this->db->dbprefix($this->_table));
     if ($query->num_rows() == 1) {
       // Update Last Login
-      $result = $query->row();
-      $this->db->update($this->db->dbprefix($this->_table), array('last_login' => mdate("%Y-%m-%d %H:%i:%s")), "id = '{$result->id}'");
+      $result = $query->row_array();
+      $this->db->update($this->db->dbprefix($this->_table), array('last_login' => mdate("%Y-%m-%d %H:%i:%s")), "id = '{$result['id']}'");
       // end last login
       return $result;
     } else {
