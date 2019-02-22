@@ -2,14 +2,14 @@
   <div class="col-sm-6">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title"><?php echo (isset($header) ? ucfirst($header).'&nbsp;'.$subheader : ''); ?></h3>
+        <h3 class="box-title"><?php echo (isset($title) ? ucfirst($title).'&nbsp;'.$subheader : ucfirst($header).'&nbsp;'.$subheader); ?></h3>
       </div>
       <?php
         $attrb = array(
           'class' => 'form', 
         );
         $hidden = array('role_id' => $getdataby_id->id ); 
-        echo form_open(base_url('admin/users/role/edit/'.$getdataby_id->id), $attrb, $hidden); 
+        echo form_open(base_url($action.'/edit/'.$getdataby_id->id), $attrb, $hidden); 
       ?>
       <div class="box-body">
         <div class="form-group">
@@ -22,7 +22,7 @@
           <textarea name="description" class="form-control"><?php echo (isset($getdataby_id) ? $getdataby_id->description : set_value('description')); ?></textarea>
         </div>
         <div class="box-footer">
-          <button type="submit" class="btn btn-primary" name="edit">Create</button>
+          <button type="submit" class="btn btn-primary" name="update">Update</button>
         </div>
       </div>
       <?php echo form_close(); ?>

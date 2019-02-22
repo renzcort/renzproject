@@ -60,6 +60,13 @@ $route['admin/validation-token']  =  'admin/login/validation_token';
 $route['admin/activated']         =	 'admin/login/activated';
 $route['admin/forgot-password']   =  'admin/login/forgot_password';
 $route['admin/reset-password']    =  'admin/login/reset_password';
-$route['admin/users/role']        =  'admin/users/role';
-$route['admin/users/role/create'] =  'admin/users/role_create';
-$route['admin/users/role/edit/(:num)']		=  'admin/users/role_update/$1';
+
+/*Users*/
+$route['admin/users']                    =  'admin/users';
+$route['admin/users/create']             =  'admin/users/create';
+$route['admin/users/edit/(:num)']        =  'admin/users/update/$1';
+$route['admin/users/delete/(:num)']      =  'admin/users/delete/$1';
+$route['admin/users/role']               =  'admin/users/role';
+$route['admin/users/role/create']        =  'admin/users/role_create';
+$route['admin/users/role/edit/(:num)']   =  'admin/users/role_update/$1';
+$route['admin/users/role/delete/(:num)'] =  'admin/users/role_delete/$1';

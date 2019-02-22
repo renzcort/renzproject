@@ -2,13 +2,13 @@
   <div class="col-sm-6">
     <div class="box box-primary">
       <div class="box-header with-border">
-        <h3 class="box-title"><?php echo (isset($header) ? ucfirst($header).'&nbsp;'.$subheader : ''); ?></h3>
+        <h3 class="box-title"><?php echo (isset($title) ? ucfirst($title).'&nbsp;'.$subheader : ucfirst($header).'&nbsp;'.$subheader); ?></h3>
       </div>
       <?php
         $attrb = array(
           'class' => 'form', 
         ); 
-        echo form_open(base_url('admin/users/role/create'), $attrb); 
+        echo form_open(base_url($action.'/create'), $attrb); 
       ?>
       <div class="box-body">
         <div class="form-group">
