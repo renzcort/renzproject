@@ -6,31 +6,32 @@
 </div>
 <?php } ?>
 
-<div class="list" id="index">
+<div class="content list" id="index">
   <div class="row">
     <div class="col-sm-12 col-xs-12">
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Manage <?php echo (isset($title) ? ucfirst($title) : ucfirst($header)); ?></h3>
         </div>
+        <!-- /.box-header -->
         <div class="box-body">
-          <div class="pull-left">
-            <a href="<?php echo base_url($action.'/create'); ?>" class="btn btn-block btn-primary">+ Add <?php echo (isset($title) ? ucfirst($title) : ucfirst($header)); ?></a>
-          </div>
+          
           <?php if($record_all) { ?>
-          <table class="table table-bordered table-striped text-center">
+          <table id="example2" class="table table-bordered table-hover">
             <thead>
-              <th width="5%">No. </th>
-              <th width="5%"></th>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Action</th>
+              <tr>
+                <th width="5%">No. </th>
+                <th width="5%"></th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Action</th>
+              </tr>
             </thead>
             <tbody>
               <?php
-                $i = 0; 
-                foreach ($record_all as $key) { 
+                $i = 0;
+                foreach ($record_all as $key) {
               ?>
               <tr>
                 <td><?php echo ++$i; ?></td>
@@ -44,25 +45,26 @@
                 </td>
               <tr>
               <?PHP } ?>
-                <td></td>
-              </tr>
             </tbody>
+            <tfoot>
+            <tr>
+              <th width="5%">No. </th>
+              <th width="5%"></th>
+              <th>Username</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Action</th>
+            </tr>
+            </tfoot>
           </table>
           <?php } else { ?>
-            <div class="m-5">
-              <h3 class="text-center">Data is Empty</h3>
-            </div>
+          <div class="m-5">
+            <h3 class="text-center">Data is Empty</h3>
+          </div>
           <?php } ?>
         </div>
+        <!-- /.box-body -->
       </div>
-      <table>
-        <thead>
-                    
-        </thead>
-        <tbody>
-          
-        </tbody>
-      </table>
     </div>
   </div>
 </div>
