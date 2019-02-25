@@ -18,8 +18,16 @@ class General_m extends CI_Model {
   }
 
   /*Get All Data Records*/
-  public function get_all_results($table) {
-    return $this->db->get($this->db->dbprefix($table))->result();
+  public function get_all_results($table, $limit = '', $offset = '') {
+    if ($limit) {
+      $this->db->limit($limit, $offset);
+    }
+    $result = $this->db->get($this->db->dbprefix($table));
+    if($result->num_rows() > 0) {
+      return $result->result();
+    } else {
+      return FALSE;
+    }
   }
 
   /*Get Data By Id*/

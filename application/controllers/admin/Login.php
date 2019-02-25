@@ -11,8 +11,7 @@ class Login extends CI_Controller {
     $this->session->unset_userdata('logged_in');
   }
 
-  public function index()
-  {
+  public function index() {
     if ($this->session->userdata('logged_in')) {
       $userdata = $this->session->userdata('logged_in');
       redirect('admin/home','refresh');
@@ -49,8 +48,7 @@ class Login extends CI_Controller {
 
 
   /*register*/
-  public function register()
-  {
+  public function register() {
     $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]');
     $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[renz_users.email]');
     $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]', 

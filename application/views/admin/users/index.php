@@ -15,7 +15,9 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-          
+          <div class="pull-left">
+            <a href="<?php echo base_url($action.'/create'); ?>" class="btn btn-block btn-primary">+ Add <?php echo (isset($title) ? ucfirst($title) : ucfirst($header)); ?></a>
+          </div>
           <?php if($record_all) { ?>
           <table id="example2" class="table table-bordered table-hover">
             <thead>
@@ -57,6 +59,11 @@
             </tr>
             </tfoot>
           </table>
+          <div class="row">
+            <div class="col-lg-12">
+              <?php echo $links; ?>
+            </div>
+          </div>
           <?php } else { ?>
           <div class="m-5">
             <h3 class="text-center">Data is Empty</h3>

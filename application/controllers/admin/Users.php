@@ -17,44 +17,30 @@ class Users extends My_Controller {
   }
 
   /*Get All Users*/
-  public function index()
-  {
+  public function index() {
     $settings = array(
       'title'      =>  'Users',
       'subheader'  =>  'Manage Users',
       'content'    =>  'admin/users/index',
       'table'      =>  'users',
-      'action'     =>  'admin/users',
-      'record_all' =>  $this->users_m->get_all_results()
+      'action'     =>  'admin/users'
     );
 
-    // pagination
-    $this->load->library('pagination');
+   // pagination
+    $config['base_url']     = base_url($settings['action']);
+    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']     = 1;
+    $num_pages              = $config["total_rows"] / $config["per_page"];
+    $config['uri_segment']  = 3;
+    $config['num_links']    = round($num_pages);
+    $pagination             = array_merge($config, $this->config->item('setting_pagination'));
+    $this->pagination->initialize($pagination);
+    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment'])-1 : 0);
+    // var_dump($start_offset);die();
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    $settings['links']      = $this->pagination->create_links();
+    //end pagination
     
-    $config['base_url']        = base_url($settings['action']);
-    $config['total_rows']      = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']        = 10;
-    $config['uri_segment']     = 3;
-    $config['num_links']       = 3;
-    $config['full_tag_open']   = '<p>';
-    $config['full_tag_close']  = '</p>';
-    $config['first_link']      = 'First';
-    $config['first_tag_open']  = '<div>';
-    $config['first_tag_close'] = '</div>';
-    $config['last_link']       = 'Last';
-    $config['last_tag_open']   = '<div>';
-    $config['last_tag_close']  = '</div>';
-    $config['next_link']       = '&gt;';
-    $config['next_tag_open']   = '<div>';
-    $config['next_tag_close']  = '</div>';
-    $config['prev_link']       = '&lt;';
-    $config['prev_tag_open']   = '<div>';
-    $config['prev_tag_close']  = '</div>';
-    $config['cur_tag_open']    = '<b>';
-    $config['cur_tag_close']   = '</b>';
-    
-    $this->pagination->initialize($config);
-    // end pagination
     $data = array_merge($settings, $this->data);
     $this->load->view('admin/layout/_default', $data);
   }
@@ -183,7 +169,6 @@ class Users extends My_Controller {
     }
   }
 
-
   /*Delete users*/
   public function delete($id = '') {
     $settings = array(
@@ -219,34 +204,21 @@ class Users extends My_Controller {
       'table'     =>  'users_role',
       'action'    =>  'admin/users/role'
     );
-    $settings['record_all'] = $this->general_m->get_all_results($settings['table']);
 
     // pagination
-    $config['base_url']        = base_url($settings['action']);
-    $config['total_rows']      = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']        = 10;
-    $config['uri_segment']     = 3;
-    $config['num_links']       = 3;
-    $config['full_tag_open']   = '<p>';
-    $config['full_tag_close']  = '</p>';
-    $config['first_link']      = 'First';
-    $config['first_tag_open']  = '<div>';
-    $config['first_tag_close'] = '</div>';
-    $config['last_link']       = 'Last';
-    $config['last_tag_open']   = '<div>';
-    $config['last_tag_close']  = '</div>';
-    $config['next_link']       = '&gt;';
-    $config['next_tag_open']   = '<div>';
-    $config['next_tag_close']  = '</div>';
-    $config['prev_link']       = '&lt;';
-    $config['prev_tag_open']   = '<div>';
-    $config['prev_tag_close']  = '</div>';
-    $config['cur_tag_open']    = '<b>';
-    $config['cur_tag_close']   = '</b>';
+    $config['base_url']     = base_url($settings['action']);
+    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']     = 1;
+    $num_pages              = $config["total_rows"] / $config["per_page"];
+    $config['uri_segment']  = 4;
+    $config['num_links']    = round($num_pages);
+    $pagination             = array_merge($config, $this->config->item('setting_pagination'));
+    $this->pagination->initialize($pagination);
+    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    $settings['links']      = $this->pagination->create_links();
+    //end pagination
 
-    $this->pagination->initialize($config);
-    //end pagination    
-    
     $data = array_merge($settings, $this->data);
     $this->load->view('admin/layout/_default', $data);
   }

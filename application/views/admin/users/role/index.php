@@ -42,6 +42,11 @@
               <?PHP } ?>
             </tbody>
           </table>
+          <div class="row">
+            <div class="col-lg-12">
+              <?php echo $links; ?>
+            </div>
+          </div>
           <?php } else { ?>
             <div class="m-5">
               <h3 class="text-center">Data is Empty</h3>
