@@ -64,7 +64,8 @@ $autoload['libraries'] = array(
 													'session', 
 													'email',
                           'parser',
-                          'pagination'
+                          'pagination',
+                          'upload'
 												);
 
 /*
@@ -117,7 +118,7 @@ $autoload['helper'] = array(
 | config files.  Otherwise, leave it blank.
 |
 */
-$autoload['config'] = array('email', 'pagination');
+$autoload['config'] = array('email', 'pagination', 'upload');
 
 /*
 | -------------------------------------------------------------------

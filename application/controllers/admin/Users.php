@@ -35,8 +35,7 @@ class Users extends My_Controller {
     $config['num_links']    = round($num_pages);
     $pagination             = array_merge($config, $this->config->item('setting_pagination'));
     $this->pagination->initialize($pagination);
-    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment'])-1 : 0);
-    // var_dump($start_offset);die();
+    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
     $settings['links']      = $this->pagination->create_links();
     //end pagination
@@ -55,7 +54,7 @@ class Users extends My_Controller {
       'action'    =>  'admin/users',
       'role'      =>  $this->general_m->get_all_results('users_role')
     );
-    
+
     $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|is_unique[renz_users.username]');
     $this->form_validation->set_rules('firstname', 'Firstname', 'trim|required');
     $this->form_validation->set_rules('lastname', 'Lastname', 'trim|required');
@@ -79,6 +78,19 @@ class Users extends My_Controller {
           'created_at' =>  mdate("%Y-%m-%d %H:%i:%s"), 
           'updated_at' =>  mdate("%Y-%m-%d %H:%i:%s"), 
         );
+
+        // uppload photo
+        $upload = $this->config->item('setting_upload');
+        $this->upload->initialize($upload);
+        if ( ! $this->upload->do_upload('photo')){
+          $error = array('error' => $this->upload->display_errors());
+          var_dump($error);die();
+        }
+        else{
+          $data = array('upload_data' => $this->upload->data());
+          $config['photo']  =  $data['upload_data']['file_name'];
+        }
+        // end upload
         $this->users_m->create($config);
         helper_log('add', 'add '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
         $this->session->set_flashdata('message', 'Data has created');

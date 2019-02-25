@@ -8,8 +8,9 @@
         $attrb = array(
           'class' => 'form', 
         ); 
-        echo form_open(base_url($action.'/create'), $attrb); 
+        echo form_open_multipart(base_url($action.'/create'), $attrb); 
       ?>
+      <form method="post" action="admin/users/create" enctype="multipart/data"> 
       <div class="box-body">
         <div class="form-group">
           <label for="Inputusername">Username</label>
@@ -53,7 +54,7 @@
         <?php echo form_error('role'); ?>
         <div class="form-group">
           <label for="InputPhoto">Photo</label>
-          <input type="file" name="photo">
+          <input type="file" name="photo" class="form-control">
         </div>
         <div class="checkbox">
           <label>

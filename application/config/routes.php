@@ -62,7 +62,7 @@ $route['admin/forgot-password']   =  'admin/login/forgot_password';
 $route['admin/reset-password']    =  'admin/login/reset_password';
 
 /*Users*/
-$route['admin/users']                    =  'admin/users';
+$route['admin/users/(:num)']                    =  'admin/users';
 $route['admin/users/create']             =  'admin/users/create';
 $route['admin/users/edit/(:num)']        =  'admin/users/update/$1';
 $route['admin/users/delete/(:num)']      =  'admin/users/delete/$1';
