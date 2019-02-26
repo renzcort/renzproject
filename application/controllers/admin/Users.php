@@ -19,29 +19,29 @@ class Users extends My_Controller {
   /*Get All Users*/
   public function index() {
     $settings = array(
-      'title'      =>  'Users',
-      'subheader'  =>  'Manage Users',
-      'content'    =>  'admin/users/index',
-      'table'      =>  'users',
-      'action'     =>  'admin/users'
+      'title'      => 'Users',
+      'subheader'  => 'Manage Users',
+      'content'    => 'admin/users/index',
+      'table'      => 'users',
+      'action'     => 'admin/users',
+      'session'    => $this->data,
     );
 
    // pagination
+    $config = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
     $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
     $config['per_page']     = 1;
     $num_pages              = $config["total_rows"] / $config["per_page"];
     $config['uri_segment']  = 3;
     $config['num_links']    = round($num_pages);
-    $pagination             = array_merge($config, $this->config->item('setting_pagination'));
-    $this->pagination->initialize($pagination);
+    $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
     $settings['links']      = $this->pagination->create_links();
     //end pagination
     
-    $data = array_merge($settings, $this->data);
-    $this->load->view('admin/layout/_default', $data);
+    $this->load->view('admin/layout/_default', $settings);
   }
 
   /*Create Users*/
@@ -52,7 +52,8 @@ class Users extends My_Controller {
       'content'   =>  'admin/users/create',
       'table'     =>  'users',
       'action'    =>  'admin/users',
-      'role'      =>  $this->general_m->get_all_results('users_role')
+      'role'      =>  $this->general_m->get_all_results('users_role'),
+      'session'   =>  $this->data,
     );
 
     $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|is_unique[renz_users.username]');
@@ -67,10 +68,10 @@ class Users extends My_Controller {
     $this->form_validation->set_rules('accept_terms', 'Accepts Term', 'required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
-        $config = array(
+        $data = array(
           'username'   =>  $this->input->post('username'),
           'firstname'  =>  $this->input->post('firstname'),
-          'lastname'   =>  $this->input->post('lastnaame'),
+          'lastname'   =>  $this->input->post('lastname'),
           'email'      =>  $this->input->post('email'),
           'password'   =>  md5($this->input->post('password')),
           'role_id'    =>  $this->input->post('role'),
@@ -80,25 +81,24 @@ class Users extends My_Controller {
         );
 
         // uppload photo
-        $upload = $this->config->item('setting_upload');
-        $this->upload->initialize($upload);
+        $config = $this->config->item('setting_upload');
+        $this->upload->initialize($config);
         if ( ! $this->upload->do_upload('photo')){
           $error = array('error' => $this->upload->display_errors());
-          var_dump($error);die();
         }
         else{
-          $data = array('upload_data' => $this->upload->data());
-          $config['photo']  =  $data['upload_data']['file_name'];
+          $result = array('upload_data' => $this->upload->data());
+          $data['photo']  =  $result['upload_data']['file_name'];
         }
         // end upload
-        $this->users_m->create($config);
+        
+        $this->users_m->create($data);
         helper_log('add', 'add '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
         $this->session->set_flashdata('message', 'Data has created');
         redirect($settings['action']);
       } 
     } else {
-      $data = array_merge($settings, $this->data);
-      $this->load->view('admin/layout/_default', $data);
+      $this->load->view('admin/layout/_default', $settings);
     }
   }
 
@@ -107,11 +107,12 @@ class Users extends My_Controller {
     $settings = array(
       'title'        => 'Users',
       'subheader'    => 'edit',
-      'content'      =>  'admin/users/edit',
-      'table'        =>  'users',
-      'action'       =>  'admin/users',
-      'role'         =>  $this->general_m->get_all_results('users_role'),
-      'getdataby_id' =>  $this->users_m->get_data_by_id($id),
+      'content'      => 'admin/users/edit',
+      'table'        => 'users',
+      'action'       => 'admin/users',
+      'role'         => $this->general_m->get_all_results('users_role'),
+      'getdataby_id' => $this->users_m->get_data_by_id($id),
+      'session'      => $this->data,
     );
     
     $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|callback_check_username');
@@ -126,7 +127,7 @@ class Users extends My_Controller {
     $this->form_validation->set_rules('accept_terms', 'Accepts Term', 'required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['update'])) {
-        $config = array(
+        $data = array(
           'username'   =>  $this->input->post('username'),
           'firstname'  =>  $this->input->post('firstname'),
           'lastname'   =>  $this->input->post('lastname'),
@@ -137,14 +138,24 @@ class Users extends My_Controller {
           'created_at' =>  mdate("%Y-%m-%d %H:%i:%s"), 
           'updated_at' =>  mdate("%Y-%m-%d %H:%i:%s"), 
         );
-        $this->users_m->update($config, $id);
+
+        // upload photo
+        $config = $this->config->item('setting_upload');
+        $this->upload->initialize($config);
+        if (! $this->upload->do_upload('photo')) {
+          $error = array('error' => $this->upload->display_errors());
+        } else {
+          $result = array('upload_data' => $this->upload->data());
+          $data['upload'] = $result['upload_data']['filename'];
+        }
+
+        $this->users_m->update($data, $id);
         helper_log('update', 'update '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
         $this->session->set_flashdata('message', 'Data has created');
         redirect($settings['action']);
       } 
     } else {
-      $data = array_merge($settings, $this->data);
-      $this->load->view('admin/layout/_default', $data);
+      $this->load->view('admin/layout/_default', $settings);
     }
   }
 
@@ -186,10 +197,11 @@ class Users extends My_Controller {
     $settings = array(
       'title'        => 'Users',
       'subheader'    => 'delete',
-      'table'        =>  'users',
-      'action'       =>  'admin/users',
-      'role'         =>  $this->general_m->get_all_results('users_role'),
-      'getdataby_id' =>  $this->users_m->get_data_by_id($id),
+      'table'        => 'users',
+      'action'       => 'admin/users',
+      'role'         => $this->general_m->get_all_results('users_role'),
+      'getdataby_id' => $this->users_m->get_data_by_id($id),
+      'session'      => $this->data,
     );
     
     if ($settings['getdataby_id']) {
@@ -214,25 +226,25 @@ class Users extends My_Controller {
       'subheader' =>  'Manage Users',
       'content'   =>  'admin/users/role/index',
       'table'     =>  'users_role',
-      'action'    =>  'admin/users/role'
+      'action'    =>  'admin/users/role',
+      'session'   =>  $this->data,
     );
 
     // pagination
-    $config['base_url']     = base_url($settings['action']);
-    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']     = 1;
-    $num_pages              = $config["total_rows"] / $config["per_page"];
-    $config['uri_segment']  = 4;
-    $config['num_links']    = round($num_pages);
-    $pagination             = array_merge($config, $this->config->item('setting_pagination'));
-    $this->pagination->initialize($pagination);
+    $config                = $this->config->item('setting_pagination');
+    $config['base_url']    = base_url($settings['action']);
+    $config['total_rows']  = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']    = 1;
+    $num_pages             = $config["total_rows"] / $config["per_page"];
+    $config['uri_segment'] = 4;
+    $config['num_links']   = round($num_pages);
+    $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
     $settings['links']      = $this->pagination->create_links();
     //end pagination
 
-    $data = array_merge($settings, $this->data);
-    $this->load->view('admin/layout/_default', $data);
+    $this->load->view('admin/layout/_default', $settings);
   }
   
   /*Create Add Users Role*/
@@ -242,25 +254,25 @@ class Users extends My_Controller {
       'subheader' =>  'create',
       'content'   =>  'admin/users/role/create',
       'table'     =>  'users_role',
-      'action'    =>  'admin/users/role'
+      'action'    =>  'admin/users/role',
+      'session'   =>  $this->data,
     );
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
-        $config = array(
+        $data = array(
           'name'        => $this->input->post('name'),
           'description' => $this->input->post('description'),
           'created_by'  => $this->data['userdata']['id'],
         );  
-        $this->general_m->create($settings['table'], $config);
+        $this->general_m->create($settings['table'], $data);
         helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." successfully");
         $this->session->set_flashdata('message', 'Data has created');
         redirect($settings['action']);
       } 
     } else {
-      $data = array_merge($settings, $this->data);
-      $this->load->view('admin/layout/_default', $data);      
+      $this->load->view('admin/layout/_default', $settings);      
     }
   }
 
@@ -271,26 +283,25 @@ class Users extends My_Controller {
       'subheader' =>  'edit',
       'content'   =>  'admin/users/role/edit',
       'table'     =>  'users_role',
-      'action'    =>  'admin/users/role'
+      'action'    =>  'admin/users/role',
+      'session'   =>  $this->data,
     );
     $settings['getdataby_id'] =  $this->general_m->get_data_by_id($settings['table'], $id);
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['update'])) {
-    // var_dump($settings['getdataby_id']);die;
-        $config = array(
+        $data = array(
           'name'           =>  $this->input->post('name'),
           'description'    =>  $this->input->post('description'),
           'created_by'     =>  $this->data['userdata']['id'],
         );
-        $this->general_m->update($settings['table'], $config, $id);
+        $this->general_m->update($settings['table'], $data, $id);
         helper_log('update', "update ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." has successfully");
         $this->session->set_flashdata('message', 'Data has Updated');
         redirect($settings['action']);
       }
     } else {
-      $data = array_merge($settings, $this->data);
-      $this->load->view('admin/layout/_default', $data);
+      $this->load->view('admin/layout/_default', $settings);
     }
   }
 
@@ -299,7 +310,8 @@ class Users extends My_Controller {
       'header'    =>  'Role',
       'subheader' =>  'edit',
       'table'     =>  'users_role',
-      'action'    =>  'admin/users/role'
+      'action'    =>  'admin/users/role',
+      'session'   =>  $this->data,
     );
     if ($this->general_m->get_data_by_id($settings['table'], $id)) {
       $delete = $this->general_m->delete($settings['table'], $id);

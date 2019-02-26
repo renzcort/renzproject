@@ -9,7 +9,7 @@
           'class' => 'form', 
         ); 
         $hidden = array('id' => $getdataby_id->id);
-        echo form_open(base_url($action.'/edit/'.$getdataby_id->id), $attrb, $hidden); 
+        echo form_open_multipart(base_url($action.'/edit/'.$getdataby_id->id), $attrb, $hidden); 
       ?>
       <div class="box-body">
         <div class="form-group">
@@ -54,7 +54,12 @@
         <?php echo form_error('role'); ?>
         <div class="form-group">
           <label for="InputPhoto">Photo</label>
-          <input type="file" name="photo">
+          <?php if($getdataby_id->photo) { ?>
+            <div class="photo" id="users">
+              <img src="<?php echo base_url('uploads/'.$getdataby_id->photo); ?>" alt="placeholder+image" width="100" height="150">       
+            </div>
+          <?php } ?>
+          <input type="file" name="photo" class="form-control">
         </div>
         <div class="checkbox">
           <label>

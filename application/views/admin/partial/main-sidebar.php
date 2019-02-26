@@ -7,7 +7,7 @@
           <img src="<?php echo base_url('assets/admin/bootstrap/') ?>dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
         </div>
         <div class="pull-left info">
-          <p><?php echo (isset($username) ? ucfirst($username) : ''); ?></p>
+          <p><?php echo (isset($session['userdata']['username']) ? ucfirst($session['userdata']['username']) : ''); ?></p>
           <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
         </div>
       </div>
