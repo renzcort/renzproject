@@ -104,7 +104,8 @@ $autoload['helper'] = array(
 												'email',
                         'string',
                         'log',
-                        'file'
+                        'file',
+                        'array'
 											);
 
 /*

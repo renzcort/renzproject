@@ -56,7 +56,7 @@
           <label for="inputGroup">Group</label>
           <ul>
           <?php foreach ($group as $key) { ?>
-            <li><input type="checkbox" name="usergroups[]" value="<?php echo $key->id; ?>"> <?php echo $key->name; ?></li>
+            <li><input type="checkbox" name="usersgroup[]" value="<?php echo $key->id; ?>"> <?php echo $key->name; ?></li>
           <?php } ?>
           </ul>
         

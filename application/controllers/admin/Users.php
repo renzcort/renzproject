@@ -26,35 +26,36 @@ class Users extends My_Controller {
       'action'     => 'admin/users',
       'session'    => $this->data,
     );
-
    // pagination
     $config = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
     $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']     = 1;
+    $config['per_page']     = 10;
     $num_pages              = $config["total_rows"] / $config["per_page"];
     $config['uri_segment']  = 3;
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    // var_dump($settings['table']);die;
+    $settings['record_all'] = $this->users_m->get_all_results($config['per_page'], $start_offset);
     $settings['links']      = $this->pagination->create_links();
     //end pagination
-    
+    // var_dump($settings['record_all']);die;
     $this->load->view('admin/layout/_default', $settings);
   }
 
   /*Create Users*/
   public function create() {
     $settings = array(
-      'title'     => 'Users',
-      'subheader' => 'create',
-      'content'   =>  'admin/users/create',
-      'table'     =>  'users',
-      'action'    =>  'admin/users',
-      'role'      =>  $this->general_m->get_all_results('users_role'),
-      'group'     =>  $this->general_m->get_all_results('usergroups'),
-      'session'   =>  $this->data,
+      'title'       => 'Users',
+      'subheader'   => 'create',
+      'content'     =>  'admin/users/create',
+      'table'       =>  'users',
+      'action'      =>  'admin/users',
+      'role'        =>  $this->general_m->get_all_results('users_role'),
+      'group'       =>  $this->general_m->get_all_results('usersgroup'),
+      'session'     =>  $this->data,
+      'upload_path' => 'uploads/'.$this->data['title'],
     );
 
     $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|is_unique[renz_users.username]');
@@ -84,7 +85,7 @@ class Users extends My_Controller {
         // uppload photo
         if (!empty($_FILES['photo'])) {
           $config = $this->config->item('setting_upload');
-          $config['upload_path'] = './uploads/'.$settings['session']['title'];
+          $config['upload_path'] = $settings['upload_path'];
           if (!is_dir($config['upload_path'])) {
             mkdir($config['upload_path'], 0777, TRUE);
           } 
@@ -94,21 +95,22 @@ class Users extends My_Controller {
           }
           else{
             $result = array('upload_data' => $this->upload->data());
-            $data['photo']  =  $result['upload_data']['file_name'];
+            $data['photo'] =  $result['upload_data']['file_name'];
           }
         }
         // end upload
 
         $users = $this->users_m->create($data);
-        $usergroups = $this->input->post('usergroups');
-        if (!empty($this->input->post('usergroups'))) {
-          foreach ($usergroups as $key => $value) {
+        $usersgroup = $this->input->post('usersgroup');
+        if (!empty($usersgroup)) {
+          $this->general_m->delete('usersgroup_users', $users, 'users_id');
+          foreach ($usersgroup as $key => $value) {
             $data = array(
               'users_id'   =>  $users,
               'group_id'   =>  $value,
               'created_by' => $this->data['userdata']['id'], 
             );
-            $this->general_m->create('usergroups_users', $data);
+            $this->general_m->create('usersgroup_users', $data, FALSE);
           }
         }
         helper_log('add', 'add '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
@@ -129,12 +131,20 @@ class Users extends My_Controller {
       'table'        => 'users',
       'action'       => 'admin/users',
       'role'         => $this->general_m->get_all_results('users_role'),
-      'group'        => $this->general_m->get_all_results('usergroups'),
-      'usersgroup'   => $this->general_m->get_result_by_id('usergroups_users', $id, 'users_id'),
+      'group'        => $this->general_m->get_all_results('usersgroup'),
+      'usersgroup'   => $this->general_m->get_result_by_id('usersgroup_users', $id, 'users_id'),
       'getdataby_id' => $this->users_m->get_row_by_id($id),
       'session'      => $this->data,
+      'upload_path'  => 'uploads/'.$this->data['title'],
     );
-    
+    if ($settings['usersgroup']) {
+      foreach ($settings['usersgroup'] as $key => $value) {
+        $settings['group_checked'][] = $value->group_id;
+      }
+    } else {
+        $settings['group_checked'][] = '';
+    }
+
     $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|callback_check_username');
     $this->form_validation->set_rules('firstname', 'Firstname', 'trim|required');
     $this->form_validation->set_rules('lastname', 'Lastname', 'trim|required');
@@ -162,8 +172,9 @@ class Users extends My_Controller {
         // upload photo
         if (!empty($_FILES['photo'])) {
           $config                = $this->config->item('setting_upload');
-          $config['upload_path'] = './uploads/'.$settings['session']['title'];
+          $config['upload_path'] = $settings['upload_path'];
           $config['overwrite']   = TRUE;
+          $config['file_name']   = 'photoku';
           if (!is_dir($config['upload_path'])) {
             mkdir($config['upload_path'], 0777, TRUE);
           }
@@ -173,20 +184,20 @@ class Users extends My_Controller {
           }
           else{
             $result = array('upload_data' => $this->upload->data());
-            $data['photo']  =  $result['upload_data']['file_name'];
+            $data['photo'] =  $result['upload_data']['file_name'];
           }
         }
 
         $this->users_m->update($data, $id);
-        if (!empty($this->input->post('usergroups'))) {
-          foreach ($usergroups as $key => $value) {
-            $data = array(
-              'users_id'   =>  $id,
-              'group_id'   =>  $value,
-              'created_by' => $this->data['userdata']['id'], 
-            );
-            $this->general_m->create('usergroups_users', $data);
-          }
+        $usersgroup = $this->input->post('usersgroup');
+        $this->general_m->delete('usersgroup_users', $id, 'users_id');
+        foreach ($usersgroup as $key => $value) {
+          $data = array(
+            'users_id'   =>  $id,
+            'group_id'   =>  $value,
+            'created_by' => $this->data['userdata']['id'], 
+          );
+          $this->general_m->create('usersgroup_users', $data, FALSE);
         }
         helper_log('update', 'update '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
         $this->session->set_flashdata('message', 'Data has created');
@@ -247,6 +258,8 @@ class Users extends My_Controller {
       if ($settings['getdataby_id']->photo) {
         unlink($settings['path'].$settings['getdataby_id']->photo);
       }
+      // delete usersgroup
+      $this->general_m->delete('usersgroup_users', $id, 'users_id');
       $delete = $this->users_m->delete($id);
       // delete files upload
       helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
@@ -274,13 +287,13 @@ class Users extends My_Controller {
     );
 
     // pagination
-    $config                = $this->config->item('setting_pagination');
-    $config['base_url']    = base_url($settings['action']);
-    $config['total_rows']  = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']    = 1;
-    $num_pages             = $config["total_rows"] / $config["per_page"];
-    $config['uri_segment'] = 4;
-    $config['num_links']   = round($num_pages);
+    $config                 = $this->config->item('setting_pagination');
+    $config['base_url']     = base_url($settings['action']);
+    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']     = 10;
+    $num_pages              = $config["total_rows"] / $config["per_page"];
+    $config['uri_segment']  = 4;
+    $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
@@ -373,23 +386,23 @@ class Users extends My_Controller {
       'header'    =>  'Group',
       'subheader' =>  'Manage Users',
       'content'   =>  'admin/users/group/index',
-      'table'     =>  'usergroups',
+      'table'     =>  'usersgroup',
       'action'    =>  'admin/users/group',
       'session'   =>  $this->data,
     );
 
     // pagination
-    $config = $this->config->item('setting_pagination');
-    $config['base_url'] = base_url($settings['action']);
-    $config['total_rows'] = $this->general_m->count_all_results($settings['table']);
-    $config['per_page'] = 1;
-    $num_pages = $config['total_rows'] / $config['per_page'];
-    $config['uri_segment'] = 4;
-    $config['num_links'] = round($num_pages);
+    $config                 = $this->config->item('setting_pagination');
+    $config['base_url']     = base_url($settings['action']);
+    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']     = 10;
+    $num_pages              = $config['total_rows'] / $config['per_page'];
+    $config['uri_segment']  = 4;
+    $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
-    $start_offset = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
+    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
-    $settings['links'] = $this->pagination->create_links();
+    $settings['links']      = $this->pagination->create_links();
     // end Pagination
     
     $this->load->view('admin/layout/_default', $settings);
@@ -398,10 +411,10 @@ class Users extends My_Controller {
   /*Create Group*/ 
   public function group_create() {
     $settings = array(
-      'header'    =>  'Role',
+      'header'    =>  'Group',
       'subheader' =>  'create',
       'content'   =>  'admin/users/group/create',
-      'table'     =>  'usergroups',
+      'table'     =>  'usersgroup',
       'action'    =>  'admin/users/group',
       'session'   =>  $this->data,
     );
@@ -409,10 +422,10 @@ class Users extends My_Controller {
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
         $data = array(
-          'name'        => $this->input->post('name'),
-          'slug'        => url_title($this->input->post('name')),
+          'name'        =>  $this->input->post('name'),
+          'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'description' =>  $this->input->post('description'),
-          'created_by'  => $this->data['userdata']['id'],
+          'created_by'  =>  $this->data['userdata']['id'],
         );
         $this->general_m->create($settings['table'], $data);
         helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
@@ -427,10 +440,10 @@ class Users extends My_Controller {
   /*Update Groups*/
   public function group_update($id = '') {
     $settings = array(
-      'header'    =>  'Role',
+      'header'    =>  'Group',
       'subheader' =>  'edit',
       'content'   =>  'admin/users/group/edit',
-      'table'     =>  'usergroups',
+      'table'     =>  'usersgroup',
       'action'    =>  'admin/users/group',
       'session'   =>  $this->data,
     );
@@ -439,10 +452,10 @@ class Users extends My_Controller {
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['update'])) {
         $data = array(
-          'name'        => $this->input->post('name'),
-          'slug'        => url_title($this->input->post('name')),
+          'name'        =>  $this->input->post('name'),
+          'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'description' =>  $this->input->post('description'),
-          'created_by'  => $this->data['userdata']['id'],
+          'created_by'  =>  $this->data['userdata']['id'],
         );
         $this->general_m->update($settings['table'], $data, $id);
         helper_log('update', "update ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." has successfully");
@@ -459,7 +472,7 @@ class Users extends My_Controller {
     $settings = array(
       'header'    =>  'Role',
       'subheader' =>  'edit',
-      'table'     =>  'usergroups',
+      'table'     =>  'usersgroup',
       'action'    =>  'admin/users/group',
       'session'   =>  $this->data,
     );

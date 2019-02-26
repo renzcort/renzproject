@@ -20,9 +20,8 @@ class Users_m extends CI_Model {
 
   /*Get All Data Records*/
   public function get_all_results($limit = '', $offset = '') {
-    if ($limit) {
-      $this->db->limit($limit, $offset);
-    }
+    ($limit ? $this->db->limit($limit, $offset) : '' );
+    $this->db->join($this->db->dbprefix('users_role'), "{$this->db->dbprefix('users_role')}.id = {$this->db->dbprefix($this->_table)}.role_id");
     $result = $this->db->get($this->db->dbprefix($this->_table));
     if ($result->num_rows() > 0) {
       return $result->result();
@@ -32,7 +31,7 @@ class Users_m extends CI_Model {
   }
 
   /*Get Data By Id*/
-  public function get_data_by_id($id) {
+  public function get_row_by_id($id) {
     return $this->db->get_where($this->db->dbprefix($this->_table), array('id' => $id))->row();
   }
 
