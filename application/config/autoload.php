@@ -103,7 +103,8 @@ $autoload['helper'] = array(
 												'date',
 												'email',
                         'string',
-                        'log'
+                        'log',
+                        'file'
 											);
 
 /*

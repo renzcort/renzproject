@@ -53,6 +53,15 @@
         </div>
         <?php echo form_error('role'); ?>
         <div class="form-group">
+          <label for="inputGroup">Group</label>
+          <ul>
+          <?php foreach ($group as $key) { ?>
+            <li><input type="checkbox" name="usergroups[]" value="<?php echo $key->id; ?>"> <?php echo $key->name; ?></li>
+          <?php } ?>
+          </ul>
+        
+        </div>
+        <div class="form-group">
           <label for="InputPhoto">Photo</label>
           <input type="file" name="photo" class="form-control">
         </div>

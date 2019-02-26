@@ -53,10 +53,19 @@
         </div>
         <?php echo form_error('role'); ?>
         <div class="form-group">
+          <label for="inputGroup">Group</label>
+          <ul>
+          <?php foreach ($group as $key) { ?>
+            <li><input type="checkbox" name="usergroups[]" value="<?php echo $key->id; ?>"> <?php echo $key->name; ?></li>
+          <?php } ?>
+          </ul>
+        </div>
+        <div class="form-group">
           <label for="InputPhoto">Photo</label>
           <?php if($getdataby_id->photo) { ?>
             <div class="photo" id="users">
-              <img src="<?php echo base_url('uploads/'.$getdataby_id->photo); ?>" alt="placeholder+image" width="100" height="150">       
+              <img src="<?php echo base_url('uploads/'.$getdataby_id->photo); ?>" alt="placeholder+image" width="100" height="150">
+              <input type="hidden" name="old-photo" value="<?php echo $getdataby_id->photo; ?>">       
             </div>
           <?php } ?>
           <input type="file" name="photo" class="form-control">

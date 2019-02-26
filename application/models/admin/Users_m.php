@@ -43,6 +43,7 @@ class Users_m extends CI_Model {
     $data['updated_at'] = mdate("%Y-%m-%d %H:%i:%s");
     
     $this->db->insert($this->db->dbprefix($this->_table), $data);
+    return $this->db->insert_id();
   } 
 
   /*Update Data By ID*/

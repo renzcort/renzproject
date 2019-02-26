@@ -30,9 +30,24 @@ class General_m extends CI_Model {
     }
   }
 
-  /*Get Data By Id*/
-  public function get_data_by_id($table, $id) {
-    return $this->db->get_where($this->db->dbprefix($table), array('id' => $id))->row();
+  /*Get Row Data By Id*/
+  public function get_row_by_id($table, $id, $key = '') {
+    if ($key) {
+      $key = $key;
+    } else {
+      $key = 'id';
+    }
+    return $this->db->get_where($this->db->dbprefix($table), array("{$key}" => $id))->row();
+  }
+
+  /*Get Result data By ID*/
+  public function get_result_by_id($table, $id, $key = '') {
+    if ($key) {
+      $key = $key;
+    } else {
+      $key = 'id';
+    }
+    return $this->db->get_where($this->db->dbprefix($table), array("{$key}" => $id))->result();
   }
 
   /*Insert All Records*/

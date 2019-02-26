@@ -53,6 +53,7 @@ class Users extends My_Controller {
       'table'     =>  'users',
       'action'    =>  'admin/users',
       'role'      =>  $this->general_m->get_all_results('users_role'),
+      'group'     =>  $this->general_m->get_all_results('usergroups'),
       'session'   =>  $this->data,
     );
 
@@ -81,18 +82,35 @@ class Users extends My_Controller {
         );
 
         // uppload photo
-        $config = $this->config->item('setting_upload');
-        $this->upload->initialize($config);
-        if ( ! $this->upload->do_upload('photo')){
-          $error = array('error' => $this->upload->display_errors());
-        }
-        else{
-          $result = array('upload_data' => $this->upload->data());
-          $data['photo']  =  $result['upload_data']['file_name'];
+        if (!empty($_FILES['photo'])) {
+          $config = $this->config->item('setting_upload');
+          $config['upload_path'] = './uploads/'.$settings['session']['title'];
+          if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0777, TRUE);
+          } 
+          $this->upload->initialize($config);
+          if ( ! $this->upload->do_upload('photo')){
+            $error = array('error' => $this->upload->display_errors());
+          }
+          else{
+            $result = array('upload_data' => $this->upload->data());
+            $data['photo']  =  $result['upload_data']['file_name'];
+          }
         }
         // end upload
-        
-        $this->users_m->create($data);
+
+        $users = $this->users_m->create($data);
+        $usergroups = $this->input->post('usergroups');
+        if (!empty($this->input->post('usergroups'))) {
+          foreach ($usergroups as $key => $value) {
+            $data = array(
+              'users_id'   =>  $users,
+              'group_id'   =>  $value,
+              'created_by' => $this->data['userdata']['id'], 
+            );
+            $this->general_m->create('usergroups_users', $data);
+          }
+        }
         helper_log('add', 'add '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
         $this->session->set_flashdata('message', 'Data has created');
         redirect($settings['action']);
@@ -111,7 +129,9 @@ class Users extends My_Controller {
       'table'        => 'users',
       'action'       => 'admin/users',
       'role'         => $this->general_m->get_all_results('users_role'),
-      'getdataby_id' => $this->users_m->get_data_by_id($id),
+      'group'        => $this->general_m->get_all_results('usergroups'),
+      'usersgroup'   => $this->general_m->get_result_by_id('usergroups_users', $id, 'users_id'),
+      'getdataby_id' => $this->users_m->get_row_by_id($id),
       'session'      => $this->data,
     );
     
@@ -140,16 +160,34 @@ class Users extends My_Controller {
         );
 
         // upload photo
-        $config = $this->config->item('setting_upload');
-        $this->upload->initialize($config);
-        if (! $this->upload->do_upload('photo')) {
-          $error = array('error' => $this->upload->display_errors());
-        } else {
-          $result = array('upload_data' => $this->upload->data());
-          $data['upload'] = $result['upload_data']['filename'];
+        if (!empty($_FILES['photo'])) {
+          $config                = $this->config->item('setting_upload');
+          $config['upload_path'] = './uploads/'.$settings['session']['title'];
+          $config['overwrite']   = TRUE;
+          if (!is_dir($config['upload_path'])) {
+            mkdir($config['upload_path'], 0777, TRUE);
+          }
+          $this->upload->initialize($config);
+          if ( ! $this->upload->do_upload('photo')){
+            $error = array('error' => $this->upload->display_errors());
+          }
+          else{
+            $result = array('upload_data' => $this->upload->data());
+            $data['photo']  =  $result['upload_data']['file_name'];
+          }
         }
 
         $this->users_m->update($data, $id);
+        if (!empty($this->input->post('usergroups'))) {
+          foreach ($usergroups as $key => $value) {
+            $data = array(
+              'users_id'   =>  $id,
+              'group_id'   =>  $value,
+              'created_by' => $this->data['userdata']['id'], 
+            );
+            $this->general_m->create('usergroups_users', $data);
+          }
+        }
         helper_log('update', 'update '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
         $this->session->set_flashdata('message', 'Data has created');
         redirect($settings['action']);
@@ -163,7 +201,7 @@ class Users extends My_Controller {
   public function check_username($id = '') {
     $id           = $this->input->post('id');
     $username     = $this->input->post('username');
-    $getdataby_id = $this->users_m->get_data_by_id($id);
+    $getdataby_id = $this->users_m->get_row_by_id($id);
     if ($this->users_m->check_username($username)) {
       if ($username == $getdataby_id->username) {
         return TRUE;
@@ -179,7 +217,7 @@ class Users extends My_Controller {
   public function check_email($id = '') {
     $id           = $this->input->post('id');
     $email        = $this->input->post('email');
-    $getdataby_id = $this->users_m->get_data_by_id($id);
+    $getdataby_id = $this->users_m->get_row_by_id($id);
     if ($this->users_m->check_email($email)) {
       if ($email == $getdataby_id->email) {
         return TRUE;
@@ -200,12 +238,17 @@ class Users extends My_Controller {
       'table'        => 'users',
       'action'       => 'admin/users',
       'role'         => $this->general_m->get_all_results('users_role'),
-      'getdataby_id' => $this->users_m->get_data_by_id($id),
+      'getdataby_id' => $this->users_m->get_row_by_id($id),
       'session'      => $this->data,
+      'path'         => './uploads/',
     );
     
     if ($settings['getdataby_id']) {
+      if ($settings['getdataby_id']->photo) {
+        unlink($settings['path'].$settings['getdataby_id']->photo);
+      }
       $delete = $this->users_m->delete($id);
+      // delete files upload
       helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
       $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
       redirect($settings['action']);
@@ -267,7 +310,7 @@ class Users extends My_Controller {
           'created_by'  => $this->data['userdata']['id'],
         );  
         $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." successfully");
+        helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
         $this->session->set_flashdata('message', 'Data has created');
         redirect($settings['action']);
       } 
@@ -286,7 +329,7 @@ class Users extends My_Controller {
       'action'    =>  'admin/users/role',
       'session'   =>  $this->data,
     );
-    $settings['getdataby_id'] =  $this->general_m->get_data_by_id($settings['table'], $id);
+    $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['update'])) {
@@ -313,7 +356,7 @@ class Users extends My_Controller {
       'action'    =>  'admin/users/role',
       'session'   =>  $this->data,
     );
-    if ($this->general_m->get_data_by_id($settings['table'], $id)) {
+    if ($this->general_m->get_row_by_id($settings['table'], $id)) {
       $delete = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
       $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
@@ -324,6 +367,112 @@ class Users extends My_Controller {
     }
   }
 
+  /*GROUP*/
+  public function group() {
+    $settings = array(
+      'header'    =>  'Group',
+      'subheader' =>  'Manage Users',
+      'content'   =>  'admin/users/group/index',
+      'table'     =>  'usergroups',
+      'action'    =>  'admin/users/group',
+      'session'   =>  $this->data,
+    );
+
+    // pagination
+    $config = $this->config->item('setting_pagination');
+    $config['base_url'] = base_url($settings['action']);
+    $config['total_rows'] = $this->general_m->count_all_results($settings['table']);
+    $config['per_page'] = 1;
+    $num_pages = $config['total_rows'] / $config['per_page'];
+    $config['uri_segment'] = 4;
+    $config['num_links'] = round($num_pages);
+    $this->pagination->initialize($config);
+    $start_offset = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    $settings['links'] = $this->pagination->create_links();
+    // end Pagination
+    
+    $this->load->view('admin/layout/_default', $settings);
+  }
+
+  /*Create Group*/ 
+  public function group_create() {
+    $settings = array(
+      'header'    =>  'Role',
+      'subheader' =>  'create',
+      'content'   =>  'admin/users/group/create',
+      'table'     =>  'usergroups',
+      'action'    =>  'admin/users/group',
+      'session'   =>  $this->data,
+    );
+    $this->form_validation->set_rules('name', 'Name', 'trim|required');
+    if ($this->form_validation->run() == TRUE) {
+      if (isset($_POST['create'])) {
+        $data = array(
+          'name'        => $this->input->post('name'),
+          'slug'        => url_title($this->input->post('name')),
+          'description' =>  $this->input->post('description'),
+          'created_by'  => $this->data['userdata']['id'],
+        );
+        $this->general_m->create($settings['table'], $data);
+        helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
+        $this->session->set_flashdata('message', 'Data has created');
+        redirect($settings['action']);
+      }
+    } else {
+      $this->load->view('admin/layout/_default', $settings);
+    }
+  }
+
+  /*Update Groups*/
+  public function group_update($id = '') {
+    $settings = array(
+      'header'    =>  'Role',
+      'subheader' =>  'edit',
+      'content'   =>  'admin/users/group/edit',
+      'table'     =>  'usergroups',
+      'action'    =>  'admin/users/group',
+      'session'   =>  $this->data,
+    );
+    $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
+    $this->form_validation->set_rules('name', 'Name', 'trim|required');
+    if ($this->form_validation->run() == TRUE) {
+      if (isset($_POST['update'])) {
+        $data = array(
+          'name'        => $this->input->post('name'),
+          'slug'        => url_title($this->input->post('name')),
+          'description' =>  $this->input->post('description'),
+          'created_by'  => $this->data['userdata']['id'],
+        );
+        $this->general_m->update($settings['table'], $data, $id);
+        helper_log('update', "update ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." has successfully");
+        $this->session->set_flashdata('message', 'Data has Updated');
+        redirect($settings['action']);
+      }
+    } else {
+      $this->load->view('admin/layout/_default', $settings);
+    }
+  }
+
+  /*Delete Group*/
+  public function group_delete($id = '') {
+    $settings = array(
+      'header'    =>  'Role',
+      'subheader' =>  'edit',
+      'table'     =>  'usergroups',
+      'action'    =>  'admin/users/group',
+      'session'   =>  $this->data,
+    );
+    if ($this->general_m->get_row_by_id($settings['table'], $id)) {
+      $delete = $this->general_m->delete($settings['table'], $id);
+      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
+      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
+      redirect($settings['action']);
+    } else {
+      $this->session->set_flashdata('message', 'Your Id Not Valid');
+      redirect($settings['action']);
+    }
+  }
 }
 
 

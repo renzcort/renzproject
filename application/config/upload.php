@@ -11,7 +11,7 @@
         'min_height'             => '',
         'file_name'              => '',
         'file_ext_tolower'       => FALSE,
-        'overwrite'              => FALSE,
+        // 'overwrite'              => FALSE,
         'max_filename'           => '',
         'max_filename_increment' => '',
         'encrypt_name'           => FALSE,

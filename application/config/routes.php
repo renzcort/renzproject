@@ -62,11 +62,15 @@ $route['admin/forgot-password']   =  'admin/login/forgot_password';
 $route['admin/reset-password']    =  'admin/login/reset_password';
 
 /*Users*/
-$route['admin/users/(:num)']                    =  'admin/users';
-$route['admin/users/create']             =  'admin/users/create';
-$route['admin/users/edit/(:num)']        =  'admin/users/update/$1';
-$route['admin/users/delete/(:num)']      =  'admin/users/delete/$1';
-$route['admin/users/role']               =  'admin/users/role';
-$route['admin/users/role/create']        =  'admin/users/role_create';
-$route['admin/users/role/edit/(:num)']   =  'admin/users/role_update/$1';
-$route['admin/users/role/delete/(:num)'] =  'admin/users/role_delete/$1';
+$route['admin/users/(:num)']              =  'admin/users';
+$route['admin/users/create']              =  'admin/users/create';
+$route['admin/users/edit/(:num)']         =  'admin/users/update/$1';
+$route['admin/users/delete/(:num)']       =  'admin/users/delete/$1';
+$route['admin/users/role']                =  'admin/users/role';
+$route['admin/users/role/create']         =  'admin/users/role_create';
+$route['admin/users/role/edit/(:num)']    =  'admin/users/role_update/$1';
+$route['admin/users/role/delete/(:num)']  =  'admin/users/role_delete/$1';
+$route['admin/users/group']               =  'admin/users/group';
+$route['admin/users/group/create']        =  'admin/users/group_create';
+$route['admin/users/group/edit/(:num)']   =  'admin/users/group_update/$1';
+$route['admin/users/group/delete/(:num)'] =  'admin/users/group_delete/$1';
