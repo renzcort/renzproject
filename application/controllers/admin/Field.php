@@ -103,7 +103,7 @@ class Field extends My_Controller {
   }
 
   /*Group Update*/
- public function group_update($id='') {
+  public function group_update($id='') {
     $settings = array(
       'header'    => 'Group',
       'subheader' => 'Manage Field',
@@ -153,6 +153,119 @@ class Field extends My_Controller {
       redirect($settings['action']);
     }
   }
+
+  /*TYPE Field*/
+  public function type() {
+    $settings = array(
+      'header'    => 'Type',
+      'subheader' => 'Manage Field',
+      'content'   =>  'admin/field/type/index',
+      'table'     =>  'field_type',
+      'action'    => 'admin/field/type',
+      'session'   =>  $this->data,
+      'no'        =>  $this->uri->segment(4), 
+    );
+
+    // pagination
+    $config                 = $this->config->item('setting_pagination');
+    $config['base_url']     = base_url($settings['action']);
+    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']     = 10;
+    $num_pages              = $settings['total_rows'] / $settings['per_page'];
+    $config['uri_segment']  = 4;
+    $config['num_links']    = round($num_pages);
+    $this->pagination->initialize($config);
+    $start_offset           = ($this->uri->segment($settings['uri_segment']) ? $this->uri->segment($settings['uri_segment']) : 0);
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $settings['per_page'], $start_offset);
+    $settings['links']      = $this->pagination->create_links();
+    // end pagination
+    
+    $this->load->view('admin/layout/_default', $settings);
+  }
+
+  /*Type Create*/
+  public function type_create() {
+    $settings = array(
+      'header'    => 'Type',
+      'subheader' => 'Manage Field',
+      'content'   =>  'admin/field/type/create',
+      'table'     =>  'field_type',
+      'action'    => 'admin/field/type',
+      'session'   =>  $this->data,
+      'no'        =>  $this->uri->segment(4), 
+    );
+
+    $this->form_validation->set_rules('name', 'Name', 'trim|required');
+    if ($this->form_validation->run() == TRUE ) {
+      if (isset($_POST['create'])) {
+        $data = array(
+          'name'       => $this->input->post('name'),
+          'slug'       => url_title(strtolower($this->input->post('name'))),
+          'created_by' => $this->data['userdata']['id'],
+        );
+        $this->general_m->create($settings['table'], $data);
+        helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
+        $this->session->set_flashdata('message', 'Data has created');
+        redirect($settings['action']);
+      }
+    } else {
+      $this->load->view('admin/layout/_default', $settings);
+    }
+  }
+
+  /*type Update*/
+  public function type_update($id='') {
+    $settings = array(
+      'header'    => 'Type',
+      'subheader' => 'Manage Field',
+      'content'   =>  'admin/field/type/edit',
+      'table'     =>  'field_type',
+      'action'    => 'admin/field/type',
+      'session'   =>  $this->data,
+      'no'        =>  $this->uri->segment(4), 
+    );
+    $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
+    $this->form_validation->set_rules('name', 'Name', 'trim|required');
+    if ($this->form_validation->run() == TRUE ) {
+      if (isset($_POST['update'])) {
+        $data = array(
+          'name'       => $this->input->post('name'),
+          'slug'       => url_title(strtolower($this->input->post('name'))),
+          'created_by' => $this->data['userdata']['id'],
+        );
+        $this->general_m->update($settings['table'], $data, $id);
+        helper_log('update', "update ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." has successfully");
+        $this->session->set_flashdata('message', 'Data has Updated');
+        redirect($settings['action']);
+      }
+    } else {
+      $this->load->view('admin/layout/_default', $settings);
+    }
+  }
+
+
+  /*Delete type*/
+  public function type_delete($id='') {
+    $settings = array(
+      'header'    =>  'Type',
+      'subheader' =>  'Manage Field',
+      'content'   =>  'admin/field/type/edit',
+      'table'     =>  'field_type',
+      'action'    =>  'admin/field/type',
+      'session'   =>  $this->data,
+      'no'        =>  $this->uri->segment(4), 
+    );
+    if ($this->general_m->get_row_by_id($settings['table'], $id)) {
+      $delete = $this->general_m->delete($settings['table'], $id);
+      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
+      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
+      redirect($settings['action']);
+    } else {
+      $this->session->set_flashdata('message', 'Your Id Not Valid');
+      redirect($settings['action']);
+    }
+  }
+
 }
 
 /* End of file Field.php */
