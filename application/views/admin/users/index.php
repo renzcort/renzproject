@@ -23,7 +23,7 @@
             <thead>
               <tr>
                 <th width="5%">No. </th>
-                <th width="5%"></th>
+                <th width="5%"><input type="checkbox" name="checkall"></th>
                 <th>Username</th>
                 <th>Email</th>
                 <th>Role</th>
@@ -32,15 +32,14 @@
             </thead>
             <tbody>
               <?php
-                $i = 0;
                 foreach ($record_all as $key) {
               ?>
               <tr>
-                <td><?php echo ++$i; ?></td>
-                <td><input type="checkbox" name="checklist"></td>
+                <td><?php echo ++$no; ?></td>
+                <td><input type="checkbox" name="checklist[]"></td>
                 <td><?php echo $key->username; ?></td>
                 <td><?php echo $key->email; ?></td>
-                <td><?php echo $key->name; ?></td>
+                <td><?php echo (!is_null($key->name) ? $key->name : ''); ?></td>
                 <td colspan="2">
                   <a href="<?php echo base_url($action.'/edit/'.$key->id) ?>">Edit |</a>
                   <a href="<?php echo base_url($action.'/delete/'.$key->id) ?>">Delete</a>

@@ -27,11 +27,10 @@
             </thead>
             <tbody>
               <?php
-                $i = 0; 
                 foreach ($record_all as $key) { 
               ?>
               <tr>
-                <td><?php echo ++$i; ?></td>
+                <td><?php echo ++$no; ?></td>
                 <td><input type="checkbox" name="checklist"></td>
                 <td><?php echo $key->name; ?></td>
                 <td colspan="2">

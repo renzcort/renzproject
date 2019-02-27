@@ -49,6 +49,7 @@ class General_m extends CI_Model {
     }
     
     $this->db->insert($this->db->dbprefix($table), $data);
+    return $this->db->insert_id();
   } 
 
   /*Update Data By ID*/
@@ -71,8 +72,6 @@ class General_m extends CI_Model {
     // affected_rows this function use to know number data delete
     return $this->db->affected_rows();
   }
-
-
 
 }
 

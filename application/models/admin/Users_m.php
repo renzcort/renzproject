@@ -21,6 +21,7 @@ class Users_m extends CI_Model {
   /*Get All Data Records*/
   public function get_all_results($limit = '', $offset = '') {
     ($limit ? $this->db->limit($limit, $offset) : '' );
+    $this->db->select("{$this->db->dbprefix($this->_table)}.*, {$this->db->dbprefix('users_role')}.name");
     $this->db->join($this->db->dbprefix('users_role'), "{$this->db->dbprefix('users_role')}.id = {$this->db->dbprefix($this->_table)}.role_id");
     $result = $this->db->get($this->db->dbprefix($this->_table));
     if ($result->num_rows() > 0) {

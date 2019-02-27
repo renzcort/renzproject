@@ -74,3 +74,6 @@ $route['admin/users/group']               =  'admin/users/group';
 $route['admin/users/group/create']        =  'admin/users/group_create';
 $route['admin/users/group/edit/(:num)']   =  'admin/users/group_update/$1';
 $route['admin/users/group/delete/(:num)'] =  'admin/users/group_delete/$1';
+
+/*Info*/
+$route['admin/info']  =  'admin/info/update';

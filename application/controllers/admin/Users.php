@@ -19,12 +19,13 @@ class Users extends My_Controller {
   /*Get All Users*/
   public function index() {
     $settings = array(
-      'title'      => 'Users',
-      'subheader'  => 'Manage Users',
-      'content'    => 'admin/users/index',
-      'table'      => 'users',
-      'action'     => 'admin/users',
-      'session'    => $this->data,
+      'title'     => 'Users',
+      'subheader' => 'Manage Users',
+      'content'   => 'admin/users/index',
+      'table'     => 'users',
+      'action'    => 'admin/users',
+      'session'   => $this->data,
+      'no'        =>  $this->uri->segment(4),
     );
    // pagination
     $config = $this->config->item('setting_pagination');
@@ -86,6 +87,7 @@ class Users extends My_Controller {
         if (!empty($_FILES['photo'])) {
           $config = $this->config->item('setting_upload');
           $config['upload_path'] = $settings['upload_path'];
+          $config['file_name']   = $data['username'];
           if (!is_dir($config['upload_path'])) {
             mkdir($config['upload_path'], 0777, TRUE);
           } 
@@ -95,7 +97,8 @@ class Users extends My_Controller {
           }
           else{
             $result = array('upload_data' => $this->upload->data());
-            $data['photo'] =  $result['upload_data']['file_name'];
+            $data['photo'] =  $config['file_name'].$result['upload_data']['file_ext'];
+            // $data['photo'] =  $result['upload_data']['file_name'];
           }
         }
         // end upload
@@ -173,8 +176,7 @@ class Users extends My_Controller {
         if (!empty($_FILES['photo'])) {
           $config                = $this->config->item('setting_upload');
           $config['upload_path'] = $settings['upload_path'];
-          $config['overwrite']   = TRUE;
-          $config['file_name']   = 'photoku';
+          $config['file_name']   = $data['username'];
           if (!is_dir($config['upload_path'])) {
             mkdir($config['upload_path'], 0777, TRUE);
           }
@@ -184,7 +186,8 @@ class Users extends My_Controller {
           }
           else{
             $result = array('upload_data' => $this->upload->data());
-            $data['photo'] =  $result['upload_data']['file_name'];
+            $data['photo'] =  $config['file_name'].$result['upload_data']['file_ext'];
+            // $data['photo'] =  $result['upload_data']['file_name'];
           }
         }
 
@@ -252,7 +255,10 @@ class Users extends My_Controller {
       'getdataby_id' => $this->users_m->get_row_by_id($id),
       'session'      => $this->data,
       'path'         => './uploads/',
+      'checklist'    => $this->input->post('checklist'),
     );
+
+    var_dump($settings['checklist']);die();
     
     if ($settings['getdataby_id']) {
       if ($settings['getdataby_id']->photo) {
@@ -284,13 +290,14 @@ class Users extends My_Controller {
       'table'     =>  'users_role',
       'action'    =>  'admin/users/role',
       'session'   =>  $this->data,
+      'no'        =>  $this->uri->segment(4),
     );
 
     // pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
     $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']     = 10;
+    $config['per_page']     = 2;
     $num_pages              = $config["total_rows"] / $config["per_page"];
     $config['uri_segment']  = 4;
     $config['num_links']    = round($num_pages);
@@ -389,6 +396,7 @@ class Users extends My_Controller {
       'table'     =>  'usersgroup',
       'action'    =>  'admin/users/group',
       'session'   =>  $this->data,
+      'no'        =>  $this->uri->segment(4),
     );
 
     // pagination
