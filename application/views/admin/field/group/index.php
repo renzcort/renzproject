@@ -23,11 +23,8 @@
             <thead>
               <tr>
                 <th width="5%">No. </th>
-                <th width="5%"><input type="checkbox" name="checkall"></th>
+                <th width="5%"></th>
                 <th>Name</th>
-                <th>Label</th>
-                <th>Type</th>
-                <th>Group</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -37,11 +34,8 @@
               ?>
               <tr>
                 <td><?php echo ++$no; ?></td>
-                <td><input type="checkbox" name="checklist[]"></td>
+                <td><input type="checkbox" name="checklist"></td>
                 <td><?php echo $key->name; ?></td>
-                <td><?php echo $key->label; ?></td>
-                <td><?php echo $key->type_id; ?></td>
-                <td><?php echo $key->group_id; ?></td>
                 <td colspan="2">
                   <a href="<?php echo base_url($action.'/edit/'.$key->id) ?>">Edit |</a>
                   <a href="<?php echo base_url($action.'/delete/'.$key->id) ?>">Delete</a>
@@ -53,11 +47,8 @@
             <tr>
               <th width="5%">No. </th>
               <th width="5%"></th>
-                <th>Name</th>
-                <th>Label</th>
-                <th>Type</th>
-                <th>Group</th>
-                <th>Action</th>
+              <th>Name</th>
+              <th>Action</th>
             </tr>
             </tfoot>
           </table>

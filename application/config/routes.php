@@ -76,4 +76,14 @@ $route['admin/users/group/edit/(:num)']   =  'admin/users/group_update/$1';
 $route['admin/users/group/delete/(:num)'] =  'admin/users/group_delete/$1';
 
 /*Info*/
-$route['admin/info']  =  'admin/info/update';
+$route['admin/info']                      =  'admin/info/update';
+
+/*Field*/
+$route['admin/field/group']               = 'admin/field/group';
+$route['admin/field/group/create']        = 'admin/field/group_create';
+$route['admin/field/group/edit/(:num)']   = 'admin/field/group_update/$1';
+$route['admin/field/group/delete/(:num)'] = 'admin/field/group_delete/$1';
+$route['admin/field/type']                = 'admin/field/type';
+$route['admin/field/type/create']         = 'admin/field/type_create';
+$route['admin/field/type/edit/(:num)']    = 'admin/field/type_update/$1';
+$route['admin/field/type/delete/(:num)']  = 'admin/field/type_delete/$1';

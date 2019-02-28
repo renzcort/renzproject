@@ -10,7 +10,6 @@
         ); 
         echo form_open_multipart(base_url($action.'/create'), $attrb); 
       ?>
-      <form method="post" action="admin/users/create" enctype="multipart/data"> 
       <div class="box-body">
         <div class="form-group">
           <label for="Inputusername">Username</label>
