@@ -8,7 +8,7 @@
         $attrb = array(
           'class' => 'form', 
         );
-        $hidden = array('role_id' => $getdataby_id->id ); 
+        $hidden = array('id' => $getdataby_id->id ); 
         echo form_open(base_url($action.'/edit/'.$getdataby_id->id), $attrb, $hidden); 
       ?>
       <div class="box-body">
@@ -17,6 +17,16 @@
           <input type="text" class="form-control" name="name" value="<?php echo (isset($getdataby_id) ? $getdataby_id->name : set_value('name')); ?>" placeholder="Enter Name Role">
         </div>
         <?php echo form_error('name'); ?>
+        <div class="form-group">
+          <label for="InputType">Type Data</label>
+          <select name="type" class="form-control">
+            <option value="0">- select Type-</option>
+            <?php foreach ($type as $key => $value) { ?>
+              <option value="<?php echo $value; ?>" <?php echo (($getdataby_id->type == $value) ? 'selected' : ''); ?>><?php echo $value; ?></option>
+            <?php } ?>
+          </select>
+        </div>
+        <?php echo form_error('type'); ?>
         <div class="form-group">
           <label for="InputDescription">Description</label>
           <textarea name="description" class="form-control"><?php echo (isset($getdataby_id) ? $getdataby_id->description : set_value('description')); ?></textarea>

@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Users_m extends CI_Model {
+class Users_m extends My_Model {
   protected $_table = 'users';
 
     /**
@@ -15,15 +15,15 @@ class Users_m extends CI_Model {
 
   /*count All results*/
   public function count_all_results(){
-    return $this->db->count_all_results($this->db->dbprefix($this->_table));
+    return $this->db->count_all_results($this->_table);
   }
 
   /*Get All Data Records*/
   public function get_all_results($limit = '', $offset = '') {
     ($limit ? $this->db->limit($limit, $offset) : '' );
-    $this->db->select("{$this->db->dbprefix($this->_table)}.*, {$this->db->dbprefix('users_role')}.name");
-    $this->db->join($this->db->dbprefix('users_role'), "{$this->db->dbprefix('users_role')}.id = {$this->db->dbprefix($this->_table)}.role_id");
-    $result = $this->db->get($this->db->dbprefix($this->_table));
+    $this->db->select("{$this->_table}.*, users_role.name");
+    $this->db->join("users_role", "users_role.id = {$this->_table}.role_id");
+    $result = $this->db->get($this->_table);
     if ($result->num_rows() > 0) {
       return $result->result();
     } else {
@@ -33,7 +33,7 @@ class Users_m extends CI_Model {
 
   /*Get Data By Id*/
   public function get_row_by_id($id) {
-    return $this->db->get_where($this->db->dbprefix($this->_table), array('id' => $id))->row();
+    return $this->db->get_where($this->_table, array('id' => $id))->row();
   }
 
   /*Insert All Records*/
@@ -42,32 +42,32 @@ class Users_m extends CI_Model {
     $data['created_at'] = mdate("%Y-%m-%d %H:%i:%s");
     $data['updated_at'] = mdate("%Y-%m-%d %H:%i:%s");
     
-    $this->db->insert($this->db->dbprefix($this->_table), $data);
+    $this->db->insert($this->_table, $data);
     return $this->db->insert_id();
   } 
 
   /*Update Data By ID*/
   public function update($data, $id) {
     $this->db->where('id', $id);
-    $this->db->update($this->db->dbprefix($this->_table), $data);
+    $this->db->update($this->_table, $data);
   }
 
   /*Delete Data By ID*/
   public function delete($id) {
     $this->db->where('id', $id);
-    $this->db->delete($this->db->dbprefix($this->_table));
+    $this->db->delete($this->_table);
     // affected_rows this function use to know number data delete
     return $this->db->affected_rows();
   }
 
   /*Get data by Email*/
   public function check_email($email) {
-    return $this->db->get_where($this->db->dbprefix($this->_table), array('email' => $email))->row();
+    return $this->db->get_where($this->_table, array('email' => $email))->row();
   }
 
   /*Get data by Username*/
   public function check_username($username) {
-    return $this->db->get_where($this->db->dbprefix($this->_table), array('username' => $username))->row();
+    return $this->db->get_where($this->_table, array('username' => $username))->row();
   }
 
 }

@@ -105,7 +105,8 @@ $autoload['helper'] = array(
                         'string',
                         'log',
                         'file',
-                        'array'
+                        'array',
+                        'modifycolumn',
 											);
 
 /*

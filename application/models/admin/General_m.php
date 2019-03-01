@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class General_m extends CI_Model {
+class General_m extends My_Model {
 
   /**
    * [count_all_results description]
@@ -14,13 +14,13 @@ class General_m extends CI_Model {
 
   /*count All results*/
   public function count_all_results($table){
-    return $this->db->count_all_results($this->db->dbprefix($table));
+    return $this->db->count_all_results($table);
   }
 
   /*Get All Data Records*/
   public function get_all_results($table, $limit = '', $offset = '') {
     ($limit ? $this->db->limit($limit, $offset) : '' );
-    $result = $this->db->get($this->db->dbprefix($table));
+    $result = $this->db->get($table);
     if($result->num_rows() > 0) {
       return $result->result();
     } else {
@@ -31,13 +31,13 @@ class General_m extends CI_Model {
   /*Get Row Data By Id*/
   public function get_row_by_id($table, $id, $key='') {
     ((!empty($key)) ? $key : $key = 'id');
-    return $this->db->get_where($this->db->dbprefix($table), array("{$key}" => $id))->row();
+    return $this->db->get_where($table, array("{$key}" => $id))->row();
   }
 
   /*Get Result data By ID*/
   public function get_result_by_id($table, $id, $key='') {
     ((!empty($key)) ? $key : $key = 'id');
-    return $this->db->get_where($this->db->dbprefix($table), array("{$key}" => $id))->result();
+    return $this->db->get_where($table, array("{$key}" => $id))->result();
   }
 
   /*Insert All Records*/
@@ -48,7 +48,7 @@ class General_m extends CI_Model {
       $data['updated_at'] = mdate("%Y-%m-%d %H:%i:%s");
     }
     
-    $this->db->insert($this->db->dbprefix($table), $data);
+    $this->db->insert($table, $data);
     return $this->db->insert_id();
   } 
 
@@ -61,14 +61,14 @@ class General_m extends CI_Model {
     }
 
     $this->db->where("{$key}", $id);
-    $this->db->update($this->db->dbprefix($table), $data);
+    $this->db->update($table, $data);
   }
 
   /*Delete Data By ID*/
   public function delete($table, $id, $key='') {
     ((!empty($key)) ? $key : $key = 'id');
     $this->db->where("{$key}", $id);
-    $this->db->delete($this->db->dbprefix($table));
+    $this->db->delete($table);
     // affected_rows this function use to know number data delete
     return $this->db->affected_rows();
   }

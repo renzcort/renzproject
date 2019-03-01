@@ -25,6 +25,7 @@
                 <th width="5%">No. </th>
                 <th width="5%"></th>
                 <th>Name</th>
+                <th>Type</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -36,6 +37,7 @@
                 <td><?php echo ++$no; ?></td>
                 <td><input type="checkbox" name="checklist"></td>
                 <td><?php echo $key->name; ?></td>
+                <td><?php echo $key->type; ?></td>
                 <td colspan="2">
                   <a href="<?php echo base_url($action.'/edit/'.$key->id) ?>">Edit |</a>
                   <a href="<?php echo base_url($action.'/delete/'.$key->id) ?>">Delete</a>

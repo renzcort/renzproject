@@ -8,7 +8,7 @@
         $attrb = array(
           'class' => 'form', 
         );
-        $hidden = array('role_id' => $getdataby_id->id ); 
+        $hidden = array('id' => $getdataby_id->id ); 
         echo form_open(base_url($action.'/edit/'.$getdataby_id->id), $attrb, $hidden); 
       ?>
       <div class="box-body">

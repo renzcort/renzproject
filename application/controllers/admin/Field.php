@@ -57,15 +57,14 @@ class Field extends My_Controller {
       'group'     =>  $this->general_m->get_all_results('field_group'),
       'type'      =>  $this->general_m->get_all_results('field_type'),
     );
-
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
+    // $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
     $this->form_validation->set_rules('type', 'Field Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
         $data = array(
           'name'        =>  $this->input->post('name'),
-          'handle'      =>  $this->input->post('handle'),
+          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'label'       =>  ucfirst($this->input->post('name')),
           'group_id'    =>  $this->input->post('group'),
           'type_id'     =>  $this->input->post('type'),
@@ -74,8 +73,14 @@ class Field extends My_Controller {
           'status'      =>  $this->input->post('status'),
           'created_by'  =>  $this->data['userdata']['id'],
         );
-        
         $field_id = $this->field_m->create($data);
+        $getField_type = $this->general_m->get_row_by_id('field_type', $data['type_id']);
+        $fields = array(
+          'handle' =>  $data['handle'],
+          'type'   =>  $getField_type->type,
+        );
+        // add Column content
+        modifyColumn($fields, 'add'); 
         $option = array(
           'field_id'     =>  $field_id,
           'required'     =>  $this->input->post('required'),
@@ -97,6 +102,99 @@ class Field extends My_Controller {
       $this->load->view('admin/layout/_default', $settings);
     }
   }
+
+  /*FIELD Update*/
+  public function update($id='') {
+    $settings = array(
+      'title'        =>  'Field',
+      'subheader'    =>  'Manage Field',
+      'content'      =>  'admin/field/edit',
+      'table'        =>  'field',
+      'action'       =>  'admin/field',
+      'session'      =>  $this->data,
+      'no'           =>  $this->uri->segment(3),
+      'group'        =>  $this->general_m->get_all_results('field_group'),
+      'type'         =>  $this->general_m->get_all_results('field_type'),
+      'getdataby_id' =>  $this->field_m->get_row_by_id($id),
+    );
+    // var_dump($settings['getdataby_id']);die();
+
+    $this->form_validation->set_rules('name', 'Name', 'trim|required');
+    // $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
+    $this->form_validation->set_rules('type', 'Field Type', 'trim|required');
+    if ($this->form_validation->run() == TRUE) {
+      if (isset($_POST['update'])) {
+        $data = array(
+          'name'        =>  $this->input->post('name'),
+          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'label'       =>  ucfirst($this->input->post('name')),
+          'group_id'    =>  $this->input->post('group'),
+          'type_id'     =>  $this->input->post('type'),
+          'description' =>  $this->input->post('description'),
+          'slug'        =>  url_title(strtolower($this->input->post('name'))),
+          'status'      =>  $this->input->post('status'),
+          'created_by'  =>  $this->data['userdata']['id'],
+        );
+        $this->field_m->update($data, $id);
+        $getField_type = $this->general_m->get_row_by_id('field_type', $data['type_id']);
+        $fields = array(
+          'old_name' =>  $settings['getdataby_id']->handle,
+          'handle'   =>  $data['handle'],
+          'type'     =>  $getField_type->type,
+        );
+        // Modify Column content
+        modifyColumn($fields, 'modify'); 
+        $option = array(
+          'field_id'     =>  $id,
+          'required'     =>  $this->input->post('required'),
+          'placeholder'  =>  $this->input->post('placeholder'),
+          'max_length'   =>  $this->input->post('max_length'),
+          'min_length'   =>  $this->input->post('min_length'),
+          'line_breaks'  =>  $this->input->post('line_breaks'),
+          'initial_rows' =>  $this->input->post('initial_rows'),
+          'images'       =>  $this->input->post('images'),
+          'asset_id'     =>  $this->input->post('asset'),
+          'limit'        =>  $this->input->post('limit'),
+          'content'      =>  $this->input->post('content'),
+          'settings'     =>  $this->input->post('settings'),
+        );
+        $this->general_m->update('field_option', $option, $id, 'field_id', FALSE);
+        redirect($settings['action']);
+      }
+    } else {
+      $this->load->view('admin/layout/_default', $settings);
+    }
+  }
+
+  /*Delete Field*/
+  public function delete($id='') {
+    $settings = array(
+      'title'        =>  'Field',
+      'subheader'    =>  'Manage Field',
+      'content'      =>  'admin/field/edit',
+      'table'        =>  'field',
+      'action'       =>  'admin/field',
+      'session'      =>  $this->data,
+      'no'           =>  $this->uri->segment(3),
+      'group'        =>  $this->general_m->get_all_results('field_group'),
+      'type'         =>  $this->general_m->get_all_results('field_type'),
+      'getdataby_id' =>  $this->field_m->get_row_by_id($id),
+    );
+
+    if ($settings['getdataby_id']) {
+      $this->general_m->delete('field_option', $id, 'field_id');
+      $delete = $this->general_m->delete($settings['table'], $id);
+      // Drop Column content
+      modifyColumn($fields, 'drop'); 
+      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
+      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
+      redirect($settings['action']);
+    } else {
+      $this->session->set_flashdata('message', 'Your Id Not Valid');
+      redirect($settings['action']);
+    }
+  }
+
 
   /*GROUP Field*/
   public function group() {
@@ -249,6 +347,7 @@ class Field extends My_Controller {
       'action'    => 'admin/field/type',
       'session'   =>  $this->data,
       'no'        =>  $this->uri->segment(4), 
+      'type'      =>  array('VARCHAR', 'INT', 'TEXT', 'DATE', 'DATETIME'),
     );
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
@@ -256,6 +355,7 @@ class Field extends My_Controller {
       if (isset($_POST['create'])) {
         $data = array(
           'name'        => $this->input->post('name'),
+          'type'        => $this->input->post('type'),
           'slug'        => url_title(strtolower($this->input->post('name'))),
           'description' => $this->input->post('description'),
           'created_by'  => $this->data['userdata']['id'],
@@ -280,6 +380,7 @@ class Field extends My_Controller {
       'action'    => 'admin/field/type',
       'session'   =>  $this->data,
       'no'        =>  $this->uri->segment(4), 
+      'type'      =>  array('VARCHAR', 'INT', 'TEXT', 'DATE', 'DATETIME'),
     );
     $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
@@ -287,6 +388,7 @@ class Field extends My_Controller {
       if (isset($_POST['update'])) {
         $data = array(
           'name'        => $this->input->post('name'),
+          'type'        => $this->input->post('type'),
           'slug'        => url_title(strtolower($this->input->post('name'))),
           'description' => $this->input->post('description'),
           'updated_by'  => $this->data['userdata']['id'],

@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Info_m extends CI_Model {
+class Info_m extends My_Model {
 
   protected $_table = 'info';
 
   /*Get Last ID*/
   public function get_last_id() {
-    return $this->db->order_by('id', 'DESC')->limit(1)->get($this->db->dbprefix($this->_table))->row();
+    return $this->db->order_by('id', 'DESC')->limit(1)->get($this->_table)->row();
   }
 
 }

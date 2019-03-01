@@ -17,6 +17,16 @@
         </div>
         <?php echo form_error('name'); ?>
         <div class="form-group">
+          <label for="InputType">Type Data</label>
+          <select name="type" class="form-control">
+            <option value="0">- select Type-</option>
+            <?php foreach ($type as $key => $value) { ?>
+              <option value="<?php echo $value; ?>"><?php echo $value; ?></option>
+            <?php } ?>
+          </select>
+        </div>
+        <?php echo form_error('name'); ?>
+        <div class="form-group">
           <label for="InputDescription">Description</label>
           <textarea name="description" class="form-control"><?php echo set_value('description'); ?></textarea>
         </div>

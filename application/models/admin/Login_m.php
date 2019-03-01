@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Login_m extends CI_Model {
+class Login_m extends My_Model {
   protected $_table = 'users';  
 
   public function check_login($email, $password)
@@ -9,11 +9,11 @@ class Login_m extends CI_Model {
     $this->db->select('*');
     $this->db->where('email', $email);
     $this->db->where('password', md5($password));
-    $query = $this->db->get($this->db->dbprefix($this->_table));
+    $query = $this->db->get($this->_table);
     if ($query->num_rows() == 1) {
       // Update Last Login
       $result = $query->row_array();
-      $this->db->update($this->db->dbprefix($this->_table), array('last_login' => mdate("%Y-%m-%d %H:%i:%s")), "id = '{$result['id']}'");
+      $this->db->update($this->_table, array('last_login' => mdate("%Y-%m-%d %H:%i:%s")), "id = '{$result['id']}'");
       // end last login
       return $result;
     } else {
@@ -25,7 +25,7 @@ class Login_m extends CI_Model {
   // register
   public function create($data) 
   {
-    $this->db->insert($this->db->dbprefix($this->_table), $data);
+    $this->db->insert($this->_table, $data);
   }
 
   // activation users
@@ -33,14 +33,14 @@ class Login_m extends CI_Model {
   {
     $data['code'] = '';
     if($data['code']) {
-      $query = $this->db->get_where($this->db->dbprefix($this->_table), 
+      $query = $this->db->get_where($this->_table, 
                                       array(
                                         'username'        => $data['username'],
                                         'token'           => $data['token'], 
                                         'activation_code' => $data['code']));      
     }
 
-    $query = $this->db->get_where($this->db->dbprefix($this->_table), 
+    $query = $this->db->get_where($this->_table, 
                                     array(
                                         'username'  =>  $data['username'],
                                         'token'     =>  $data['token']
@@ -48,7 +48,7 @@ class Login_m extends CI_Model {
     if ($query->num_rows() > 0) {
       $result  = $query->row();
       $this->db->where('id', $result->id);
-      $this->db->update($this->db->dbprefix($this->_table), array('activated' => 1));
+      $this->db->update($this->_table, array('activated' => 1));
       return $result;
     } else {
       log_message('debug', 'sql query fail in...', FALSE);
@@ -60,7 +60,7 @@ class Login_m extends CI_Model {
   public function forgot_password($data, $reset = FALSE)
   {
     // check email
-    $query = $this->db->get_where($this->db->dbprefix($this->_table), array('email' => $data['email']));
+    $query = $this->db->get_where($this->_table, array('email' => $data['email']));
 
     if ($query->num_rows() > 0) {
       $data['updated_at'] = mdate("%Y-%m-%d %H:%i:%s");
@@ -70,7 +70,7 @@ class Login_m extends CI_Model {
       }
       // update forgoted token
       $this->db->where('id', $result['id']);
-      $this->db->update($this->db->dbprefix($this->_table), $data);
+      $this->db->update($this->_table, $data);
       return $result;
     } else {
       return FALSE;
