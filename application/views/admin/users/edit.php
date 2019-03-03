@@ -8,6 +8,7 @@
         $attrb = array(
           'class' => 'form', 
         ); 
+        
         $hidden = array('id' => $getdataby_id->id);
         echo form_open_multipart(base_url($action.'/edit/'.$getdataby_id->id), $attrb, $hidden); 
       ?>

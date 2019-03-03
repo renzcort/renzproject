@@ -62,27 +62,7 @@ class Field extends My_Controller {
     $this->form_validation->set_rules('type', 'Field Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
-        $data = array(
-          'name'        =>  $this->input->post('name'),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'label'       =>  ucfirst($this->input->post('name')),
-          'group_id'    =>  $this->input->post('group'),
-          'type_id'     =>  $this->input->post('type'),
-          'description' =>  $this->input->post('description'),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'status'      =>  $this->input->post('status'),
-          'created_by'  =>  $this->data['userdata']['id'],
-        );
-        $field_id = $this->field_m->create($data);
-        $getField_type = $this->general_m->get_row_by_id('field_type', $data['type_id']);
-        $fields = array(
-          'handle' =>  $data['handle'],
-          'type'   =>  $getField_type->type,
-        );
-        // add Column content
-        modifyColumn($fields, 'add'); 
         $option = array(
-          'field_id'     =>  $field_id,
           'required'     =>  $this->input->post('required'),
           'placeholder'  =>  $this->input->post('placeholder'),
           'max_length'   =>  $this->input->post('max_length'),
@@ -95,7 +75,29 @@ class Field extends My_Controller {
           'content'      =>  $this->input->post('content'),
           'settings'     =>  $this->input->post('settings'),
         );
-        $this->general_m->create('field_option', $option, FALSE);
+        $option = $this->general_m->create('field_option', $option, FALSE);
+        
+        $data = array(
+          'group_id'    =>  $this->input->post('group'),
+          'option_id'   =>  $option,
+          'name'        =>  $this->input->post('name'),
+          'label'       =>  ucfirst($this->input->post('name')),
+          'type_id'     =>  $this->input->post('type'),
+          'description' =>  $this->input->post('description'),
+          'slug'        =>  url_title(strtolower($this->input->post('name'))),
+          'status'      =>  $this->input->post('status'),
+          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'created_by'  =>  $this->data['userdata']['id'],
+        );
+        $this->field_m->create($data);
+        $getField_type = $this->general_m->get_row_by_id('field_type', $data['type_id']);
+        $fields = array(
+          'handle' =>  $data['handle'],
+          'type'   =>  $getField_type->type,
+        );
+        // add Column content
+        modifyColumn($fields, 'add'); 
+        
         redirect($settings['action']);
       }
     } else {
@@ -125,14 +127,15 @@ class Field extends My_Controller {
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['update'])) {
         $data = array(
-          'name'        =>  $this->input->post('name'),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'label'       =>  ucfirst($this->input->post('name')),
           'group_id'    =>  $this->input->post('group'),
+          'option_id'   =>  $settings['getdataby_id']->option_id,
+          'name'        =>  $this->input->post('name'),
+          'label'       =>  ucfirst($this->input->post('name')),
           'type_id'     =>  $this->input->post('type'),
           'description' =>  $this->input->post('description'),
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'status'      =>  $this->input->post('status'),
+          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'created_by'  =>  $this->data['userdata']['id'],
         );
         $this->field_m->update($data, $id);
@@ -144,8 +147,8 @@ class Field extends My_Controller {
         );
         // Modify Column content
         modifyColumn($fields, 'modify'); 
+
         $option = array(
-          'field_id'     =>  $id,
           'required'     =>  $this->input->post('required'),
           'placeholder'  =>  $this->input->post('placeholder'),
           'max_length'   =>  $this->input->post('max_length'),
@@ -158,7 +161,7 @@ class Field extends My_Controller {
           'content'      =>  $this->input->post('content'),
           'settings'     =>  $this->input->post('settings'),
         );
-        $this->general_m->update('field_option', $option, $id, 'field_id', FALSE);
+        $this->general_m->update('field_option', $option, $settings['getdataby_id']->option_id, '', FALSE);
         redirect($settings['action']);
       }
     } else {
@@ -182,8 +185,11 @@ class Field extends My_Controller {
     );
 
     if ($settings['getdataby_id']) {
-      $this->general_m->delete('field_option', $id, 'field_id');
       $delete = $this->general_m->delete($settings['table'], $id);
+      $this->general_m->delete('field_option', $settings['getdataby_id']->option_id);
+      $fields = array(
+        'handle'   =>  $settings['getdataby_id']->handle,
+      );
       // Drop Column content
       modifyColumn($fields, 'drop'); 
       helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
@@ -402,7 +408,6 @@ class Field extends My_Controller {
       $this->load->view('admin/layout/_default', $settings);
     }
   }
-
 
   /*Delete type*/
   public function type_delete($id='') {

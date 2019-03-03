@@ -13,15 +13,6 @@
       ?>
       <div class="box-body">
         <div class="form-group">
-          <label for="InputGroup">Group</label>
-          <select name="group" class="form-control">
-            <option value="0">Default</option>
-            <?php foreach ($group as $key) { ?>
-              <option value="<?php echo $key->id ?>" <?php echo (($getdataby_id->group_id == $key->id) ? "selected" : '' ); ?>><?php echo $key->name; ?></option>
-            <<?php } ?>
-          </select>
-        </div>
-        <div class="form-group">
           <label for="InputName">Name</label>
           <input type="text" class="form-control" name="name" value="<?php echo ($getdataby_id ? $getdataby_id->name : set_value('name')); ?>" >
         </div>
@@ -40,18 +31,6 @@
             <<?php } ?>
           </select>
         </div> 
-        <div class="form-group">
-          <label for="InputPleaceholder">Placeholder</label>
-          <input type="text" name="placeholder" class="form-control" value="<?php echo ($getdataby_id ? $getdataby_id->placeholder : set_value('placeholder')); ?>">
-        </div>
-        <div class="form-group">
-          <label for="InputMaxLength">Max Length</label>
-          <input type="text" name="max_length" class="form-control" value="<?php echo ($getdataby_id ? $getdataby_id->max_length : set_value('max_length')) ?>">
-        </div>
-        <div class="form-group">
-          <label for="InputInitialRows">Initial Rows</label>
-          <input type="text" name="initial_rows" class="form-control" value="<?php echo ($getdataby_id ? $getdataby_id->initial_rows : set_value('initial_rows')); ?>">
-        </div>
         <div class="box-footer">
           <div class="form-group">
             <button type="submit" class="btn btn-primary btn-sm" name="update">Create</button>

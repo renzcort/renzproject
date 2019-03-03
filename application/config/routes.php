@@ -91,3 +91,13 @@ $route['admin/field/type']                = 'admin/field/type';
 $route['admin/field/type/create']         = 'admin/field/type_create';
 $route['admin/field/type/edit/(:num)']    = 'admin/field/type_update/$1';
 $route['admin/field/type/delete/(:num)']  = 'admin/field/type_delete/$1';
+
+/*Section*/
+$route['admin/section']                     = 'admin/section';
+$route['admin/section/create']              = 'admin/section/create';
+$route['admin/section/edit/(:num)']         = 'admin/section/update/$1';
+$route['admin/section/delete/(:num)']       = 'admin/section/delete/$1';
+$route['admin/section/type']                = 'admin/section/type';
+$route['admin/section/type/create']         = 'admin/section/type_create';
+$route['admin/section/type/edit/(:num)']    = 'admin/section/type_update/$1';
+$route['admin/section/type/delete/(:num)']  = 'admin/section/type_delete/$1';
