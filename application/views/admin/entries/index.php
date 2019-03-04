@@ -16,7 +16,7 @@
         <!-- /.box-header -->
         <div class="box-body">
           <div class="pull-left">
-            <a href="<?php echo base_url($action.'/create'); ?>" class="btn btn-block btn-primary">+ Add <?php echo (isset($title) ? ucfirst($title) : ucfirst($header)); ?></a>
+            <a href="<?php echo base_url("{$action}/create?section_id={$section_id}"); ?>" class="btn btn-block btn-primary">+ Add <?php echo (isset($title) ? ucfirst($title) : ucfirst($header)); ?></a>
           </div>
           <?php if($record_all) { ?>
           <table id="example2" class="table table-bordered table-hover">
@@ -25,9 +25,7 @@
                 <th width="5%">No. </th>
                 <th width="5%"><input type="checkbox" name="checkall"></th>
                 <th>Name</th>
-                <th>Type</th>
-                <th>URL Format</th>
-                <th>Entry Types</th>
+                <th>handle</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -39,12 +37,10 @@
                 <td><?php echo ++$no; ?></td>
                 <td><input type="checkbox" name="checklist[]"></td>
                 <td><?php echo $key->name; ?></td>
-                <td><?php echo $key->type; ?></td>
-                <td><?php echo $key->slug; ?></td>
-                <td><a href="<?php echo base_url("admin/entries/?section_id={$key->id}") ?>">Edit entry types</a></td>
+                <td><?php echo $key->handle; ?></td>
                 <td colspan="2">
-                  <a href="<?php echo base_url("{$action}/edit/{$key->id}") ?>">Edit |</a>
-                  <a href="<?php echo base_url("{$action}/delete/{$key->id}") ?>">Delete</a>
+                  <a href="<?php echo base_url("{$action}/edit/{$key->id}/?section_id={$section_id}"); ?>">Edit |</a>
+                  <a href="<?php echo base_url("{$action}/delete/{$key->id}/?section_id={$section_id}"); ?>">Delete</a>
                 </td>
               <tr>
               <?PHP } ?>
@@ -54,9 +50,7 @@
               <th width="5%">No. </th>
               <th width="5%"></th>
                 <th>Name</th>
-                <th>Type</th>
-                <th>URL Format</th>
-                <th>Entry Types</th>
+                <th>handle</th>
                 <th>Action</th>
             </tr>
             </tfoot>
