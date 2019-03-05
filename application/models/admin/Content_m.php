@@ -29,7 +29,6 @@ class Content_m extends My_Model {
     helper_log("delete", 'Drop column successfully');
   }
 
-
 }
 
 /* End of file Content_m.php */

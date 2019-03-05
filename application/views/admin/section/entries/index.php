@@ -8,25 +8,7 @@
 
 <div class="content list" id="index">
   <div class="row">
-    <div class="col-sm-3 col-xs-3">
-      <div class="box">
-        <div class="box-header"></div>
-        <div class="box-body">
-          <?php if ($record_all) { ?>
-          <ul class="record_all-list">
-          <?php foreach ($record_all as $key) {?>
-            <li><a href="<?php echo base_url("{$action}/create/?handle={$key->handle}&entries_id={$key->id}"); ?>"><?php echo $key->name; ?></a></li>
-          <?php } ?>
-          </ul>
-          <?php } else { ?>
-            <div class="m-5">
-              <h3 class="text-center">Data is Empty</h3>
-            </div>
-          <?php } ?>
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-9 col-xs-9">
+    <div class="col-sm-12 col-xs-12">
       <div class="box">
         <div class="box-header">
           <h3 class="box-title">Manage <?php echo (isset($title) ? ucfirst($title) : ucfirst($header)); ?></h3>
@@ -34,18 +16,16 @@
         <!-- /.box-header -->
         <div class="box-body">
           <div class="pull-left">
-            <a href="<?php echo base_url("{$action}/create"); ?>" class="btn btn-block btn-primary">+ Add <?php echo (isset($title) ? ucfirst($title) : ucfirst($header)); ?></a>
+            <a href="<?php echo base_url("{$action}/create?section_id={$section_id}"); ?>" class="btn btn-block btn-primary">+ Add <?php echo (isset($title) ? ucfirst($title) : ucfirst($header)); ?></a>
           </div>
           <?php if($record_all) { ?>
-          <table id="example2" class="table table-bordered table-hover text-center">
+          <table id="example2" class="table table-bordered table-hover">
             <thead>
               <tr>
                 <th width="5%">No. </th>
                 <th width="5%"><input type="checkbox" name="checkall"></th>
-                <th>Title</th>
-                <th>Post Date</th>
-                <th>Expiry Date</th>
-                <th>Author</th>
+                <th>Name</th>
+                <th>handle</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -57,12 +37,10 @@
                 <td><?php echo ++$no; ?></td>
                 <td><input type="checkbox" name="checklist[]"></td>
                 <td><?php echo $key->name; ?></td>
-                <td><?php echo $key->updated_at; ?></td>
-                <td><?php echo $key->updated_at; ?></td>
-                <td><?php echo (!empty($key->updated_by) ? $key->updated_by : $key->created_by ); ?></td>
+                <td><?php echo $key->handle; ?></td>
                 <td colspan="2">
-                  <a href="<?php echo base_url("{$action}/edit/{$key->id}"); ?>">Edit |</a>
-                  <a href="<?php echo base_url("{$action}/delete/{$key->id}"); ?>">Delete</a>
+                  <a href="<?php echo base_url("{$action}/edit/{$key->id}/?section_id={$section_id}"); ?>">Edit |</a>
+                  <a href="<?php echo base_url("{$action}/delete/{$key->id}/?section_id={$section_id}"); ?>">Delete</a>
                 </td>
               <tr>
               <?PHP } ?>
@@ -71,10 +49,8 @@
             <tr>
               <th width="5%">No. </th>
               <th width="5%"></th>
-                <th>Title</th>
-                <th>Post Date</th>
-                <th>Expiry Date</th>
-                <th>Author</th>
+                <th>Name</th>
+                <th>handle</th>
                 <th>Action</th>
             </tr>
             </tfoot>

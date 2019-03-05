@@ -8,34 +8,25 @@
         $attrb = array(
           'class' => 'form', 
         ); 
-        echo form_open_multipart(base_url("{$action}/create?section_id={$section_id}"), $attrb); 
+        echo form_open_multipart(base_url("{$action}/create/?handle={$handle}&entries_id={$entries_id}"), $attrb); 
       ?>
       <div class="box-body">
         <div class="form-group">
-          <label for="InputName">Name</label>
-          <input type="text" class="form-control" name="name" value="<?php echo set_value('name'); ?>" >
+          <label for="InputName">Title</label>
+          <input type="text" class="form-control" name="title" value="<?php echo set_value('title'); ?>" >
         </div>
-        <?php echo form_error('name'); ?>
+        <?php echo form_error('title'); ?>
+        <?php foreach ($fields as $key) { ?>
         <div class="form-group">
-          <label for="InputHandle">Handle</label>
-          <input type="text" name="handle" class="form-control" value="<?php set_value('handle') ?>" >
+          <label for="Input<?php echo $key->name; ?>"><?php echo $key->name; ?></label>
+          <?php if ($key->handle_type == 'planText') { ?>
+            <input type="text" class="form-control" name="<?php echo "field_{$key->name}"; ?>" value="<?php echo set_value("field_{$key->name}"); ?>" placeholder="<?php echo ($key->placeholder ? $key->placeholder : ''); ?>" max_length="<?php echo ($key->max_length ? $key->max_length : '' ); ?>" min_length="<?php echo ($key->min_length ? $key->min_length : '') ?>">
+          <?php } elseif ($key->handle_type == 'richText') { ?>
+            <textarea class="form-control" name="<?php echo "field_{$key->name}"; ?>"></textarea>
+          <?php } ?>
         </div>
-        <?php echo form_error('handle') ?>
-        <div class="form-group">
-          <label for="Inputtitle">Title Field Label</label>
-          <input type="text" name="title" class="form-control" value="<?php echo set_value('title'); ?>" >
-        </div>
-        <?php echo form_error('title') ?>
-        <div class="form-group">
-          <label for="InputFieldType">Field Layout</label>
-          <ul>
-            <?php foreach ($field as $key) { ?>
-            <li>
-              <input type="checkbox" name="field[]" value="<?php echo $key->id; ?>"> <?php echo $key->name; ?> 
-            </li>
-            <?php } ?>
-          </ul>
-        </div> 
+        <?php echo ($key->required ? form_error("field_{$key->name}") : ''); ?>
+        <?php } ?>
         <div class="box-footer">
           <div class="form-group">
             <button type="submit" class="btn btn-primary btn-sm" name="create">Create</button>

@@ -12,10 +12,10 @@
       <div class="box">
         <div class="box-header"></div>
         <div class="box-body">
-          <?php if ($record_all) { ?>
-          <ul class="record_all-list">
-          <?php foreach ($record_all as $key) {?>
-            <li><a href="<?php echo base_url("{$action}/create/?handle={$key->handle}&entries_id={$key->id}"); ?>"><?php echo $key->name; ?></a></li>
+          <?php if ($entries) { ?>
+          <ul class="entries-list">
+          <?php foreach ($entries as $key) {?>
+            <li><a href="<?php echo $key->id; ?>"><?php echo $key->name; ?></a></li>
           <?php } ?>
           </ul>
           <?php } else { ?>

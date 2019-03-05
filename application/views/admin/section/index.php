@@ -41,7 +41,7 @@
                 <td><?php echo $key->name; ?></td>
                 <td><?php echo $key->type; ?></td>
                 <td><?php echo $key->slug; ?></td>
-                <td><a href="<?php echo base_url("admin/entries/?section_id={$key->id}") ?>">Edit entry types</a></td>
+                <td><a href="<?php echo base_url("{$action}/entries/?section_id={$key->id}") ?>">Edit entry types</a></td>
                 <td colspan="2">
                   <a href="<?php echo base_url("{$action}/edit/{$key->id}") ?>">Edit |</a>
                   <a href="<?php echo base_url("{$action}/delete/{$key->id}") ?>">Delete</a>
