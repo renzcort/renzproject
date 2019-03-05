@@ -40,6 +40,7 @@ class Entries extends My_Controller {
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
     $settings['record_all'] = $this->entries_m->get_all_results($config['per_page'], $start_offset);
+    $settings['content_all']= $this->general_m->get_all_results('content');
     $settings['links']      = $this->pagination->create_links();
     // end pagination
     
@@ -71,17 +72,60 @@ class Entries extends My_Controller {
           'section_id'  =>  $settings['elementByEntries_id']->section_id,
           'entries_id'  =>  $entries_id,
           'title'       =>  $this->input->post('title'),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'created_by'  =>  $this->data['userdata']['id'],
         );
 
         //get field content 
         foreach ($settings['fields'] as $key) {
-          $data["field_{$key->handle}"] = "field_{$key->handle}";
+          $data["field_{$key->handle}"] = $this->input->post("field_{$key->handle}");
         }
 
-        var_dump($data); die();
-        $entries_id = $this->entries_m->create($data);
+        $this->general_m->create('content', $data);
+        helper_log('add', "add data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");        
+        $this->session->set_flashdata('message', 'Data has created');
+        redirect("{$settings['action']}?section_id={$section_id}");
+      }
+    } else {
+      $this->load->view('admin/layout/_default', $settings);
+    }    
+  }
+
+  /*Create Entries*/
+  public function update($id='') {
+    $entries_id =  $this->input->get('entries_id');
+    $handle     = $this->input->get('handle');
+    $settings = array(
+      'title'               =>  'entries',
+      'subheader'           =>  'Manage entries',
+      'content'             =>  'admin/entries/edit',
+      'table'               =>  'entries',
+      'action'              =>  'admin/entries',
+      'session'             =>  $this->data,
+      'no'                  =>  $this->uri->segment(3),
+      'entries_id'          =>  $entries_id,
+      'handle'              =>  $handle,
+      'elementByEntries_id' =>  $this->general_m->get_row_by_id('element', $entries_id, 'entries_id'),
+      'fields'              =>  $this->field_m->get_field_by_element($entries_id),
+      'getdataby_id'        =>  $this->general_m->get_row_by_id('content', $id),
+    );
+    // var_dump($settings['getdataby_id']);die;
+
+    $this->form_validation->set_rules('title', 'Title', 'trim|required');
+    if ($this->form_validation->run() == TRUE) {
+      if (isset($_POST['create'])) {
+        $data = array(
+          'section_id'  =>  $settings['elementByEntries_id']->section_id,
+          'entries_id'  =>  $entries_id,
+          'title'       =>  $this->input->post('title'),
+          'created_by'  =>  $this->data['userdata']['id'],
+        );
+
+        //get field content 
+        foreach ($settings['fields'] as $key) {
+          $data["field_{$key->handle}"] = $this->input->post("field_{$key->handle}");
+        }
+
+        $this->general_m->create('content', $data);
         helper_log('add', "add data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");        
         $this->session->set_flashdata('message', 'Data has created');
         redirect("{$settings['action']}?section_id={$section_id}");
