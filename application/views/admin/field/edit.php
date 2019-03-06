@@ -39,8 +39,37 @@
               <option value="<?php echo $key->id ?>" <?php echo (($getdataby_id->type_id == $key->id) ? "selected" : '' ); ?>><?php echo $key->name; ?></option>
             <<?php } ?>
           </select>
-        </div> 
+        </div>
+
         <div class="form-group">
+          <label for="InputPleaceholder">Attributes</label>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="attribAction" value="" checked>
+            <label class="form-check-label" for="exampleRadios1">
+              None
+            </label>
+          </div>
+          <?php foreach ($attributes['action'] as $key => $value) { ?>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="attribAction" value="<?php echo $value ?>" <?php echo (($getdataby_id->attributes == $value) ? "checked" : '' ); ?>>
+            <label class="form-check-label" for="exampleRadios1">
+              <?php echo $value; ?>
+            </label>
+          </div>
+          <?php } ?>
+        </div> 
+
+          <?php foreach ($attributes['type']['text'] as $key => $value) { ?>
+          <div class="form-group">
+            <label for="Input{$value}"><?php echo $value; ?></label>
+          <?php if ($value == in_array($value, array('maxlength', 'minlength', 'size', 'min', 'max'))) {?>
+            <input type="number" name="<?php echo "attributes[{$value}][]"; ?>" class="form-control" value="">
+          <?php } else { ?>
+            <input type="text" name="<?php echo "attributes[{$value}][]"; ?>" class="form-control" value="">
+          </div>
+          <?php } ?>
+          <?php } ?> 
+        <!-- <div class="form-group">
           <label for="InputPleaceholder">Placeholder</label>
           <input type="text" name="placeholder" class="form-control" value="<?php echo ($getdataby_id ? $getdataby_id->placeholder : set_value('placeholder')); ?>">
         </div>
@@ -51,7 +80,7 @@
         <div class="form-group">
           <label for="InputInitialRows">Initial Rows</label>
           <input type="text" name="initial_rows" class="form-control" value="<?php echo ($getdataby_id ? $getdataby_id->initial_rows : set_value('initial_rows')); ?>">
-        </div>
+        </div> -->
         <div class="box-footer">
           <div class="form-group">
             <button type="submit" class="btn btn-primary btn-sm" name="update">Create</button>

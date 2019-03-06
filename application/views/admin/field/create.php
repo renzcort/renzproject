@@ -16,7 +16,7 @@
           <select name="group" class="form-control">
             <option value="0">Default</option>
             <?php foreach ($group as $key) { ?>
-              <option value="<?php echo $key->id ?>"><?php echo $key->name; ?></option>
+              <option value="<?php echo $key->id ?>" <?php echo ($group_id ? "selected" : ""); ?>><?php echo $key->name; ?></option>
             <<?php } ?>
           </select>
         </div>
@@ -38,8 +38,37 @@
               <option value="<?php echo $key->id ?>"><?php echo $key->name; ?></option>
             <<?php } ?>
           </select>
-        </div> 
+        </div>
         <div class="form-group">
+          <label for="InputPleaceholder">Attributes</label>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="attributes" value="" checked>
+            <label class="form-check-label" for="exampleRadios1">
+              None
+            </label>
+          </div>
+          <?php foreach ($attributes['action'] as $key => $value) { ?>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="attributes" value="<?php echo $value ?>">
+            <label class="form-check-label" for="exampleRadios1">
+              <?php echo $value; ?>
+            </label>
+          </div>
+          <?php } ?>
+        </div> 
+
+          <?php foreach ($attributes['type']['text'] as $key => $value) { ?>
+          <div class="form-group">
+            <label for="Input{$value}"><?php echo $value; ?></label>
+          <?php if ($value == in_array($value, array('maxlength', 'minlength', 'size', 'min', 'max'))) {?>
+            <input type="number" name="<?php echo "attributes[{$value}][]"; ?>" class="form-control" value="">
+          <?php } else { ?>
+            <input type="text" name="<?php echo "attributes[{$value}][]"; ?>" class="form-control" value="">
+          </div>
+          <?php } ?>
+          <?php } ?>
+
+        <!-- <div class="form-group">
           <label for="InputPleaceholder">Placeholder</label>
           <input type="text" name="placeholder" class="form-control">
         </div>
@@ -50,7 +79,7 @@
         <div class="form-group">
           <label for="InputInitialRows">Initial Rows</label>
           <input type="text" name="initial_rows" class="form-control">
-        </div>
+        </div> -->
         <div class="box-footer">
           <div class="form-group">
             <button type="submit" class="btn btn-primary btn-sm" name="create">Create</button>

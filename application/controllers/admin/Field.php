@@ -26,6 +26,8 @@ class Field extends My_Controller {
       'action'    =>  'admin/field',
       'session'   =>  $this->data,
       'no'        =>  $this->uri->segment(3),
+      'group'     =>  $this->general_m->get_all_results('field_group'),
+      'group_id'  =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
     );
 
     // Pagination
@@ -38,7 +40,7 @@ class Field extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->field_m->get_all_results($config['per_page'], $start_offset);
+    $settings['record_all'] = $this->field_m->get_all_results($config['per_page'], $start_offset, $settings['group_id']);
     $settings['links']      = $this->pagination->create_links();
     // end Pagination
     
@@ -56,14 +58,34 @@ class Field extends My_Controller {
       'no'        =>  $this->uri->segment(3),
       'group'     =>  $this->general_m->get_all_results('field_group'),
       'type'      =>  $this->general_m->get_all_results('field_type'),
+      'group_id'  =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'attributes'=>  arraY('type' =>
+                          array(
+                          'text'     => array('maxlength', 'minlength', 'placeholder', 'size'),
+                          'email'    => array('list', 'maxlength', 'pattern', 'placeholder', 'size'),
+                          'password' => array('maxlength', 'pattern', 'placeholder', 'size'),
+                          'datetime' => array('list', 'max', 'min', 'step'),
+                          'file'     => array('multiple', 'accept', 'files', 'capture'),
+                          'checkbox' => array('checked'),
+                          'textarea' => array('placeholder', 'rows', 'cols', 'wrap'),
+                          ),
+                          'action' => array('required', 'autocomplete', 'autofocus', 'disabled', 'readonly')
+                        ),
     );
+
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     // $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
     $this->form_validation->set_rules('type', 'Field Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
+        // get Attributes
+        foreach ($this->input->post('attributes') as $key => $value) {
+          $attrb[] = $key.' : '. $value[0];
+        }
+        $attributes = implode(', ', $attrb);
+
         $option = array(
-          'required'     =>  $this->input->post('required'),
+          'attributes'   =>  $this->input->post('attribAction'),
           'placeholder'  =>  $this->input->post('placeholder'),
           'max_length'   =>  $this->input->post('max_length'),
           'min_length'   =>  $this->input->post('min_length'),
@@ -73,7 +95,7 @@ class Field extends My_Controller {
           'asset_id'     =>  $this->input->post('asset'),
           'limit'        =>  $this->input->post('limit'),
           'content'      =>  $this->input->post('content'),
-          'settings'     =>  $this->input->post('settings'),
+          'settings'     =>  $attributes,
         );
         $option = $this->general_m->create('field_option', $option, FALSE);
         
@@ -118,14 +140,37 @@ class Field extends My_Controller {
       'group'        =>  $this->general_m->get_all_results('field_group'),
       'type'         =>  $this->general_m->get_all_results('field_type'),
       'getdataby_id' =>  $this->field_m->get_row_by_id($id),
+      'attributes'=>  arraY('type' =>
+                          array(
+                          'text'     => array('maxlength', 'minlength', 'placeholder', 'size'),
+                          'email'    => array('list', 'maxlength', 'pattern', 'placeholder', 'size'),
+                          'password' => array('maxlength', 'pattern', 'placeholder', 'size'),
+                          'datetime' => array('list', 'max', 'min', 'step'),
+                          'file'     => array('multiple', 'accept', 'files', 'capture'),
+                          'checkbox' => array('checked'),
+                          'textarea' => array('placeholder', 'rows', 'cols', 'wrap'),
+                          ),
+                          'action' => array('required', 'autocomplete', 'autofocus', 'disabled', 'readonly')
+                        ),
     );
-    // var_dump($settings['getdataby_id']);die();
+    $str = explode(':', $settings['getdataby_id']->settings);
+    foreach ($str as $key => $value) {
+      var_dump($value);
+    }
+    die;
+    var_dump($str);die();
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     // $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
     $this->form_validation->set_rules('type', 'Field Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['update'])) {
+        // get Attributes
+        foreach ($this->input->post('attributes') as $key => $value) {
+          $attrb[] = $key.' : '. $value[0];
+        }
+        $attributes = implode(', ', $attrb);
+        // var_dump($attributes, $this->input->post('attribAction'));die;
         $data = array(
           'group_id'    =>  $this->input->post('group'),
           'option_id'   =>  $settings['getdataby_id']->option_id,
@@ -149,7 +194,7 @@ class Field extends My_Controller {
         modifyColumn($fields, 'modify'); 
 
         $option = array(
-          'required'     =>  $this->input->post('required'),
+          'attributes'   =>  $this->input->post('attribAction'),
           'placeholder'  =>  $this->input->post('placeholder'),
           'max_length'   =>  $this->input->post('max_length'),
           'min_length'   =>  $this->input->post('min_length'),
@@ -159,7 +204,7 @@ class Field extends My_Controller {
           'asset_id'     =>  $this->input->post('asset'),
           'limit'        =>  $this->input->post('limit'),
           'content'      =>  $this->input->post('content'),
-          'settings'     =>  $this->input->post('settings'),
+          'settings'     =>  $attributes,
         );
         $this->general_m->update('field_option', $option, $settings['getdataby_id']->option_id, '', FALSE);
         redirect($settings['action']);
@@ -247,6 +292,7 @@ class Field extends My_Controller {
       if (isset($_POST['create'])) {
         $data = array(
           'name'        => $this->input->post('name'),
+          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'slug'        => url_title(strtolower($this->input->post('name'))),
           'description' => $this->input->post('description'),
           'created_by'  => $this->data['userdata']['id'],
@@ -278,6 +324,7 @@ class Field extends My_Controller {
       if (isset($_POST['update'])) {
         $data = array(
           'name'        => $this->input->post('name'),
+          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'slug'        => url_title(strtolower($this->input->post('name'))),
           'description' => $this->input->post('description'),
           'updated_by'  => $this->data['userdata']['id'],
@@ -295,11 +342,11 @@ class Field extends My_Controller {
   /*Delete Group*/
   public function group_delete($id='') {
     $settings = array(
-      'header'    => 'Group',
-      'subheader' => 'Manage Field',
-      'content'   =>  'admin/field/group/edit',
+      'header'    =>  'Group',
+      'subheader' =>  'Manage Field',
+      'content'   =>  'admin/field/group/index',
       'table'     =>  'field_group',
-      'action'    => 'admin/field/group',
+      'action'    =>  'admin/field/group',
       'session'   =>  $this->data,
       'no'        =>  $this->uri->segment(4), 
     );
@@ -362,6 +409,7 @@ class Field extends My_Controller {
         $data = array(
           'name'        => $this->input->post('name'),
           'type'        => $this->input->post('type'),
+          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'slug'        => url_title(strtolower($this->input->post('name'))),
           'description' => $this->input->post('description'),
           'created_by'  => $this->data['userdata']['id'],
@@ -395,6 +443,7 @@ class Field extends My_Controller {
         $data = array(
           'name'        => $this->input->post('name'),
           'type'        => $this->input->post('type'),
+          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'slug'        => url_title(strtolower($this->input->post('name'))),
           'description' => $this->input->post('description'),
           'updated_by'  => $this->data['userdata']['id'],
@@ -414,7 +463,7 @@ class Field extends My_Controller {
     $settings = array(
       'header'    =>  'Type',
       'subheader' =>  'Manage Field',
-      'content'   =>  'admin/field/type/edit',
+      'content'   =>  'admin/field/type/index',
       'table'     =>  'field_type',
       'action'    =>  'admin/field/type',
       'session'   =>  $this->data,

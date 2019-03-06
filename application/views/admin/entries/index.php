@@ -12,10 +12,11 @@
       <div class="box">
         <div class="box-header"></div>
         <div class="box-body">
-          <?php if ($record_all) { ?>
-          <ul class="record_all-list">
-          <?php foreach ($record_all as $key) {?>
-            <li><a href="<?php echo base_url("{$action}/create/?handle={$key->handle}&section_id={$key->section_id}&entries_id={$key->id}"); ?>"><?php echo $key->name; ?></a></li>
+          <?php if ($entries) { ?>
+          <ul class="entries-list">
+            <li><a href="<?php echo base_url("{$action}"); ?>">All Entries</a></li>
+          <?php foreach ($entries as $key) {?>
+            <li><a href="<?php echo base_url("{$action}/?entries_id={$key->id}"); ?>"><?php echo $key->name; ?></a></li>
           <?php } ?>
           </ul>
           <?php } else { ?>
@@ -34,9 +35,9 @@
         <!-- /.box-header -->
         <div class="box-body">
           <div class="pull-left">
-            <a href="<?php echo base_url("{$action}/create/?handle={$key->handle}&entries_id={$key->id}"); ?>" class="btn btn-block btn-primary">+ Add <?php echo (isset($title) ? ucfirst($title) : ucfirst($header)); ?></a>
+            <a href="<?php echo base_url("{$action}/create/?entries_id={$entries_id}"); ?>" class="btn btn-block btn-primary">+ Add <?php echo (isset($title) ? ucfirst($title) : ucfirst($header)); ?></a>
           </div>
-          <?php if($content_all) { ?>
+          <?php if($record_all) { ?>
           <table id="example2" class="table table-bordered table-hover text-center">
             <thead>
               <tr>
@@ -51,7 +52,7 @@
             </thead>
             <tbody>
               <?php
-                foreach ($content_all as $key) {
+                foreach ($record_all as $key) {
               ?>
               <tr>
                 <td><?php echo ++$no; ?></td>
@@ -61,8 +62,8 @@
                 <td><?php echo $key->updated_at; ?></td>
                 <td><?php echo (!empty($key->updated_by) ? $key->updated_by : $key->created_by ); ?></td>
                 <td colspan="2">
-                  <a href="<?php echo base_url("{$action}/edit/{$key->id}/?section_id={$key->section_id}&entries_id={$key->entries_id}"); ?>">Edit |</a>
-                  <a href="<?php echo base_url("{$action}/edit/{$key->id}/?section_id={$key->section_id}&entries_id={$key->entries_id}"); ?>">Delete</a>
+                  <a href="<?php echo base_url("{$action}/edit/{$key->id}/?entries_id={$entries_id}"); ?>">Edit |</a>
+                  <a href="<?php echo base_url("{$action}/delete/{$key->id}/?entries_id={$key->entries_id}"); ?>">Delete</a>
                 </td>
               <tr>
               <?PHP } ?>

@@ -11,7 +11,14 @@ class Field_m extends My_Model {
   }
 
   /*Get All Data Records*/
-  public function get_all_results($limit = '', $offset = '') {
+  public function get_all_results($limit = '', $offset = '', $group_id='')
+   {
+
+    $this->db->select("d.*, {$this->_table}.*, b.name as group_name, c.name as type_name");
+    $this->db->join("field_group as b", "b.id = {$this->_table}.group_id", "LEFT");
+    $this->db->join("field_type as c", "c.id = {$this->_table}.type_id", "LEFT");
+    $this->db->join("field_option as d", "d.id = {$this->_table}.option_id", "LEFT");
+    ($group_id ? $this->db->where("{$this->_table}.group_id", $group_id) : '');
     ($limit ? $this->db->limit($limit, $offset) : '' );
     $result = $this->db->get($this->_table);
     if ($result->num_rows() > 0) {
