@@ -114,3 +114,15 @@ $route['admin/entries']                       = 'admin/entries';
 $route['admin/entries/create']                = 'admin/entries/create';
 $route['admin/entries/edit/(:num)']           = 'admin/entries/update/$1';
 $route['admin/entries/delete/(:num)']         = 'admin/entries/delete/$1';
+
+/*Assets*/
+$route['admin/assets']                       = 'admin/assets';
+$route['admin/assets/create']                = 'admin/assets/create';
+$route['admin/assets/edit/(:num)']           = 'admin/assets/update/$1';
+$route['admin/assets/delete/(:num)']         = 'admin/assets/delete/$1';
+
+/*categories*/
+$route['admin/categories']                       = 'admin/categories';
+$route['admin/categories/create']                = 'admin/categories/create';
+$route['admin/categories/edit/(:num)']           = 'admin/categories/update/$1';
+$route['admin/categories/delete/(:num)']         = 'admin/categories/delete/$1';
