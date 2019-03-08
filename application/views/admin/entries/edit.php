@@ -28,17 +28,17 @@
             name="<?php echo "$field"; ?>" 
             value="<?php  echo ($getdataby_id ?  $getdataby_id->$field : set_value($field)); ?>" 
             placeholder="<?php echo ($key->placeholder ? $key->placeholder : ''); ?>" 
-            max_length="<?php echo ($key->max_length ? $key->max_length : '' ); ?>" 
-            min_length="<?php echo ($key->min_length ? $key->min_length : '') ?>">
+            max_length="<?php echo ($key->maxlength ? $key->maxlength : '' ); ?>" 
+            min_length="<?php echo ($key->minlength ? $key->minlength : '') ?>">
           <?php } elseif ($key->handle_type == 'richText') { ?>
             <textarea class="form-control" name="<?php echo "field_{$key->name}"; ?>"><?php  echo ($getdataby_id ?  $getdataby_id->$field : set_value($field)); ?></textarea>
           <?php } ?>
         </div>
-        <?php echo ($key->required ? form_error("field_{$key->handle}") : ''); ?>
+        <?php echo (($key->action == 'required') ? form_error("field_{$key->handle}") : ''); ?>
         <?php } ?>
         <div class="box-footer">
           <div class="form-group">
-            <button type="submit" class="btn btn-primary btn-sm" name="create">Create</button>
+            <button type="submit" class="btn btn-primary btn-sm" name="update">Update</button>
           </div>
         </div>
       </div>

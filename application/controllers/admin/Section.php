@@ -331,7 +331,7 @@ class Section extends My_Controller {
 
         $field = $this->input->post('field');
         if (!empty($field)) {
-          $this->general_m->delete('element', $entries_id);
+          $this->general_m->delete('element', $entries_id, 'section_id');
           $i = 0;
           foreach ($field as $key => $value) {
             $element = array(
@@ -432,6 +432,7 @@ class Section extends My_Controller {
     );
 
     if ($this->entries_m->get_row_by_id($id)) {
+      $this->general_m->delete('content', $id, 'entries_id');
       $this->general_m->delete('element', $id, 'entries_id');
       $delete = $this->entries_m->delete($id);
       helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");

@@ -44,14 +44,14 @@
         <div class="form-group">
           <label for="InputPleaceholder">Attributes</label>
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="attribAction" value="" checked>
+            <input class="form-check-input" type="radio" name="attrAction" value="" checked>
             <label class="form-check-label" for="exampleRadios1">
               None
             </label>
           </div>
           <?php foreach ($attributes['action'] as $key => $value) { ?>
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="attribAction" value="<?php echo $value ?>" <?php echo (($getdataby_id->attributes == $value) ? "checked" : '' ); ?>>
+            <input class="form-check-input" type="radio" name="attrAction" value="<?php echo $value ?>" <?php echo (($getdataby_id->action == $value) ? "checked" : '' ); ?>>
             <label class="form-check-label" for="exampleRadios1">
               <?php echo $value; ?>
             </label>
@@ -63,24 +63,13 @@
           <div class="form-group">
             <label for="Input{$value}"><?php echo $value; ?></label>
           <?php if ($value == in_array($value, array('maxlength', 'minlength', 'size', 'min', 'max'))) {?>
-            <input type="number" name="<?php echo "attributes[{$value}][]"; ?>" class="form-control" value="">
+            <input type="number" name="<?php echo "attrType[{$value}][]"; ?>" class="form-control" value="<?php echo ($getdataby_id->$value ? $getdataby_id->$value : set_value("attrType[{$value}]")); ?>">
           <?php } else { ?>
-            <input type="text" name="<?php echo "attributes[{$value}][]"; ?>" class="form-control" value="">
+            <input type="text" name="<?php echo "attrType[{$value}][]"; ?>" class="form-control" value="<?php echo ($getdataby_id->$value ? $getdataby_id->$value : set_value("attrType[{$value}]")); ?>">
           </div>
           <?php } ?>
           <?php } ?> 
-        <!-- <div class="form-group">
-          <label for="InputPleaceholder">Placeholder</label>
-          <input type="text" name="placeholder" class="form-control" value="<?php echo ($getdataby_id ? $getdataby_id->placeholder : set_value('placeholder')); ?>">
-        </div>
-        <div class="form-group">
-          <label for="InputMaxLength">Max Length</label>
-          <input type="text" name="max_length" class="form-control" value="<?php echo ($getdataby_id ? $getdataby_id->max_length : set_value('max_length')) ?>">
-        </div>
-        <div class="form-group">
-          <label for="InputInitialRows">Initial Rows</label>
-          <input type="text" name="initial_rows" class="form-control" value="<?php echo ($getdataby_id ? $getdataby_id->initial_rows : set_value('initial_rows')); ?>">
-        </div> -->
+
         <div class="box-footer">
           <div class="form-group">
             <button type="submit" class="btn btn-primary btn-sm" name="update">Create</button>

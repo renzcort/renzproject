@@ -32,7 +32,6 @@ class Entries extends My_Controller {
       'section_id'=>  ($this->input->get('section_id') ? $this->input->get('section_id') : ''),
       'handle'    =>  ($this->input->get('handle') ? $this->input->get('handle') : ''),
     );
-    // var_dump($settings['handle']);die;
 
     // pagination
     $config                 = $this->config->item('setting_pagination');
@@ -45,7 +44,6 @@ class Entries extends My_Controller {
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
     $settings['record_all'] = $this->general_m->get_all_results('content', $config['per_page'], $start_offset, $settings['entries_id'], 'entries_id');
-    // var_dump($settings['record_all']);die;
     $settings['links']      = $this->pagination->create_links();
     // end pagination
     
@@ -77,7 +75,6 @@ class Entries extends My_Controller {
           'title'       =>  $this->input->post('title'),
           'created_by'  =>  $this->data['userdata']['id'],
         );
-
         //get field content 
         foreach ($settings['fields'] as $key) {
           $data["field_{$key->handle}"] = $this->input->post("field_{$key->handle}");
@@ -115,13 +112,12 @@ class Entries extends My_Controller {
 
     $this->form_validation->set_rules('title', 'Title', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
+      if (isset($_POST['update'])) {
         $data = array(
           'entries_id'  =>  $settings['entries_id'],
           'title'       =>  $this->input->post('title'),
           'created_by'  =>  $this->data['userdata']['id'],
         );
-
         //get field content 
         foreach ($settings['fields'] as $key) {
           $data["field_{$key->handle}"] = $this->input->post("field_{$key->handle}");

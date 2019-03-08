@@ -20,12 +20,12 @@
         <div class="form-group">
           <label for="Input<?php echo $key->name; ?>"><?php echo $key->name; ?></label>
           <?php if ($key->handle_type == 'planText') { ?>
-            <input type="text" class="form-control" name="<?php echo "field_{$key->handle}"; ?>" value="<?php echo set_value("field_{$key->handle}"); ?>" placeholder="<?php echo ($key->placeholder ? $key->placeholder : ''); ?>" max_length="<?php echo ($key->max_length ? $key->max_length : '' ); ?>" min_length="<?php echo ($key->min_length ? $key->min_length : '') ?>">
+            <input type="text" class="form-control" name="<?php echo "field_{$key->handle}"; ?>" value="<?php echo set_value("field_{$key->handle}"); ?>" placeholder="<?php echo ($key->placeholder ? $key->placeholder : ''); ?>" max_length="<?php echo ($key->maxlength ? $key->maxlength : '' ); ?>" min_length="<?php echo ($key->minlength ? $key->minlength : '') ?>">
           <?php } elseif ($key->handle_type == 'richText') { ?>
             <textarea class="form-control" name="<?php echo "field_{$key->name}"; ?>"></textarea>
           <?php } ?>
         </div>
-        <?php echo ($key->required ? form_error("field_{$key->name}") : ''); ?>
+        <?php echo (($key->action == 'required') ? form_error("field_{$key->name}") : ''); ?>
         <?php } ?>
         <div class="box-footer">
           <div class="form-group">

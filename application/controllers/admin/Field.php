@@ -61,9 +61,9 @@ class Field extends My_Controller {
       'group_id'  =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
       'attributes'=>  arraY('type' =>
                           array(
-                          'text'     => array('maxlength', 'minlength', 'placeholder', 'size'),
-                          'email'    => array('list', 'maxlength', 'pattern', 'placeholder', 'size'),
-                          'password' => array('maxlength', 'pattern', 'placeholder', 'size'),
+                          'text'     => array('maxlength', 'minlength', 'placeholder'),
+                          'email'    => array('list', 'maxlength', 'pattern', 'placeholder'),
+                          'password' => array('maxlength', 'pattern', 'placeholder'),
                           'datetime' => array('list', 'max', 'min', 'step'),
                           'file'     => array('multiple', 'accept', 'files', 'capture'),
                           'checkbox' => array('checked'),
@@ -78,25 +78,25 @@ class Field extends My_Controller {
     $this->form_validation->set_rules('type', 'Field Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
+
         // get Attributes
-        foreach ($this->input->post('attributes') as $key => $value) {
-          $attrb[] = $key.' : '. $value[0];
+        foreach ($this->input->post('attrType') as $key => $value) {
+          $attrb[] = "`$key` => {$value[0]}";
         }
         $attributes = implode(', ', $attrb);
-
+        
         $option = array(
-          'attributes'   =>  $this->input->post('attribAction'),
-          'placeholder'  =>  $this->input->post('placeholder'),
-          'max_length'   =>  $this->input->post('max_length'),
-          'min_length'   =>  $this->input->post('min_length'),
-          'line_breaks'  =>  $this->input->post('line_breaks'),
-          'initial_rows' =>  $this->input->post('initial_rows'),
-          'images'       =>  $this->input->post('images'),
-          'asset_id'     =>  $this->input->post('asset'),
-          'limit'        =>  $this->input->post('limit'),
-          'content'      =>  $this->input->post('content'),
-          'settings'     =>  $attributes,
+          'asset_id'    =>  $this->input->post('asset'),
+          'action'      =>  $this->input->post('attrAction'),
+          'line_breaks' =>  $this->input->post('line_breaks'),
+          'images'      =>  $this->input->post('images'),
+          'limit'       =>  $this->input->post('limit'),
+          'content'     =>  $this->input->post('content'),
+          'settings'    =>  $attributes,
         );
+        foreach ($this->input->post('attrType') as $key => $value) {
+          $option["{$key}"] = implode($value);
+        }
         $option = $this->general_m->create('field_option', $option, FALSE);
         
         $data = array(
@@ -142,9 +142,9 @@ class Field extends My_Controller {
       'getdataby_id' =>  $this->field_m->get_row_by_id($id),
       'attributes'=>  arraY('type' =>
                           array(
-                          'text'     => array('maxlength', 'minlength', 'placeholder', 'size'),
-                          'email'    => array('list', 'maxlength', 'pattern', 'placeholder', 'size'),
-                          'password' => array('maxlength', 'pattern', 'placeholder', 'size'),
+                          'text'     => array('maxlength', 'minlength', 'placeholder'),
+                          'email'    => array('list', 'maxlength', 'pattern', 'placeholder'),
+                          'password' => array('maxlength', 'pattern', 'placeholder'),
                           'datetime' => array('list', 'max', 'min', 'step'),
                           'file'     => array('multiple', 'accept', 'files', 'capture'),
                           'checkbox' => array('checked'),
@@ -153,24 +153,13 @@ class Field extends My_Controller {
                           'action' => array('required', 'autocomplete', 'autofocus', 'disabled', 'readonly')
                         ),
     );
-    $str = explode(':', $settings['getdataby_id']->settings);
-    foreach ($str as $key => $value) {
-      var_dump($value);
-    }
-    die;
-    var_dump($str);die();
-
+    // var_dump($settings['getdataby_id']);die;
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     // $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
     $this->form_validation->set_rules('type', 'Field Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['update'])) {
-        // get Attributes
-        foreach ($this->input->post('attributes') as $key => $value) {
-          $attrb[] = $key.' : '. $value[0];
-        }
-        $attributes = implode(', ', $attrb);
-        // var_dump($attributes, $this->input->post('attribAction'));die;
+
         $data = array(
           'group_id'    =>  $this->input->post('group'),
           'option_id'   =>  $settings['getdataby_id']->option_id,
@@ -193,19 +182,25 @@ class Field extends My_Controller {
         // Modify Column content
         modifyColumn($fields, 'modify'); 
 
+        // get Attributes
+        foreach ($this->input->post('attrType') as $key => $value) {
+          $attrb[] = "`$key` => {$value[0]}";
+        }
+        $attributes = implode(', ', $attrb);
+
         $option = array(
-          'attributes'   =>  $this->input->post('attribAction'),
-          'placeholder'  =>  $this->input->post('placeholder'),
-          'max_length'   =>  $this->input->post('max_length'),
-          'min_length'   =>  $this->input->post('min_length'),
-          'line_breaks'  =>  $this->input->post('line_breaks'),
-          'initial_rows' =>  $this->input->post('initial_rows'),
-          'images'       =>  $this->input->post('images'),
-          'asset_id'     =>  $this->input->post('asset'),
-          'limit'        =>  $this->input->post('limit'),
-          'content'      =>  $this->input->post('content'),
-          'settings'     =>  $attributes,
+          'asset_id'    =>  $this->input->post('asset'),
+          'action'      =>  $this->input->post('attrAction'),
+          'line_breaks' =>  $this->input->post('line_breaks'),
+          'images'      =>  $this->input->post('images'),
+          'limit'       =>  $this->input->post('limit'),
+          'content'     =>  $this->input->post('content'),
+          'settings'    =>  $attributes,
         );
+        foreach ($this->input->post('attrType') as $key => $value) {
+          $option["{$key}"] = implode($value);
+        }
+        // var_dump($option);die;
         $this->general_m->update('field_option', $option, $settings['getdataby_id']->option_id, '', FALSE);
         redirect($settings['action']);
       }
@@ -228,8 +223,8 @@ class Field extends My_Controller {
       'type'         =>  $this->general_m->get_all_results('field_type'),
       'getdataby_id' =>  $this->field_m->get_row_by_id($id),
     );
-
     if ($settings['getdataby_id']) {
+      $this->general_m->delete('element', $id, 'field_id');
       $delete = $this->general_m->delete($settings['table'], $id);
       $this->general_m->delete('field_option', $settings['getdataby_id']->option_id);
       $fields = array(

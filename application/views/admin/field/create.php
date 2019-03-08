@@ -42,14 +42,14 @@
         <div class="form-group">
           <label for="InputPleaceholder">Attributes</label>
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="attributes" value="" checked>
+            <input class="form-check-input" type="radio" name="attrAction" value="" checked>
             <label class="form-check-label" for="exampleRadios1">
               None
             </label>
           </div>
           <?php foreach ($attributes['action'] as $key => $value) { ?>
           <div class="form-check">
-            <input class="form-check-input" type="radio" name="attributes" value="<?php echo $value ?>">
+            <input class="form-check-input" type="radio" name="attrAction" value="<?php echo $value ?>">
             <label class="form-check-label" for="exampleRadios1">
               <?php echo $value; ?>
             </label>
@@ -61,25 +61,12 @@
           <div class="form-group">
             <label for="Input{$value}"><?php echo $value; ?></label>
           <?php if ($value == in_array($value, array('maxlength', 'minlength', 'size', 'min', 'max'))) {?>
-            <input type="number" name="<?php echo "attributes[{$value}][]"; ?>" class="form-control" value="">
+            <input type="number" name="<?php echo "attrType[{$value}][]"; ?>" class="form-control" value="">
           <?php } else { ?>
-            <input type="text" name="<?php echo "attributes[{$value}][]"; ?>" class="form-control" value="">
+            <input type="text" name="<?php echo "attrType[{$value}][]"; ?>" class="form-control" value="">
+          <?php } ?> 
           </div>
           <?php } ?>
-          <?php } ?>
-
-        <!-- <div class="form-group">
-          <label for="InputPleaceholder">Placeholder</label>
-          <input type="text" name="placeholder" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="InputMaxLength">Max Length</label>
-          <input type="text" name="max_length" class="form-control">
-        </div>
-        <div class="form-group">
-          <label for="InputInitialRows">Initial Rows</label>
-          <input type="text" name="initial_rows" class="form-control">
-        </div> -->
         <div class="box-footer">
           <div class="form-group">
             <button type="submit" class="btn btn-primary btn-sm" name="create">Create</button>

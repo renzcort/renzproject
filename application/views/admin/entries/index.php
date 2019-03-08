@@ -62,7 +62,7 @@
                 <td><?php echo $key->updated_at; ?></td>
                 <td><?php echo (!empty($key->updated_by) ? $key->updated_by : $key->created_by ); ?></td>
                 <td colspan="2">
-                  <a href="<?php echo base_url("{$action}/edit/{$key->id}/?entries_id={$entries_id}"); ?>">Edit |</a>
+                  <a href="<?php echo base_url("{$action}/edit/{$key->id}/?entries_id={$key->entries_id}"); ?>">Edit |</a>
                   <a href="<?php echo base_url("{$action}/delete/{$key->id}/?entries_id={$key->entries_id}"); ?>">Delete</a>
                 </td>
               <tr>
