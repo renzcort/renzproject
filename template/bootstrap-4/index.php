@@ -48,34 +48,41 @@
     </header>
     
     <div class="wraper">
-      <div class="row">
-        <div class="col-3 main-sidebar">
-          <div class="profil">
-            <div class="card mb-3" style="max-width: 540px;">
-              <div class="row no-gutters">
-                <div class="col-md-4">
-                  <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="card-img rounded-circle">
-                </div>
-                <div class="col-md-8">
-                  <div class="card-body">
-                    <h5 class="card-title">Card title</h5>
-                    <p class="card-text">This is a wider card</p>
-                  </div>
-                </div>
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-2 main-sidebar">
+            <div class="user-panel mt-3 p-2 d-flex flex-row bd-highlight">
+              <div class="pull-left image mr-2">
+                <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
+              </div>
+              <div class="pull-left info">
+                <p>Admin</p>
+                <a href=""><i class="fa fa-circle">Online</i></a>
               </div>
             </div>
+            <div class="menu">
+              <nav class="nav flex-column">
+                <a class="nav-link active" href="#">Active</a>
+                <a class="nav-link" href="#">Link</a>
+                <a class="nav-link" href="#">Link</a>
+                <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+              </nav>
+              <h6 class="heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
+                SAVE REPORT
+              </h6>
+            </div>
           </div>
-        </div>
-        <div class="col-9 content-wraper">
-          <div class="container">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Home</li>
-              </ol>
-            </nav>
-            <footer class="footer">
-              <h6>Someone famous in <cite title="Source Title">Source Title</cite></h6>
-            </footer>
+          <div class="col-md-9 content-wraper">
+            <div class="container">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item active" aria-current="page">Home</li>
+                </ol>
+              </nav>
+              <footer class="footer">
+                <h6>Someone famous in <cite title="Source Title">Source Title</cite></h6>
+              </footer>
+            </div>
           </div>
         </div>
       </div>
