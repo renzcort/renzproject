@@ -1,12 +1,16 @@
+body {
+	font-size: .875rem;
+}
+
 .wraper {
   background: #EBEDEF;
 }
+
 
 .wraper .sidebar {
   background: #333F4D;
   color: #fff;
   width: 100%;
-  font-size: 14px;
   position: fixed;
   top: 0;
   bottom: 0;
@@ -14,6 +18,12 @@
   z-index: 100;
   padding: 48px 0 0;
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+}
+.main-sidebar{
+	position: relative;
+	top: 0;
+	height: calc(100vh - 48px);
+	padding-top: .5rem;
 }
 .user-panel {
   color: #fff;
@@ -42,7 +52,19 @@
 .main-sidebar .menu .nav-link.active {
   color: #007bff;
 }
+.main-sidebar .nav-link:hover .feather,
+.main-sidebar .nav-link.active .feather {
+  color: inherit;
+}
+.sidebar-heading {
+  font-size: .75rem;
+  text-transform: uppercase;
+}
 
+
+[role="main"] {
+  padding-top: 1rem; /* Space for fixed navbar */
+}
 .content {
 
 }
