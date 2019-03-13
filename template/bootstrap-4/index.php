@@ -47,7 +47,41 @@
       </nav>
     </header>
 
-    <main class="wraper container-fluid" role="main">
+    <main class="wraper mt-5">
+      <div class="row">
+        <div class="col-2 side-left">
+          <div class="sidebar container-fluid">
+            <div class="user-panel my-5 d-flex flex-row justify-content-start align-items-center">
+              <div class="image px-3">
+                <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
+              </div>
+              <div class="info">
+                <p class="username">Admin</p>
+                <p>online</p>
+              </div>
+            </div>
+            <div class="menu my-2">
+              <ul class="list-unstyled d-flex flex-column justify-content-center align-items-center">
+                <li class="p-2"><a href="">Lorem ipsum dolor</a></li>
+                <li class="p-2"><a href="">Lorem ipsum dolor</a></li>
+                <li class="p-2"><a href="">Lorem ipsum dolor</a></li>
+                <li class="p-2"><a href="">Lorem ipsum dolor</a></li>
+                <li class="p-2"><a href="">Lorem ipsum dolor</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-9 side-right">
+          <div class="content">
+            <div class="header-content"></div>
+            <div class="main-content"></div>
+          </div>
+          <footer></footer>
+        </div>
+      </div>
+    </main>
+
+    <!-- <main class="wraper container-fluid" role="main">
       <div class="row">
         <div class="col-2 sidebar overflow-hidden">
           <div class="main-sidebar overflow-hidden overflow-auto">
@@ -150,7 +184,7 @@
           </footer>
         </div>
       </div>
-    </main>
+    </main> -->
     
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
