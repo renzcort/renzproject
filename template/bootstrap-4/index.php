@@ -7,6 +7,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <title>Hello, world!</title>
   </head>
   <body>
@@ -18,39 +19,155 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Link</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="far fa-envelope"></i> 
+                <span class="badge badge-light">9</span>
+                <span class="sr-only">(current)</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <h4 class="header p-2">You have 4 messages</h4>
+                <div class="content overflow-auto">
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle mx-1">
+                    <div class="body pr-4">
+                      <h5 class="heading mb-2">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
+                      <p class="description">Some quick example text to build </p>
+                    </div>
+                  </div>
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle mx-1">
+                    <div class="body pr-4">
+                      <h5 class="heading mb-2">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
+                      <p class="description">Some quick example text to build </p>
+                    </div>
+                  </div>
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle mx-1">
+                    <div class="body pr-4">
+                      <h5 class="heading mb-2">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
+                      <p class="description">Some quick example text to build </p>
+                    </div>
+                  </div>
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle mx-1">
+                    <div class="body pr-4">
+                      <h5 class="heading mb-2">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
+                      <p class="description">Some quick example text to build </p>
+                    </div>
+                  </div>
+                </div>
+                <h4 class="footer text-center p-2"><a href="#">See All Messages</a></h4>
+              </div>
             </li>
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Dropdown
+                <i class="far fa-bell"></i>
+                <span class="badge badge-light">9</span>
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Action</a>
-                <a class="dropdown-item" href="#">Another action</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#">Something else here</a>
+                <h4 class="header p-2">You have 4 messages</h4>
+                <div class="content overflow-auto">
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <div class="body pr-4">
+                      <p class="description"><i class="fa fa-users text-aqua"></i>
+                      Some quick example text to build </p>
+                    </div>
+                  </div>
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <div class="body pr-4">
+                      <p class="description"><i class="fa fa-users text-aqua"></i>
+                      Some quick example text to build </p>
+                    </div>
+                  </div>
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <div class="body pr-4">
+                      <p class="description"><i class="fa fa-users text-aqua"></i>
+                      Some quick example text to build </p>
+                    </div>
+                  </div>
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <div class="body pr-4">
+                      <p class="description"><i class="fa fa-users text-aqua"></i>
+                      Some quick example text to build </p>
+                    </div>
+                  </div>
+                </div>
+                <h4 class="footer text-center p-2"><a href="#">See All Messages</a></h4>
               </div>
             </li>
-            <li class="nav-item">
-              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="far fa-flag"></i>
+                <span class="badge badge-light">9</span>
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <h4 class="header p-2">You have 4 messages</h4>
+                <div class="content overflow-auto">
+                  <div class="dropdown-item py-2">
+                    <div class="body px-auto">
+                      <h5 class="heading mb-2">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
+                      <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <div class="body px-auto">
+                      <h5 class="heading mb-2">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
+                      <div class="progress">
+                        <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <div class="body px-auto">
+                      <h5 class="heading mb-2">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
+                      <div class="progress">
+                        <div class="progress-bar bg-warning" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="dropdown-item d-flex flex-row justify-content-center align-items-center py-2">
+                    <div class="body px-auto">
+                      <h5 class="heading mb-2">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
+                      <div class="progress">
+                        <div class="progress-bar bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <h4 class="footer text-center p-2"><a href="#">See All Messages</a></h4>
+              </div>
+            </li>
+            <li class="nav-item user-panel dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div class="content text-center">
+                  <div class="dropdown-item">
+                    <div class="header">
+                      <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
+                      <h4>Alexander Pierce - Web Developer<small>Member since Nov. 2012</small></h4>
+                    </div>
+                    <div class="body px-auto">
+                    </div>
+                    <div class="footer">
+                    </div>
+                  </div>
+                </div>
+              </div>
             </li>
           </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
         </div>
       </nav>
     </header>
 
-    <main class="wraper mt-5">
+    <main class="wraper mt-5 container-fluid">
       <div class="row">
-        <div class="col-2 side-left">
-          <div class="sidebar container-fluid">
+        <div class="col-2 side-left px-1">
+          <div class="sidebar">
             <div class="user-panel my-5 d-flex flex-row justify-content-start align-items-center">
               <div class="image px-3">
                 <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
@@ -61,22 +178,64 @@
               </div>
             </div>
             <div class="menu my-2">
-              <ul class="list-unstyled d-flex flex-column justify-content-center align-items-center">
-                <li class="p-2"><a href="">Lorem ipsum dolor</a></li>
-                <li class="p-2"><a href="">Lorem ipsum dolor</a></li>
-                <li class="p-2"><a href="">Lorem ipsum dolor</a></li>
-                <li class="p-2"><a href="">Lorem ipsum dolor</a></li>
-                <li class="p-2"><a href="">Lorem ipsum dolor</a></li>
+              <ul class="nav flex-column">
+                <li class="nav-item">
+                  <a class="nav-link active" href="#">Active</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                </li>
               </ul>
             </div>
           </div>
         </div>
-        <div class="col-9 side-right">
-          <div class="content">
-            <div class="header-content"></div>
-            <div class="main-content"></div>
+        <div class="col-10 ml-sm-auto side-right p-0" role="main">
+          <div class="content py-2">
+            <div class="breadcrumb-main">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item"><a href="#">Library</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Data</li>
+                </ol>
+              </nav>
+            </div>
+            <div class="main p-3">
+              <h4 class="header">Settings</h5>
+              <h5 class="heading font-weight-light pt-4 pb-2">System</h5>
+              <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled">
+                <li class="p-2 bd-highlight"><i class="fas fa-sliders-h"></i>General</li>
+                <li class="p-2 bd-highlight"><i class="far fa-route"></i>Routes</li>
+                <li class="p-2 bd-highlight"><i class="fas fa-users-cog"></i>Users</li>
+                <li class="p-2 bd-highlight"><i class="fas fa-envelope-open"></i>Email</li>
+                <li class="p-2 bd-highlight"><i class="fas fa-plug"></i>Plugins</li>
+              </ul>
+              <h5 class="heading font-weight-light pt-4 pb-2">Content</h5>
+              <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled">
+                <li class="p-2 bd-highlight"><i class="far fa-file"></i>Fields</li>
+                <li class="p-2 bd-highlight"><i class="fas fa-copy"></i>Sections</li>
+                <li class="p-2 bd-highlight"><i class="far fa-images"></i>Assets</li>
+                <li class="p-2 bd-highlight"><i class="fas fa-globe"></i>Globals</li>
+                <li class="p-2 bd-highlight"><i class="fas fa-align-left"></i>Categories</li>
+                <li class="p-2 bd-highlight"><i class="fas fa-tags"></i>Tags</li>
+                <li class="p-2 bd-highlight"><i class="fas fa-comments"></i>Locales</li>
+              </ul>
+            </div>
           </div>
-          <footer></footer>
+          <footer class="my-5 pt-5 text-muted text-center text-small">
+            <p class="mb-1">© 2017-2019 Company Name</p>
+            <ul class="list-inline">
+              <li class="list-inline-item"><a href="#">Privacy</a></li>
+              <li class="list-inline-item"><a href="#">Terms</a></li>
+              <li class="list-inline-item"><a href="#">Support</a></li>
+            </ul>
+          </footer>
         </div>
       </div>
     </main>
