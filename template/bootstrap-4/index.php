@@ -144,17 +144,25 @@
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
               </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <div class="content text-center">
-                  <div class="dropdown-item">
-                    <div class="header">
-                      <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
-                      <h4>Alexander Pierce - Web Developer<small>Member since Nov. 2012</small></h4>
-                    </div>
-                    <div class="body px-auto">
-                    </div>
-                    <div class="footer">
-                    </div>
+              <div class="dropdown-menu text-center py-0" aria-labelledby="navbarDropdown">
+                <div class="dropdown-item">
+                  <div class="header py-2">
+                    <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
+                    <p class="title">
+                      Alexander Pierce - Web Developer
+                      <small class="d-block">Member since Nov. 2012</small>
+                    </p>
+                  </div>
+                  <div class="body py-2 px-3">
+                    <ul class="list-unstyled d-flex flex-row justify-content-between align-items-center">
+                      <li><a href="">Followers</a></li>
+                      <li><a href="">Sales</a></li>
+                      <li><a href="">Friends</a></li>
+                    </ul>
+                  </div>
+                  <div class="footer py-3 px-3 d-flex flex-row justify-content-between align-items-center">
+                    <button type="button" class="btn btn-primary btn-sm">Primary</button>
+                    <button type="button" class="btn btn-primary btn-sm">Primary</button>
                   </div>
                 </div>
               </div>
