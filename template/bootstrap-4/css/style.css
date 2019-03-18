@@ -123,9 +123,12 @@ body {
   font-size: 12px;
 }
 .sidebar .user-panel .image > img {
-  width: 100%;
-  max-width: 100px;
-  height: auto;
+  z-index: 5;
+  height: 90px;
+  width: 90px;
+  border: 3px solid;
+  border-color: transparent;
+  border-color: rgba(255,255,255,0.2);
 }
 .sidebar .user-panel .info > p.username  {
   line-height: 0.8px;
@@ -137,16 +140,16 @@ body {
   opacity: 1;
   text-decoration: none;
 }
-.sidebar .menu .nav-link {
+.sidebar .nav-link {
   font-weight:500;
 }
-.sidebar .menu .nav-link.active {
+.sidebar .nav-link.active {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
   border-left: 1.5px solid;
   border-left-color: #3c8dbc;
 }
-.sidebar .menu .nav-link:hover {
+.sidebar .nav-link:hover {
   color: #fff;
   background: #48535F;
 }
@@ -164,14 +167,43 @@ body {
   color: #DA5A47;
   font-weight:600;
 }
-
-.content .main ul li {
-  text-align: center;
-}
 .content .main ul li > i {
   width: 100%;
   height: auto;
 }
+.content .main ul li > i {
+	font-size: 2.5em;
+}
+
+
+
+/* Fields */
+#field .main .main-left {
+	flex:25%;
+	background:#FBFCFD;
+	border-right: 1px solid rgba(0, 0, 20, 0.1);
+}
+#field .main .main-left ul > li {
+	padding: 0 2px;
+}
+#field .main .main-left ul li > a {
+	text-decoration: none;
+	color: #63328F;
+}
+#field .main .main-left ul li > a.active {
+	background: #737F8C;
+	color: #fff;
+}
+#field .nav-link:hover {
+  color: #fff;
+  background: #F0F2F3;
+}
+#field .main .main-right {
+	flex:75%;
+}
+
+
+/* end Fileds */
 
 
 

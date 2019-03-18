@@ -171,8 +171,9 @@
         </div>
       </nav>
     </header>
+    
 
-    <main class="wraper mt-5 container-fluid">
+    <!-- <main class="wraper mt-5 container-fluid">
       <div class="row">
         <div class="col-2 side-left px-1">
           <div class="sidebar">
@@ -217,7 +218,7 @@
             <div class="main p-3">
               <h4 class="header">Settings</h5>
               <h5 class="heading font-weight-light pt-4 pb-2">System</h5>
-              <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled">
+              <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled text-center">
                 <li class="p-2 bd-highlight"><i class="fas fa-sliders-h"></i>General</li>
                 <li class="p-2 bd-highlight"><i class="far fa-route"></i>Routes</li>
                 <li class="p-2 bd-highlight"><i class="fas fa-users-cog"></i>Users</li>
@@ -246,42 +247,22 @@
           </footer>
         </div>
       </div>
-    </main>
+    </main> -->
 
-    <!-- <main class="wraper container-fluid" role="main">
+    <main class="wraper mt-5 container-fluid" id="field">
       <div class="row">
-        <div class="col-2 sidebar overflow-hidden">
-          <div class="main-sidebar overflow-hidden overflow-auto">
-            <div class="user-panel d-flex flex-row">
-              <div class="image p-2 bd-highlight">
+        <div class="col-2 side-left px-1">
+          <div class="sidebar">
+            <div class="user-panel my-5 d-flex flex-row justify-content-start align-items-center">
+              <div class="image px-3">
                 <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
               </div>
-              <div class="info p-2 bd-highlight">
-                <p>Admin</p>
-                <a href="#" class="pr-3 mt-3"><i class="fa fa-circle text-success"></i> Online</a>
+              <div class="info">
+                <p class="username">Admin</p>
+                <p>online</p>
               </div>
             </div>
-            <div class="menu">
-              <ul class="nav flex-column mt-2">
-                <li class="nav-item">
-                  <a class="nav-link active" href="#">Active</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-              </ul>
-              <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                <span>Saved reports</span>
-                <a class="d-flex align-items-center text-muted" href="#">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-circle"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                </a>
-              </h6>
+            <div class="menu my-2">
               <ul class="nav flex-column">
                 <li class="nav-item">
                   <a class="nav-link active" href="#">Active</a>
@@ -299,46 +280,30 @@
             </div>
           </div>
         </div>
-        <div class="col-10 content p-0 ml-sm-auto col-lg-10 px-0 mt-5">
-          <div class="breadcrumb-content container pb-0">
-            <nav aria-label="breadcrumb">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Library</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Data</li>
-              </ol>
-            </nav>
-          </div>
-          <div class="main container pt-2">
-            <div class="header d-flex justify-content-between align-items-center border-bottom">
-              <h1 class="font-weight-normal">Dashboard</h1>
-              <div class="btn-toolbar mb-2">
-                <div class="btn-group mr-2">
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                  <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-                </div>
-                <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>                  
+        <div class="col-10 ml-sm-auto side-right p-0" role="main">
+          <div class="content py-2">
+            <div class="breadcrumb-main">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item"><a href="#">Library</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Data</li>
+                </ol>
+              </nav>
+              <div class="d-flex flex-row justify-content-between align-items-center mx-3 my-3 mr-5 overflow-auto">
+                <h4 class="heading font-weight-normal">Fields</h4>
+                <button class="btn btn-danger btn-sm">+ New Field</button>
               </div>
             </div>
-            <div class="main-content mt-4 mb-3">
-              <h4 class="font-weight-light pt-4 pb-2">System</h4>
-              <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled">
-                <li class="p-2 bd-highlight">General</li>
-                <li class="p-2 bd-highlight">Routes</li>
-                <li class="p-2 bd-highlight">Users</li>
-                <li class="p-2 bd-highlight">Email</li>
-                <li class="p-2 bd-highlight">Plugins</li>
-              </ul>
-              <h4 class="font-weight-light pt-4 pb-2">Content</h4>
-              <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled">
-                <li class="p-2 bd-highlight">Fields</li>
-                <li class="p-2 bd-highlight">Sections</li>
-                <li class="p-2 bd-highlight">Assets</li>
-                <li class="p-2 bd-highlight">Globals</li>
-                <li class="p-2 bd-highlight">Categories</li>
-                <li class="p-2 bd-highlight">Tags</li>
-                <li class="p-2 bd-highlight">Locales</li>
-              </ul>
+            <div class="main d-flex flex-row justify-content-around align-content-center">
+              <div class="main-left">
+                <ul class="flex-column text-left list-unstyled my-3">
+                  <li class="nav-item"><a href="" class="nav-link active">All Fields</a></li>
+                  <li class="nav-item"><a href="" class="nav-link">Commons</a></li>
+                </ul>
+                <button type="button" class="btn btn-sm btn-outline-secondary mx-2">+ New Group</button>
+              </div>
+              <div class="main-right flex-grow-1"></div>
             </div>
           </div>
           <footer class="my-5 pt-5 text-muted text-center text-small">
@@ -351,7 +316,8 @@
           </footer>
         </div>
       </div>
-    </main> -->
+    </main>
+
     
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
