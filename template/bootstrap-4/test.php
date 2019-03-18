@@ -9,6 +9,74 @@
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <title>Hello, world!</title>
+    <style type="text/css">
+      .body {
+        background: #FFFFFF;
+      }
+      .left-bar {
+        flex: 25%;
+        background: #333F4D;
+        color: #fff;
+        max-width: 200px;
+        top: 0;
+        bottom: 0;
+        z-index: 100;
+        position: fixed;
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+        width: 16.66%;
+      }
+
+      .sidebar {
+        top: 0;
+        height: calc(100vh - 48px);
+        overflow-x: hidden;
+        overflow-y: auto;
+        position: sticky;
+      }
+
+      .right-bar {
+        flex: 75%;
+        max-width: 83.333333%;
+      }
+      .main {
+        color: #fff;
+      }
+      .main ul li a {
+        /*color: #fff;*/
+      }
+      .main .header {
+        background: #494E53;
+      }
+      .left-content {
+        flex: 25%;
+        max-width: 200px;
+        z-index: 100;
+        position: sticky;
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+        width: 16.66%;
+      }
+      .sidebar-content{
+        top: 0;
+        height: calc(100vh - 48px);
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      .right-content {
+        flex: 75%;
+        max-width: 75%;
+      }
+      
+      .fixed-bar {
+        flex: 25%;
+        top: 0;
+        max-width: 200px;
+        z-index: 100;
+        position: fixed;
+        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+        width: 16.66%;
+      }
+
+    </style>
   </head>
   <body>
     <header>
@@ -171,293 +239,214 @@
         </div>
       </nav>
     </header>
-    
-
-    <!-- <main class="wraper mt-5 container-fluid">
-      <div class="row">
-        <div class="col-2 side-left px-1">
-          <div class="sidebar">
-            <div class="user-panel my-5 d-flex flex-row justify-content-start align-items-center">
-              <div class="image px-3">
-                <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
+    <div class="wraper">
+      <div class="container-fluid  pl-0">
+        <div class="body d-flex flex-row align-items-start">
+          <div class="left-bar px-1 py-2">
+            <div class="sidebar my-3">
+              <div class="user-panel my-5 d-flex flex-row justify-content-start align-items-center">
+                <div class="image px-3">
+                  <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
+                </div>
+                <div class="info">
+                  <p class="username">Admin</p>
+                  <p>online</p>
+                </div>
               </div>
-              <div class="info">
-                <p class="username">Admin</p>
-                <p>online</p>
-              </div>
-            </div>
-            <div class="menu my-2">
-              <ul class="nav flex-column">
-                <li class="nav-item">
-                  <a class="nav-link active" href="#">Active</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="col-10 ml-sm-auto side-right p-0" role="main">
-          <div class="content py-2">
-            <div class="breadcrumb-main">
-              <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item"><a href="#">Library</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Data</li>
-                </ol>
-              </nav>
-            </div>
-            <div class="main p-3">
-              <h4 class="header">Settings</h5>
-              <h5 class="heading font-weight-light pt-4 pb-2">System</h5>
-              <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled text-center">
-                <li class="p-2 bd-highlight"><i class="fas fa-sliders-h"></i>General</li>
-                <li class="p-2 bd-highlight"><i class="far fa-route"></i>Routes</li>
-                <li class="p-2 bd-highlight"><i class="fas fa-users-cog"></i>Users</li>
-                <li class="p-2 bd-highlight"><i class="fas fa-envelope-open"></i>Email</li>
-                <li class="p-2 bd-highlight"><i class="fas fa-plug"></i>Plugins</li>
-              </ul>
-              <h5 class="heading font-weight-light pt-4 pb-2">Content</h5>
-              <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled">
-                <li class="p-2 bd-highlight"><i class="far fa-file"></i>Fields</li>
-                <li class="p-2 bd-highlight"><i class="fas fa-copy"></i>Sections</li>
-                <li class="p-2 bd-highlight"><i class="far fa-images"></i>Assets</li>
-                <li class="p-2 bd-highlight"><i class="fas fa-globe"></i>Globals</li>
-                <li class="p-2 bd-highlight"><i class="fas fa-align-left"></i>Categories</li>
-                <li class="p-2 bd-highlight"><i class="fas fa-tags"></i>Tags</li>
-                <li class="p-2 bd-highlight"><i class="fas fa-comments"></i>Locales</li>
-              </ul>
-            </div>
-          </div>
-          <footer class="my-5 pt-5 text-muted text-center text-small">
-            <p class="mb-1">© 2017-2019 Company Name</p>
-            <ul class="list-inline">
-              <li class="list-inline-item"><a href="#">Privacy</a></li>
-              <li class="list-inline-item"><a href="#">Terms</a></li>
-              <li class="list-inline-item"><a href="#">Support</a></li>
-            </ul>
-          </footer>
-        </div>
-      </div>
-    </main> -->
-
-    <main class="wraper mt-5 container-fluid" id="field">
-      <div class="row">
-        <div class="col-2 side-left px-1">
-          <div class="sidebar">
-            <div class="user-panel my-5 d-flex flex-row justify-content-start align-items-center">
-              <div class="image px-3">
-                <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
-              </div>
-              <div class="info">
-                <p class="username">Admin</p>
-                <p>online</p>
-              </div>
-            </div>
-            <div class="menu my-2">
-              <ul class="nav flex-column">
-                <li class="nav-item">
-                  <a class="nav-link active" href="#">Active</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link" href="#">Link</a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="col-10 ml-sm-auto side-right p-0" role="main">
-          <div class="content py-2">
-            <div class="breadcrumb-main">
-              <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item"><a href="#">Library</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Data</li>
-                </ol>
-              </nav>
-              <div class="d-flex flex-row justify-content-between align-items-center mx-3 my-3 mr-5 overflow-auto">
-                <h4 class="heading font-weight-normal">Fields</h4>
-                <button class="btn btn-danger btn-sm">+ New Field</button>
-              </div>
-            </div>
-            <!-- Main flex -->
-            <div class="main d-flex flex-row justify-content-around align-content-center">
-              <div class="main-left py-3">
-                <ul class="flex-column text-left list-unstyled my-3">
-                  <li class="nav-item"><a href="" class="nav-link active">All Fields</a></li>
-                  <li class="nav-item"><a href="" class="nav-link">Commons</a></li>
+              <div class="menu my-2">
+                <ul class="nav flex-column">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">Active</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                  </li>
                 </ul>
-                <button type="button" class="btn btn-sm btn-outline-secondary mx-2">+ New Group</button>
-              </div>
-              <div class="main-right flex-grow-1">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">First</th>
-                      <th scope="col">Last</th>
-                      <th scope="col">Handle</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                  </tbody>
-                </table>
               </div>
             </div>
-            <!-- end main flex -->
           </div>
-          <footer class="my-5 pt-5 text-muted text-center text-small">
-            <p class="mb-1">© 2017-2019 Company Name</p>
-            <ul class="list-inline">
-              <li class="list-inline-item"><a href="#">Privacy</a></li>
-              <li class="list-inline-item"><a href="#">Terms</a></li>
-              <li class="list-inline-item"><a href="#">Support</a></li>
-            </ul>
-          </footer>
+          <div class="right-bar ml-auto pl-3">
+            <div class="main m-0 p-0">
+              <div class="header p-3">
+                <ol class="breadcrumb" style="margin-bottom: 5px;">
+                  <li><a href="#">Home</a></li>
+                  <li><a href="#">Library</a></li>
+                  <li class="active">Data</li>
+                </ol>
+                <h4>Header</h4>
+              </div>
+              <div class="content p-3 d-flex flex-row justify-content-start">
+                <div id="content" class="left-content py-2">
+                  <div class="sidebar-content">
+                    <ul class="list-unstyled">
+                      <li><a href="">Lorem ipsum dolor</a></li>
+                      <li><a href="">Lorem ipsum dolor</a></li>
+                      <li><a href="">Lorem ipsum dolor</a></li>
+                      <li><a href="">Lorem ipsum dolor</a></li>
+                      <li><a href="">Lorem ipsum dolor</a></li>
+                    </ul>
+                  </div>
+                </div>
+                <div class="right-content ml-auto pl-3">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">First</th>
+                        <th scope="col">Last</th>
+                        <th scope="col">Handle</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">1</th>
+                        <td>Mark</td>
+                        <td>Otto</td>
+                        <td>@mdo</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">2</th>
+                        <td>Jacob</td>
+                        <td>Thornton</td>
+                        <td>@fat</td>
+                      </tr>
+                      <tr>
+                        <th scope="row">3</th>
+                        <td>Larry</td>
+                        <td>the Bird</td>
+                        <td>@twitter</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="footer p-3 my-5 pt-5 text-muted text-center text-small">
+                <p class="mb-1">© 2017-2019 Company Name</p>
+                <ul class="list-inline">
+                  <li class="list-inline-item"><a href="#">Privacy</a></li>
+                  <li class="list-inline-item"><a href="#">Terms</a></li>
+                  <li class="list-inline-item"><a href="#">Support</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </main>
+    </div>
 
     
     <!-- Optional JavaScript -->
@@ -465,5 +454,18 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+      window.onscroll = function() {myFunction()};
+      var navbar = document.getElementById('content');
+      var sticky = navbar.offsetTop;
+      function myFunction() {
+        if (window.pageYOffset >= sticky) {
+          navbar.classList.add("fixed-bar")
+        } else {
+          navbar.classList.remove("fixed-bar");
+        }
+      }
+    </script>
   </body>
 </html>
