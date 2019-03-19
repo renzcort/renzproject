@@ -173,7 +173,7 @@
     </header>
     
 
-    <!-- <main class="wraper mt-5 container-fluid">
+    <main class="wraper mt-5 container-fluid">
       <div class="row">
         <div class="col-2 side-left px-1">
           <div class="sidebar">
@@ -247,9 +247,9 @@
           </footer>
         </div>
       </div>
-    </main> -->
+    </main>
 
-    <main class="wraper mt-5 container-fluid" id="field">
+    <!-- <main class="wraper mt-5 container-fluid" id="field">
       <div class="row">
         <div class="col-2 side-left px-1">
           <div class="sidebar">
@@ -316,7 +316,7 @@
           </footer>
         </div>
       </div>
-    </main>
+    </main> -->
 
     
     <!-- Optional JavaScript -->

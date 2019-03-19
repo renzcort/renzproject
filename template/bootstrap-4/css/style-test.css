@@ -1,5 +1,6 @@
 body {
   background: #EBEDEF;
+  font-size: 14px;
 }
 
 .dropdown-menu.show {
@@ -202,20 +203,33 @@ body {
 }
 
 
-.middle-content .form label {
-  font-size:14px;
-  font-weight:600;
-  margin-bottom: 0;
+.middle-content .form .form-group {
+  margin-bottom: 1.5rem; 
+}
+.middle-content .form label.heading {
+  font-size:15px;
+  font-weight:500;
+  margin-bottom: .1rem;
+}
+.middle-content .form label.form-check-label,
+.middle-content .form label.custom-control-label {
+  font-weight:300;
 }
 .middle-content .form small{
-  font-size:10px;
+  font-size:11px;
+  line-height: 1px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
-.middle-content .form input[type=text] {
+.middle-content .form input[type=text],
+.middle-content .form input[type=email] {
   font-size:12px;
 }
 .middle-content .form select {
-  font-size: 12px;
-  padding: 4px 30px;
+  font-size: 12px; 
+}
+.middle-content .form .costum-select {
+  max-width:20%;
 }
 .middle-content .form table th,
 .middle-content .form table td {
@@ -224,15 +238,22 @@ body {
 .middle-content .form table td.action {
   width: 5%;
 }
-.middle-content .form .form-check-label{
-  font-weight:300;
-}
 .middle-content .form .form-group > .form-number {
-  width: 10%;
+  max-width: 10%;
 }
 .middle-content .heading {
-
+  font-weight: 600;
 }
 .middle-content ul li > i {
-  font-size:40px;
+  font-size:2.1em;
+  width: 100%;
+  height: auto;
+}
+.middle-content .table tr.start > td {
+  vertical-align: middle;
+}
+.middle-content .table tr.start > td.first {
+  color: #fff;
+  background-color: #343a40;
+  border-color: #454d55;
 }
