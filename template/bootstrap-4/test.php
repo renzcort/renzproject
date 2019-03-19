@@ -193,8 +193,9 @@
         </div>
       </nav>
     </header>
-
-    <div class="wraper">
+    
+    <!-- Field List -->
+    <!-- <div class="wraper">
       <div class="">
         <div class="body d-flex flex-row justify-content-between">
           <div class="left-bar">
@@ -224,8 +225,8 @@
               </div>
             </div>
           </div>
-          <div class="right-bar ml-auto mt-5 mb-3 pl-0 pt-3">
-            <div class="main py-1">
+          <div class="right-bar ml-auto mt-4 mb-3 pl-0 pt-4">
+            <div class="main py-1 my-1">
               <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                   <li class="breadcrumb-item"><a href="#">Home</a></li>
@@ -238,7 +239,7 @@
                 <button class="btn btn-danger btn-sm mx-3">+ New Field</button>
               </div>
               <div class="content d-flex flex-row justify-content-start">
-                <div id="content-bar" class="left-content py-2 px-2">
+                <div id="left-content" class="left-content py-2 px-2 overflow-auto">
                   <div class="sidebar-content">
                     <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
                       <li class="nav-item">
@@ -256,7 +257,7 @@
                     </ul>
                   </div>
                 </div>
-                <div class="right-content ml-auto pl-3">
+                <div id="right-content" class="right-content ml-auto pl-3">
                   <table class="table">
                     <thead>
                       <tr>
@@ -535,7 +536,378 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
+    <!-- end Field -->
+    
+    <!-- Field Add -->
+    <!-- <div class="wraper">
+      <div class="">
+        <div class="body d-flex flex-row justify-content-between">
+          <div class="left-bar">
+            <div class="sidebar my-5 py-4">
+              <div class="user-bar mx-2 d-flex flex-row justify-content-start align-content-start align-items-center">
+                <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
+                <div class="info pl-2">
+                  <p>Admin</p>
+                  <p>online</p>
+                </div>
+              </div>
+              <div class="menu my-5">
+                <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">Active</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="right-bar ml-auto mt-4 mb-3 pl-0 pt-4">
+            <div class="main container">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item"><a href="#">Library</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Data</li>
+                </ol>
+              </nav>
+              <div class="px-3 py-3 my-2 d-flex flex-row justify-content-between align-content-between">
+                <h4 class="title">Header</h4>
+                <button class="btn btn-danger btn-sm mx-3">+ New Field</button>
+              </div>
+              <div class="content">
+                <div class="middle-content mx-3 py-4 pr-5">
+                  <form class="form">
+                    <div class="form-group">
+                      <label class="heading" for="inputGroup">Group</label>
+                      <small class="form-text text-muted">Which group should this field be displayed in?</small>
+                      <select name="group" class="">
+                        <option value="0">- Select Group -</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label class="heading" for="inputName">Name</label>
+                      <small class="form-text text-muted">What this field will be called in the CP.</small>
+                      <input type="text" name="name" class="form-control"  placeholder="name">
+                    </div>
+                    <div class="form-group">
+                      <label class="heading" for="inputHandle">Handle</label>
+                      <small class="form-text text-muted">How you’ll refer to this field in the templates.</small>
+                      <input type="text" name="handle" class="form-control"  placeholder="handle">
+                    </div>
+                    <div class="form-group">
+                      <label class="heading" for="inputInstruction">Instruction</label>
+                      <small class="form-text text-muted">Helper text to guide the author.</small>
+                      <textarea class="form-control"></textarea>
+                      <div class="form-check">
+                        <input type="checkbox" name="translateable" class="form-check-input">
+                        <label class="form-check-label" for="inputTranslateable">This field is translatable</label>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="heading" for="inputType">Field Type</label>
+                      <small class="form-text text-muted">What type of field is this?</small>
+                      <select name="type" class="">
+                        <option value="0">- Select Type -</option>
+                      </select>
+                    </div>
+                    <div class="d-none plain-text">
+                      <div class="form-group">
+                        <label class="heading" for="inputPlaceholder">Placeholder Text</label>
+                        <small class="form-text text-muted">The text that will be shown if the field doesn’t have a value.</small>
+                        <input type="text" name="placeholder" class="form-control">
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputMaxlength">Max Length</label>
+                        <small class="form-text text-muted">The maximum length of characters the field is allowed to have.</small>
+                        <input type="text" name="maxlength" class="form-control form-number">
+                      </div>
+                      <div class="form-group">
+                        <div class="form-check">
+                          <input type="checkbox" name="linebreak" class="form-check-input">
+                          <label class="form-check-label" for="inputAllowLineBreaks">Allow line breaks</label>
+                        </div> 
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputInitialRows">Initial Rows</label>
+                        <input type="text" name="maxlength" class="form-control form-number">
+                      </div>
+                    </div>
+                    <div class="d-none assets">
+                      <div class="form-group">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                          <label class="form-check-label" for="restrictAssets">Restrict uploads to a single folder?</label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputSource">Sources</label>
+                        <small class="form-text text-muted">Which sources do you want to select assets from?</small>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources"> 
+                          <label class="form-check-label" for="defaultCheck1">All</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources"> 
+                          <label class="form-check-label" for="defaultCheck1">Products</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources"> 
+                          <label class="form-check-label" for="defaultCheck1">Images</label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputUploadLocation">Default Upload Location</label>
+                        <small class="form-text text-muted">Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end? Note that the subfolder path can contain variables like {slug} or {author.username}.</small>
+                        <div class="d-flex flex-row justify-content-between">
+                          <select name="sources">
+                            <option value="0">- Select Sources -</option>
+                          </select>
+                          <input type="text" name="sources" class="form-control flex-grow-1 ml-2">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                          <label class="form-check-label" for="restrictAssets">Restrict allowed file types?</label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputLocale">Target Locale</label>
+                        <small class="form-text text-muted">Choose how the field should look for authors.</small>
+                        <select name="locale" class="">
+                          <option value="0">- Select Locale -</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputLimit">Limit</label>
+                        <small class="form-text text-muted">Limit the number of selectable assets.</small>
+                        <input type="text" name="limit" class="form-control form-number">
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputMode">View Mode</label>
+                        <small class="form-text text-muted">Choose how the field should look for authors.</small>
+                        <select name="type" class="">
+                          <option value="0">- Select Mode -</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputSelectionLabel">Selection Label</label>
+                        <small class="form-text text-muted">Enter the text you want to appear on the assets selection input.</small>
+                        <input type="text" name="selectionLabel" class="form-control">
+                      </div>
+                    </div>
+                    <div class="d-none rich-text">
+                      <div class="form-group">
+                        <label class="heading" for="inputConfig">Config</label>
+                        <small class="form-text text-muted">You can save custom Redactor configs as .json files in craft/config/redactor/. View available settings.</small>
+                        <select name="config" class="">
+                          <option value="0">- Select Config -</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputSource">Available Asset Sources</label>
+                        <small class="form-text text-muted">The asset sources that should be available when selecting assets (if the selected config has an Image or File button).</small>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources"> 
+                          <label class="form-check-label" for="defaultCheck1">All</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources"> 
+                          <label class="form-check-label" for="defaultCheck1">Products</label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources"> 
+                          <label class="form-check-label" for="defaultCheck1">Images</label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputTransforms">Available Image Transforms</label>
+                        <small class="form-text text-muted">The image transforms that should be available when selecting images (if the selected config has an Image button).</small>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources"> 
+                          <label class="form-check-label" for="defaultCheck1">All</label>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources"> 
+                          <label class="form-check-label" for="defaultCheck1">Clean up HTML?</label>
+                        </div>
+                        <small class="form-text text-muted">Removes <span>’s, empty tags, and most style attributes on save.</small>
+                      </div>
+                      <div class="form-group">
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources"> 
+                          <label class="form-check-label" for="defaultCheck1">Purify HTML?</label>
+                        </div>
+                        <small class="form-text text-muted">Removes any potentially-malicious code on save, by running the submitted data through HTML Purifier.</small>
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputColumnType">Column Type</label>
+                        <small class="form-text text-muted">The underlying database column type to use when saving content.</small>
+                        <select name="columnType" class="">
+                          <option value="0">- Select Column Type -</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="d-none categories">
+                      <div class="form-group">
+                        <label class="heading" for="inputSource">Source</label>
+                        <small class="form-text text-muted">Which source do you want to select categories from?</small>
+                        <select name="Source" class="">
+                          <option value="0">- Select Source -</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputTargetLocale">Target Locale</label>
+                        <small class="form-text text-muted">Which Target Locale do you want to select categories from?</small>
+                        <select name="TargetLocale" class="">
+                          <option value="0">- Select Source -</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputLimit">Limit</label>
+                        <small class="form-text text-muted">Limit the number of selectable assets.</small>
+                        <input type="text" name="limit" class="form-control form-number">
+                      </div>
+                      <div class="form-group">
+                        <label class="heading" for="inputSelectionLabel">Selection Label</label>
+                        <small class="form-text text-muted">Enter the text you want to appear on the assets selection input.</small>
+                        <input type="text" name="selectionLabel" class="form-control">
+                      </div>
+                    </div>
+                    <div class="d-none checkboxes">
+                      <div class="form-group">
+                        <label class="heading" for="inputCheckbox">Checkbox Options</label>
+                        <small class="form-text text-muted">Define the available options.</small>
+                        <table class="table font-weight-light m-0">
+                          <thead>
+                            <tr>
+                              <th scope="col">Option Label</th>
+                              <th scope="col">Value</th>
+                              <th scope="col">Default?  </th>
+                              <th colspan="2" ></th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Mark</td>
+                              <td>Otto</td>
+                              <td class="action"><input type="checkbox" name="checkboxes"></td>
+                              <td class="action">Otto</td>
+                              <td class="action">@mdo</td>
+                             </tr>
+                          </tbody>
+                        </table>
+                        <input type="button" class="btn btn-default btn btn-light btn-block" name="" value="+ Add an option">
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+              <div class="footer p-3 my-5 pt-5 text-muted text-center text-small">
+                <p class="mb-1">© 2017-2019 Company Name</p>
+                <ul class="list-inline">
+                  <li class="list-inline-item"><a href="#">Privacy</a></li>
+                  <li class="list-inline-item"><a href="#">Terms</a></li>
+                  <li class="list-inline-item"><a href="#">Support</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>  -->
+    <!-- End Field -->
+
+    <div class="wraper">
+      <div class="">
+        <div class="body d-flex flex-row justify-content-between">
+          <div class="left-bar">
+            <div class="sidebar my-5 py-4">
+              <div class="user-bar mx-2 d-flex flex-row justify-content-start align-content-start align-items-center">
+                <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
+                <div class="info pl-2">
+                  <p>Admin</p>
+                  <p>online</p>
+                </div>
+              </div>
+              <div class="menu my-5">
+                <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">Active</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <div class="right-bar ml-auto mt-4 mb-3 pl-0 pt-4">
+            <div class="main container">
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#">Home</a></li>
+                  <li class="breadcrumb-item"><a href="#">Library</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Data</li>
+                </ol>
+              </nav>
+              <div class="px-3 py-3 my-2 d-flex flex-row justify-content-between align-content-between">
+                <h4 class="title">Header</h4>
+                <button class="btn btn-danger btn-sm mx-3">+ New Field</button>
+              </div>
+              <div class="content">
+                <div class="middle-content mx-3 py-4 pr-5">
+                  <h5 class="heading font-weight-light pt-4 pb-2">System</h5>
+                  <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled text-center">
+                    <li class="px-3 py-1"><i class="fas fa-sliders-h"></i>General</li>
+                    <li class="px-3 py-1"><i class="far fa-route"></i>Routes</li>
+                    <li class="px-3 py-1"><i class="fas fa-users-cog"></i>Users</li>
+                    <li class="px-3 py-1"><i class="fas fa-envelope-open"></i>Email</li>
+                    <li class="px-3 py-1"><i class="fas fa-plug"></i>Plugins</li>
+                  </ul>
+                  <h5 class="heading font-weight-light pt-4 pb-2">Content</h5>
+                  <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled">
+                    <li class="px-3 py-1"><i class="far fa-file"></i>Fields</li>
+                    <li class="px-3 py-1"><i class="fas fa-copy"></i>Sections</li>
+                    <li class="px-3 py-1"><i class="far fa-images"></i>Assets</li>
+                    <li class="px-3 py-1"><i class="fas fa-globe"></i>Globals</li>
+                    <li class="px-3 py-1"><i class="fas fa-align-left"></i>Categories</li>
+                    <li class="px-3 py-1"><i class="fas fa-tags"></i>Tags</li>
+                    <li class="px-3 py-1"><i class="fas fa-comments"></i>Locales</li>
+                  </ul>
+                </div>
+              </div>
+              <div class="footer p-3 my-5 pt-5 text-muted text-center text-small">
+                <p class="mb-1">© 2017-2019 Company Name</p>
+                <ul class="list-inline">
+                  <li class="list-inline-item"><a href="#">Privacy</a></li>
+                  <li class="list-inline-item"><a href="#">Terms</a></li>
+                  <li class="list-inline-item"><a href="#">Support</a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>  -->
+
 
 <!-- Optional JavaScript -->
 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -543,16 +915,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script type="text/javascript">
-window.onscroll = function() {myFunction()};
-var navbar = document.getElementById('content-bar');
-var sticky = navbar.offsetTop;
-function myFunction() {
-if (window.pageYOffset >= sticky) {
-navbar.classList.add("fixed-bar")
-} else {
-navbar.classList.remove("fixed-bar");
-}
-}
+  
+  window.onscroll = function() {myFunction()};
+  var leftbar = document.getElementById('left-content');
+  var leftbarTop = leftbar.offsetTop;
+  var leftbarButton = leftbar.offsetHeight;
+  var rightbar = document.getElementById('right-content');
+  var rightbarTop = rightbar.offsetHeight;
+  
+  function myFunction() {
+    if (window.pageYOffset >= leftbarTop && window.pageYOffset <= leftbarButton) {
+      leftbar.classList.add("fixed-bar")
+    } else {
+      leftbar.classList.remove("fixed-bar");
+    }
+  }
 </script>
 </body>
 </html>

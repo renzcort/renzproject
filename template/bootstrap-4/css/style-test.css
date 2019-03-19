@@ -151,10 +151,23 @@ body {
   flex: 75%;
   max-width: 83.333333%;
 }
+.right-bar .main {
+  padding-left: 0;
+  padding-right: 0;
+}
+.right-bar .main .breadcrumb {
+  background: #E4E6E8;
+}
+.right-bar .main .title {
+  color: #DA5A47;
+  font-family: HelveticaNeue-Light, HelveticaNeue, sans-serif;
+  font-size: 24px;
+}
 .right-bar .content {
   background: #fff;
 }
-.content .left-content {
+
+.left-content {
   flex: 25%;
   max-width: 200px;
   z-index: 100;
@@ -164,9 +177,7 @@ body {
 .left-content .sidebar-content{
   color: #000;
   top: 0;
-  height: calc(100vh - 48px);
-  overflow-x: hidden;
-  overflow-y: auto;
+  /*height: calc(100vh - 48px);*/
 }
 .left-content .sidebar-content .nav-item {
   color: #000;
@@ -174,17 +185,54 @@ body {
 .left-content .sidebar-content .nav-link.active {
   color: #000;
 }
-
-
+.left-content.fixed-bar{
+  color: #000;
+  top: 0;
+  position: fixed;
+  margin: 50px 0;
+  min-height: 340px;
+  /*height: calc(100vh - 48px);*/
+  overflow-x: hidden;
+  overflow-y: auto;
+}
 
 .right-content {
   flex: 75%;
   max-width: 75%;
 }
 
-.fixed-bar {
-  color: #000;
-  top: 0;
-  position: fixed;
-  margin: 50px 0;
+
+.middle-content .form label {
+  font-size:14px;
+  font-weight:600;
+  margin-bottom: 0;
+}
+.middle-content .form small{
+  font-size:10px;
+}
+.middle-content .form input[type=text] {
+  font-size:12px;
+}
+.middle-content .form select {
+  font-size: 12px;
+  padding: 4px 30px;
+}
+.middle-content .form table th,
+.middle-content .form table td {
+  font-size:10px;
+}
+.middle-content .form table td.action {
+  width: 5%;
+}
+.middle-content .form .form-check-label{
+  font-weight:300;
+}
+.middle-content .form .form-group > .form-number {
+  width: 10%;
+}
+.middle-content .heading {
+
+}
+.middle-content ul li > i {
+  font-size:40px;
 }
