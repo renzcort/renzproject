@@ -295,157 +295,16 @@
                 <button class="btn btn-danger btn-sm">+ New Field</button>
               </div>
             </div>
-            <!-- Main flex -->
             <div class="main d-flex flex-row justify-content-around align-content-center">
-              <div class="main-left py-3">
+              <div class="main-left">
                 <ul class="flex-column text-left list-unstyled my-3">
                   <li class="nav-item"><a href="" class="nav-link active">All Fields</a></li>
                   <li class="nav-item"><a href="" class="nav-link">Commons</a></li>
                 </ul>
                 <button type="button" class="btn btn-sm btn-outline-secondary mx-2">+ New Group</button>
               </div>
-              <div class="main-right flex-grow-1">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">#</th>
-                      <th scope="col">First</th>
-                      <th scope="col">Last</th>
-                      <th scope="col">Handle</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">1</th>
-                      <td>Mark</td>
-                      <td>Otto</td>
-                      <td>@mdo</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">2</th>
-                      <td>Jacob</td>
-                      <td>Thornton</td>
-                      <td>@fat</td>
-                    </tr>
-                    <tr>
-                      <th scope="row">3</th>
-                      <td>Larry</td>
-                      <td>the Bird</td>
-                      <td>@twitter</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+              <div class="main-right flex-grow-1"></div>
             </div>
-            <!-- end main flex -->
           </div>
           <footer class="my-5 pt-5 text-muted text-center text-small">
             <p class="mb-1">© 2017-2019 Company Name</p>
