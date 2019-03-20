@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" type="text/css" href="css/style-test.css">
+    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/admin/template/bootstrap-4/') ?>css/style.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <title>Hello, world!</title>
@@ -14,186 +14,7 @@
     </style>
   </head>
   <body>
-    <header>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top bg-dark">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav ml-auto">
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="far fa-envelope"></i>
-                <span class="badge badge-light">9</span>
-                <span class="sr-only">(current)</span>
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <h5 class="header text-center font-weight-light pb-2">You have 4 messages</h5>
-                <div class="content overflow-auto">
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
-                    <div class="body flex-grow-1 mx-1 px-2">
-                      <h5>Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
-                      <p>Some quick example text to build </p>
-                    </div>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
-                    <div class="body flex-grow-1 mx-1 px-2">
-                      <h5>Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
-                      <p>Some quick example text to build </p>
-                    </div>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
-                    <div class="body flex-grow-1 mx-1 px-2">
-                      <h5>Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
-                      <p>Some quick example text to build </p>
-                    </div>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
-                    <div class="body flex-grow-1 mx-1 px-2">
-                      <h5>Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
-                      <p>Some quick example text to build </p>
-                    </div>
-                  </div>
-                </div>
-                <h5 class="footer text-center font-weight-light pt-2"><a href="#">See All Messages</a></h5>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="far fa-envelope"></i>
-                <span class="badge badge-light">9</span>
-                <span class="sr-only">(current)</span>
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <h5 class="header text-center font-weight-light pb-2">You have 4 messages</h5>
-                <div class="content overflow-auto">
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <p class="description"><i class="fa fa-users text-aqua"></i>
-                    Some quick example text to build </p>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <p class="description"><i class="fa fa-users text-aqua"></i>
-                    Some quick example text to build </p>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <p class="description"><i class="fa fa-users text-aqua"></i>
-                    Some quick example text to build </p>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <p class="description"><i class="fa fa-users text-aqua"></i>
-                    Some quick example text to build </p>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <p class="description"><i class="fa fa-users text-aqua"></i>
-                    Some quick example text to build </p>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <p class="description"><i class="fa fa-users text-aqua"></i>
-                    Some quick example text to build </p>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <p class="description"><i class="fa fa-users text-aqua"></i>
-                    Some quick example text to build </p>
-                  </div>
-                </div>
-                <h5 class="footer text-center font-weight-light pt-2"><a href="#">See All Messages</a></h5>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="far fa-envelope"></i>
-                <span class="badge badge-light">9</span>
-                <span class="sr-only">(current)</span>
-              </a>
-              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <h5 class="header text-center font-weight-light pb-2">You have 4 messages</h5>
-                <div class="content overflow-auto">
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <div class="body flex-grow-1 mx-1 px-2">
-                      <h5 class="mb-1">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
-                      <div class="progress">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <div class="body flex-grow-1 mx-1 px-2">
-                      <h5 class="mb-1">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
-                      <div class="progress">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <div class="body flex-grow-1 mx-1 px-2">
-                      <h5 class="mb-1">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
-                      <div class="progress">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 75%" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <div class="body flex-grow-1 mx-1 px-2">
-                      <h5 class="mb-1">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
-                      <div class="progress">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <div class="body flex-grow-1 mx-1 px-2">
-                      <h5 class="mb-1">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
-                      <div class="progress">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="dropdown-item d-flex flex-row px-1 mx-2 justify-content-start align-content-start align-items-start">
-                    <div class="body flex-grow-1 mx-1 px-2">
-                      <h5 class="mb-1">Support Team <small><i class="fa fa-clock-o"></i> 5 mins</small></h5>
-                      <div class="progress">
-                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <h5 class="footer text-center font-weight-light pt-2"><a href="#">See All Messages</a></h5>
-              </div>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
-              </a>
-              <div class="dropdown-menu user-panel py-0" aria-labelledby="navbarDropdown">
-                <div class="dropdown-item text-center">
-                  <div class="header py-2">
-                    <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
-                    <p class="pt-2">Alexander Pierce - Web Developer <small class="d-block">Member since Nov. 2012</small>
-                    </p>
-                  </div>
-                  <div class="body">
-                    <ul class="list-unstyled py-3 d-flex flex-row justify-content-around">
-                      <li><a href="">Followers</a></li>
-                      <li><a href="">Sales</a></li>
-                      <li><a href="">Friends</a></li>
-                    </ul>
-                  </div>
-                  <div class="footer px-2 py-2 d-flex flex-row justify-content-between">
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Primary</button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary">Primary</button>
-                  </div>
-                </div>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </nav>
-    </header>
+    <?php $this->load->view('template/bootstrap-4/partial/nav'); ?>
     
     <!-- Field List -->
     <!-- <div class="wraper">
@@ -1501,223 +1322,16 @@
       <div class="">
         <div class="body d-flex flex-row justify-content-between">
           <div class="left-bar">
-            <div class="sidebar my-5 py-4">
-              <div class="user-bar mx-2 d-flex flex-row justify-content-start align-content-start align-items-center">
-                <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
-                <div class="info pl-2">
-                  <p>Admin</p>
-                  <p>online</p>
-                </div>
-              </div>
-              <div class="menu my-5">
-                <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
-                  <li class="nav-item">
-                    <a class="nav-link active" href="#">Active</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">Link</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
+            <?php $this->load->view('template/bootstrap-4/partial/sidebar'); ?>
           </div>
           <div class="right-bar ml-auto mt-4 mb-3 pl-0 pt-4">
             <div class="main container">
-              <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="#">Home</a></li>
-                  <li class="breadcrumb-item"><a href="#">Library</a></li>
-                  <li class="breadcrumb-item active" aria-current="page">Data</li>
-                </ol>
-              </nav>
-              <div class="px-3 py-2 my-2 d-flex flex-row justify-content-between align-content-center align-items-center">
-                <h4 class="title">Header</h4>
-                <button class="btn btn-danger btn-sm mx-3">+ New Field</button>
-              </div>
+              <?php $this->load->view('template/bootstrap-4/partial/header'); ?>
               <div class="content tabs">
-                <ul class="nav nav-tabs d-flex flex-row flex-nowrap" id="myTab" role="tablist">
-                  <li class="nav-item">
-                    <a class="nav-link active" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="true">Settings</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" id="layout-tab" data-toggle="tab" href="#layout" role="tab" aria-controls="layout" aria-selected="false">Field Layout</a>
-                  </li>
-                </ul>
-                <div class="middle-content mx-3 py-4 pr-5">
-                  <div class="tab-content" id="myTabContent">
-                    <div class="tab-pane fade" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-                      <form class="form">
-                        <div class="form-group">
-                          <label class="heading required" for="inputName">Name</label>
-                          <small class="form-text text-muted">What this site will be called in the CP.</small>
-                          <input type="text" name="name" class="form-control">
-                        </div>
-                        <div class="form-group">
-                          <label class="heading" for="inputHandle">Handle</label>
-                          <small class="form-text text-muted">How you’ll refer to this site in the templates.</small>
-                          <input type="text" name="handle" class="form-control">
-                        </div>
-                        <div class="form-group">
-                          <div class="form-check">
-                            <input type="checkbox" name="categories" class="form-check-input">
-                            <label class="form-check-label" for="inputTranslateable">Categories in this group have their own URLs</label>
-                          </div>
-                        </div>
-                        <div class="form-group">
-                          <label class="heading" for="inputCategories">Category URL Formats</label>
-                          <small class="form-text text-muted">What the category URLs should look like. {slug} is required, but it can also include any category properties.</small>
-                          <table class="table">
-                            <thead>
-                              <th colspan="2">Top-Level Categories</th>
-                              <th>Nested Categories</th>
-                            </thead>
-                            <tbody>
-                              <tr>
-                                <td>id_id</td>
-                                <td><input type="text" name="" class="form-control"></td>
-                                <td><input type="text" name="" class="form-control" placeholder="{parent.uri}/{slug}"></td>
-                              </tr>
-                              <tr>
-                                <td>es_us</td>
-                                <td><input type="text" name="" class="form-control"></td>
-                                <td><input type="text" name="" class="form-control" placeholder="{parent.uri}/{slug}"></td>
-                              </tr>
-                            </tbody>
-                          </table>
-                        </div>
-                        <div class="form-group">
-                          <label class="heading" for="inputCategoryTemplate">Category Template</label>
-                          <small class="form-text text-muted">The template to use when a category’s URL is requested.</small>
-                          <input type="text" name="categoryTemplate" class="form-control">
-                        </div>
-                        <div class="form-group">
-                          <label class="heading" for="inputMaxlevel">Max Levels</label>
-                          <small class="form-text text-muted">The maximum number of levels this category group can have. Leave blank if you don’t care.</small>
-                          <input type="text" name="maxlevel" class="form-control form-number">
-                        </div>
-                      </form>
-                    </div>
-                    <div class="tab-pane fade show active" id="layout" role="tabpanel" aria-labelledby="layout-tab">
-                      <h5 class="heading">Design Your Field Layout</h5>
-                      <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="nav-item">
-                          <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-                        </li>
-                      </ul>
-                      <div class="tab-content" id="myTabContent">
-                        <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                          <ul id="sortable1" class="text-center list-group connectedSortable">
-                            <li class="list-group-item active">Lion</li>
-                            <li class="list-group-item">Dog</li>
-                            <li class="list-group-item">Cat</li>
-                            <li class="list-group-item">Tiger</li>
-                          </ul>
-                        </div>
-                      </div>
-                      <div class="my-5 d-flex flex-row flex-wrap">
-                        <div class="field-group">
-                          <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item">
-                              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-                            </li>
-                          </ul>
-                          <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                              <ul id="sortable1" class="text-center list-group connectedSortable">
-                                <li class="list-group-item active">Lion</li>
-                                <li class="list-group-item">Dog</li>
-                                <li class="list-group-item">Cat</li>
-                                <li class="list-group-item">Tiger</li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="field-group">
-                          <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item">
-                              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-                            </li>
-                          </ul>
-                          <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                              <ul id="sortable1" class="text-center list-group connectedSortable">
-                                <li class="list-group-item active">Lion</li>
-                                <li class="list-group-item">Dog</li>
-                                <li class="list-group-item">Cat</li>
-                                <li class="list-group-item">Tiger</li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="field-group">
-                          <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item">
-                              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-                            </li>
-                          </ul>
-                          <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                              <ul id="sortable1" class="text-center list-group connectedSortable">
-                                <li class="list-group-item active">Lion</li>
-                                <li class="list-group-item">Dog</li>
-                                <li class="list-group-item">Cat</li>
-                                <li class="list-group-item">Tiger</li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="field-group">
-                          <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item">
-                              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-                            </li>
-                          </ul>
-                          <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                              <ul id="sortable1" class="text-center list-group connectedSortable">
-                                <li class="list-group-item active">Lion</li>
-                                <li class="list-group-item">Dog</li>
-                                <li class="list-group-item">Cat</li>
-                                <li class="list-group-item">Tiger</li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                        <div class="field-group">
-                          <ul class="nav nav-tabs" id="myTab" role="tablist">
-                            <li class="nav-item">
-                              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-                            </li>
-                          </ul>
-                          <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                              <ul id="sortable1" class="text-center list-group connectedSortable">
-                                <li class="list-group-item active">Lion</li>
-                                <li class="list-group-item">Dog</li>
-                                <li class="list-group-item">Cat</li>
-                                <li class="list-group-item">Tiger</li>
-                              </ul>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <?php $this->load->view($content); ?>
               </div>
               <div class="footer p-3 my-5 pt-5 text-muted text-center text-small">
-                <p class="mb-1">© 2017-2019 Company Name</p>
-                <ul class="list-inline">
-                  <li class="list-inline-item"><a href="#">Privacy</a></li>
-                  <li class="list-inline-item"><a href="#">Terms</a></li>
-                  <li class="list-inline-item"><a href="#">Support</a></li>
-                </ul>
+                <?php $this->load->view('template/bootstrap-4/partial/footer'); ?>
               </div>
             </div>
           </div>
@@ -1744,20 +1358,20 @@
     });
   })
 
-  // window.onscroll = function() {myFunction()};
-  // var leftbar = document.getElementById('left-content');
-  // var leftbarTop = leftbar.offsetTop;
-  // var leftbarButton = leftbar.offsetHeight;
-  // var rightbar = document.getElementById('right-content');
-  // var rightbarTop = rightbar.offsetHeight;
+  window.onscroll = function() {myFunction()};
+  var leftbar = document.getElementById('left-content');
+  var leftbarTop = leftbar.offsetTop;
+  var leftbarButton = leftbar.offsetHeight;
+  var rightbar = document.getElementById('right-content');
+  var rightbarTop = rightbar.offsetHeight;
   
-  // function myFunction() {
-  //   if (window.pageYOffset >= leftbarTop && window.pageYOffset <= leftbarButton) {
-  //     leftbar.classList.add("fixed-bar")
-  //   } else {
-  //     leftbar.classList.remove("fixed-bar");
-  //   }
-  // }
+  function myFunction() {
+    if (window.pageYOffset >= leftbarTop && window.pageYOffset <= leftbarButton) {
+      leftbar.classList.add("fixed-bar")
+    } else {
+      leftbar.classList.remove("fixed-bar");
+    }
+  }
 </script>
 </body>
 </html>
