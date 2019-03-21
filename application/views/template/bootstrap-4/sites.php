@@ -1,9 +1,9 @@
-<div class="middle-content mx-3 py-4 pr-5">
+<div class="middle-content flex-grow-1 mx-3 py-4 pr-5">
   <form class="form">
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
       <small class="font-text text-muted">Which group should this site belong to?</small>
-      <select name="group" class="form-control form-select">
+      <select name="group" class="form-control costum-select">
         <option value="0">- Select Group -</option>
       </select>
     </div>

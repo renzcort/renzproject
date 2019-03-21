@@ -1,4 +1,3 @@
-<div class="d-flex flex-row justify-content-start">
   <div id="left-content" class="left-content py-2 px-2 overflow-auto">
     <div class="sidebar-content">
       <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
@@ -283,4 +282,3 @@
       </tbody>
     </table>
   </div>
-</div>

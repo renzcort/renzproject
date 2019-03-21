@@ -1,4 +1,4 @@
-<div class="middle-content mx-3 py-4 pr-5">
+<div class="middle-content flex-grow-1 mx-3 py-4 pr-5">
   <h5 class="heading py-2">System</h5>
   <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled text-center">
     <li class="px-3 py-1"><i class="fas fa-sliders-h"></i>General</li>

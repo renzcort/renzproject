@@ -203,20 +203,20 @@ body {
 }
 
 
-.content.tabs .nav-tabs{
+.content .tabs .nav-tabs{
   background: #F5F6F7;
 }
-.content.tabs .nav-item {
+.content .tabs .nav-item {
   width: 100%;
   max-width: 150px;
 }
-.content.tabs .nav-item > .nav-link  {
+.content .tabs .nav-item > .nav-link  {
   color: #555;
 }
-.content.tabs .nav-item > .nav-link:hover  {
+.content .tabs .nav-item > .nav-link:hover  {
   background: none;
 }
-.content.tabs .nav-item > .nav-link.active {
+.content .tabs .nav-item > .nav-link.active {
   background: #fff;
   font-weight:500;
 }
@@ -271,6 +271,18 @@ body {
   width: 100%;
   height: auto;
 }
+.middle-content .table tr > th {
+  vertical-align: top;
+  font-size: 11px;
+  line-height: 1.2;
+  color: rgba(0, 0, 0, 0.5);
+  padding-top: 4px;
+  padding-bottom: 4px;
+  width: auto;
+  cursor: default;
+  text-align: left;
+  font-weight: bold;
+}
 .middle-content .table tr > td {
   padding: .5rem;
 }
@@ -303,4 +315,13 @@ body {
   width: 25%;
   margin-top: 20px;
   margin-bottom:20px;
+}
+.middle-content .btn-secondary, 
+.middle-content .btn-secondary.dropdown-toggle,
+.btn-secondary:not(:disabled):not(.disabled).active, 
+.btn-secondary:not(:disabled):not(.disabled):active, 
+.show>.btn-secondary.dropdown-toggle  {
+  color: #000;
+  background-color: transparent; 
+  border-color: transparent; 
 }

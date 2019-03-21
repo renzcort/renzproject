@@ -1,4 +1,4 @@
-<div class="middle-content mx-3 py-4 pr-5">
+<div class="middle-content flex-grow-1 mx-3 py-4 pr-5">
   <form class="form">
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>

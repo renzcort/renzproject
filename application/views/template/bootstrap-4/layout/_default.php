@@ -1327,8 +1327,10 @@
           <div class="right-bar ml-auto mt-4 mb-3 pl-0 pt-4">
             <div class="main container">
               <?php $this->load->view('template/bootstrap-4/partial/header'); ?>
-              <div class="content tabs">
-                <?php $this->load->view($content); ?>
+              <div class="content">
+                <div class="d-flex flex-row justify-content-start">
+                  <?php $this->load->view($content); ?>
+                </div>
               </div>
               <div class="footer p-3 my-5 pt-5 text-muted text-center text-small">
                 <?php $this->load->view('template/bootstrap-4/partial/footer'); ?>

@@ -1,4 +1,4 @@
-<div class="middle-content mx-3 py-4 pr-5">
+<div class="middle-content flex-grow-1 mx-3 py-4 pr-5">
   <form class="form">
     <div class="form-group">
       <label class="heading" for="inputName">Name</label>
@@ -22,6 +22,12 @@
       <select name="sectionType" class="form-control costum-select">
         <option value="0">- Select Type -</option>
       </select>
+    </div>
+    <div class="form-group">
+      <div class="form-check">
+        <input type="checkbox" name="translateable" class="form-check-input">
+        <label class="form-check-label" for="inputTranslateable">Entries in this section have their own URLs</label>
+      </div>
     </div>
     <div class="form-group">
       <label class="heading" for="inputSiteSettings">Site Settings</label>
