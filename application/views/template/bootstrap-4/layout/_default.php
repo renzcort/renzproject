@@ -1320,7 +1320,7 @@
 
     <div class="wraper">
       <div class="">
-        <div class="body d-flex flex-row justify-content-between">
+        <div class="body d-flex flex-row justify-content-between align-content-start align-items-start">
           <div class="left-bar">
             <?php $this->load->view('template/bootstrap-4/partial/sidebar'); ?>
           </div>

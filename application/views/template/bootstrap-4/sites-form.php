@@ -1,8 +1,8 @@
-<div class="middle-content flex-grow-1 mx-3 py-4 pr-5">
+<div class="middle-content flex-grow-1">
   <form class="form">
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
-      <small class="font-text text-muted">Which group should this site belong to?</small>
+      <small class="form-text text-muted">Which group should this site belong to?</small>
       <select name="group" class="form-control costum-select">
         <option value="0">- Select Group -</option>
       </select>
@@ -26,7 +26,7 @@
       <small class="form-test text-muted">Enable the Intl extension or install additional locale data files for more language options.</small>
     </div>
     <div class="form-group">
-      <label class="heading" for="inputPrimary">Make this the primary site?</label>
+      <label class="heading" for="inputPrimary">Is this the primary site?</label>
       <small class="form-text text-muted">The primary site will be loaded by default on the front end.</small>
       <div class="custom-control custom-switch">
         <input type="checkbox" class="custom-control-input" id="customSwitch1">

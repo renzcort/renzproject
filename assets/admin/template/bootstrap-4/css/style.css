@@ -220,17 +220,31 @@ body {
   background: #fff;
   font-weight:500;
 }
+.content .middle-content {
+  margin: 0 1rem 1rem;
+  padding: .5rem 3rem .5rem 0;
+}
+.content .left-content {
+  padding: .5rem;
+}
+.left-content .sidebar-content > .group{
+  margin: 1rem 0;
+}
+.content .right-content {
+  padding: 0;
+}
 .middle-content .form .form-group {
-  margin-bottom: 1.5rem; 
+  margin:  1.5rem 0; 
 }
 .middle-content .form label.heading {
-  font-weight:600;
-  color: #576575;
   margin-bottom: .1rem;
+  font-weight: bold;
+  color: #576575;
+  font-size: 14px;
 }
 .middle-content .form label.form-check-label,
 .middle-content .form label.custom-control-label {
-  font-weight:300;
+  font-weight:500;
 }
 .required:after {
     content: '*';
@@ -240,8 +254,7 @@ body {
 .middle-content .form small{
   font-size:11px;
   line-height: 1px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: .8em 0;
 }
 .middle-content .form input[type=text],
 .middle-content .form input[type=email] {
@@ -264,27 +277,29 @@ body {
   max-width: 10%;
 }
 .middle-content .heading {
-  font-weight: 600;
+  font-size: 16px;
+  font-weight: bold;
+  line-height: 20px;
 }
 .middle-content ul li > i {
-  font-size:2.1em;
+  font-size:2.5em;
   width: 100%;
   height: auto;
 }
-.middle-content .table tr > th {
+.middle-content .table tr > th,
+.right-content .table tr > th {
   vertical-align: top;
   font-size: 11px;
   line-height: 1.2;
   color: rgba(0, 0, 0, 0.5);
-  padding-top: 4px;
-  padding-bottom: 4px;
   width: auto;
   cursor: default;
   text-align: left;
   font-weight: bold;
 }
-.middle-content .table tr > td {
-  padding: .5rem;
+.middle-content .table tr > td,
+.right-content .table tr > td {
+  padding: .75rem;
 }
 .middle-content .table tr.start > td {
   vertical-align: middle;

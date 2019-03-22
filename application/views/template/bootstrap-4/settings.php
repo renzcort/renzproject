@@ -1,4 +1,4 @@
-<div class="middle-content flex-grow-1 mx-3 py-4 pr-5">
+<div class="middle-content flex-grow-1 mx-3 mb-3 py-2 pr-5">
   <h5 class="heading py-2">System</h5>
   <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled text-center">
     <li class="px-3 py-1"><i class="fas fa-sliders-h"></i>General</li>
@@ -8,7 +8,7 @@
     <li class="px-3 py-1"><i class="fas fa-plug"></i>Plugins</li>
   </ul>
   <h5 class="heading py-2">Content</h5>
-  <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled">
+  <ul class="d-flex flex-row mb-4 pb-4 border-bottom list-unstyled text-center">
     <li class="px-3 py-1"><i class="far fa-file"></i>Fields</li>
     <li class="px-3 py-1"><i class="fas fa-copy"></i>Sections</li>
     <li class="px-3 py-1"><i class="far fa-images"></i>Assets</li>

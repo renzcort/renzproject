@@ -17,7 +17,7 @@
     </div>
   </div>
   <div id="right-content" class="right-content ml-auto pl-3">
-    <table class="table">
+    <table class="table table-sm">
       <thead>
         <tr>
           <th scope="col">#</th>
