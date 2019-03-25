@@ -1,4 +1,4 @@
-<div class="middle-content flex-grow-1 mx-3 py-4 pr-5">
+<div class="middle-content flex-grow-1">
   <form class="form">
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
@@ -33,18 +33,23 @@
         <option value="0">- Select Type -</option>
       </select>
     </div>
-    <div class="d-none plain-text">
+    <div class="plain-text">
       <div class="form-group">
         <label class="heading" for="inputPlaceholder">Placeholder Text</label>
         <small class="form-text text-muted">The text that will be shown if the field doesn’t have a value.</small>
         <input type="text" name="placeholder" class="form-control">
       </div>
       <div class="form-group">
-        <label class="heading" for="inputMaxlength">Max Length</label>
+        <label class="heading" for="inputCharLimit">Character Limit</label>
         <small class="form-text text-muted">The maximum length of characters the field is allowed to have.</small>
-        <input type="text" name="maxlength" class="form-control form-number">
+        <input type="text" name="charlimit" class="form-control form-number">
       </div>
       <div class="form-group">
+
+        <div class="form-check">
+          <input type="checkbox" name="linebreak" class="form-check-input">
+          <label class="form-check-label" for="inputAllowLineBreaks">Use a monospaced font</label>
+        </div>
         <div class="form-check">
           <input type="checkbox" name="linebreak" class="form-check-input">
           <label class="form-check-label" for="inputAllowLineBreaks">Allow line breaks</label>
@@ -53,6 +58,13 @@
       <div class="form-group">
         <label class="heading" for="inputInitialRows">Initial Rows</label>
         <input type="text" name="maxlength" class="form-control form-number">
+      </div>
+      <div class="form-group">
+        <label class="heading" for="inputColumnType">Column Type</label>
+        <small class="form-text text-muted">The type of column this field should get in the database.</small>
+        <select name="columnType" class="form-control costum-select">
+          <option value="0">- Select Type -</option>
+        </select>
       </div>
     </div>
     <div class="d-none assets">

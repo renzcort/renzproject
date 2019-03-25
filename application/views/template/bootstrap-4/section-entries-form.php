@@ -1,4 +1,4 @@
-<div class="middle-content flex-grow-1 mx-3 py-4 pr-5">
+<div class="middle-content flex-grow-1">
   <form class="form">
     <div class="form-group">
       <label class="heading" for="inputName">Name</label>
@@ -17,12 +17,12 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="heading" for="inputTitle">Title</label>
+      <label class="heading" for="inputTitle">Title Field Label</label>
       <small class="form-text text-muted">What do you want the Title field to be called?</small>
       <input type="text" name="title" class="form-control">
     </div>
-      
-    <div class="form-tabs mt-5 py-3" id="layout">
+    <hr class="break-line"></hr>
+    <div class="form-tabs" id="layout">
       <h5 class="heading">Design Your Field Layout</h5>
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item">
@@ -39,6 +39,10 @@
           </ul>
         </div>
       </div>
+      <div class="btn-add">
+        <a href="" class="btn btn-info">+ New Tabs</a>
+      </div>
+      <hr class="break-line"></hr>
       <div class="my-5 d-flex flex-row flex-wrap">
         <div class="field-group">
           <ul class="nav nav-tabs" id="myTab" role="tablist">

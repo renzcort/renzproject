@@ -1,4 +1,4 @@
-  <div id="left-content" class="left-content py-2 px-2 overflow-auto">
+  <div id="left-content" class="left-content overflow-auto">
     <div class="sidebar-content">
       <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
         <li class="nav-item">
@@ -14,9 +14,12 @@
           <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
         </li>
       </ul>
+      <div class="btn-group text-center">
+        <a href="" class="btn btn-light btn-sm">+ New Group</a>
+      </div>
     </div>
   </div>
-  <div id="right-content" class="right-content ml-auto pl-3">
+  <div id="right-content" class="right-content ml-auto">
     <table class="table table-sm">
       <thead>
         <tr>

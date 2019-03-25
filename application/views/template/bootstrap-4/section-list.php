@@ -1,4 +1,4 @@
-<div class="middle-content flex-grow-1 mx-3 py-4 pr-5">
+<div class="middle-content flex-grow-1">
   <table class="table table-sm">
     <thead>
       <tr>
@@ -13,7 +13,7 @@
     </thead>
     <tbody>
       <tr>
-        <th scope="row">1</th>
+        <td scope="row">1</td>
         <td>Mark</td>
         <td>Otto</td>
         <td>@mdo</td>
