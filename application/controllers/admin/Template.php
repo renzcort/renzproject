@@ -5,7 +5,7 @@ class Template extends My_Controller {
 
   public function index()
   {
-    $settings['content'] = 'template/bootstrap-4/categories-form';
+    $settings['content'] = 'template/bootstrap-4/entries-list';
     $this->load->view('template/bootstrap-4/layout/_default', $settings);
   }
 
