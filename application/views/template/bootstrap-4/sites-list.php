@@ -14,7 +14,7 @@
           <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
         </li>
       </ul>
-      <div class="btn-group text-center">
+      <div class="btn-new text-center">
         <a href="" class="btn btn-light btn-sm">+ New Group</a>
       </div>
     </div>

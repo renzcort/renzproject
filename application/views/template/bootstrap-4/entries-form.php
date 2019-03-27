@@ -11,6 +11,14 @@
     <label class="heading" for="inputSlug">Slug</label>
     <input type="text" name="slug" class="form-control form-control-sm" placeholder="Enter Slug">
   </div>
+  <div class="field d-flex flex-row justify-content-start align-items-start align-content-center">
+    <label class="heading" for="inputPostDate">Post Date</label>
+    <input type="date" name="postDate" class="form-control form-control-sm">
+  </div>
+  <div class="field d-flex flex-row justify-content-start align-items-start align-content-center">
+    <label class="heading" for="inputExpiredDate">Expired Date</label>
+    <input type="date" name="expiredDate" class="form-control form-control-sm">
+  </div>
   <div class="foield d-flex flex-row justify-content-start align-items-start align-content-center">
     <div class="custom-control custom-switch">
       <input type="checkbox" class="custom-control-input" id="customSwitch1">
