@@ -28,7 +28,7 @@
               <label class="custom-control-label" for="customSwitch1">Disabled</label>
             </div>
           </div>
-          <div class="form-group d-none">
+          <div id="base-url" class="form-group d-none">
             <label class="heading" for="inputBaseURL">Base URL</label>
             <label class="form-text text-muted">The base URL to the assets in this volume. An absolute URL (“http://example.com/path/to/folder”) or protocol-relative URL (“//example.com/path/to/folder”) is recommended. It can begin with an alias, such as @web.</label>
             <input type="text" name="base-url" class="form-control">

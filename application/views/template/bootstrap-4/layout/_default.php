@@ -85,13 +85,14 @@
       });
     });
 
-    $('#customSwitch1:checked').click(function() {
-      alert();
-      var enabled = $('custom-control-input:selected').val();
+    $('#customSwitch1').click(function() {
+      var enabled = $('#customSwitch1:checked').val();
       if (enabled == 'on') {
-        $('.base-url').removeClass('d-none');
+        $('#base-url').removeClass('d-none');
+        $('label.custom-control-label').text('Enabled');
       } else {
-        $('.base-url').addClass('d-none');
+        $('#base-url').addClass('d-none');
+        $('label.custom-control-label').text('Disabled');
       }
     });
 
