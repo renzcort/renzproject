@@ -39,6 +39,31 @@
     </div>
 
 
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Group Field</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label class="heading" for="inputNameGroup">What do you want to name the group?</label>
+            <input type="text" name="name-group" class="form-control form-control-sm">
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <!-- Optional JavaScript -->
@@ -52,6 +77,28 @@
 <!-- end Jquery -->
 <script type="text/javascript">
   $(document).ready(function(){
+    $('select[name=field-type]').change(function(){
+      var field_type = $('select[name=field-type]').val();
+      $('.fields').addClass('d-none');
+      $('select[name=field-type] option:selected').each(function(){
+        $('#'+field_type).removeClass('d-none');
+      });
+    });
+
+    $('#customSwitch1:checked').click(function() {
+      alert();
+      var enabled = $('custom-control-input:selected').val();
+      if (enabled == 'on') {
+        $('.base-url').removeClass('d-none');
+      } else {
+        $('.base-url').addClass('d-none');
+      }
+    });
+
+
+    $('.new-tabs button').click(function(){
+      $('.field-tabs').append('<div class="field-group"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item"> <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable1" class="text-center list-group connectedSortable"> <li class="list-group-item active">Lion</li> <li class="list-group-item">Dog</li> <li class="list-group-item">Cat</li> <li class="list-group-item">Tiger</li> </ul> </div> </div> </div>'); });
+
     $("#sortable1, #sortable2").sortable({
       connectWith: ".connectedSortable"
     });

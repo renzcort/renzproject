@@ -29,11 +29,16 @@
     <div class="form-group">
       <label class="heading" for="inputType">Field Type</label>
       <small class="form-text text-muted">What type of field is this?</small>
-      <select name="type" class="form-control costum-select">
-        <option value="0">- Select Type -</option>
+      <select name="field-type" class="form-control costum-select">
+        <option value ="0">- Select Type -</option>
+        <option value ="plain-text">Plain Text</option>
+        <option value ="assets">Assets</option>
+        <option value ="rich-text">Rich Text</option>
+        <option value ="categories">Categories</option>
+        <option value ="Checkbox">Checkbox</option>
       </select>
     </div>
-    <div class="plain-text">
+    <div id="plain-text" class="d-none fields">
       <div class="form-group">
         <label class="heading" for="inputPlaceholder">Placeholder Text</label>
         <small class="form-text text-muted">The text that will be shown if the field doesn’t have a value.</small>
@@ -67,7 +72,7 @@
         </select>
       </div>
     </div>
-    <div class="d-none assets">
+    <div id="assets" class="d-none fields">
       <div class="form-group">
         <div class="form-check">
           <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
@@ -131,7 +136,7 @@
         <input type="text" name="selectionLabel" class="form-control">
       </div>
     </div>
-    <div class="d-none rich-text">
+    <div id="rich-text" class="d-none fields">
       <div class="form-group">
         <label class="heading" for="inputConfig">Config</label>
         <small class="form-text text-muted">You can save custom Redactor configs as .json files in craft/config/redactor/. View available settings.</small>
@@ -185,58 +190,71 @@
           </select>
         </div>
       </div>
-      <div class="d-none categories">
-        <div class="form-group">
-          <label class="heading" for="inputSource">Source</label>
-          <small class="form-text text-muted">Which source do you want to select categories from?</small>
-          <select name="Source" class="form-control costum-select">
-            <option value="0">- Select Source -</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="heading" for="inputTargetLocale">Target Locale</label>
-          <small class="form-text text-muted">Which Target Locale do you want to select categories from?</small>
-          <select name="TargetLocale" class="form-control costum-select">
-            <option value="0">- Select Source -</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="heading" for="inputLimit">Limit</label>
-          <small class="form-text text-muted">Limit the number of selectable assets.</small>
-          <input type="text" name="limit" class="form-control form-number">
-        </div>
-        <div class="form-group">
-          <label class="heading" for="inputSelectionLabel">Selection Label</label>
-          <small class="form-text text-muted">Enter the text you want to appear on the assets selection input.</small>
-          <input type="text" name="selectionLabel" class="form-control">
-        </div>
+    </div>
+    <div id="categories" class="d-none fields">
+      <div class="form-group">
+        <label class="heading" for="inputSource">Source</label>
+        <small class="form-text text-muted">Which source do you want to select categories from?</small>
+        <select name="Source" class="form-control costum-select">
+          <option value="0">- Select Source -</option>
+        </select>
       </div>
-      <div class="d-none checkboxes">
-        <div class="form-group">
-          <label class="heading" for="inputCheckbox">Checkbox Options</label>
-          <small class="form-text text-muted">Define the available options.</small>
-          <table class="table font-weight-light m-0">
-            <thead>
-              <tr>
-                <th scope="col">Option Label</th>
-                <th scope="col">Value</th>
-                <th scope="col">Default?  </th>
-                <th colspan="2" ></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td class="action"><input type="checkbox" name="checkboxes"></td>
-                <td class="action">Otto</td>
-                <td class="action">@mdo</td>
-              </tr>
-            </tbody>
-          </table>
-          <input type="button" class="btn btn-default btn btn-light btn-block" name="" value="+ Add an option">
-        </div>
+      <div class="form-group">
+        <label class="heading" for="inputTargetLocale">Target Locale</label>
+        <small class="form-text text-muted">Which Target Locale do you want to select categories from?</small>
+        <select name="TargetLocale" class="form-control costum-select">
+          <option value="0">- Select Source -</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="heading" for="inputLimit">Limit</label>
+        <small class="form-text text-muted">Limit the number of selectable assets.</small>
+        <input type="text" name="limit" class="form-control form-number">
+      </div>
+      <div class="form-group">
+        <label class="heading" for="inputSelectionLabel">Selection Label</label>
+        <small class="form-text text-muted">Enter the text you want to appear on the assets selection input.</small>
+        <input type="text" name="selectionLabel" class="form-control">
+      </div>
+    </div>
+    <div id="checkboxes" class="d-none fields">
+      <div class="form-group">
+        <label class="heading" for="inputCheckbox">Checkbox Options</label>
+        <small class="form-text text-muted">Define the available options.</small>
+        <table class="table font-weight-light m-0">
+          <thead>
+            <tr>
+              <th scope="col">Option Label</th>
+              <th scope="col">Value</th>
+              <th scope="col">Default?  </th>
+              <th colspan="2" ></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mark</td>
+              <td>Otto</td>
+              <td class="action"><input type="checkbox" name="checkboxes"></td>
+              <td class="action">Otto</td>
+              <td class="action">@mdo</td>
+            </tr>
+          </tbody>
+        </table>
+        <input type="button" class="btn btn-default btn btn-light btn-block" name="" value="+ Add an option">
       </div>
     </div>
   </form>
 </div>
+<!-- 
+<script type="text/javascript">
+  $(document).ready(function() {
+    alert();
+    $('select[name=field-type]').change(function() {
+      $('select[name=field-type]:selected').each(function() {
+        var field_type = $('select[name=field-type]').val();
+        alert(field_type);
+         $('.'+field_type).removeClass('d-none');
+      });
+     );
+  });
+</script> -->
