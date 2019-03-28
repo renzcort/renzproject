@@ -18,8 +18,7 @@
         <td>Otto</td>
         <td>@mdo</td>
         <td>about/{slug}</td>
-        <td>
-          <div class="dropdown">
+        <td class="dropdown">
             <a href="#" class="mr-2">Dropdown link <span class="badge badge-info">4</span></a>
             <button type="button" class="btn btn-secondary dropdown-toggle dropdown-toggle-split" id="dropdownMenuReference" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-reference="parent">
               <span class="sr-only">Toggle Dropdown</span>
@@ -30,7 +29,6 @@
               <a class="dropdown-item" href="#">Another action</a>
               <a class="dropdown-item" href="#">Something else here</a>
             </div>
-          </div>
         </td>
         <td scope="row">
           <a href=""><i class="fas fa-minus-circle"></i></a>

@@ -5,7 +5,7 @@ class Template extends My_Controller {
 
   public function index()
   {
-    $settings['content'] = 'template/bootstrap-4/assets/assets-group-form';
+    $settings['content'] = 'template/bootstrap-4/field/field-form';
     $this->load->view('template/bootstrap-4/layout/_default', $settings);
     // $this->load->view('template/bootstrap-4/login');
   }

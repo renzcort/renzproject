@@ -20,7 +20,7 @@
     </div>
   </div>
   <div id="right-content" class="right-content ml-auto">
-    <table class="table">
+    <table class="table table-sm">
       <thead>
         <tr>
           <th scope="row">#</th>
@@ -35,7 +35,7 @@
       </thead>
       <tbody>
         <tr>
-          <th scope="row">1</th>
+          <td scope="row">1</td>
           <td><a href="">Mark</a></td>
           <td>Otto</td>
           <td>@mdo</td>

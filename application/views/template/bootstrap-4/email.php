@@ -1,13 +1,13 @@
  <div class="middle-content flex-grow-1">
   <form class="form">
     <div class="form-group">
-      <label class="heading" for="inputEmail">System Email Address</label>
+      <label class="heading required" for="inputEmail">System Email Address</label>
       <small class="form-text text-muted">The email address Craft CMS will use when sending email.</small>
       <input type="email" name="email" class="form-control">
       <small class="form-text text-muted">This can be set to an environment variable. Learn more</small>
     </div>
     <div class="form-group">
-      <label class="heading" for="inputSenderName">Sender Name</label>
+      <label class="heading required" for="inputSenderName">Sender Name</label>
       <small class="form-text text-muted">The “From” name Craft CMS will use when sending email.</small>
       <input type="text" name="senderName" class="form-control">
       <small class="form-text text-muted">This can be set to an environment variable. Learn more</small>

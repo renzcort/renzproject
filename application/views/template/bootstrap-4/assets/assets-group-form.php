@@ -17,7 +17,7 @@
             <input type="text" name="name" class="form-control">
           </div>
           <div class="form-group">
-            <label class="heading" for="inputHandle">Handle</label>
+            <label class="heading required" for="inputHandle">Handle</label>
             <label class="form-text text-muted">How you’ll refer to this site in the templates.</label>
             <input type="text" name="handle" class="form-control">
           </div>

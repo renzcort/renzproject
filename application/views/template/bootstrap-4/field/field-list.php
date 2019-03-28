@@ -15,7 +15,7 @@
         </li>
       </ul>
       <div class="btn-new text-center">
-        <a href="" class="btn btn-light btn-sm" data-toggle="modal" data-target="#exampleModal">+ New Group</a>
+        <a href="" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#exampleModal">+ New Group</a>
       </div>
     </div>
   </div>

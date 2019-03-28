@@ -77,6 +77,7 @@
 <!-- end Jquery -->
 <script type="text/javascript">
   $(document).ready(function(){
+    // change field type
     $('select[name=field-type]').change(function(){
       var field_type = $('select[name=field-type]').val();
       $('.fields').addClass('d-none');
@@ -85,6 +86,7 @@
       });
     });
 
+    // change enable switch
     $('#customSwitch1').click(function() {
       var enabled = $('#customSwitch1:checked').val();
       if (enabled == 'on') {
@@ -96,9 +98,36 @@
       }
     });
 
+    // field assets restrict
+    $('#defaultCheck1').click(function(){
+      var checked = $('#defaultCheck1:checked').val();
+      if (checked == 'on') {
+        $('#restrictAssets').removeClass('d-none');
+      } else {
+        $('#restrictAssets').addClass('d-none');
+      }
+    });
 
+    // add tabs layout
     $('.new-tabs button').click(function(){
-      $('.field-tabs').append('<div class="field-group"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item"> <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable1" class="text-center list-group connectedSortable"> <li class="list-group-item active">Lion</li> <li class="list-group-item">Dog</li> <li class="list-group-item">Cat</li> <li class="list-group-item">Tiger</li> </ul> </div> </div> </div>'); });
+      $('.field-tabs').append('<div class="field-group"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item"> <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable1" class="text-center list-group connectedSortable"> <li class="list-group-item active">Lion</li> <li class="list-group-item">Dog</li> <li class="list-group-item">Cat</li> <li class="list-group-item">Tiger</li> </ul> </div> </div> </div>'); 
+    });
+
+    // add row table checkboxes
+    $('#checkboxes button').click(function(){
+      $('#checkboxes table tr:last ').after('<tr> <td><input type="text" name="label" class="form-control"></td> <td><input type="text" name="value" class="form-control"></td> <td class="action"><input type="checkbox" name="checkboxes"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>') });
+
+    $(document).on('click', '.remove-row', function() {
+        $(this).closest("tr").remove();
+    });
+    // $('#checkboxes .remove-row').click(function(){
+    //   var trIndex = $(this).closest("tr").index();
+    //     if(trIndex>1) {
+    //      $(this).closest("tr").remove();
+    //    } else {
+    //      alert("Sorry!! Can't remove first row!");
+    //    }
+    // });
 
     $("#sortable1, #sortable2").sortable({
       connectWith: ".connectedSortable"

@@ -8,12 +8,12 @@
       </select>
     </div>
     <div class="form-group">
-      <label class="heading" for="inputName">Name</label>
+      <label class="heading required" for="inputName">Name</label>
       <small class="form-text text-muted">What this field will be called in the CP.</small>
       <input type="text" name="name" class="form-control"  placeholder="name">
     </div>
     <div class="form-group">
-      <label class="heading" for="inputHandle">Handle</label>
+      <label class="heading required" for="inputHandle">Handle</label>
       <small class="form-text text-muted">How you’ll refer to this field in the templates.</small>
       <input type="text" name="handle" class="form-control"  placeholder="handle">
     </div>
@@ -35,7 +35,7 @@
         <option value ="assets">Assets</option>
         <option value ="rich-text">Rich Text</option>
         <option value ="categories">Categories</option>
-        <option value ="Checkbox">Checkbox</option>
+        <option value ="checkboxes">Checkboxes</option>
       </select>
     </div>
     <div id="plain-text" class="d-none fields">
@@ -75,8 +75,30 @@
     <div id="assets" class="d-none fields">
       <div class="form-group">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+          <input class="form-check-input" type="checkbox" id="defaultCheck1">
           <label class="form-check-label" for="restrictAssets">Restrict uploads to a single folder?</label>
+        </div>
+        <div class="form-group d-none m-2" id="restrictAssets">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
+            <label class="form-check-label" for="defaultCheck1">All</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
+            <label class="form-check-label" for="defaultCheck1">All</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
+            <label class="form-check-label" for="defaultCheck1">All</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
+            <label class="form-check-label" for="defaultCheck1">All</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
+            <label class="form-check-label" for="defaultCheck1">All</label>
+          </div>
         </div>
       </div>
       <div class="form-group">
@@ -174,21 +196,20 @@
           <label class="form-check-label" for="defaultCheck1">Clean up HTML?</label>
         </div>
         <small class="form-text text-muted">Removes <span>’s, empty tags, and most style attributes on save.</small>
+      </div>
+      <div class="form-group">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
+          <label class="form-check-label" for="defaultCheck1">Purify HTML?</label>
         </div>
-        <div class="form-group">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
-            <label class="form-check-label" for="defaultCheck1">Purify HTML?</label>
-          </div>
-          <small class="form-text text-muted">Removes any potentially-malicious code on save, by running the submitted data through HTML Purifier.</small>
-        </div>
-        <div class="form-group">
-          <label class="heading" for="inputColumnType">Column Type</label>
-          <small class="form-text text-muted">The underlying database column type to use when saving content.</small>
-          <select name="columnType" class="form-control costum-select">
-            <option value="0">- Select Column Type -</option>
-          </select>
-        </div>
+        <small class="form-text text-muted">Removes any potentially-malicious code on save, by running the submitted data through HTML Purifier.</small>
+      </div>
+      <div class="form-group">
+        <label class="heading" for="inputColumnType">Column Type</label>
+        <small class="form-text text-muted">The underlying database column type to use when saving content.</small>
+        <select name="columnType" class="form-control costum-select">
+          <option value="0">- Select Column Type -</option>
+        </select>
       </div>
     </div>
     <div id="categories" class="d-none fields">
@@ -217,12 +238,12 @@
         <input type="text" name="selectionLabel" class="form-control">
       </div>
     </div>
-    <div id="checkboxes" class="d-none fields">
+    <div id="checkboxes" class="fields">
       <div class="form-group">
         <label class="heading" for="inputCheckbox">Checkbox Options</label>
         <small class="form-text text-muted">Define the available options.</small>
-        <table class="table font-weight-light m-0">
-          <thead>
+        <table class="table table-sm font-weight-light m-0">
+          <thead class="thead-dark">
             <tr>
               <th scope="col">Option Label</th>
               <th scope="col">Value</th>
@@ -232,15 +253,17 @@
           </thead>
           <tbody>
             <tr>
-              <td>Mark</td>
-              <td>Otto</td>
+              <td><input type="text" name="label" class="form-control"></td>
+              <td><input type="text" name="value" class="form-control"></td>
               <td class="action"><input type="checkbox" name="checkboxes"></td>
-              <td class="action">Otto</td>
-              <td class="action">@mdo</td>
+              <td scope="row" colspan="2">
+                <a href="#"><i class="fas fa-arrows-alt"></i></a>
+                <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a>
+              </td>
             </tr>
           </tbody>
         </table>
-        <input type="button" class="btn btn-default btn btn-light btn-block" name="" value="+ Add an option">
+        <button type="button" class="btn btn btn-outline-secondary btn-block">+ Add an option</button>
       </div>
     </div>
   </form>

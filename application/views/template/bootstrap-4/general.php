@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="form-group">
-      <label class="heading" for="inputTimezone">Timezone</label>
+      <label class="heading" for="inputTimezone">Time Zone</label>
       <select name="TargetLocale" class="form-control costum-select">
         <option value="0">- Select Timezone -</option>
       </select>
