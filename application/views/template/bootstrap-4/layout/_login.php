@@ -14,31 +14,18 @@
     </style>
   </head>
   <body>
-    <?php $this->load->view('template/bootstrap-4/partial/nav'); ?>
-    <div class="wraper">
-      <div class="">
-        <div class="body d-flex flex-row justify-content-between align-content-start align-items-start">
-          <div class="left-bar">
-            <?php $this->load->view('template/bootstrap-4/partial/sidebar'); ?>
+    <div class="wraper" id="login">
+      <div class="container">
+        <div class="login-box mx-auto my-5 py-5 text-center d-flex flex-column flex-wrap">
+          <div class="box-header m-3">
+            <a href="../../index2.html"><b class="font-weight-bold">Admin</b>LTE</a>
           </div>
-          <div class="right-bar ml-auto mt-4 mb-3 pl-0 pt-4">
-            <div class="main container">
-              <?php $this->load->view('template/bootstrap-4/partial/header'); ?>
-              <div class="content">
-                <div class="d-flex flex-row justify-content-start">
-                  <?php $this->load->view($content); ?>
-                </div>
-              </div>
-              <div class="footer p-3 my-5 pt-5 text-muted text-center text-small">
-                <?php $this->load->view('template/bootstrap-4/partial/footer'); ?>
-              </div>
-            </div>
+          <div class="box-body p-4 ">
+          <?php $this->load->view($content); ?>
           </div>
         </div>
       </div>
     </div>
-
-
 
 
 <!-- Optional JavaScript -->
@@ -50,27 +37,5 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
 <!-- end Jquery -->
-<script type="text/javascript">
-  $(document).ready(function(){
-    $("#sortable1, #sortable2").sortable({
-      connectWith: ".connectedSortable"
-    });
-  })
-
-  window.onscroll = function() {myFunction()};
-  var leftbar = document.getElementById('left-content');
-  var leftbarTop = leftbar.offsetTop;
-  var leftbarButton = leftbar.offsetHeight;
-  var rightbar = document.getElementById('right-content');
-  var rightbarTop = rightbar.offsetHeight;
-  
-  function myFunction() {
-    if (window.pageYOffset >= leftbarTop && window.pageYOffset <= leftbarButton) {
-      leftbar.classList.add("fixed-bar")
-    } else {
-      leftbar.classList.remove("fixed-bar");
-    }
-  }
-</script>
 </body>
 </html>

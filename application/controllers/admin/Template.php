@@ -5,9 +5,9 @@ class Template extends My_Controller {
 
   public function index()
   {
-    // $settings['content'] = 'template/bootstrap-4/categories-form';
-    // $this->load->view('template/bootstrap-4/layout/_default', $settings);
-    $this->load->view('template/bootstrap-4/login');
+    $settings['content'] = 'template/bootstrap-4/activation-success';
+    $this->load->view('template/bootstrap-4/layout/_activate', $settings);
+    // $this->load->view('template/bootstrap-4/login');
   }
 
 }

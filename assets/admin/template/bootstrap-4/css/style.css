@@ -267,7 +267,7 @@ body {
   padding: 1rem 1rem .5rem 0;
 }
 .form .form-group {
-  margin:  1.5rem 0; 
+  margin: .5rem 0 1rem 0; 
 }
 .form label.heading {
   margin-bottom: .1rem;
@@ -410,12 +410,11 @@ body {
 #login .box-body .form-check {
  width: 75%;
 }
-#login .box-body button {
+#login .box-body button.sign-in {
   width: 25%;
   background-color: #3c8dbc;
   border-color: #367fa9;
 }
-
 #login .box-body a {
   text-decoration: none;
   font-size: 13px;
@@ -432,4 +431,20 @@ body {
   color: #fff;
   background-color: #dd4b39;
   border-color: rgba(0,0,0,0.2);
+}
+#login .box-body > h3 {
+  font-size: 20px;
+  font-weight: bold;
+}
+#login .box-body > p {
+  font-size: 12px;
+  line-height: .5rem;
+}
+
+#activated.container {
+  padding-top: 5rem;
+}
+#activated .form {
+  width: 100%;
+  max-width: 25rem;
 }

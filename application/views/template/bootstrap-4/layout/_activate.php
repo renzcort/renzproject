@@ -15,28 +15,9 @@
   </head>
   <body>
     <?php $this->load->view('template/bootstrap-4/partial/nav'); ?>
-    <div class="wraper">
-      <div class="">
-        <div class="body d-flex flex-row justify-content-between align-content-start align-items-start">
-          <div class="left-bar">
-            <?php $this->load->view('template/bootstrap-4/partial/sidebar'); ?>
-          </div>
-          <div class="right-bar ml-auto mt-4 mb-3 pl-0 pt-4">
-            <div class="main container">
-              <?php $this->load->view('template/bootstrap-4/partial/header'); ?>
-              <div class="content">
-                <div class="d-flex flex-row justify-content-start">
-                  <?php $this->load->view($content); ?>
-                </div>
-              </div>
-              <div class="footer p-3 my-5 pt-5 text-muted text-center text-small">
-                <?php $this->load->view('template/bootstrap-4/partial/footer'); ?>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <main id="activated" role="main" class="container text-center">
+    <?php $this->load->view($content); ?>
+    </main>
 
 
 
