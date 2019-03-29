@@ -1,13 +1,14 @@
-<div class="sidebar my-5 py-4">
-  <div class="user-bar mx-2 d-flex flex-row justify-content-start align-content-start align-items-center">
+<div class="sidebar" id="navbarSupportedContent">
+  <div class="users-bar px-3 d-flex flex-row justify-content-start align-items-center">
     <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
-    <div class="info pl-2">
+    <div class="users-info pl-2">
       <p>Admin</p>
       <p>online</p>
     </div>
   </div>
-  <div class="menu my-5">
+  <div class="main-menu">
     <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
+      <li class="nav-item header">Main Dashboard</li>
       <li class="nav-item">
         <a class="nav-link active" href="#">Active</a>
       </li>

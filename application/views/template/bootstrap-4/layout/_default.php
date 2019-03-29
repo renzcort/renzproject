@@ -17,12 +17,12 @@
     <?php $this->load->view('template/bootstrap-4/partial/nav'); ?>
     <div class="wraper">
       <div class="">
-        <div class="body d-flex flex-row justify-content-between align-content-start align-items-start">
+        <div class="body d-flex flex-row justify-content-between align-content-start align-items-start d-lg-flex flex-lg-row justify-content-lg-between align-content-lg-start align-items-lg-start">
           <div class="left-bar">
             <?php $this->load->view('template/bootstrap-4/partial/sidebar'); ?>
           </div>
-          <div class="right-bar ml-auto mt-4 mb-3 pl-0 pt-4">
-            <div class="main container">
+          <div class="right-bar ml-auto">
+            <div class="main">
               <?php $this->load->view('template/bootstrap-4/partial/header'); ?>
               <div class="content">
                 <div class="d-flex flex-row justify-content-start">

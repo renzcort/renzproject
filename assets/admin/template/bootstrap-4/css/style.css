@@ -3,7 +3,6 @@ body {
   font-size: 14px;
   color: #576575;
 }
-
 .dropdown-menu.show {
   right: 11%;
   left: auto;
@@ -96,8 +95,13 @@ body {
   background: #F9F9F9;
 }
 
+.breadcrumb li {
+  display: inline-block;
+  padding: 5px 0 1px;
+  color: #8f98a3;
+}
+
 .left-bar {
-  flex: 25%;
   background: #333F4D;
   color: #fff;
   top: 0;
@@ -105,26 +109,37 @@ body {
   z-index: 100;
   position: fixed;
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
-  width: 16.66%;
+  width: 100%;
+  max-width: 16.66%;
 }
 .left-bar .sidebar {
-  top: 0;
   height: calc(100vh - 48px);
   overflow-x: hidden;
   overflow-y: auto;
-  position: sticky;
+  margin-top: 5rem;
 }
-.left-bar .sidebar .user-bar {
+.sidebar .users-bar {
   font-size: 10px;
   line-height: 2px;
 }
-.left-bar .sidebar .user-bar > img {
+.sidebar .users-bar > img {
   z-index: 5;
-  height: 90px;
-  width: 90px;
+  height: 60px;
+  width: 60px;
   border: 3px solid;
   border-color: transparent;
   border-color: rgba(255,255,255,0.2);
+}
+.sidebar .main-menu {
+  margin: 2rem 0;
+  font-size: 13px;
+}
+.main-menu .nav-item.header{
+  color: #fff;
+  background: #363738;
+  padding: .75rem;
+  text-align: center;
+  font-weight: 400;
 }
 .nav-item {
   width: 100%;
@@ -139,10 +154,12 @@ body {
 }
 .nav-link:hover {
   color: #fff;
-  background: #48535F;  
+  background-color: #2d3743;
+  -webkit-transition: none;
+  transition: none
 }
 .nav-link.active {
-  background: rgba(255, 255, 255, 0.1);
+  background: #27303a;
   color: #fff;
   border-left: 1.5px solid;
   border-left-color: #3c8dbc;
@@ -150,7 +167,8 @@ body {
 
 
 .right-bar {
-  flex: 75%;
+  width: 100%;
+  margin-top: 3rem;
   max-width: 83.333333%;
 }
 .right-bar .main {
@@ -465,4 +483,23 @@ body {
 #activated .form {
   width: 100%;
   max-width: 25rem;
+}
+
+
+
+/*// Extra small devices (portrait phones, less than 576px)
+// No media query for `xs` since this is the default in Bootstrap
+
+// Small devices (landscape phones, 576px and up)*/
+@media (min-width: 576px) { ... }
+
+/*// Medium devices (tablets, 768px and up)*/
+@media (min-width: 768px) { ... }
+
+/*// Large devices (desktops, 992px and up)*/
+@media (min-width: 992px) { ... }
+
+/*// Extra large devices (large desktops, 1200px and up)*/
+@media (min-width: 1200px) {
+
 }
