@@ -1,12 +1,15 @@
-<div class="sidebar" id="navbarSupportedContent">
-  <div class="users-bar px-3 d-flex flex-row justify-content-start align-items-center">
+
+
+
+<div class="sidebar d-flex flex-column flex-wrap justify-content-center">
+  <div class="users-bar mx-3 d-flex flex-row flex-wrap justify-content-start align-items-center">
     <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
     <div class="users-info pl-2">
       <p>Admin</p>
       <p>online</p>
     </div>
   </div>
-  <div class="main-menu">
+  <div class="menu-bar">
     <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
       <li class="nav-item header">Main Dashboard</li>
       <li class="nav-item">

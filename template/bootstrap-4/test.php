@@ -11,10 +11,19 @@
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
     <title>Hello, world!</title>
     <style type="text/css">
+      .left-column {
+        flex-basis: 16%;
+      }
+      .right-column {
+        flex-basis: 78%;
+      }
+
+      .left-content {
+        flex-basis: 20%;
+      }
     </style>
-  </head>
   <body>
-    <header>
+    <!-- <header>
       <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top bg-dark">
         <a class="navbar-brand" href="#">Navbar</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -193,7 +202,7 @@
           </ul>
         </div>
       </nav>
-    </header>
+    </header> -->
     
     <!-- Field List -->
     <!-- <div class="wraper">
@@ -473,7 +482,7 @@
                         <td>Otto</td>
                         <td>@mdo</td>
                       </tr>
-                      <tr>
+                      <tr>p
                         <th scope="row">2</th>
                         <td>Jacob</td>
                         <td>Thornton</td>
@@ -1497,7 +1506,7 @@
     </div> -->
     <!-- end Global Add-->
 
-    <div class="wraper">
+    <!-- <div class="wraper">
       <div class="">
         <div class="body d-flex flex-row justify-content-between">
           <div class="left-bar">
@@ -1721,6 +1730,81 @@
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div> -->
+    
+    <div class="container">
+      <div class="p-2 bg-dark d-flex flex-row flex-wrap justify-content-start align-items-start" style="height: 500px">
+        <div class="p-2 m-2 btn-danger left-column text-white">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" href="#">Active</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+            </li>
+          </ul>
+        </div>
+        <div class="p-2 m-2 btn-primary right-column text-white ml-auto flex-grow-1">
+           <main role="main container">
+            <div class="d-flex flex-row flex-wrap justify-content-start align-items-start">
+              <div class="p-2 m-2 btn-danger left-content text-white">
+                <ul class="nav flex-column">
+                  <li class="nav-item">
+                    <a class="nav-link active" href="#">Active</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+                  </li>
+                </ul>
+              </div>
+              <div class="right-content flex-fill flex-grow-1">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Name</th>
+                      <th>Handle</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>Rendi</td>
+                      <td>Test</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>1</td>
+                      <td>Rendi</td>
+                      <td>Test</td>
+                      <td></td>
+                    </tr>
+                    <tr>
+                      <td>1</td>
+                      <td>Rendi</td>
+                      <td>Test</td>
+                      <td></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>  
+           </main>
         </div>
       </div>
     </div>

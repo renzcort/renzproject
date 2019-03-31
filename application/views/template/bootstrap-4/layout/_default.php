@@ -17,22 +17,26 @@
     <?php $this->load->view('template/bootstrap-4/partial/nav'); ?>
     <div class="wraper">
       <div class="">
-        <div class="body d-flex flex-row justify-content-between align-content-start align-items-start d-lg-flex flex-lg-row justify-content-lg-between align-content-lg-start align-items-lg-start">
-          <div class="left-bar">
+        <div class="d-flex flex-row flex-wrap justify-content-start align-items-start">
+          <div class="left-column d-none">
             <?php $this->load->view('template/bootstrap-4/partial/sidebar'); ?>
           </div>
-          <div class="right-bar ml-auto">
-            <div class="main">
-              <?php $this->load->view('template/bootstrap-4/partial/header'); ?>
+          <div class="right-column ml-auto flex-fill flex-grow-1">
+           <main role="main" class="container">
+            <div class="main d-flex flex-column">
+              <div class="header">
+                <?php $this->load->view('template/bootstrap-4/partial/header'); ?>
+              </div>
               <div class="content">
-                <div class="d-flex flex-row justify-content-start">
+                <div class="d-flex flex-row flex-wrap justify-content-start">
                   <?php $this->load->view($content); ?>
                 </div>
               </div>
-              <div class="footer p-3 my-5 pt-5 text-muted text-center text-small">
+              <div class="footer text-center">
                 <?php $this->load->view('template/bootstrap-4/partial/footer'); ?>
               </div>
-            </div>
+            </div>  
+           </main>
           </div>
         </div>
       </div>
@@ -120,14 +124,6 @@
     $(document).on('click', '.remove-row', function() {
         $(this).closest("tr").remove();
     });
-    // $('#checkboxes .remove-row').click(function(){
-    //   var trIndex = $(this).closest("tr").index();
-    //     if(trIndex>1) {
-    //      $(this).closest("tr").remove();
-    //    } else {
-    //      alert("Sorry!! Can't remove first row!");
-    //    }
-    // });
 
     $("#sortable1, #sortable2").sortable({
       connectWith: ".connectedSortable"

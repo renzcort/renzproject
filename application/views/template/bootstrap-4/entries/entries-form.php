@@ -1,4 +1,4 @@
-<div class="left-content entry">
+<div class="left-content entry flex-grow-1">
   <form class="form">
     <div class="form-group">
       <label class="heading" for="inputTitle">Title</label>
