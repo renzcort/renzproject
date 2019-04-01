@@ -1,5 +1,5 @@
-  <div id="left-content" class="left-content overflow-auto">
-    <div class="sidebar-content">
+  <div id="left-content" class="left-content">
+    <div class="sidebar">
       <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
         <li class="nav-item">
           <a class="nav-link active" href="#">Active</a>
@@ -15,7 +15,7 @@
         </li>
       </ul>
       <div class="btn-new text-center">
-        <a href="" class="btn btn-light btn-sm">+ New Group</a>
+        <a href="" class="btn btn-light btn-outline-secondary btn-sm">+ New Group</a>
       </div>
     </div>
   </div>

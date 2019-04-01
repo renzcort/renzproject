@@ -18,7 +18,7 @@
     <div class="wraper">
       <div class="">
         <div class="d-flex flex-row flex-wrap justify-content-start align-items-start">
-          <div class="left-column d-none">
+          <div class="left-column">
             <?php $this->load->view('template/bootstrap-4/partial/sidebar'); ?>
           </div>
           <div class="right-column ml-auto flex-fill flex-grow-1">
@@ -28,7 +28,7 @@
                 <?php $this->load->view('template/bootstrap-4/partial/header'); ?>
               </div>
               <div class="content">
-                <div class="d-flex flex-row flex-wrap justify-content-start">
+                <div class="content-body d-flex flex-row flex-wrap justify-content-start">
                   <?php $this->load->view($content); ?>
                 </div>
               </div>

@@ -1,4 +1,4 @@
-  <div id="left-content" class="left-content overflow-auto">
+  <div id="left-content" class="left-content">
     <div class="sidebar">
       <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
         <li class="nav-item">

@@ -527,10 +527,19 @@ body {
   font-weight: bold;
   line-height: 25px;
 }
-.middle-content > ul {
+.middle-content.settings > ul {
   padding:1rem 0;
 }
-.middle-content ul li > i {
+.middle-content.settings > ul li {
+  padding: .5rem 1rem;
+  width: 100%;
+  max-width: 100px;
+}
+.middle-content.settings ul li > a {
+  text-decoration: none;
+  color: #000;
+}
+.middle-content.settings ul li a > i {
   font-size:2rem;
   width: 100%;
   max-width: 100px;
@@ -598,7 +607,7 @@ body {
 }
 .middle-content #layout .field-group {
   width: 100%;
-  max-width: 240px;
+  max-width: 15rem;
   margin-top: .5rem;
   margin-bottom: 1.5rem;
 }
@@ -627,6 +636,7 @@ body {
   width: 15.2%;
   background: #FBFCFD;
   padding: 1rem 0.25rem;
+  overflow: auto;
 }
 .left-content .sidebar{
   color: #000;
@@ -644,19 +654,17 @@ body {
   top: 0;
   position: fixed;
   margin: 3rem 0;
-  min-height: 340px;
-  height: calc(80vh - 48px);
+  min-height: 240px;
+  height: auto;
   overflow-x: hidden;
   overflow-y: auto;
 }
 
 .left-content.entry {
   background: none !important;
-  margin: 1rem !important;
-  padding: .25rem 1rem !important;
   box-shadow: none !important;
   max-width: 56rem;
-  padding-left: 1rem;
+  padding: 1rem;
 }
 .right-content.entry {
   max-width: 20rem !important;
@@ -781,7 +789,8 @@ body {
   font-size: 12px; 
 }
 .form .costum-select {
-  max-width:20%;
+  max-width: 15rem;
+  width: 100%;
 }
 .form table th,
 .form table td {
@@ -791,7 +800,8 @@ body {
   width: 5%;
 }
 .form .form-group > .form-number {
-  max-width: 10%;
+  max-width: 2rem;
+  width: 100%;
 }
 
 /* end style */
@@ -871,9 +881,40 @@ body {
 
 /*// Extra small devices (portrait phones, less than 576px)*/
 @media (min-width: 320px) and (max-width: 575.98px) { 
+  .left-column {
+    display: none;
+  }
   .right-column {
     max-width: 100% !important;
   }
+  .right-column .header {
+    padding: 0;
+  }
+  .right-column .content .content-body {
+    flex-direction: column !important; 
+  }
+  .left-content {
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  .left-content .sidebar {
+    height: auto !important;
+  }
+  .left-content.fixed-bar{
+    position: relative !important;
+  }
+  .middle-content.settings > ul li {
+    padding: .5rem;
+  }
+  .middle-content.settings > .d-flex {
+    flex-direction: row !important;
+  }
+
+  .form small {
+    line-height: 12px;
+  }
+
 }
 
 /*// Small devices (landscape phones, 576px and up)*/
