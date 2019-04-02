@@ -16,13 +16,14 @@
   <body>
     <div class="wraper" id="login">
       <div class="container">
-        <div class="login-box mx-auto my-5 py-5 text-center d-flex flex-column flex-wrap">
-          <div class="box-header m-3">
+        <div class="login-box mx-auto text-center d-flex flex-column flex-wrap justify-content-center">
+          <div class="box-header">
             <a href="../../index2.html"><b class="font-weight-bold">Admin</b>LTE</a>
           </div>
-          <div class="box-body p-4 ">
-          <?php $this->load->view($content); ?>
+          <div class="box-body">
+            <?php $this->load->view($content); ?>
           </div>
+          <div class="bod-footer"></div>
         </div>
       </div>
     </div>
