@@ -18,7 +18,7 @@
     <div class="wraper">
       <div class="">
         <div class="d-flex flex-row flex-wrap justify-content-start align-items-start">
-          <div class="left-column">
+          <div class="left-column" id="leftcolumncollapse">
             <?php $this->load->view('template/bootstrap-4/partial/sidebar'); ?>
           </div>
           <div class="right-column ml-auto flex-fill flex-grow-1">

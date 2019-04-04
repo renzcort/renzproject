@@ -1,12 +1,11 @@
-<!-- activation page -->
-<div class="starter-template py-5 px-4">
-  <h1>Activate Your Account</h1>
-  <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
-  <form class="form text-left d-flex flex-column justify-content-lg-center align-content-center mx-auto">
+<div class="box-body">
+  <h1>Activated your Account</h1>
+  <p class="lead">We have sent you an email. Complete the process of creating your account by clicking the link in that email.</p>
+  <form class="form form-inline d-flex flex-column flex-wrap justify-content-center align-items-center">
+    <label class="heading" for="inputActivationCode">Activation Code</label>
     <div class="form-group">
-      <label class="heading" for="inputActivationCode">Activation Code</label>
-      <input type="text" name="activation-code" class="form-control">
+      <input type="text" name="activation-code" class="form-control mr-1">
+      <button type="submit" class="btn btn-success">Activated</button>
     </div>
-    <button type="submit" class="btn btn-success btn-block">Activated</button>
   </form>
 </div>

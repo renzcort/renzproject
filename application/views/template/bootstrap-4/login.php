@@ -1,5 +1,5 @@
 <!-- login page -->
-<form>
+<form class="form">
   <div class="form-group">
     <div class="input-group mb-3">
       <input type="text" class="form-control form-control-sm" placeholder="Email" aria-label="Recipient's username" aria-describedby="basic-addon2">
@@ -24,10 +24,10 @@
     <button type="submit" class="sign-in btn btn-primary btn-block btn-flat">Sign In</button>
   </div>
 </form>
-<div class="d-flex flex-wrap flex-column">
-  <p>- OR -</p>
-  <a href="" class="facebook btn btn-block"><i class="fab fa-facebook-square"></i> Sign in using Facebook</a>
-  <a href="" class="google btn btn-block"><i class="fab fa-google-plus"></i> Sign in using Gmail</a>
-  <a href="">I forgot my password</a>
-  <a href="">Register a new membership</a>
-</div>
+<ul class="list-unstyled m-0 d-flex flex-wrap flex-column">
+  <li><p>- OR -</p></li>
+  <li><a href="" class="facebook btn btn-sm btn-block"><i class="fab fa-facebook-square"></i> Sign in using Facebook</a></li>
+  <li><a href="" class="google btn btn-sm btn-block"><i class="fab fa-google-plus"></i> Sign in using Gmail</a></li>
+  <li><a href="">I forgot my password</a></li>
+  <li><a href="">Register a new membership</a></li>
+</ul>
