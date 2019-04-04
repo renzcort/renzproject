@@ -9,177 +9,14 @@
     <!-- <link rel="stylesheet" type="text/css" href="css/style-test.css"> -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
     <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="css/style-test.css">
     <title>Hello, world!</title>
     <style type="text/css">
-      @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-      body {
-          font-family: 'Poppins', sans-serif;
-          background: #fafafa;
-      }
-
-      p {
-          font-family: 'Poppins', sans-serif;
-          font-size: 1.1em;
-          font-weight: 300;
-          line-height: 1.7em;
-          color: #999;
-      }
-
-      a,
-      a:hover,
-      a:focus {
-          color: inherit;
-          text-decoration: none;
-          transition: all 0.3s;
-      }
-
-      .navbar {
-          padding: 15px 10px;
-          background: #fff;
-          border: none;
-          border-radius: 0;
-          margin-bottom: 40px;
-          box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
-      }
-
-      .navbar-btn {
-          box-shadow: none;
-          outline: none !important;
-          border: none;
-      }
-
-      .line {
-          width: 100%;
-          height: 1px;
-          border-bottom: 1px dashed #ddd;
-          margin: 40px 0;
-      }
-
-      /* ---------------------------------------------------
-          SIDEBAR STYLE
-      ----------------------------------------------------- */
-
-      .wrapper {
-          display: flex;
-          width: 100%;
-          align-items: stretch;
-      }
-
-      #sidebar {
-          min-width: 250px;
-          max-width: 250px;
-          background: #7386D5;
-          color: #fff;
-          transition: all 0.3s;
-      }
-
-      #sidebar.active {
-          margin-left: -250px;
-      }
-
-      #sidebar .sidebar-header {
-          padding: 20px;
-          background: #6d7fcc;
-      }
-
-      #sidebar ul.components {
-          padding: 20px 0;
-          border-bottom: 1px solid #47748b;
-      }
-
-      #sidebar ul p {
-          color: #fff;
-          padding: 10px;
-      }
-
-      #sidebar ul li a {
-          padding: 10px;
-          font-size: 1.1em;
-          display: block;
-      }
-
-      #sidebar ul li a:hover {
-          color: #7386D5;
-          background: #fff;
-      }
-
-      #sidebar ul li.active>a,
-      a[aria-expanded="true"] {
-          color: #fff;
-          background: #6d7fcc;
-      }
-
-      a[data-toggle="collapse"] {
-          position: relative;
-      }
-
-      .dropdown-toggle::after {
-          display: block;
-          position: absolute;
-          top: 50%;
-          right: 20px;
-          transform: translateY(-50%);
-      }
-
-      ul ul a {
-          font-size: 0.9em !important;
-          padding-left: 30px !important;
-          background: #6d7fcc;
-      }
-
-      ul.CTAs {
-          padding: 20px;
-      }
-
-      ul.CTAs a {
-          text-align: center;
-          font-size: 0.9em !important;
-          display: block;
-          border-radius: 5px;
-          margin-bottom: 5px;
-      }
-
-      a.download {
-          background: #fff;
-          color: #7386D5;
-      }
-
-      a.article,
-      a.article:hover {
-          background: #6d7fcc !important;
-          color: #fff !important;
-      }
-
-      /* ---------------------------------------------------
-          CONTENT STYLE
-      ----------------------------------------------------- */
-
-      #content {
-          width: 100%;
-          padding: 20px;
-          min-height: 100vh;
-          transition: all 0.3s;
-      }
-
-      /* ---------------------------------------------------
-          MEDIAQUERIES
-      ----------------------------------------------------- */
-
-      @media (max-width: 768px) {
-          #sidebar {
-              margin-left: -250px;
-          }
-          #sidebar.active {
-              margin-left: 0;
-          }
-          #sidebarCollapse span {
-              display: none;
-          }
-      }
+ 
     </style>
   <body>
     
-  <div class="row">
+  <!-- <div class="row">
     <div class="col-sm-3" id="sidebar">
       <nav>
         <div class="sidebar-header">
@@ -238,7 +75,6 @@
       </nav>
     </div>
     <div class="col-sm-9"  id="content">
-        <!-- Page Content  -->
       <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
           <div class="container-fluid">
@@ -281,7 +117,69 @@
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
       </div>
     </div>
-  </div>  
+  </div>  --> 
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebarCollapse" aria-controls="sidebarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Link</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+      </form>
+    </div>
+  </nav>
+  <div class="wrapper">
+    <div class="d-flex flex-row flex-wrap align-items-start">
+      <div class="left-column" id="sidebar">
+        <ul class="nav list-unstyled flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="#">Active</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">Link</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+          </li>
+        </ul>
+      </div>
+      <div class="right-column ml-auto flex-fill" id="content">
+        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium.</p>
+      </div>
+    </div>
+  </div>
 
 
 <!-- Optional JavaScript -->
@@ -295,7 +193,7 @@
 <!-- end Jquery -->
 <script type="text/javascript">
   $(document).ready(function () {
-      $('#sidebarCollapse').on('click', function () {
+      $('[data-target="#sidebarCollapse"]').on('click', function () {
           $('#sidebar').toggleClass('active');
       });
   });

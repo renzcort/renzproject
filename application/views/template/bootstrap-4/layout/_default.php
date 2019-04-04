@@ -18,10 +18,10 @@
     <div class="wraper">
       <div class="">
         <div class="d-flex flex-row flex-wrap justify-content-start align-items-start">
-          <div class="left-column" id="leftcolumncollapse">
+          <div class="left-column" id="sidebarCollapse">
             <?php $this->load->view('template/bootstrap-4/partial/sidebar'); ?>
           </div>
-          <div class="right-column ml-auto flex-fill flex-grow-1">
+          <div class="right-column ml-auto flex-fill flex-grow-1" id="contentCollapse">
            <main role="main" class="container">
             <div class="main d-flex flex-column">
               <div class="header">
@@ -81,6 +81,12 @@
 <!-- end Jquery -->
 <script type="text/javascript">
   $(document).ready(function(){
+    // collapse 
+    $('[data-target="#sidebar"]').on('click', function () {
+      $('#sidebarCollapse').toggleClass('active');
+      $('#contentCollapse').toggleClass('active');
+    });
+
     // change field type
     $('select[name=field-type]').change(function(){
       var field_type = $('select[name=field-type]').val();

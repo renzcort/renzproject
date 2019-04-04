@@ -3,6 +3,21 @@ body {
   font-size: 14px;
   color: #576575;
 }
+
+header nav.logo{
+  top: 0;
+  right: 0;
+  left: 0;
+  width: 100%;
+  max-width: 15%;
+}
+
+header nav.menu {
+  left: auto;
+  width: 100%;
+  max-width: 85%;
+}
+
 .dropdown-menu.show {
   right: 11%;
   left: auto;
@@ -423,7 +438,7 @@ body {
 
 /* style baru */
 .wraper {
-  margin-top: 2.5rem;
+  margin-top: 3.5rem;
 }
 .breadcrumb li {
   display: inline-block;
@@ -436,7 +451,6 @@ body {
   background: #333F4D;
   top: 0;
   bottom: 0;
-  z-index: 100;
   position: fixed;
   box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
   width: 100%;
@@ -444,9 +458,13 @@ body {
   height: calc(200vh - 48px);
   overflow-x: hidden;
   overflow-y: auto;
+  transition: all 0.3s;
+}
+#sidebarCollapse.active {
+  margin-left: -250px;
 }
 .left-column .sidebar {
-  padding-top: 5rem;
+  padding-top: 4.5rem;
 }
 .sidebar .users-bar {
   font-size: 10px;
@@ -461,7 +479,7 @@ body {
   border-color: rgba(255,255,255,0.2);
 }
 .sidebar .menu-bar {
-  margin: 2rem 0 0;
+  margin-top: 2rem;
 }
 .menu-bar .nav-item.header{
   color: #fff;
@@ -496,7 +514,6 @@ body {
 
 
 .right-column {
-  padding-top: .5rem;
   width: 100%;
   max-width: 85%;
 }
@@ -505,7 +522,7 @@ body {
   margin: 0;
 }
 .right-column .header {
-  padding:.7rem 0;
+  padding-bottom: .75rem;
 }
 .right-column .header .breadcrumb {
   background: #E4E6E8;
@@ -910,11 +927,40 @@ body {
 
 /*// Extra small devices (portrait phones, less than 576px)*/
 @media (min-width: 320px) and (max-width: 575.98px) { 
+  header {
+    flex-direction: column;
+  }
+  header nav.logo {
+    max-width: 100%;
+    text-align: center;
+  }
+  header nav.menu{
+    top: 3rem;
+    max-width: 100%;
+    text-align: center;
+  }
+  header nav.logo > .navbar-brand {
+    width: 100%;
+    text-align: center;
+  }
+  .left-column .sidebar{
+    padding-top: 8rem;
+  }
+  .wraper {
+    margin-top: 6rem;
+  }
   .left-column {
-    /*display: none;*/
+    margin-left: -250px;
+  }
+  #sidebarCollapse.active {
+    max-width: 70%;
+    margin-left: 0;
   }
   .right-column {
-    max-width: 100% !important;
+    max-width: 100%;
+  }
+  #contentCollapse.active {
+    max-width: 30%;
   }
   .right-column .header {
     padding: 0;
@@ -959,14 +1005,43 @@ body {
 
 /*// Small devices (landscape phones, 576px and up)*/
 @media (min-width: 576px) and (max-width: 767.98px) { 
+  header {
+    flex-direction: column;
+  }
+  header nav.logo {
+    max-width: 100%;
+    text-align: center;
+  }
+  header nav.menu{
+    top: 3rem;
+    max-width: 100%;
+    text-align: center;
+  }
+  header nav.logo > .navbar-brand {
+    width: 100%;
+    text-align: center;
+  }
+  .left-column .sidebar{
+    padding-top: 8rem;
+  }
   .right-column main[role="main"]{
     max-width: 100%;
   }
   .left-column {
-    display: none;
+    margin-left: -250px;
+  }
+  .wraper {
+    margin-top: 6rem;
+  }
+  #sidebarCollapse.active {
+    max-width: 30%;
+    margin-left: 0;
   }
   .right-column {
-    max-width: 100% !important;
+    max-width: 100%;
+  }
+  #contentCollapse.active {
+    max-width: 70%;
   }
   .right-column .content .content-body {
     flex-direction: column !important; 
@@ -996,14 +1071,43 @@ body {
 
 /*// Medium devices (tablets, 768px and up)*/
 @media (min-width: 768px) and (max-width: 991.98px) { 
-  .right-column{
+  header {
+    flex-direction: column;
+  }
+  header nav.logo {
     max-width: 100%;
+    text-align: center;
+  }
+  header nav.menu{
+    top: 3rem;
+    max-width: 100%;
+    text-align: center;
+  }
+  header nav.logo > .navbar-brand {
+    width: 100%;
+    text-align: center;
+  }
+  .left-column .sidebar{
+    padding-top: 8rem;
+  }
+  .wraper {
+    margin-top: 6rem;
   }
   .right-column main[role="main"]{
     max-width: 100%;
   }
   .left-column {
-    display: none;
+    margin-left: -250px;
+  }
+  #sidebarCollapse.active {
+    max-width: 25%;
+    margin-left: 0;
+  }
+  .right-column {
+    max-width: 100%;
+  }
+  #contentCollapse.active {
+    max-width: 75%;
   }
   .right-column .content .content-body {
     flex-direction: column !important; 
