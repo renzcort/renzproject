@@ -18,7 +18,7 @@
             <span class="sr-only">(current)</span>
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <div class="d-flex flex-column justify-content-start">
+            <div class="d-flex flex-column justify-content-start align-items-center">
               <h5 class="header">You have 4 messages</h5>
               <div class="content overflow-auto">
                 <div class="dropdown-item d-flex flex-row justify-content-start align-content-start align-items-center">

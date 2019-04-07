@@ -16,8 +16,8 @@ class Login extends CI_Controller {
       $userdata = $this->session->userdata('logged_in');
       redirect('admin/home','refresh');
     } else {
-      $data['content'] = 'admin/login';
-      $this->load->view('admin/layout/_login', $data);
+      $data['content'] = 'template/bootstrap-4/admin/login';
+      $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
     }
   }
 
@@ -41,8 +41,8 @@ class Login extends CI_Controller {
         redirect('admin', 'refresh');
       }
     } else {
-      $data['content'] = 'admin/login';
-      $this->load->view('admin/layout/_login', $data);
+      $data['content'] = 'template/bootstrap-4/admin/login';
+      $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
      }
   }
 
@@ -76,12 +76,14 @@ class Login extends CI_Controller {
         redirect("admin/validation-token/?username={$data['username']}&token={$data['token']}","refresh");
       } else {
         $this->session->set_flashdata('message', 'Please correct your data');
-        $data['content']  = 'admin/register';
-        $this->load->view('admin/layout/_register', $data);
+        $data['content']  = 'template/bootstrap-4/admin/register';
+        $this->load->view('template/bootstrap-4/admin/layout/_register', $data);
       }
     } else {
-      $data['content']  = 'admin/register';
-      $this->load->view('admin/layout/_register', $data);
+      // $data['content']  = 'admin/register';
+      // $this->load->view('admin/layout/_register', $data);
+      $data['content']  = 'template/bootstrap-4/admin/register';
+      $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
     }
   }
 
@@ -119,17 +121,17 @@ class Login extends CI_Controller {
       $data['code'] = $this->input->post('code');
       $activated = $this->login_m->activated($data);
       if ($activated) {
-        $data['content']  = 'admin/activated';
-        $this->load->view('admin/layout/_default', $data);
+        $data['content']  = 'template/bootstrap-4/admin/activated';
+        $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
       } else {
         $this->session->set_flashdata('message', 'please correct, your code not valid');
-        $data['content']  = 'admin/activation-code';
-        $this->load->view('admin/layout/_default', $data);
+        $data['content']  = 'template/bootstrap-4/admin/activation-code';
+        $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
       }
     } else {
       $data['params']  = $params;
-      $data['content'] = 'admin/activation-code';
-      $this->load->view('admin/layout/_default', $data);
+      $data['content'] = 'template/bootstrap-4/admin/activation-code';
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
     }     
   }
 
@@ -138,8 +140,8 @@ class Login extends CI_Controller {
     $params   = $_SERVER['QUERY_STRING'];
     parse_str($params, $data);
     $this->login_m->activated($data);
-    $data['content']  = 'admin/activated';
-    $this->load->view('admin/layout/_default', $data);
+    $data['content']  = 'template/bootstrap-4/admin/activated';
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
   }
 
   /*Forgoted password*/
@@ -156,17 +158,17 @@ class Login extends CI_Controller {
           $this->send_email($forgot_password);  
           helper_log('forgot_password', "Forgoted password {$data['email']} successfully send email");
           $this->session->set_flashdata('message', 'Reset your password send by your email');      
-          $data['content'] = 'admin/forgot-password-confirm';
+          $data['content'] = 'template/bootstrap-4/admin/forgot-password-confirm';
         } else {
           helper_log('forgot-password', "Your Email {$data['email']} invalid");
           $this->session->set_flashdata('message', 'Your email is invalid');
-          $data['content'] = 'admin/forgot-password';
+          $data['content'] = 'template/bootstrap-4/admin/forgot-password';
         }
-        $this->load->view('admin/layout/_default', $data);
+        $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
       }     
     } 
-    $data['content'] = 'admin/forgot-password';
-    $this->load->view('admin/layout/_default', $data);
+    $data['content'] = 'template/bootstrap-4/admin/forgot-password';
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
   }
 
   /*reset password*/
@@ -191,8 +193,8 @@ class Login extends CI_Controller {
       }
     }     
     $data['params']  = $params;
-    $data['content'] = 'admin/reset-password.php';
-    $this->load->view('admin/layout/_default', $data);
+    $data['content'] = 'template/bootstrap-4/admin/reset-password.php';
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
   
   }
 
