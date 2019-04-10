@@ -14,7 +14,7 @@
     </style>
   </head>
   <body>
-    <?php $this->load->view('template/bootstrap-4/partial/nav'); ?>
+    <?php $this->load->view('template/bootstrap-4/admin/partial/nav'); ?>
     <main id="activated" role="main" class="container text-center">
     <?php $this->load->view($content); ?>
     </main>

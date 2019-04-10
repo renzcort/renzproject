@@ -14,18 +14,18 @@
     </style>
   </head>
   <body>
-    <?php $this->load->view('template/bootstrap-4/partial/nav'); ?>
+    <?php $this->load->view('template/bootstrap-4/admin/partial/nav'); ?>
     <div class="wraper">
       <div class="">
         <div class="d-flex flex-row flex-wrap justify-content-start align-items-start">
           <div class="left-column" id="sidebarCollapse">
-            <?php $this->load->view('template/bootstrap-4/partial/sidebar'); ?>
+            <?php $this->load->view('template/bootstrap-4/admin/partial/sidebar'); ?>
           </div>
           <div class="right-column ml-auto flex-fill flex-grow-1" id="contentCollapse">
            <main role="main" class="container">
             <div class="main d-flex flex-column">
               <div class="header">
-                <?php $this->load->view('template/bootstrap-4/partial/header'); ?>
+                <?php $this->load->view('template/bootstrap-4/admin/partial/header'); ?>
               </div>
               <div class="content">
                 <div class="content-body d-flex flex-row flex-wrap justify-content-start">
@@ -33,7 +33,7 @@
                 </div>
               </div>
               <div class="footer text-center">
-                <?php $this->load->view('template/bootstrap-4/partial/footer'); ?>
+                <?php $this->load->view('template/bootstrap-4/admin/partial/footer'); ?>
               </div>
             </div>  
            </main>
@@ -78,6 +78,7 @@
 <!-- Jquery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+<script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/js/graph.js') ?>"></script>
 <!-- end Jquery -->
 <script type="text/javascript">
   $(document).ready(function(){

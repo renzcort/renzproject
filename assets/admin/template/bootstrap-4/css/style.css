@@ -858,10 +858,20 @@ header nav.menu .navbar-nav > li {
   padding: 0;
   margin: 0;
 }
+.message-box {
+  padding: .5rem;
+  margin: .5rem 0;
+  width: 100%;
+  font-weight: 500;
+  font-size: 14px;
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
 
 #register .form-group,
 #login .form-group {
-  margin : 0;
+  margin : 1rem 0;
 }
 
 /* end style */
@@ -875,6 +885,90 @@ header nav.menu .navbar-nav > li {
 .btn-new {
   padding: 1rem 3rem 0 0;
 }
+
+.left-bar, 
+.middle-bar, 
+.right-bar {
+  width: 100%;
+  max-width: 33.33%;
+  padding: 1rem;
+}
+.left-bar .card, 
+.middle-bar .card, 
+.right-bar .card {
+  margin: .5rem 0;
+}
+.left-bar .card .card-header > h4, 
+.middle-bar .card .card-header > h4, 
+.right-bar .card .card-header > h4 {
+  font-weight: 700;
+  font-size: 14px;
+}
+.small-box {
+  width: 100%;
+  max-width: 21.9%;
+  margin: 1rem;
+} 
+.small-box-body {
+  padding: 1rem .5rem .5rem;
+  color: #fff;
+  font-weight: 400;
+}
+.small-box-body .inner {
+  width: 100%;
+  max-width:40%;
+}
+.small-box-body .inner > h4 {
+  font-size: 2.2rem;
+  font-weight: 800;
+}
+.small-box-body .icon {
+  width: 100%;
+  max-width: 60%;
+  text-align: right;
+  padding-right: .5rem;
+}
+.small-box-body .icon > i{
+  font-size: 4rem;
+}
+.small-box-footer {
+  padding: .25rem;
+  background: rgba(0,0,0,0.1);
+}
+.small-box-footer > a {
+  text-align: center;
+  font-weight: 6  00;
+  font-size: 12px;
+  color: rgba(255,255,255,0.8);
+  text-decoration: none;
+}
+.bg-aqua {
+  background-color: #00c0ef;
+}
+.bg-green {
+  background-color: #00a65a;
+}
+.bg-yellow {
+  background-color: #f39c12;
+}
+.bg-red {
+  background-color: #dd4b39;
+}
+
+#dashboard section {
+  padding: 1rem;
+}
+#dashboard-left.left-bar {
+  width: 100%;
+  max-width: 60%;
+  margin: 1rem .5rem;
+}
+#dashboard.right-bar {
+  width: 100%;
+  max-width: 40%;
+  margin: 1rem .5rem;
+}
+
 
 #login.wraper {
   margin: 1rem 0;
@@ -929,7 +1023,7 @@ header nav.menu .navbar-nav > li {
 }
 #login .box-body > p {
   font-size: 12px;
-  line-height: .5rem;
+  line-height: 1rem;
 }
 
 #login .box-body ul > li {

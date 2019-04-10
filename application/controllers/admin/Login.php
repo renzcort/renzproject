@@ -119,19 +119,21 @@ class Login extends CI_Controller {
 
     if (isset($_POST['submit'])) {
       $data['code'] = $this->input->post('code');
+      // var_dump($data);die;
       $activated = $this->login_m->activated($data);
       if ($activated) {
-        $data['content']  = 'template/bootstrap-4/admin/activated';
-        $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
+        $data['content']  = 'template/bootstrap-4/admin/activation-success';
+        $this->load->view('template/bootstrap-4/admin/layout/_activate', $data);
       } else {
-        $this->session->set_flashdata('message', 'please correct, your code not valid');
-        $data['content']  = 'template/bootstrap-4/admin/activation-code';
-        $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
+        $this->session->set_flashdata('message', 'Please Correct, your code not valid');
+        $data['params']  = $params;
+        $data['content'] = 'template/bootstrap-4/admin/activation-code';
+        $this->load->view('template/bootstrap-4/admin/layout/_activate', $data);
       }
     } else {
       $data['params']  = $params;
       $data['content'] = 'template/bootstrap-4/admin/activation-code';
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
+      $this->load->view('template/bootstrap-4/admin/layout/_activate', $data);
     }     
   }
 
@@ -158,24 +160,23 @@ class Login extends CI_Controller {
           $this->send_email($forgot_password);  
           helper_log('forgot_password', "Forgoted password {$data['email']} successfully send email");
           $this->session->set_flashdata('message', 'Reset your password send by your email');      
-          $data['content'] = 'template/bootstrap-4/admin/forgot-password-confirm';
         } else {
           helper_log('forgot-password', "Your Email {$data['email']} invalid");
           $this->session->set_flashdata('message', 'Your email is invalid');
-          $data['content'] = 'template/bootstrap-4/admin/forgot-password';
         }
-        $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
+        $data['content'] = 'template/bootstrap-4/admin/forgot-password';
+        $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
       }     
-    } 
-    $data['content'] = 'template/bootstrap-4/admin/forgot-password';
-    $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
+    } else {
+      $data['content'] = 'template/bootstrap-4/admin/forgot-password';
+      $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
+    }
   }
 
   /*reset password*/
   public function reset_password() {
     $params = $_SERVER['QUERY_STRING'];
     parse_str($params, $data);
-
     $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]', 
       array('required' => 'You must provide a %s.')
     );
@@ -183,18 +184,15 @@ class Login extends CI_Controller {
   
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['submit'])) {
-        $data = array_merge($data, array(
-          'password'   => md5($this->input->post('password'))
-        ));
+        $data['password'] = md5($this->input->post('password'));
         $new_password = $this->login_m->forgot_password($data, TRUE);
         helper_log('success', "reset password {$data['email']} successfully");
         $this->session->set_flashdata('message', 'Your Password has changes');
-        redirect('admin','refresh');
       }
     }     
     $data['params']  = $params;
-    $data['content'] = 'template/bootstrap-4/admin/reset-password.php';
-    $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
+    $data['content'] = 'template/bootstrap-4/admin/reset-password';
+    $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
   
   }
 

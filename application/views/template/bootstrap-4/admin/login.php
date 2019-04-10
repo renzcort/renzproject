@@ -40,6 +40,6 @@
   <li><p>- OR -</p></li>
   <li><a href="" class="facebook btn btn-sm btn-block"><i class="fab fa-facebook-square"></i> Sign in using Facebook</a></li>
   <li><a href="" class="google btn btn-sm btn-block"><i class="fab fa-google-plus"></i> Sign in using Gmail</a></li>
-  <li><a href="">I forgot my password</a></li>
-  <li><a href="">Register a new membership</a></li>
+  <li><a href="<?php echo base_url('admin/forgot-password'); ?>">I forgot my password</a></li>
+  <li><a href="<?php echo base_url('admin/register'); ?>">Register a new membership</a></li>
 </ul>

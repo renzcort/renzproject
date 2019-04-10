@@ -4,8 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Login_m extends My_Model {
   protected $_table = 'users';  
 
-  public function check_login($email, $password)
-  {
+  public function check_login($email, $password) {
     $this->db->select('*');
     $this->db->where('email', $email);
     $this->db->where('password', md5($password));
@@ -23,28 +22,23 @@ class Login_m extends My_Model {
   }
 
   // register
-  public function create($data) 
-  {
+  public function create($data) {
     $this->db->insert($this->_table, $data);
   }
 
   // activation users
-  public function activated($data) 
-  {
-    $data['code'] = '';
+  public function activated($data) {
     if($data['code']) {
-      $query = $this->db->get_where($this->_table, 
-                                      array(
-                                        'username'        => $data['username'],
-                                        'token'           => $data['token'], 
-                                        'activation_code' => $data['code']));      
+      $query = $this->db->get_where($this->_table, array('username' => $data['username'],
+                                                          'token'           => $data['token'], 
+                                                          'activation_code' => $data['code'])
+      );      
+    } else {
+      $query = $this->db->get_where($this->_table, array('username' =>  $data['username'], 
+                                                        'token' =>  $data['token'])
+      );
     }
 
-    $query = $this->db->get_where($this->_table, 
-                                    array(
-                                        'username'  =>  $data['username'],
-                                        'token'     =>  $data['token']
-                                    ));
     if ($query->num_rows() > 0) {
       $result  = $query->row();
       $this->db->where('id', $result->id);
@@ -57,15 +51,14 @@ class Login_m extends My_Model {
   }
 
   /*forgoted password*/
-  public function forgot_password($data, $reset = FALSE)
-  {
+  public function forgot_password($data, $reset=FALSE) {
     // check email
     $query = $this->db->get_where($this->_table, array('email' => $data['email']));
-
     if ($query->num_rows() > 0) {
       $data['updated_at'] = mdate("%Y-%m-%d %H:%i:%s");
       $result = $query->row_array();
       if ($reset) {
+        $data['remember_code']  = $result['password'];
         $data['forgotten_password_time'] = intval($result['forgotten_password_time']) + 1;
       }
       // update forgoted token
