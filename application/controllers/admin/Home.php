@@ -6,20 +6,22 @@ class Home extends MY_Controller {
   public function __construct()
   {
     parent::__construct();
-    //Do your magic here
+    $this->data = array(
+      'title' =>  'Home',
+      'userdata'  =>  $this->first_load(),
+    );//Do your magic here
   }
 
-  public function index()
-  {
-    $userdata = $this->first_load();
-    $config = array(
-      'content'  => 'admin/home',
-      // 'title'    =>  'Dashboard',
-      'header'   =>  'Home',
-      'subtitle' =>  'Control Panel,'
+  public function index() {
+     $settings = array(
+      'title'     =>  'Home',
+      'subtitle'  =>  array('field'),
+      'header'    =>  'Home',
+      'button'    =>  '+ New',
+      'content'   =>  'template/bootstrap-4/admin/dashboard',
+      'session'   =>  $this->data,
     );
-    $data = array_merge($config, $userdata);
-    $this->load->view('admin/layout/_default', $data);
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
 }
