@@ -44,7 +44,7 @@
 
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="groupsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -53,18 +53,22 @@
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
+      <?php echo form_open('admin/groups/fields', ''); ?>
       <div class="modal-body">
-        <form>
           <div class="form-group">
             <label class="heading" for="inputNameGroup">What do you want to name the group?</label>
-            <input type="text" name="name-group" class="form-control form-control-sm">
+            <input type="text" name="name" class="form-control form-control-sm">
           </div>
-        </form>
+          <div class="form-group">
+            <label class="heading" for="inputDescGroup">Desctription</label>
+            <textarea class="form-control form-control-sm" name="description"></textarea>
+          </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+        <button type="submit" class="btn btn-primary" name="create">Save changes</button>
       </div>
+    <? echo form_close(); ?>
     </div>
   </div>
 </div>

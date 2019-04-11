@@ -1,21 +1,31 @@
   <div id="left-content" class="left-content">
-    <div class="sidebar">
+    <div class="sidebar-content">
       <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start">
         <li class="nav-item">
-          <a class="nav-link active" href="#">Active</a>
+          <a class="nav-link active" href="#">All Fields</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
+          <a class="nav-link" href="#">Default</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-        </li>
+        <?php foreach ($group as $key): ?>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-id="<?php echo $key->id; ?>"><?php echo $key->name ?></a>
+          </li>
+        <?php endforeach ?>
       </ul>
-      <div class="btn-new text-center">
-        <a href="" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#exampleModal">+ New Group</a>
+      <div class="btn-new text-center d-flex flex-row flex-wrap justify-content-start">
+        <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#groupsModal">+ New Group</button>
+        <?php if ($group_count >= 1) { ?>
+          <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              <i class="fas fa-cog"></i>
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#groupsModal" id="groupsRename">Rename Selected Group</a>
+              <a class="dropdown-item" href="<?php echo base_url('groups/fields') ?>">Delete Selected Group</a>
+            </div>
+          </div>
+        <?php } ?>
       </div>
     </div>
   </div>

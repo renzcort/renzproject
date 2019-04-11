@@ -220,7 +220,7 @@ class Users extends My_Controller {
       if ($username == $getdataby_id->username) {
         return TRUE;
       } else {
-        $this->form_validation->set_message('check_username', 'The Username field must contain a unique value.');
+        $this->form_validation->set_message('check_username', 'The Username fields must contain a unique value.');
         return FALSE;
       }
     } else {
@@ -236,7 +236,7 @@ class Users extends My_Controller {
       if ($email == $getdataby_id->email) {
         return TRUE;
       } else {
-        $this->form_validation->set_message('check_email', 'The Email field must contain a unique value.');
+        $this->form_validation->set_message('check_email', 'The Email fields must contain a unique value.');
         return FALSE;
       }
     } else {

@@ -1,24 +1,26 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Home extends MY_Controller {
-
+class Settings extends My_Controller {
+  
   public function __construct()
   {
     parent::__construct();
+    //Do your magic here
     $this->data = array(
       'userdata'  =>  $this->first_load(),
-    );//Do your magic here
+    );
   }
 
-  public function index() {
+  public function index()
+  {
     $settings = array(
       'title'       =>  'Home',
-      'subtitle'    =>  array('fields', 'sections', 'entries'),
+      'subtitle'    =>  array('field'),
       'header'      =>  'Home',
       'button'      =>  '+ New Widget',
       'button_conf' =>  FALSE,
-      'content'     =>  'template/bootstrap-4/admin/dashboard',
+      'content'     =>  'template/bootstrap-4/admin/settings',
       'session'     =>  $this->data,
     );
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -26,5 +28,5 @@ class Home extends MY_Controller {
 
 }
 
-/* End of file Dashboard.php */
-/* Location: ./application/controllers/admin/Dashboard.php */
+/* End of file Settings.php */
+/* Location: ./application/Controllers/admin/Settings.php */

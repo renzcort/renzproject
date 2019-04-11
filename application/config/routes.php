@@ -78,19 +78,19 @@ $route['admin/users/group/delete/(:num)'] =  'admin/users/group_delete/$1';
 /*Info*/
 $route['admin/info']                      =  'admin/info/update';
 
-/*Field*/
-$route['admin/field']                     = 'admin/field';
-$route['admin/field/create']              = 'admin/field/create';
-$route['admin/field/edit/(:num)']         = 'admin/field/update/$1';
-$route['admin/field/delete/(:num)']       = 'admin/field/delete/$1';
-$route['admin/field/group']               = 'admin/field/group';
-$route['admin/field/group/create']        = 'admin/field/group_create';
-$route['admin/field/group/edit/(:num)']   = 'admin/field/group_update/$1';
-$route['admin/field/group/delete/(:num)'] = 'admin/field/group_delete/$1';
-$route['admin/field/type']                = 'admin/field/type';
-$route['admin/field/type/create']         = 'admin/field/type_create';
-$route['admin/field/type/edit/(:num)']    = 'admin/field/type_update/$1';
-$route['admin/field/type/delete/(:num)']  = 'admin/field/type_delete/$1';
+/*fields*/
+$route['admin/fields']                     = 'admin/fields';
+$route['admin/fields/create']              = 'admin/fields/create';
+$route['admin/fields/edit/(:num)']         = 'admin/fields/update/$1';
+$route['admin/fields/delete/(:num)']       = 'admin/fields/delete/$1';
+$route['admin/fields/group']               = 'admin/fields/group';
+$route['admin/fields/group/create']        = 'admin/fields/group_create';
+$route['admin/fields/group/edit/(:num)']   = 'admin/fields/group_update/$1';
+$route['admin/fields/group/delete/(:num)'] = 'admin/fields/group_delete/$1';
+$route['admin/fields/type']                = 'admin/fields/type';
+$route['admin/fields/type/create']         = 'admin/fields/type_create';
+$route['admin/fields/type/edit/(:num)']    = 'admin/fields/type_update/$1';
+$route['admin/fields/type/delete/(:num)']  = 'admin/fields/type_delete/$1';
 
 /*Section*/
 $route['admin/section']                       = 'admin/section';
@@ -126,3 +126,6 @@ $route['admin/categories']                       = 'admin/categories';
 $route['admin/categories/create']                = 'admin/categories/create';
 $route['admin/categories/edit/(:num)']           = 'admin/categories/update/$1';
 $route['admin/categories/delete/(:num)']         = 'admin/categories/delete/$1';
+
+// settings 
+$route['admin/settings'] = 'admin/settings';
