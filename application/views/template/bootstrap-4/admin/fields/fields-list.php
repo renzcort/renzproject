@@ -21,7 +21,7 @@
               <i class="fas fa-cog"></i>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#" data-toggle="modal" data-target="#groupsModal" id="groupsRename">Rename Selected Group</a>
+              <a class="dropdown-item" href="#" id="groupsRename">Rename Selected Group</a>
               <a class="dropdown-item" href="<?php echo base_url('groups/fields') ?>">Delete Selected Group</a>
             </div>
           </div>

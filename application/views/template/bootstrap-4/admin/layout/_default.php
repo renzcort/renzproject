@@ -82,10 +82,11 @@
 <!-- Jquery -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
-<script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/js/graph.js') ?>"></script>
+<!-- <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/js/graph.js') ?>"></script> -->
 <!-- end Jquery -->
 <script type="text/javascript">
   $(document).ready(function(){
+    
     // collapse 
     $('[data-target="#sidebar"]').on('click', function () {
       $('#sidebarCollapse').toggleClass('active');
@@ -131,10 +132,41 @@
     // add row table checkboxes
     $('#checkboxes button').click(function(){
       $('#checkboxes table tr:last ').after('<tr> <td><input type="text" name="label" class="form-control"></td> <td><input type="text" name="value" class="form-control"></td> <td class="action"><input type="checkbox" name="checkboxes"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>') });
-
     $(document).on('click', '.remove-row', function() {
         $(this).closest("tr").remove();
     });
+
+    // click navbar active
+    $('.sidebar .nav-link').click(function(event) {
+      console.log($(this));
+      $('.sidebar .nav-item').find('.active').removeClass('active');
+      $(this).addClass('active');
+    });
+
+    $('.sidebar-content .nav-link').click(function(event) {
+      console.log($(this));
+      $('.sidebar-content .nav-item').find('.active').removeClass('active');
+      $(this).addClass('active');
+    });
+
+    // modal rename
+    $('#groupsRename').click(function(){
+      var id = $(".sidebar-content .nav-link.active").attr('data-id');
+      $.ajax({
+          type: 'POST',
+          data: {id: id},
+          url: '<?php echo base_url("admin/groups/fields_getdataById") ?>',
+          datatype: 'json',
+      })
+      .done(function (data) {
+          successFunction(data); 
+      })
+      .fail(function (jqXHR, textStatus, errorThrown) { 
+        // serrorFunction(); 
+      });
+      return false;
+    });
+
 
     $("#sortable1, #sortable2").sortable({
       connectWith: ".connectedSortable"
@@ -154,6 +186,11 @@
     } else {
       leftbar.classList.remove("fixed-bar");
     }
+  }
+
+  function successFunction(data){
+    alert();
+    $('#groupsModal').modal('show');               // initializes and invokes show immediately
   }
 </script>
 </body>
