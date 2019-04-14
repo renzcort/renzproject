@@ -59,6 +59,7 @@ class Groups extends My_Controller {
 
   public function fields_getdataById() {
     $id = $this->input->post('id');
+    var_dump($id);die;
     $getdataby_id =  $this->general_m->get_row_by_id('fields_group', $id);
     echo json_encode($getdataby_id);
   }

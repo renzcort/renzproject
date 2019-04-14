@@ -5,7 +5,7 @@ class Template extends My_Controller {
 
   public function index()
   {
-    $settings['content'] = 'template/bootstrap-4/admin/dashboard';
+    $settings['content'] = 'template/bootstrap-4/admin/section/section-entries-form';
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
     // $this->load->view('template/bootstrap-4/layout/_activate', $settings);
   }
