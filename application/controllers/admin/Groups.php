@@ -19,9 +19,10 @@ class Groups extends My_Controller {
       'table'     => 'fields_group',
       'action'    => 'admin/fields',
       'session'   =>  $this->data,
+      'id'        =>  $this->input->post('id')
     );
-    if ($id) { 
-      $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
+    if ($settings['id']) { 
+      $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $settings['id']);
     }
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
@@ -42,7 +43,7 @@ class Groups extends My_Controller {
       } elseif (isset($_POST['update'])) {
       
         $data['updated_by'] = $this->data['userdata']['id'];
-        $this->general_m->update($settings['table'], $data, $id);
+        $this->general_m->update($settings['table'], $data, $settings['id']);
         helper_log('update', "update ".($settings['title'] ? $settings['title'] : $this->data['title']." ".$settings['header'] )." has successfully");
         $this->session->set_flashdata('message', 'Data has Updated');
       }
@@ -57,11 +58,20 @@ class Groups extends My_Controller {
     }
   }
 
+  // JSON update data 
   public function fields_getdataById() {
+    header('Content-type: application/json');
     $id = $this->input->post('id');
-    var_dump($id);die;
     $getdataby_id =  $this->general_m->get_row_by_id('fields_group', $id);
     echo json_encode($getdataby_id);
+  }
+
+  // JSON Delete
+  public function fields_deleteById() {
+    header('Content-type: application/json');
+    $id = $this->input->post('id');
+    $delete = $this->general_m->delete('fields_group', $id);
+    echo json_encode($delete);
   }
 
 

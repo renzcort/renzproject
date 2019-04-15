@@ -27,7 +27,7 @@
               <div class="header">
                 <?php $this->load->view('template/bootstrap-4/admin/partial/header'); ?>
               </div>
-              <div class="content">
+              <div class="content container-fluid">
                 <div class="content-body d-flex flex-row flex-wrap justify-content-start">
                   <?php $this->load->view($content); ?>
                 </div>
@@ -66,7 +66,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary" name="create">Save changes</button>
+        <button type="submit" class="btn btn-primary" name="create">Save</button>
       </div>
     <? echo form_close(); ?>
     </div>
@@ -77,7 +77,7 @@
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
@@ -158,12 +158,37 @@
               url: '<?php echo base_url("admin/groups/fields_getdataById") ?>',
           })
           .done(function (data) {
-              successFunction(data); 
+              updateModalSuccess(data); 
           })
           .fail(function (jqXHR, textStatus, errorThrown) { 
             // serrorFunction(); 
           });
           return false;
+        });
+
+        // Modal Delete
+        $('#groupsDelete').click(function(){
+          var id = $(".sidebar-content .nav-link.active").attr('data-id');
+          if (confirm("Are you sure?")) {
+            $.ajax({
+              type: 'POST',
+              dataType: 'json',
+              data: {id: id},
+              url: '<?php echo base_url("admin/groups/fields_deleteById") ?>'
+            })
+            .done(function(data) {
+              deleteModalSuccess(data);
+            })
+            .fail(function(error) {
+
+            });
+          }
+          return false;
+        });
+
+        // Button Submit
+        $('#buttonHeader').click(function(){
+          $('#MyForm').submit();
         });
 
 
@@ -188,10 +213,21 @@
         }
       }
 
-      function successFunction(data){
-        alert();
-        $('#groupsModal').modal('show');               // initializes and invokes show immediately
+      // function update modal success
+      function updateModalSuccess(data){
+        $('#groupsModal .modal-body').append('<input type="hidden" name="id" value="'+data.id+'" class="form-control">');
+        $('#groupsModal input[type="text"]').val(data.name);
+        $('#groupsModal textarea').val(data.description);
+        $('#groupsModal button[type="submit"]').attr('name', 'update');
+        $('#groupsModal button[type="submit"]').text('Update');
+        $('#groupsModal').modal('show');
       }
+
+      // function delete modal success
+      function deleteModalSuccess(data){
+        window.location.reload();
+      }
+
     </script>
   </body>
 </html>

@@ -1,21 +1,29 @@
 <div class="middle-content flex-grow-1">
-  <form class="form">
+  <?php
+    $attributes = array('class' => 'form',
+                        'id' => 'MyForm',
+                  ); 
+    echo form_open('admin/fields/create', $attributes); 
+  ?>
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
       <small class="form-text text-muted">Which group should this field be displayed in?</small>
-      <select name="group" class="form-control costum-select">
+      <select name="groupName" class="form-control costum-select">
         <option value="0">- Select Group -</option>
+        <?php foreach ($fields_group as $key): ?>
+          <option value="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></option>
+        <?php endforeach ?>
       </select>
     </div>
     <div class="form-group">
       <label class="heading required" for="inputName">Name</label>
       <small class="form-text text-muted">What this field will be called in the CP.</small>
-      <input type="text" name="name" class="form-control"  placeholder="name">
+      <input type="text" name="name" class="form-control"  placeholder="Name">
     </div>
     <div class="form-group">
       <label class="heading required" for="inputHandle">Handle</label>
       <small class="form-text text-muted">How you’ll refer to this field in the templates.</small>
-      <input type="text" name="handle" class="form-control"  placeholder="handle">
+      <input type="text" name="handle" class="form-control"  placeholder="Handle">
     </div>
     <div class="form-group">
       <label class="heading" for="inputInstruction">Instruction</label>
@@ -31,26 +39,23 @@
       <small class="form-text text-muted">What type of field is this?</small>
       <select name="field-type" class="form-control costum-select">
         <option value ="0">- Select Type -</option>
-        <option value ="plain-text">Plain Text</option>
-        <option value ="assets">Assets</option>
-        <option value ="rich-text">Rich Text</option>
-        <option value ="categories">Categories</option>
-        <option value ="checkboxes">Checkboxes</option>
+        <?php foreach ($fields_type as $key): ?>
+          <option value ="<?php echo $key->slug; ?>"><?php echo $key->name; ?></option>
+        <?php endforeach ?>
       </select>
     </div>
     <div id="plain-text" class="d-none fields">
       <div class="form-group">
         <label class="heading" for="inputPlaceholder">Placeholder Text</label>
         <small class="form-text text-muted">The text that will be shown if the field doesn’t have a value.</small>
-        <input type="text" name="placeholder" class="form-control">
+        <input type="text" name="settings['placeholder']" class="form-control">
       </div>
       <div class="form-group">
         <label class="heading" for="inputCharLimit">Character Limit</label>
         <small class="form-text text-muted">The maximum length of characters the field is allowed to have.</small>
-        <input type="text" name="charlimit" class="form-control form-number">
+        <input type="text" name="settings['charlimit']" class="form-control form-number">
       </div>
       <div class="form-group">
-
         <div class="form-check">
           <input type="checkbox" name="linebreak" class="form-check-input">
           <label class="form-check-label" for="inputAllowLineBreaks">Use a monospaced font</label>
@@ -62,7 +67,7 @@
       </div>
       <div class="form-group">
         <label class="heading" for="inputInitialRows">Initial Rows</label>
-        <input type="text" name="maxlength" class="form-control form-number">
+        <input type="text" name="settings['maxlength']" class="form-control form-number">
       </div>
       <div class="form-group">
         <label class="heading" for="inputColumnType">Column Type</label>
@@ -238,7 +243,7 @@
         <input type="text" name="selectionLabel" class="form-control">
       </div>
     </div>
-    <div id="checkboxes" class="fields">
+    <div id="checkboxes" class="d-none fields">
       <div class="form-group">
         <label class="heading" for="inputCheckbox">Checkbox Options</label>
         <small class="form-text text-muted">Define the available options.</small>
@@ -266,18 +271,5 @@
         <button type="button" class="btn btn btn-outline-secondary btn-block">+ Add an option</button>
       </div>
     </div>
-  </form>
+  <?php echo form_close(); ?>
 </div>
-<!-- 
-<script type="text/javascript">
-  $(document).ready(function() {
-    alert();
-    $('select[name=field-type]').change(function() {
-      $('select[name=field-type]:selected').each(function() {
-        var field_type = $('select[name=field-type]').val();
-        alert(field_type);
-         $('.'+field_type).removeClass('d-none');
-      });
-     );
-  });
-</script> -->

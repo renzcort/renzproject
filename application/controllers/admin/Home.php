@@ -13,13 +13,15 @@ class Home extends MY_Controller {
 
   public function index() {
     $settings = array(
-      'title'       =>  'Home',
-      'subtitle'    =>  array('fields', 'sections', 'entries'),
-      'header'      =>  'Home',
-      'button'      =>  '+ New Widget',
-      'button_conf' =>  FALSE,
-      'content'     =>  'template/bootstrap-4/admin/dashboard',
-      'session'     =>  $this->data,
+      'title'         =>  'Home',
+      'subtitle'      =>  '',
+      'subbreadcrumb' => array('fields', 'sections', 'entries'),
+      'header'        =>  'Home',
+      'button'        =>  '+ New Widget',
+      'button_conf'   =>  'Settings',
+      'button_link'   =>  'admin/fields/create',
+      'content'       =>  'template/bootstrap-4/admin/dashboard',
+      'session'       =>  $this->data,
     );
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }

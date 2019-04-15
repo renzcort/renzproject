@@ -18,18 +18,19 @@ class fields extends My_Controller {
 
   public function index() {
     $settings = array(
-      'title'       =>  'fields',
-      'subtitle'    =>  FALSE,
-      'button'      =>  '+ New Widget',
-      'button_conf' =>  FALSE,
-      'content'     =>  'template/bootstrap-4/admin/fields/fields-list',
-      'table'       =>  'fields',
-      'action'      =>  'admin/fields',
-      'session'     =>  $this->data,
-      'no'          =>  $this->uri->segment(3),
-      'group'       =>  $this->general_m->get_all_results('fields_group'),
-      'group_count' =>  $this->general_m->count_all_results('fields_group'),
-      'group_id'    =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'title'              =>  'fields',
+      'subtitle'           =>  FALSE,
+      'subbreadcrumb'      =>  FALSE,
+      'button'             =>  '+ New Fields',
+      'button_link'        =>  'admin/fields/create',
+      'content'            =>  'template/bootstrap-4/admin/fields/fields-list',
+      'table'              =>  'fields',
+      'action'             =>  'admin/fields',
+      'session'            =>  $this->data,
+      'no'                 =>  $this->uri->segment(3),
+      'fields_group'       =>  $this->general_m->get_all_results('fields_group'),
+      'fields_group_count' =>  $this->general_m->count_all_results('fields_group'),
+      'fields_group_id'    =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
     );
     
     // Pagination
@@ -42,7 +43,7 @@ class fields extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->fields_m->get_all_results($config['per_page'], $start_offset, $settings['group_id']);
+    $settings['record_all'] = $this->fields_m->get_all_results($config['per_page'], $start_offset, $settings['fields_group_id']);
     $settings['links']      = $this->pagination->create_links();
     // end Pagination
     
@@ -51,34 +52,40 @@ class fields extends My_Controller {
 
   public function create() {
     $settings = array(
-      'title'     =>  'fields',
-      'subheader' =>  'Manage fields',
-      'content'   =>  'admin/fields/create',
-      'table'     =>  'fields',
-      'action'    =>  'admin/fields',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(3),
-      'group'     =>  $this->general_m->get_all_results('fields_group'),
-      'type'      =>  $this->general_m->get_all_results('fields_type'),
-      'group_id'  =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
-      'attributes'=>  arraY('type' =>
-                          array(
-                          'text'     => array('maxlength', 'minlength', 'placeholder'),
-                          'email'    => array('list', 'maxlength', 'pattern', 'placeholder'),
-                          'password' => array('maxlength', 'pattern', 'placeholder'),
-                          'datetime' => array('list', 'max', 'min', 'step'),
-                          'file'     => array('multiple', 'accept', 'files', 'capture'),
-                          'checkbox' => array('checked'),
-                          'textarea' => array('placeholder', 'rows', 'cols', 'wrap'),
+      'title'              =>  'fields',
+      'subtitle'           =>  'create',
+      'subbreadcrumb'      =>  FALSE,
+      'button'             =>  'Save',
+      'button_link'        =>  'admin/fields/create',
+      'content'            =>  'template/bootstrap-4/admin/fields/fields-form',
+      'table'              =>  'fields',
+      'action'             =>  'admin/fields',
+      'session'            =>  $this->data,
+      'no'                 =>  $this->uri->segment(3),
+      'fields_type'        =>  $this->general_m->get_all_results('fields_type'),
+      'fields_group'       =>  $this->general_m->get_all_results('fields_group'),
+      'fields_group_count' =>  $this->general_m->count_all_results('fields_group'),
+      'fields_group_id'    =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'attributes'    =>  arraY('type' =>
+                                    array(
+                                    'text'     => array('maxlength', 'minlength', 'placeholder'),
+                                    'email'    => array('list', 'maxlength', 'pattern', 'placeholder'),
+                                    'password' => array('maxlength', 'pattern', 'placeholder'),
+                                    'datetime' => array('list', 'max', 'min', 'step'),
+                                    'file'     => array('multiple', 'accept', 'files', 'capture'),
+                                    'checkbox' => array('checked'),
+                                    'textarea' => array('placeholder', 'rows', 'cols', 'wrap'),
+                                    ),
+                                    'action' => array('required', 'autocomplete', 'autofocus', 'disabled', 'readonly')
                           ),
-                          'action' => array('required', 'autocomplete', 'autofocus', 'disabled', 'readonly')
-                        ),
     );
 
+
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    // $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
+    $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
     $this->form_validation->set_rules('type', 'fields Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
+    var_dump($this->input->post());die;
       if (isset($_POST['create'])) {
 
         // get Attributes
@@ -125,7 +132,7 @@ class fields extends My_Controller {
         redirect($settings['action']);
       }
     } else {
-      $this->load->view('admin/layout/_default', $settings);
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
     }
   }
 
