@@ -48,26 +48,26 @@
       <div class="form-group">
         <label class="heading" for="inputPlaceholder">Placeholder Text</label>
         <small class="form-text text-muted">The text that will be shown if the field doesn’t have a value.</small>
-        <input type="text" name="settings['placeholder']" class="form-control">
+        <input type="text" name="placeholder" class="form-control">
       </div>
       <div class="form-group">
         <label class="heading" for="inputCharLimit">Character Limit</label>
         <small class="form-text text-muted">The maximum length of characters the field is allowed to have.</small>
-        <input type="text" name="settings['charlimit']" class="form-control form-number">
+        <input type="text" name="charLimit" class="form-control form-number">
       </div>
       <div class="form-group">
         <div class="form-check">
-          <input type="checkbox" name="linebreak" class="form-check-input">
+          <input type="checkbox" name="monospacedFont" class="form-check-input">
           <label class="form-check-label" for="inputAllowLineBreaks">Use a monospaced font</label>
         </div>
         <div class="form-check">
-          <input type="checkbox" name="linebreak" class="form-check-input">
+          <input type="checkbox" name="lineBreak" class="form-check-input">
           <label class="form-check-label" for="inputAllowLineBreaks">Allow line breaks</label>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group initialRows">
         <label class="heading" for="inputInitialRows">Initial Rows</label>
-        <input type="text" name="settings['maxlength']" class="form-control form-number">
+        <input type="text" name="initialRows" class="form-control form-number">
       </div>
       <div class="form-group">
         <label class="heading" for="inputColumnType">Column Type</label>
@@ -80,87 +80,89 @@
     <div id="assets" class="d-none fields">
       <div class="form-group">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" id="defaultCheck1">
+          <input class="form-check-input" type="checkbox" name="assetsRestrictUpload">
           <label class="form-check-label" for="restrictAssets">Restrict uploads to a single folder?</label>
         </div>
-        <div class="form-group d-none m-2" id="restrictAssets">
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
-            <label class="form-check-label" for="defaultCheck1">All</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
-            <label class="form-check-label" for="defaultCheck1">All</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
-            <label class="form-check-label" for="defaultCheck1">All</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
-            <label class="form-check-label" for="defaultCheck1">All</label>
-          </div>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
-            <label class="form-check-label" for="defaultCheck1">All</label>
-          </div>
+      </div>
+      <div class="form-group assetsRestrictUpload">
+        <label class="heading" for="inputUploadLocation">Upload Location</label>
+        <small class="form-text text-muted">Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end? Note that the subfolder path can contain variables like {slug} or {author.username}.</small>
+        <div class="d-flex flex-row justify-content-between">
+          <select name="assetsUploadFolder" class="form-control costum-select">
+            <option value="0">- Select Sources -</option>
+          </select>
+          <input type="text" name="assetsUploadLocation" class="form-control flex-grow-1 ml-2">
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group noAssetsRestrictUpload">
         <label class="heading" for="inputSource">Sources</label>
         <small class="form-text text-muted">Which sources do you want to select assets from?</small>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
+          <input class="form-check-input" type="checkbox" value="" name="assetsSources[]">
           <label class="form-check-label" for="defaultCheck1">All</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
+          <input class="form-check-input" type="checkbox" value="" name="assetsSources[]">
           <label class="form-check-label" for="defaultCheck1">Products</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" name="sources">
+          <input class="form-check-input" type="checkbox" value="" name="assetsSources[]">
           <label class="form-check-label" for="defaultCheck1">Images</label>
         </div>
       </div>
-      <div class="form-group">
+      <div class="form-group noAssetsRestrictUpload">
         <label class="heading" for="inputUploadLocation">Default Upload Location</label>
         <small class="form-text text-muted">Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end? Note that the subfolder path can contain variables like {slug} or {author.username}.</small>
         <div class="d-flex flex-row justify-content-between">
-          <select name="sources" class="form-control costum-select">
+          <select name="assetsUploadFolder" class="form-control costum-select">
             <option value="0">- Select Sources -</option>
           </select>
-          <input type="text" name="sources" class="form-control flex-grow-1 ml-2">
+          <input type="text" name="assetsUploadLocation" class="form-control flex-grow-1 ml-2">
         </div>
       </div>
       <div class="form-group">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+          <input class="form-check-input" type="checkbox" value="" name="assetsRestrictFileType">
           <label class="form-check-label" for="restrictAssets">Restrict allowed file types?</label>
+        </div>
+      </div>
+      <div class="form-group assetsRestrictFileType">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" name="restrictFileType[]">
+          <label class="form-check-label" for="defaultCheck1">Text</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" name="restrictFileType[]">
+          <label class="form-check-label" for="defaultCheck1">PDF</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="" name="restrictFileType[]">
+          <label class="form-check-label" for="defaultCheck1">Images</label>
         </div>
       </div>
       <div class="form-group">
         <label class="heading" for="inputLocale">Target Locale</label>
         <small class="form-text text-muted">Choose how the field should look for authors.</small>
-        <select name="locale" class="form-control costum-select">
+        <select name="assetsTargetLocale" class="form-control costum-select">
           <option value="0">- Select Locale -</option>
         </select>
       </div>
       <div class="form-group">
         <label class="heading" for="inputLimit">Limit</label>
         <small class="form-text text-muted">Limit the number of selectable assets.</small>
-        <input type="text" name="limit" class="form-control form-number">
+        <input type="text" name="assetsLimit" class="form-control form-number">
       </div>
       <div class="form-group">
         <label class="heading" for="inputMode">View Mode</label>
         <small class="form-text text-muted">Choose how the field should look for authors.</small>
-        <select name="type" class="form-control costum-select">
+        <select name="assetsViewMode" class="form-control costum-select">
           <option value="0">- Select Mode -</option>
         </select>
       </div>
       <div class="form-group">
         <label class="heading" for="inputSelectionLabel">Selection Label</label>
         <small class="form-text text-muted">Enter the text you want to appear on the assets selection input.</small>
-        <input type="text" name="selectionLabel" class="form-control">
+        <input type="text" name="assetsSelectionLabel" class="form-control">
       </div>
     </div>
     <div id="rich-text" class="d-none fields">

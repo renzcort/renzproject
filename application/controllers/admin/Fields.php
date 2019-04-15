@@ -88,6 +88,24 @@ class fields extends My_Controller {
     var_dump($this->input->post());die;
       if (isset($_POST['create'])) {
 
+        $opt_settings = array(
+          'placeholder'          => $this->input->post('placeholder'),
+          'charlimit'            => $this->input->post('charlimit'),
+          'linebreak'            => $this->input->post('linebreak'),
+          'monospacedFont'       => $this->input->post('monospacedFont'),
+          'initialRows'          => $this->input->post('initialRows'),
+          'columnType'           => $this->input->post('columnType'),
+          
+          'assetsUploadFolder'   => $this->input->post('assetsUploadFolder'),
+          'assetsUploadLocation' => $this->input->post('assetsUploadLocation'),
+          'assetsSources'        => $this->input->post('assetsSources'),
+          'restrictFileType'     => $this->input->post('restrictFileType'),
+          'assetsTargetLocale'   => $this->input->post('assetsTargetLocale'),
+          'assetsLimit'          => $this->input->post('assetsLimit'),
+          'assetsViewMode'       => $this->input->post('assetsViewMode'),
+          'assetsSelectionLabel' => $this->input->post('assetsSelectionLabel'),
+        );
+
         // get Attributes
         foreach ($this->input->post('attrType') as $key => $value) {
           $attrb[] = "`$key` => {$value[0]}";

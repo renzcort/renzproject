@@ -191,6 +191,24 @@
           $('#MyForm').submit();
         });
 
+        /* Fields checkbox show hide */
+        $('.initialRows').hide();
+        $('input[name=lineBreak]').click(function(){
+            $('.initialRows').toggle();
+        });
+
+        $('.assetsRestrictUpload').hide();
+        $('input[name=assetsRestrictUpload]').click(function(){
+            $('.assetsRestrictUpload').toggle();
+            $('.noAssetsRestrictUpload').toggle();
+        });
+
+        $('.assetsRestrictFileType').hide();
+        $('input[name=assetsRestrictFileType]').click(function() {
+          $('.assetsRestrictFileType').toggle();
+        });
+        /* end fields*/
+
 
         $("#sortable1, #sortable2").sortable({
           connectWith: ".connectedSortable"
