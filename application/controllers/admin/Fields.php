@@ -22,7 +22,7 @@ class fields extends My_Controller {
       'subtitle'           =>  FALSE,
       'subbreadcrumb'      =>  FALSE,
       'button'             =>  '+ New Fields',
-      'button_link'        =>  'admin/fields/create',
+      'button_link'        =>  'fields/create',
       'content'            =>  'template/bootstrap-4/admin/fields/fields-list',
       'table'              =>  'fields',
       'action'             =>  'admin/fields',
@@ -56,10 +56,11 @@ class fields extends My_Controller {
       'subtitle'           =>  'create',
       'subbreadcrumb'      =>  FALSE,
       'button'             =>  'Save',
-      'button_link'        =>  'admin/fields/create',
+      'button_type'        =>  'submit',
+      'button_name'        =>  'create',
       'content'            =>  'template/bootstrap-4/admin/fields/fields-form',
       'table'              =>  'fields',
-      'action'             =>  'admin/fields',
+      'action'             =>  'admin/fields/create',
       'session'            =>  $this->data,
       'no'                 =>  $this->uri->segment(3),
       'fields_type'        =>  $this->general_m->get_all_results('fields_type'),
@@ -83,13 +84,67 @@ class fields extends My_Controller {
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
-    $this->form_validation->set_rules('type', 'fields Type', 'trim|required');
+    $this->form_validation->set_rules('fieldsType', 'fields Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-    var_dump($this->input->post());die;
+      var_dump($this->input->post());die;
       if (isset($_POST['create'])) {
 
+        $opt_settings = array(
+          'plainPlaceholder'         => $this->input->post('plainPlaceholder'),
+          'plainCharlimit'           => $this->input->post('plainCharlimit'),
+          'plainMonospacedFont'      => $this->input->post('plainMonospacedFont'),
+          'plainLineBreak'           => $this->input->post('plainLineBreak'),
+          'inputInitialRows'         => $this->input->post('inputInitialRows'),
+          'plainColumnType'          => $this->input->post('plainColumnType'),
+          
+          'assetsRestrictUpload'     => $this->input->post('assetsRestrictUpload'),
+          'assetsSourcesList'        => $this->input->post('assetsSourcesList'),
+          'assetsSourcesInput'       => $this->input->post('assetsSourcesInput'),
+          'assetsSources'            => $this->input->post('assetsSources'),
+          'assetsRestrictFileType'   => $this->input->post('assetsRestrictFileType'),
+          'assetsType'               => $this->input->post('assetsType'),
+          'assetsTargetLocale'       => $this->input->post('assetsTargetLocale'),
+          'assetsLimit'              => $this->input->post('assetsLimit'),
+          'assetsViewMode'           => $this->input->post('assetsViewMode'),
+          'assetsSelectionLabel'     => $this->input->post('assetsSelectionLabel'),
+          
+          'categoriesSource'         => $this->input->post('categoriesSource'),
+          'categoriesTargetLocale'   => $this->input->post('categoriesTargetLocale'),
+          'categorieslimit'          => $this->input->post('categorieslimit'),
+          'categoriesSelectionLabel' => $this->input->post('categoriesSelectionLabel'),
+          
+          'checkboxesLabel'          => $this->input->post('checkboxesLabel'),
+          'checkboxesValue'          => $this->input->post('checkboxesValue'),
+          'checkboxesDefault'        => $this->input->post('checkboxesDefault'),
+          
+          'datetimeList'             => $this->input->post('datetimeList'),
+          'datetimeIncrement'        => $this->input->post('datetimeIncrement'),
+          
+          'dropdownLabel'            => $this->input->post('dropdownLabel'),
+          'dropdownValue'            => $this->input->post('dropdownValue'),
+          'dropdownDefault'          => $this->input->post('dropdownDefault'),
+          
+          'radioLabel'               => $this->input->post('radioLabel'),
+          'radioValue'               => $this->input->post('radioValue'),
+          'radioDefault'             => $this->input->post('radioDefault'),
+        );
+        var_dump($opt_settings);die();
+        $option = $this->general_m->create('fields_option', $option, FALSE);
+
+        $data = array(
+          'group_id'    =>  $this->input->post('fieldGroup'),
+          'type_id'     =>  $this->input->post('fieldsType'),
+          'name'        =>  $this->input->post('name'),
+          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'label'       =>  ucfirst($this->input->post('name')),
+          'description' =>  $this->input->post('description'),
+          'slug'        =>  url_title(strtolower($this->input->post('name'))),
+          'status'      =>  $this->input->post('status'),
+          'created_by'  =>  $this->data['userdata']['id'],
+        );
+
         // get Attributes
-        foreach ($this->input->post('attrType') as $key => $value) {
+        /*foreach ($this->input->post('attrType') as $key => $value) {
           $attrb[] = "`$key` => {$value[0]}";
         }
         $attributes = implode(', ', $attrb);
@@ -128,8 +183,7 @@ class fields extends My_Controller {
         );
         // add Column content
         modifyColumn($fieldss, 'add'); 
-        
-        redirect($settings['action']);
+        redirect($settings['action']);*/
       }
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
