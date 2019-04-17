@@ -93,10 +93,10 @@
         });
 
         // change field type
-        $('select[name=field-type]').change(function(){
-          var field_type = $('select[name=field-type]').val();
+        $('select[name=fieldsType]').change(function(){
+          var field_type = $('select[name=fieldsType]').val();
           $('.fields').addClass('d-none');
-          $('select[name=field-type] option:selected').each(function(){
+          $('select[name=fieldsType] option:selected').each(function(){
             $('#'+field_type).removeClass('d-none');
           });
         });
@@ -191,23 +191,23 @@
           $('#MyForm').submit();
         });
 
-        /* Fields checkbox show hide */
-        $('.initialRows').hide();
-        $('input[name=lineBreak]').click(function(){
-            $('.initialRows').toggle();
-        });
+        /*Fields Forms*/
+        $('.plainLineBreak').hide();
+        $('input[name=plainLineBreak]').click(function(){
+          $('.plainLineBreak').toggle();
+        })
 
         $('.assetsRestrictUpload').hide();
         $('input[name=assetsRestrictUpload]').click(function(){
-            $('.assetsRestrictUpload').toggle();
-            $('.noAssetsRestrictUpload').toggle();
-        });
+          $('.noAssetsRestrictUpload').toggle();
+          $('.assetsRestrictUpload').toggle();
+        })
 
         $('.assetsRestrictFileType').hide();
-        $('input[name=assetsRestrictFileType]').click(function() {
+        $('input[name=assetsRestrictFileType]').click(function(){
           $('.assetsRestrictFileType').toggle();
-        });
-        /* end fields*/
+        })
+        /*end Fields Forms*/
 
 
         $("#sortable1, #sortable2").sortable({
