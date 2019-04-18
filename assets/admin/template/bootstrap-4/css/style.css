@@ -871,7 +871,7 @@ header nav.menu .navbar-nav > li {
   width: 5%;
 }
 .form .form-group > .form-number {
-  max-width: 2rem;
+  max-width: 5rem;
   width: 100%;
 }
 .form .form-error {

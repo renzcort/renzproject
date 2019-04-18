@@ -22,13 +22,21 @@
   <h4><?php echo ($subtitle ? ucfirst($title).'&nbsp;'.ucfirst($subtitle) : ucfirst($title)) ;?></h4>
   <?php if (isset($button)): ?>
     <div class="d-flex flex-row flex-wrap justify-content-start">
-      <a href="<?php echo (isset($button_link) ? $button_link : '#'); ?>"
-        <?php echo (isset($button_link) ? '' : 'id="buttonHeader"') ?> 
-        class="btn btn-danger btn-sm mx-1" 
-        type="<?php echo (isset($button_type) ? $button_type : '') ?>"
-        name="<?php echo (isset($button_name) ? $button_name : ''); ?>">
-        <?php echo ucfirst($button);?>
-      </a>
+    	<?php if (isset($button_link)): ?>
+	      <a href="<?php echo $button_link; ?>" 
+	        class="btn btn-danger btn-sm mx-1" 
+	        type="<?php echo (isset($button_type) ? $button_type : '') ?>"
+	        name="<?php echo (isset($button_name) ? $button_name : ''); ?>">
+	        <?php echo ucfirst($button);?>
+	      </a>
+      <?php else : ?>
+	    	<button id="buttonHeader" 
+	        class="btn btn-danger btn-sm mx-1" 
+	        type="<?php echo (isset($button_type) ? $button_type : '') ?>"
+	        name="<?php echo (isset($button_name) ? $button_name : ''); ?>">
+	        <?php echo ucfirst($button);?>
+	      </button>  	
+    	<?php endif ?>
       <?php echo (isset($button_conf) ?  '<button class="btn btn-danger btn-sm">'.ucfirst($button_conf).'</button>' : ''); ?>
     </div>
   <?php endif ?>

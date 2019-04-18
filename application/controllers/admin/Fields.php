@@ -86,9 +86,7 @@ class fields extends My_Controller {
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
     $this->form_validation->set_rules('fieldsType', 'fields Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      var_dump($this->input->post());die;
       if (isset($_POST['create'])) {
-
         $opt_settings = array(
           'plainPlaceholder'         => $this->input->post('plainPlaceholder'),
           'plainCharlimit'           => $this->input->post('plainCharlimit'),
@@ -128,7 +126,7 @@ class fields extends My_Controller {
           'radioValue'               => $this->input->post('radioValue'),
           'radioDefault'             => $this->input->post('radioDefault'),
         );
-        var_dump($opt_settings);die();
+        var_dump(json_encode($opt_settings));die();
         $option = $this->general_m->create('fields_option', $option, FALSE);
 
         $data = array(
