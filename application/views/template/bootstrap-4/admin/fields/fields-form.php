@@ -3,33 +3,43 @@
     $attributes = array('class' => 'form',
                         'id' => 'MyForm',
                   ); 
-    echo form_open('admin/fields/create', $attributes); 
+
+    echo form_open('admin/fields/create'.(!empty($getdataby_id) ? '/'.$getdataby_id->id : '' ), $attributes); 
   ?>
     <input type="hidden" name="<?php echo $button_name; ?>">
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
       <small class="form-text text-muted">Which group should this field be displayed in?</small>
+      <input type="hidden" name="fieldsGroupId" value="">
       <select name="fieldsGroup" class="form-control costum-select">
-        <option value="0">- Select Group -</option>
         <?php foreach ($fields_group as $key): ?>
-          <option value="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></option>
+          <option value="<?php echo $key->handle; ?>" data-id="<?php echo $key->id; ?>" 
+            <?php ((!empty($getdataby_id->group_id) == $key->id) ? 'selected' : '' ) ?>>
+            <?php echo ucfirst($key->name); ?>
+          </option>
         <?php endforeach ?>
       </select>
     </div>
     <div class="form-group">
       <label class="heading required" for="inputName">Name</label>
       <small class="form-text text-muted">What this field will be called in the CP.</small>
-      <input type="text" name="name" class="form-control"  placeholder="Name">
+      <input type="text" name="name" class="form-control"  placeholder="Name" 
+      value="<?php echo (!empty($getdataby_id->name) ? $getdataby_id->name : set_value('name')); ?>">
+      <div class="form-error"><?php echo form_error('name'); ?></div>
     </div>
     <div class="form-group">
       <label class="heading required" for="inputHandle">Handle</label>
       <small class="form-text text-muted">How you’ll refer to this field in the templates.</small>
-      <input type="text" name="handle" class="form-control"  placeholder="Handle">
+      <input type="text" name="handle" class="form-control"  placeholder="Handle" 
+      value="<?php echo (!empty($getdataby_id->handle) ? $getdataby_id->handle : set_value('handle')); ?>">
+      <div class="form-error"><?php echo form_error('handle'); ?></div>
     </div>
     <div class="form-group">
       <label class="heading" for="inputInstruction">Instruction</label>
       <small class="form-text text-muted">Helper text to guide the author.</small>
-      <textarea class="form-control"></textarea>
+      <textarea class="form-control" name="instruction">
+        <?php echo (!empty($getdataby_id->instruction) ? $getdataby_id->instruction : set_value('instruction')); ?>
+      </textarea>
       <div class="form-check">
         <input type="checkbox" name="translateable" class="form-check-input">
         <label class="form-check-label" for="inputTranslateable">This field is translatable</label>
@@ -38,14 +48,17 @@
     <div class="form-group">
       <label class="heading" for="inputType">Field Type</label>
       <small class="form-text text-muted">What type of field is this?</small>
+      <input type="hidden" name="fieldsTypeId" value="">
       <select name="fieldsType" class="form-control costum-select">
-        <option value ="0">- Select Type -</option>
         <?php foreach ($fields_type as $key): ?>
-          <option value ="<?php echo $key->slug; ?>"><?php echo $key->name; ?></option>
+          <option value ="<?php echo $key->handle; ?>" data-id="<?php echo $key->id; ?>"
+            <?php ((!empty($getdataby_id->type_id) == $key->id) ? 'selected' : '' ) ?> >
+            <?php echo $key->name; ?>
+          </option>
         <?php endforeach ?>
       </select>
     </div>
-    <div id="plain-text" class="d-none fields">
+    <div id="plainText" class="fields">
       <div class="form-group">
         <label class="heading" for="inputPlaceholder">Placeholder Text</label>
         <small class="form-text text-muted">The text that will be shown if the field doesn’t have a value.</small>
@@ -166,7 +179,7 @@
         <input type="text" name="assetsSelectionLabel" class="form-control">
       </div>
     </div>
-    <div id="rich-text" class="d-none fields">
+    <div id="richText" class="d-none fields">
       <div class="form-group">
         <label class="heading" for="inputConfig">Config</label>
         <small class="form-text text-muted">You can save custom Redactor configs as .json files in craft/config/redactor/. View available settings.</small>
@@ -274,7 +287,7 @@
         <button type="button" class="btn btn btn-outline-secondary btn-block">+ Add an option</button>
       </div>
     </div>
-    <div id="datetime" class="d-none fields">
+    <div id="dateTime" class="d-none fields">
       <div class="form-group">
         <div class="form-check">
           <input class="form-check-input" type="radio" name="datetimeList" value="option1" checked>
@@ -331,7 +344,7 @@
         <button type="button" class="btn btn btn-outline-secondary btn-block">+ Add an option</button>
       </div>
     </div>
-    <div id="radio-button" class="d-none fields">
+    <div id="radio" class="d-none fields">
       <div class="form-group">
         <label class="heading" for="inputCheckbox">Checkbox Options</label>
         <small class="form-text text-muted">Define the available options.</small>

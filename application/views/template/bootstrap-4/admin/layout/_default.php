@@ -92,14 +92,25 @@
           $('#contentCollapse').toggleClass('active');
         });
 
-        // change field type
+        // Field Type Change
+        $('select[name=fieldsGroup]').change(function(){
+          var field_group = $('select[name=fieldsGroup]').val();
+          $('select[name=fieldsGroup] option:selected').each(function(){
+            var field_id = $('select[name=fieldsGroup] option:selected').attr('data-id');
+            $('input[name=fieldsGroupId]').val(field_id);
+          });
+        });
+
         $('select[name=fieldsType]').change(function(){
           var field_type = $('select[name=fieldsType]').val();
           $('.fields').addClass('d-none');
           $('select[name=fieldsType] option:selected').each(function(){
+            var field_id = $('select[name=fieldsType] option:selected').attr('data-id');
+            $('input[name=fieldsTypeId]').val(field_id);
             $('#'+field_type).removeClass('d-none');
           });
         });
+
 
         // change enable switch
         $('#customSwitch1').click(function() {
@@ -110,16 +121,6 @@
           } else {
             $('#base-url').addClass('d-none');
             $('label.custom-control-label').text('Disabled');
-          }
-        });
-
-        // field assets restrict
-        $('#defaultCheck1').click(function(){
-          var checked = $('#defaultCheck1:checked').val();
-          if (checked == 'on') {
-            $('#restrictAssets').removeClass('d-none');
-          } else {
-            $('#restrictAssets').addClass('d-none');
           }
         });
 

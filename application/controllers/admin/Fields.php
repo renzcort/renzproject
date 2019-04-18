@@ -50,14 +50,23 @@ class fields extends My_Controller {
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
-  public function create() {
+  public function create($id='') {
+    if ($id) {
+      $button       = 'Update';
+      $button_name  = 'update';
+      $getdataby_id =  $this->fields_m->get_row_by_id($id);
+    } else {
+      $getdataby_id = '';
+      $button       = 'Save';
+      $button_name  = 'create';
+    }
     $settings = array(
       'title'              =>  'fields',
       'subtitle'           =>  'create',
       'subbreadcrumb'      =>  FALSE,
-      'button'             =>  'Save',
+      'button'             =>  $button,
       'button_type'        =>  'submit',
-      'button_name'        =>  'create',
+      'button_name'        =>  $button_name,
       'content'            =>  'template/bootstrap-4/admin/fields/fields-form',
       'table'              =>  'fields',
       'action'             =>  'admin/fields/create',
@@ -67,6 +76,7 @@ class fields extends My_Controller {
       'fields_group'       =>  $this->general_m->get_all_results('fields_group'),
       'fields_group_count' =>  $this->general_m->count_all_results('fields_group'),
       'fields_group_id'    =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'getdataby_id'       => $getdataby_id,
       'attributes'    =>  arraY('type' =>
                                     array(
                                     'text'     => array('maxlength', 'minlength', 'placeholder'),
@@ -82,11 +92,12 @@ class fields extends My_Controller {
     );
 
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
-    $this->form_validation->set_rules('fieldsType', 'fields Type', 'trim|required');
+    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_fields.name]');
+    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_fields.handle]');
+    $this->form_validation->set_rules('fieldsGroupId', 'fields Group', 'trim|required');
+    $this->form_validation->set_rules('fieldsTypeId', 'fields Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
+      if ($this->input->post('fieldsType')  == 'plainText') {
         $opt_settings = array(
           'plainPlaceholder'         => $this->input->post('plainPlaceholder'),
           'plainCharlimit'           => $this->input->post('plainCharlimit'),
@@ -94,7 +105,9 @@ class fields extends My_Controller {
           'plainLineBreak'           => $this->input->post('plainLineBreak'),
           'inputInitialRows'         => $this->input->post('inputInitialRows'),
           'plainColumnType'          => $this->input->post('plainColumnType'),
-          
+        );
+      } elseif ($this->input->post('fieldsType') == 'assets') {
+        $opt_settings = array(
           'assetsRestrictUpload'     => $this->input->post('assetsRestrictUpload'),
           'assetsSourcesList'        => $this->input->post('assetsSourcesList'),
           'assetsSourcesInput'       => $this->input->post('assetsSourcesInput'),
@@ -105,84 +118,91 @@ class fields extends My_Controller {
           'assetsLimit'              => $this->input->post('assetsLimit'),
           'assetsViewMode'           => $this->input->post('assetsViewMode'),
           'assetsSelectionLabel'     => $this->input->post('assetsSelectionLabel'),
-          
+        );
+      } elseif ($this->input->post('fieldsType') == 'categories') {
+        $opt_settings = array(
           'categoriesSource'         => $this->input->post('categoriesSource'),
           'categoriesTargetLocale'   => $this->input->post('categoriesTargetLocale'),
           'categorieslimit'          => $this->input->post('categorieslimit'),
           'categoriesSelectionLabel' => $this->input->post('categoriesSelectionLabel'),
-          
+        );
+      } elseif ($this->input->post('fieldsType') == 'checkboxes') {
+        $opt_settings = array(
           'checkboxesLabel'          => $this->input->post('checkboxesLabel'),
           'checkboxesValue'          => $this->input->post('checkboxesValue'),
           'checkboxesDefault'        => $this->input->post('checkboxesDefault'),
-          
+        );
+      } elseif ($this->input->post('fieldsType') == 'dateTime') {
+        $opt_settings = array(
           'datetimeList'             => $this->input->post('datetimeList'),
           'datetimeIncrement'        => $this->input->post('datetimeIncrement'),
-          
+        );
+      } elseif ($this->input->post('fieldsType') == 'dropdown') {
+        $opt_settings = array(
           'dropdownLabel'            => $this->input->post('dropdownLabel'),
           'dropdownValue'            => $this->input->post('dropdownValue'),
           'dropdownDefault'          => $this->input->post('dropdownDefault'),
-          
+        );
+      } elseif ($this->input->post('fieldsType') == 'radio') {
+        $opt_settings = array(
           'radioLabel'               => $this->input->post('radioLabel'),
           'radioValue'               => $this->input->post('radioValue'),
           'radioDefault'             => $this->input->post('radioDefault'),
         );
-        var_dump(json_encode($opt_settings));die();
-        $option = $this->general_m->create('fields_option', $option, FALSE);
+      } else {
+        $opt_settings = NULL;
+      }
 
-        $data = array(
-          'group_id'    =>  $this->input->post('fieldGroup'),
-          'type_id'     =>  $this->input->post('fieldsType'),
-          'name'        =>  $this->input->post('name'),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'label'       =>  ucfirst($this->input->post('name')),
-          'description' =>  $this->input->post('description'),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'status'      =>  $this->input->post('status'),
-          'created_by'  =>  $this->data['userdata']['id'],
-        );
+      $opt = array(
+        'settings' => json_encode($opt_settings),
+      );
 
-        // get Attributes
-        /*foreach ($this->input->post('attrType') as $key => $value) {
-          $attrb[] = "`$key` => {$value[0]}";
-        }
-        $attributes = implode(', ', $attrb);
-        
-        $option = array(
-          'asset_id'    =>  $this->input->post('asset'),
-          'action'      =>  $this->input->post('attrAction'),
-          'line_breaks' =>  $this->input->post('line_breaks'),
-          'images'      =>  $this->input->post('images'),
-          'limit'       =>  $this->input->post('limit'),
-          'content'     =>  $this->input->post('content'),
-          'settings'    =>  $attributes,
-        );
-        foreach ($this->input->post('attrType') as $key => $value) {
-          $option["{$key}"] = implode($value);
-        }
-        $option = $this->general_m->create('fields_option', $option, FALSE);
-        
-        $data = array(
-          'group_id'    =>  $this->input->post('group'),
-          'option_id'   =>  $option,
-          'name'        =>  $this->input->post('name'),
-          'label'       =>  ucfirst($this->input->post('name')),
-          'type_id'     =>  $this->input->post('type'),
-          'description' =>  $this->input->post('description'),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'status'      =>  $this->input->post('status'),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'created_by'  =>  $this->data['userdata']['id'],
-        );
+      if ($id) {
+        $this->general_m->update('fields_option', $opt, $settings['getdataby_id']->option_id, '', FALSE);
+        $option = $settings['getdataby_id']->option_id;
+      } else {
+        $option = $this->general_m->create('fields_option', $opt, FALSE);
+      }
+
+      $data = array(
+        'group_id'    =>  $this->input->post('fieldsGroupId'),
+        'type_id'     =>  $this->input->post('fieldsTypeId'),
+        'option_id'   =>  $option,
+        'name'        =>  $this->input->post('name'),
+        'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+        'label'       =>  ucfirst($this->input->post('name')),
+        'description' =>  $this->input->post('description'),
+        'slug'        =>  url_title(strtolower($this->input->post('name'))),
+        'status'      =>  $this->input->post('status'),
+        'created_by'  =>  $this->data['userdata']['id'],
+      );
+
+      if (isset($_POST['create'])) {
         $this->fields_m->create($data);
-        $getfields_type = $this->general_m->get_row_by_id('fields_type', $data['type_id']);
-        $fieldss = array(
+
+        // Alter Add Column Table Content 
+        $getFields_type = $this->general_m->get_row_by_id('fields_type', $data['type_id']);
+        $content_fields = array(
           'handle' =>  $data['handle'],
-          'type'   =>  $getfields_type->type,
+          'type'   =>  $getFields_type->type,
         );
         // add Column content
-        modifyColumn($fieldss, 'add'); 
-        redirect($settings['action']);*/
+        modifyColumn($content_fields, 'add'); 
+
+      } elseif (isset($_POST['update'])) {
+        var_dump($g);die;
+        $this->fields_m->update($data, $id);
+        $getFields_type = $this->general_m->get_row_by_id('fields_type', $data['type_id']);
+        $content_fields = array(
+          'old_name' =>  $settings['getdataby_id']->handle,
+          'handle'   =>  $data['handle'],
+          'type'     =>  $getFields_type->type,
+        );
+        // Modify Column content
+        modifyColumn($content_fields, 'modify'); 
+
       }
+      redirect($settings['action']);
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
     }
