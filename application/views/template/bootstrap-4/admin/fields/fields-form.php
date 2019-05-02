@@ -3,14 +3,13 @@
     $attributes = array('class' => 'form',
                         'id' => 'MyForm',
                   ); 
-
-    echo form_open('admin/fields/create'.(!empty($getdataby_id) ? '/'.$getdataby_id->id : '' ), $attributes); 
+    echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
   ?>
     <input type="hidden" name="<?php echo $button_name; ?>">
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
       <small class="form-text text-muted">Which group should this field be displayed in?</small>
-      <input type="hidden" name="fieldsGroupId" value="">
+      <input type="hidden" name="fieldsGroupId" value="3">
       <select name="fieldsGroup" class="form-control costum-select">
         <?php foreach ($fields_group as $key): ?>
           <option value="<?php echo $key->handle; ?>" data-id="<?php echo $key->id; ?>" 
@@ -48,7 +47,7 @@
     <div class="form-group">
       <label class="heading" for="inputType">Field Type</label>
       <small class="form-text text-muted">What type of field is this?</small>
-      <input type="hidden" name="fieldsTypeId" value="">
+      <input type="hidden" name="fieldsTypeId" value="2">
       <select name="fieldsType" class="form-control costum-select">
         <?php foreach ($fields_type as $key): ?>
           <option value ="<?php echo $key->handle; ?>" data-id="<?php echo $key->id; ?>"
@@ -62,26 +61,28 @@
       <div class="form-group">
         <label class="heading" for="inputPlaceholder">Placeholder Text</label>
         <small class="form-text text-muted">The text that will be shown if the field doesn’t have a value.</small>
-        <input type="text" name="plainPlaceholder" class="form-control">
+        <input type="text" name="plainPlaceholder" class="form-control"
+        value="<?php echo (!empty($getFieldType->plainPlaceholder) ? $getFieldType->plainPlaceholder : set_value('plainPlaceholder')); ?>">
       </div>
       <div class="form-group">
         <label class="heading" for="inputCharLimit">Character Limit</label>
         <small class="form-text text-muted">The maximum length of characters the field is allowed to have.</small>
-        <input type="text" name="plainCharlimit" class="form-control form-number">
+        <input type="text" name="plainCharlimit" class="form-control form-number"
+        value="<?php echo (!empty($getFieldType->plainCharlimit) ? $getFieldType->plainCharlimit : set_value('plainCharlimit')); ?>">
       </div>
       <div class="form-group">
         <div class="form-check">
-          <input type="checkbox" name="plainMonospacedFont" class="form-check-input" value="1">
+          <input type="checkbox" name="plainMonospacedFont" class="form-check-input" value="1" <?php echo (!empty($getFieldType->plainMonospacedFont) ? 'checked' : '') ?>>
           <label class="form-check-label" for="inputAllowLineBreaks">Use a monospaced font</label>
         </div>
-        <div class="form-check">
-          <input type="checkbox" name="plainLineBreak" class="form-check-input" value="1">
+        <div class="form-check" style="width: ">
+          <input type="checkbox" name="plainLineBreak" class="form-check-input" value="1" <?php echo (!empty($getFieldType->plainLineBreak) ? 'checked' : '') ?>>
           <label class="form-check-label" for="inputAllowLineBreaks">Allow line breaks</label>
         </div>
       </div>
       <div class="form-group plainLineBreak">
         <label class="heading" for="inputInitialRows">Initial Rows</label>
-        <input type="text" name="plainInitialRows" class="form-control form-number">
+        <input type="text" name="plainInitialRows" class="form-control form-number" <?php echo (!empty($getFieldType->plainInitialRows) ? $getFieldType->plainInitialRows : set_value('plainInitialRows')); ?>>
       </div>
       <div class="form-group">
         <label class="heading" for="inputColumnType">Column Type</label>

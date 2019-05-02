@@ -42,6 +42,16 @@ class General_m extends My_Model {
     return $this->db->get_where($table, array("{$key}" => $id))->result();
   }
 
+  // get row data by fields
+  public function get_row_by_fields($table, $data) {
+    return $this->db->get_where($table, $data)->row();
+  }
+
+  // get result by fields
+  public function get_result_by_fields($table, $data) {
+    return $this->db->get_where($table, $data)->result();
+  }
+
   /*Insert All Records*/
   public function create($table, $data, $flag_date=TRUE) {
     if ($flag_date) {
