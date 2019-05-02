@@ -156,7 +156,7 @@ class fields extends My_Controller {
       $opt = array(
         'settings' => json_encode($opt_settings),
       );
-
+      
       if ($id) {
         $this->general_m->update('fields_option', $opt, $settings['getdataby_id']->option_id, '', FALSE);
         $option = $settings['getdataby_id']->option_id;
