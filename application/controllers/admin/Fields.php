@@ -172,6 +172,8 @@ class fields extends My_Controller {
         );
         // add Column content
         modifyColumn($content_fields, 'add'); 
+        helper_log('add', "Create {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully Create");
         redirect($this->data['parentLink']);
       }
     } else {

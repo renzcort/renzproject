@@ -27,6 +27,12 @@
               <div class="header">
                 <?php $this->load->view('template/bootstrap-4/admin/partial/header'); ?>
               </div>
+              <?php if ($this->session->userdata('message')) { ?>
+                <div class="message alert alert-danger alert-dismissible text-center" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                  <?php echo $this->session->userdata('message'); ?>
+                </div>
+              <?php } ?>
               <div class="content container-fluid">
                 <div class="content-body d-flex flex-row flex-wrap justify-content-start">
                   <?php $this->load->view($content); ?>

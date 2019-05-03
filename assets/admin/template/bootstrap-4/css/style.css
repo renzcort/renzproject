@@ -577,6 +577,11 @@ header nav.menu .navbar-nav > li {
 .right-column .content {
   background: #fff;
 }
+.right-column .message {
+  width: 100%;
+  margin: 0 auto;
+  max-width: 50%;
+}
 .content .middle-content {
   padding: 1rem;
 }
