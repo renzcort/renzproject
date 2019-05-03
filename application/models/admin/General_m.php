@@ -71,9 +71,16 @@ class General_m extends My_Model {
       // set created and updated
       $data['updated_at'] = mdate("%Y-%m-%d %H:%i:%s");
     }
-
+    $this->db->trans_start();
     $this->db->where("{$key}", $id);
     $this->db->update($table, $data);
+    $this->db->trans_complete();
+
+    if ($this->db->trans_status() === FALSE) {
+      return FALSE;
+    } else {
+      return TRUE;
+    }
   }
 
   /*Delete Data By ID*/

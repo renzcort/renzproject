@@ -579,8 +579,8 @@ header nav.menu .navbar-nav > li {
 }
 .right-column .message {
   width: 100%;
-  margin: 0 auto;
   max-width: 50%;
+  font-weight: 600;
 }
 .content .middle-content {
   padding: 1rem;
@@ -863,6 +863,10 @@ header nav.menu .navbar-nav > li {
 }
 .form select {
   font-size: 12px; 
+}
+.form textarea {
+  font-size: 12px;
+  line-height: 2.5;
 }
 .form .costum-select {
   max-width: 15rem;

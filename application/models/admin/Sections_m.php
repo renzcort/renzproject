@@ -1,9 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Section_m extends My_Model {
+class Sections_m extends My_Model {
 
-  protected $_table = 'section';
+  protected $_table = 'sections';
   
     /*count All results*/
   public function count_all_results(){
@@ -14,7 +14,7 @@ class Section_m extends My_Model {
   public function get_all_results($limit = '', $offset = '') {
     ($limit ? $this->db->limit($limit, $offset) : '' );
     $this->db->select("{$this->_table}.*, b.name as type");
-    $this->db->join("section_type as b", "b.id = {$this->_table}.type_id", "LEFT");
+    $this->db->join("sections_type as b", "b.id = {$this->_table}.type_id", "LEFT");
     $result = $this->db->get($this->_table);
     if ($result->num_rows() > 0) {
       return $result->result();
@@ -26,7 +26,7 @@ class Section_m extends My_Model {
   /*Get Data By Id*/
   public function get_row_by_id($id) {
     $this->db->select("{$this->_table}.*, b.name as type");
-    $this->db->join("section_type as b", "b.id = {$this->_table}.type_id", "LEFT");
+    $this->db->join("sections_type as b", "b.id = {$this->_table}.type_id", "LEFT");
     return $this->db->get_where($this->_table, array("{$this->_table}.id" => $id))->row();
   }
 

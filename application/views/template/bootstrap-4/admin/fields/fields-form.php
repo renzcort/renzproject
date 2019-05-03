@@ -9,11 +9,11 @@
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
       <small class="form-text text-muted">Which group should this field be displayed in?</small>
-      <input type="hidden" name="fieldsGroupId" value="3">
-      <select name="fieldsGroup" class="form-control costum-select">
+      <!-- <input type="hidden" name="fieldsGroupId" value="3"> -->
+      <select name="fieldsGroupId" class="form-control costum-select">
         <?php foreach ($fields_group as $key): ?>
-          <option value="<?php echo $key->handle; ?>" data-id="<?php echo $key->id; ?>" 
-            <?php ((!empty($getdataby_id->group_id) == $key->id) ? 'selected' : '' ) ?>>
+          <option value="<?php echo $key->id; ?>" data-id="<?php echo $key->id; ?>" 
+            <?php echo ((!empty($getDataby_id->group_id) && $getDataby_id->group_id == $key->id) ? 'selected' : '' ) ?>>
             <?php echo ucfirst($key->name); ?>
           </option>
         <?php endforeach ?>
@@ -23,22 +23,20 @@
       <label class="heading required" for="inputName">Name</label>
       <small class="form-text text-muted">What this field will be called in the CP.</small>
       <input type="text" name="name" class="form-control"  placeholder="Name" 
-      value="<?php echo (!empty($getdataby_id->name) ? $getdataby_id->name : set_value('name')); ?>">
+      value="<?php echo (!empty($getDataby_id->name) ? $getDataby_id->name : set_value('name')); ?>">
       <div class="form-error"><?php echo form_error('name'); ?></div>
     </div>
     <div class="form-group">
       <label class="heading required" for="inputHandle">Handle</label>
       <small class="form-text text-muted">How you’ll refer to this field in the templates.</small>
       <input type="text" name="handle" class="form-control"  placeholder="Handle" 
-      value="<?php echo (!empty($getdataby_id->handle) ? $getdataby_id->handle : set_value('handle')); ?>">
+      value="<?php echo (!empty($getDataby_id->handle) ? $getDataby_id->handle : set_value('handle')); ?>">
       <div class="form-error"><?php echo form_error('handle'); ?></div>
     </div>
     <div class="form-group">
-      <label class="heading" for="inputInstruction">Instruction</label>
+      <label class="heading" for="inputInstruction">Description</label>
       <small class="form-text text-muted">Helper text to guide the author.</small>
-      <textarea class="form-control" name="instruction">
-        <?php echo (!empty($getdataby_id->instruction) ? $getdataby_id->instruction : set_value('instruction')); ?>
-      </textarea>
+      <textarea class="form-control" name="description"><?php echo (!empty($getDataby_id->description) ? trim(strip_tags($getDataby_id->description)) : ''); ?></textarea>
       <div class="form-check">
         <input type="checkbox" name="translateable" class="form-check-input">
         <label class="form-check-label" for="inputTranslateable">This field is translatable</label>
@@ -51,7 +49,7 @@
       <select name="fieldsType" class="form-control costum-select">
         <?php foreach ($fields_type as $key): ?>
           <option value ="<?php echo $key->handle; ?>" data-id="<?php echo $key->id; ?>"
-            <?php ((!empty($getdataby_id->type_id) == $key->id) ? 'selected' : '' ) ?> >
+            <?php ((!empty($getDataby_id->type_id) == $key->id) ? 'selected' : '' ) ?> >
             <?php echo $key->name; ?>
           </option>
         <?php endforeach ?>
@@ -82,7 +80,7 @@
       </div>
       <div class="form-group plainLineBreak">
         <label class="heading" for="inputInitialRows">Initial Rows</label>
-        <input type="text" name="plainInitialRows" class="form-control form-number" <?php echo (!empty($getFieldType->plainInitialRows) ? $getFieldType->plainInitialRows : set_value('plainInitialRows')); ?>>
+        <input type="text" name="plainInitialRows" class="form-control form-number" value ="<?php echo (!empty($getFieldType->plainInitialRows) ? $getFieldType->plainInitialRows : set_value('plainInitialRows')); ?>">
       </div>
       <div class="form-group">
         <label class="heading" for="inputColumnType">Column Type</label>

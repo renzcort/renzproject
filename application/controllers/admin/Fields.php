@@ -95,7 +95,7 @@ class fields extends My_Controller {
             'plainCharlimit'           => $this->input->post('plainCharlimit'),
             'plainMonospacedFont'      => $this->input->post('plainMonospacedFont'),
             'plainLineBreak'           => $this->input->post('plainLineBreak'),
-            'inputInitialRows'         => $this->input->post('inputInitialRows'),
+            'plainInitialRows'         => $this->input->post('plainInitialRows'),
             'plainColumnType'          => $this->input->post('plainColumnType'),
           );
         } elseif ($this->input->post('fieldsType') == 'assets') {
@@ -200,7 +200,7 @@ class fields extends My_Controller {
       'fields_group_count' =>  $this->general_m->count_all_results('fields_group'),
       'fields_group_id'    =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
       'id'                 =>  $id,
-      'getdataby_id'       =>  $this->fields_m->get_row_by_id($id),
+      'getDataby_id'       =>  $this->fields_m->get_row_by_id($id),
       'attributes'    =>  arraY('type' =>
                                     array(
                                     'text'     => array('maxlength', 'minlength', 'placeholder'),
@@ -214,7 +214,7 @@ class fields extends My_Controller {
                                     'action' => array('required', 'autocomplete', 'autofocus', 'disabled', 'readonly')
                           ),
     );
-    $settings['getFieldType'] = json_decode($settings['getdataby_id']->settings);
+    $settings['getFieldType'] = json_decode($settings['getDataby_id']->settings);
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|callback_name_check');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|callback_handle_check');
@@ -228,7 +228,7 @@ class fields extends My_Controller {
             'plainCharlimit'           => $this->input->post('plainCharlimit'),
             'plainMonospacedFont'      => $this->input->post('plainMonospacedFont'),
             'plainLineBreak'           => $this->input->post('plainLineBreak'),
-            'inputInitialRows'         => $this->input->post('inputInitialRows'),
+            'plainInitialRows'         => $this->input->post('plainInitialRows'),
             'plainColumnType'          => $this->input->post('plainColumnType'),
           );
         } elseif ($this->input->post('fieldsType') == 'assets') {
@@ -282,8 +282,8 @@ class fields extends My_Controller {
           'settings' => json_encode($opt_settings),
         );
           
-        $this->general_m->update('fields_option', $opt, $settings['getdataby_id']->option_id, '', FALSE);
-        $option = $settings['getdataby_id']->option_id;
+        $upt = $this->general_m->update('fields_option', $opt, $settings['getDataby_id']->option_id, '', FALSE);
+        $option = $settings['getDataby_id']->option_id;
         $data = array(
           'group_id'    =>  $this->input->post('fieldsGroupId'),
           'type_id'     =>  $this->input->post('fieldsTypeId'),
@@ -300,12 +300,14 @@ class fields extends My_Controller {
         $this->fields_m->update($data, $id);
         $getFields_type = $this->general_m->get_row_by_id('fields_type', $data['type_id']);
         $content_fields = array(
-          'old_name' =>  $settings['getdataby_id']->handle,
+          'old_name' =>  $settings['getDataby_id']->handle,
           'handle'   =>  $data['handle'],
           'type'     =>  $getFields_type->type,
         );
         // Modify Column content
         modifyColumn($content_fields, 'modify'); 
+        helper_log('edit', "Update {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully Updated");
         redirect($this->data['parentLink']);
       }
     } else {
@@ -344,32 +346,56 @@ class fields extends My_Controller {
   /*Delete fields*/
   public function delete($id='') {
     $settings = array(
-      'title'        =>  'fields',
-      'subheader'    =>  'Manage fields',
-      'content'      =>  'admin/fields/edit',
-      'table'        =>  'fields',
-      'action'       =>  'admin/fields',
-      'session'      =>  $this->data,
-      'no'           =>  $this->uri->segment(3),
-      'group'        =>  $this->general_m->get_all_results('fields_group'),
-      'type'         =>  $this->general_m->get_all_results('fields_type'),
-      'getdataby_id' =>  $this->fields_m->get_row_by_id($id),
+      'title'              =>  'fields',
+      'subtitle'           =>  FALSE,
+      'subbreadcrumb'      =>  FALSE,
+      'session'            =>  $this->data,
+      'no'                 =>  $this->uri->segment(3),
+      'fields_type'        =>  $this->general_m->get_all_results('fields_type'),
+      'fields_group'       =>  $this->general_m->get_all_results('fields_group'),
+      'fields_group_count' =>  $this->general_m->count_all_results('fields_group'),
+      'fields_group_id'    =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'getDataby_id'       =>  $this->fields_m->get_row_by_id($id),
     );
-    if ($settings['getdataby_id']) {
-      $this->general_m->delete('element', $id, 'fields_id');
-      $delete = $this->general_m->delete($settings['table'], $id);
-      $this->general_m->delete('fields_option', $settings['getdataby_id']->option_id);
-      $fieldss = array(
-        'handle'   =>  $settings['getdataby_id']->handle,
+    $settings['getFieldType'] = json_decode($settings['getDataby_id']->settings);
+
+    if ($settings['getDataby_id']) {
+      $element_del = $this->general_m->delete('element', $id, 'fields_id');
+      $fields = array(
+        'handle' => $settings['getDataby_id']->handle,
       );
-      // Drop Column content
-      modifyColumn($fieldss, 'drop'); 
-      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
-      redirect($settings['action']);
+      // Drop field column
+      modifyColumn($fields, 'drop');
+      $fields_del = $this->fields_m->delete($id);
+      $option_del = $this->general_m->delete('fields_option', $settings['getDataby_id']->option_id);
+      helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
+      $this->session->set_flashdata('message', "Data has deleted {$delete} Records");
+      redirect($this->data['parentLink']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
-      redirect($settings['action']);
+      redirect($this->data['parentLink']);
+    }
+  }
+
+  // delete by json
+  public function deleteFieldsById() {
+    header('Content-type: application/json');
+    $id = $this->input->post('id');
+    $getDataby_id = $this->fields_m->get_row_by_id($id);
+    if ($getDataby_id) {
+      $element_del = $this->general_m->delete('element', $id, 'fields_id');
+      $fields = array(
+        'handle' => $getDataby_id->handle,
+      );
+      // Drop field column
+      modifyColumn($fields, 'drop');
+      $fields_del = $this->fields_m->delete($id);
+      $option_del = $this->general_m->delete('fields_option', $getDataby_id->option_id);
+      helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
+      $this->session->set_flashdata('message', "Data has deleted {$delete} Records");
+      echo json_encode($getDataby_id);
+    } else {
+      $this->session->set_flashdata('message', 'Your Id Not Valid');
     }
   }
 
@@ -445,7 +471,7 @@ class fields extends My_Controller {
       'session'   =>  $this->data,
       'no'        =>  $this->uri->segment(4), 
     );
-    $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
+    $settings['getDataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     if ($this->form_validation->run() == TRUE ) {
       if (isset($_POST['update'])) {
@@ -563,7 +589,7 @@ class fields extends My_Controller {
       'no'        =>  $this->uri->segment(4), 
       'type'      =>  array('VARCHAR', 'INT', 'TEXT', 'DATE', 'DATETIME'),
     );
-    $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
+    $settings['getDataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     if ($this->form_validation->run() == TRUE ) {
       if (isset($_POST['update'])) {

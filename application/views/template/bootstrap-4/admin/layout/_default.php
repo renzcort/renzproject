@@ -7,10 +7,11 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/admin/template/bootstrap-4/') ?>css/style.css">
-    <title><?php echo ($title ? $title : ''); ?></title>
+    <title><?php echo ($title ? ucfirst($title) : ''); ?></title>
   </head>
   <body>
 
@@ -28,7 +29,7 @@
                 <?php $this->load->view('template/bootstrap-4/admin/partial/header'); ?>
               </div>
               <?php if ($this->session->userdata('message')) { ?>
-                <div class="message alert alert-danger alert-dismissible text-center" role="alert">
+                <div class="message alert alert-danger alert-dismissible text-center mx-auto" role="alert">
                   <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                   <?php echo $this->session->userdata('message'); ?>
                 </div>
@@ -199,7 +200,11 @@
         });
 
         /*Fields Forms*/
-        $('.plainLineBreak').hide();
+        if ($('input[name=plainLineBreak]').attr('checked')) {
+          $('.plainLineBreak').show();
+        } else {
+          $('.plainLineBreak').hide();
+        }
         $('input[name=plainLineBreak]').click(function(){
           $('.plainLineBreak').toggle();
         })
@@ -214,6 +219,39 @@
         $('input[name=assetsRestrictFileType]').click(function(){
           $('.assetsRestrictFileType').toggle();
         })
+
+        $('#deleteFields').click(function(){
+          var id = $('#deleteFields').data('id');
+          if (confirm("are you sure?")) {
+            $.ajax({
+              type : 'POST',
+              dataType : 'json',
+              data : {id : id},
+              url : '<?php echo base_url("admin/fields/deleteFieldsById") ?>'
+            }).done(function(data) {
+              window.location.reload();
+            }).fail(function(error) {
+
+            });
+          } 
+          return false;
+        })
+
+        $('#fieldsGroup .nav-item').click(function(){
+          var group_id = $('#fieldsGroup .nav-link.active').data('id');
+          $.ajax({
+            type : 'POST',
+            dataType : 'json',
+            data : {group_id : group_id},
+            url : '<?php echo base_url("admin/groups/getFieldsByGroupsId") ?>',
+          }).done(function(data){
+            $('#right-content table').remove();
+            $('#right-content .empty-data').remove();
+            $('#right-content').append(data);
+          }).fail(function(error){
+
+          });
+        });
         /*end Fields Forms*/
 
 

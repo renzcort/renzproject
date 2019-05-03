@@ -20,7 +20,10 @@
       <label class="heading" for="inputSectionType">Section Type</label>
       <small class="form-text text-muted">What type of section is this?</small>
       <select name="sectionType" class="form-control costum-select">
-        <option value="0">- Select Type -</option>
+      <option value="0">- Select Type -</option>
+      <?php foreach ($sections_type as $key ): ?>
+        <option value="<?php echo $key->id ?>"><?php echo $key->name ?></option>
+      <?php endforeach ?>
       </select>
     </div>
     <hr class="break-line"></hr>
