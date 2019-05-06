@@ -1,9 +1,9 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Sections_m extends My_Model {
+class Section_m extends My_Model {
 
-  protected $_table = 'sections';
+  protected $_table = 'section';
   
     /*count All results*/
   public function count_all_results(){
@@ -13,8 +13,8 @@ class Sections_m extends My_Model {
   /*Get All Data Records*/
   public function get_all_results($limit = '', $offset = '') {
     ($limit ? $this->db->limit($limit, $offset) : '' );
-    $this->db->select("{$this->_table}.*, b.name as type");
-    $this->db->join("sections_type as b", "b.id = {$this->_table}.type_id", "LEFT");
+    $this->db->select("{$this->_table}.*, b.name as type_name");
+    $this->db->join("section_type as b", "b.id = {$this->_table}.type_id", "LEFT");
     $result = $this->db->get($this->_table);
     if ($result->num_rows() > 0) {
       return $result->result();
@@ -25,8 +25,8 @@ class Sections_m extends My_Model {
 
   /*Get Data By Id*/
   public function get_row_by_id($id) {
-    $this->db->select("{$this->_table}.*, b.name as type");
-    $this->db->join("sections_type as b", "b.id = {$this->_table}.type_id", "LEFT");
+    $this->db->select("{$this->_table}.*, b.name as type_name");
+    $this->db->join("section_type as b", "b.id = {$this->_table}.type_id", "LEFT");
     return $this->db->get_where($this->_table, array("{$this->_table}.id" => $id))->row();
   }
 
@@ -37,8 +37,7 @@ class Sections_m extends My_Model {
     $data['created_at'] = mdate("%Y-%m-%d %H:%i:%s");
     $data['updated_at'] = mdate("%Y-%m-%d %H:%i:%s");
     
-    $this->db->insert($this->_table, $data);
-    
+    $this->db->insert($this->_table, $data);    
     return $this->db->insert_id();
   } 
 

@@ -653,8 +653,14 @@ header nav.menu .navbar-nav > li {
   max-width: 170px;
   background: #fff;
 }
+#sortable1, #sortable2{
+  min-height: 2rem;
+}
 .middle-content #layout .nav-tabs .nav-item {
   width: 80%;
+}
+#layout .nav-tabs .nav-item .nav-link {
+  font-weight: 700;
 }
 .middle-content #layout .tab-content {
   border: 1px solid #dee2e6;

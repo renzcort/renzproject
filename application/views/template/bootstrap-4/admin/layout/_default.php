@@ -12,6 +12,7 @@
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/admin/template/bootstrap-4/') ?>css/style.css">
     <title><?php echo ($title ? ucfirst($title) : ''); ?></title>
+
   </head>
   <body>
 
@@ -88,7 +89,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"></script> -->
 
     <script type="text/javascript">
       $(document).ready(function(){
@@ -133,8 +136,7 @@
 
         // add tabs layout
         $('.new-tabs button').click(function(){
-          $('.field-tabs').append('<div class="field-group"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item"> <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable1" class="text-center list-group connectedSortable"> <li class="list-group-item active">Lion</li> <li class="list-group-item">Dog</li> <li class="list-group-item">Cat</li> <li class="list-group-item">Tiger</li> </ul> </div> </div> </div>'); 
-        });
+          $('.field-tabs').append('<div class="field-group"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item"> <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable1" class="text-center list-group connectedSortable"> <li class="list-group-item active">Lion</li> <li class="list-group-item">Dog</li> <li class="list-group-item">Cat</li> <li class="list-group-item">Tiger</li> </ul> </div> </div> </div>'); });
 
         // add row table checkboxes
         $('#checkboxes button').click(function(){
@@ -196,7 +198,12 @@
 
         // Button Submit
         $('#buttonHeader').click(function(){
-          $('#MyForm').submit();
+          if ($(this).data("tabs") == 1) {
+            // get fields list value
+            getFieldsList();
+          } else {
+           $('#MyForm').submit();
+          }
         });
 
         /*Fields Forms*/
@@ -253,20 +260,19 @@
           });
         });
         /*end Fields Forms*/
-
-
-        $("#sortable1, #sortable2").sortable({
+        $( "#sortable1, #sortable2" ).sortable({
           connectWith: ".connectedSortable"
-        });
-             
+        }).disableSelection();   
+
+        window.onscroll = function() {myFunction()};
+        var leftbar = document.getElementById('left-content');
+        var leftbarTop = leftbar.offsetTop;
+        var leftbarButton = leftbar.offsetHeight;
+        var rightbar = document.getElementById('right-content');
+        var rightbarTop = rightbar.offsetHeight;
+
       })
 
-      window.onscroll = function() {myFunction()};
-      var leftbar = document.getElementById('left-content');
-      var leftbarTop = leftbar.offsetTop;
-      var leftbarButton = leftbar.offsetHeight;
-      var rightbar = document.getElementById('right-content');
-      var rightbarTop = rightbar.offsetHeight;
       
       function myFunction() {
         if (window.pageYOffset >= leftbarTop && window.pageYOffset <= leftbarButton) {
@@ -274,6 +280,26 @@
         } else {
           leftbar.classList.remove("fixed-bar");
         }
+      }
+
+      function getFieldsList() {
+        var fieldsId = $('#sortable1 .fields-list').map(function(){
+          return $(this).data('fieldsid');
+        }).get();
+        var id_section = $('input[name=id_section]').val();
+        var name       = $('input[name=name]').val();
+        var handle     = $('input[name=handle]').val();
+        var title      = $('input[title=title]').val();
+        $.ajax({
+          type : 'POST',
+          dataType : 'json',
+          data : {id_section: id_section, name : name, handle : handle, title : title, fieldsId : fieldsId},
+          url : '<?php echo base_url("admin/section/entrytypesCreate") ?>',
+        }).done(function(data){
+          alert(data);
+        }).fail(function(errot){
+
+        });
       }
 
       // function update modal success

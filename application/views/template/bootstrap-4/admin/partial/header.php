@@ -33,7 +33,8 @@
 	    	<button id="buttonHeader" 
 	        class="btn btn-danger btn-sm mx-1" 
 	        type="<?php echo (isset($button_type) ? $button_type : '') ?>"
-	        name="<?php echo (isset($button_name) ? $button_name : ''); ?>">
+	        name="<?php echo (isset($button_name) ? $button_name : ''); ?>"
+          data-tabs="<?php echo ((isset($button_tabs) && $button_tabs == TRUE) ? '1' : '') ?>">
 	        <?php echo ucfirst($button);?>
 	      </button>  	
     	<?php endif ?>
