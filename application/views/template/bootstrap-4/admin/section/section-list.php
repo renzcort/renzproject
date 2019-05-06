@@ -38,6 +38,6 @@
     </tbody>
   </table>
   <?php else: ?>
+  <p class="empty-data">Data is Empty</p>
   <?php endif ?>
-
 </div>

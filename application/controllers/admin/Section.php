@@ -283,19 +283,35 @@ class Section extends My_Controller {
     }    
   }
 
-  public function entrytypesCreate() {
-      var_dump($this->input->post());die;
-    
+  public function jsonEntrytypesCreate() {
+    $id_section = $this->input->post('id_section');
+    $settings = array(
+      'title'         =>  ucfirst("New Entry Type"),
+      'subtitle'      =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  'Save',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'create',
+      'button_tabs'   =>  TRUE,
+      'content'       =>  'template/bootstrap-4/admin/section/section-entries-form',
+      'table'         =>  'entries',
+      'action'        =>  "admin/section/{$id_section}/entrytypes/create",
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'id_section'    =>  $id_section,
+      'section'       =>  $this->section_m->get_row_by_id($id_section),
+      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
+      'fields'        =>  $this->fields_m->get_all_results(),
+    );
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_section.name]');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_section.handle]');
     $this->form_validation->set_rules('title', 'Title', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      if ($_POST['create']) {
         $data = array(
           'name'        =>  $this->input->post('name'),
           'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'section_id'  =>  $id_section,
+          'section_id'  =>  $this->input->post('id_section'),
           'title'       =>  ucfirst($this->input->post('title')),
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'description' =>  $this->input->post('description'),
@@ -304,8 +320,19 @@ class Section extends My_Controller {
         );
         $entries = $this->entries_m->create($data);
         //get fields to element 
+        $fieldsId = $this->input->post('fieldsId');
+        $i = 0;
+        foreach ($fieldsId as $value) {
+          $element = array(
+            'entries_id'  =>  $entries,
+            'section_id'  =>  $this->input->post('id_section'),
+            'fields_id'   =>  $value,
+            'order'       =>  ++$i,
+          );
+          $this->general_m->create('element', $element);
+        }
+
         
-      }
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
     }    

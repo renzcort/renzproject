@@ -289,12 +289,12 @@
         var id_section = $('input[name=id_section]').val();
         var name       = $('input[name=name]').val();
         var handle     = $('input[name=handle]').val();
-        var title      = $('input[title=title]').val();
+        var title      = $('input[name=title]').val();
         $.ajax({
           type : 'POST',
           dataType : 'json',
           data : {id_section: id_section, name : name, handle : handle, title : title, fieldsId : fieldsId},
-          url : '<?php echo base_url("admin/section/entrytypesCreate") ?>',
+          url : '<?php echo base_url("admin/section/jsonEntrytypesCreate") ?>',
         }).done(function(data){
           alert(data);
         }).fail(function(errot){
