@@ -84,9 +84,9 @@ class Api extends My_Controller {
         helper_log('edit', "Update data entries has successfully");        
       }
       //get fields to element 
-      $fieldsId = $this->input->post('fieldsId');
-      if (!empty($fieldsId)) {
-        $this->general_m->delete('element', $id, 'entries_id');
+      if (!empty($this->input->post('fieldsId'))) {
+        $fieldsId = $this->input->post('fieldsId');
+        $this->general_m->delete('element', $id, 'fields_id');
         $i = 0;
         foreach ($fieldsId as $value) {
           $element = array(
