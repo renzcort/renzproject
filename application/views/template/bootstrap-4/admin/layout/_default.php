@@ -272,7 +272,30 @@
         });
         /*END Fields Forms*/
 
-        /*Tabs Fields*/
+        /**
+         * Tabs Fields
+         */
+        // Entrytypes List Moved Row Table
+        $('#section-entries-list tbody').sortable({
+          update: function(event, ui) {
+            var order = $(this).sortable('toArray');
+            var id = $("#section-entries-list tbody tr").map(function() {
+                return $(this).data("id");
+            }).get();
+
+            $.ajax({
+              type : 'POST',
+              dataType : 'json',
+              data : {id : id, order : order},
+              url : '<?php echo base_url("admin/api/jsonEntrytypesOrder") ?>',
+            }).done(function(data){
+
+            }).fail(function(error){
+
+            });
+           }
+        });
+
         $( "#sortable1, #sortable2" ).sortable({
           connectWith: ".connectedSortable"
         }).disableSelection();   

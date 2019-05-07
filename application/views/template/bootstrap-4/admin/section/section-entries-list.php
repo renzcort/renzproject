@@ -1,18 +1,19 @@
 <div class="middle-content flex-grow-1">
   <?php if ($record_all): ?>
-  <table class="table table-sm">
+  <table class="table table-sm" id="section-entries-list">
     <thead>
       <tr>
-        <th scope="col">#</th>
         <th scope="col">Name</th>
         <th scope="col">Handle</th>
         <th scope="col"></th>
       </tr>
     </thead>
     <tbody>
-      <?php foreach ($record_all as $key): ?>
-      <tr>
-        <th scope="row">1</th>
+      <?php
+        $i = 0; 
+        foreach ($record_all as $key): 
+      ?>
+      <tr data-id="<?php echo $key->id; ?>" id="<?php echo ++$i; ?>">
         <td><a href="<?php echo base_url($action.'/edit/'.$key->id); ?>"><?php echo $key->name; ?></a></td>
         <td><?php echo $key->handle; ?></td>
         <td scope="row" colspan="2">
@@ -23,5 +24,7 @@
       <?php endforeach ?>
     </tbody>
   </table>
+
+      <h3><span id = "sortable-9"></span></h3>
   <?php endif ?>
 </div>

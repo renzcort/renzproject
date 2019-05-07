@@ -21,7 +21,7 @@ class Section extends My_Controller {
 
 	public function index() {
     $settings = array(
-      'title'              =>  'section',
+      'title'              =>  ucfirst('section'),
       'subtitle'           =>  FALSE,
       'subbreadcrumb'      =>  FALSE,
       'button'             =>  '+ New section',
@@ -52,7 +52,7 @@ class Section extends My_Controller {
 	/*Create Section*/
 	public function create(){
     $settings = array(
-      'title'         =>  'section',
+      'title'         =>  ucfirst('section'),
       'subtitle'      =>  'create',
       'subbreadcrumb' =>  FALSE,
       'button'        =>  'Save',
@@ -108,7 +108,7 @@ class Section extends My_Controller {
 	/*Update Section*/
 	public function update($id=''){
     $settings = array(
-      'title'         =>  'section',
+      'title'         =>  ucfirst('section'),
       'subtitle'      =>  'edit',
       'subbreadcrumb' =>  FALSE,
       'button'        =>  'Update',
@@ -184,18 +184,15 @@ class Section extends My_Controller {
 	/*Delete Section*/
 	public function delete($id='') {
     $settings = array(
-      'title'         =>  'section',
-      'subtitle'      =>  'delete',
-      'subbreadcrumb' =>  FALSE,
+      'title'         =>  ucfirst('section'),
       'table'         =>  'section',
       'getDataby_id'  =>  $this->section_m->get_row_by_id($id)
     );
 
-
 		if ($settings['getDataby_id']) {
-      $this->general_m->delete('element', $id, 'section_id');
-      $this->general_m->delete('entries', $id, 'section_id');
-      $delete = $this->section_m->delete($id);
+      $element_del = $this->general_m->delete('element', $id, 'section_id');
+      $entries_del = $this->general_m->delete('entries', $id, 'section_id');
+      $delete      = $this->section_m->delete($id);
       helper_log('update', "Delete data {$settings['title']} has successfully");        
       $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");
       redirect($this->data['parentLink']);
@@ -218,7 +215,7 @@ class Section extends My_Controller {
       'table'         =>  'section',
       'action'        =>  "admin/section/{$section_id}/entrytypes",
       'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
+      'no'            =>  $this->uri->segment(5),
     );
 
 
@@ -258,6 +255,7 @@ class Section extends My_Controller {
       'section'       =>  $this->section_m->get_row_by_id($section_id),
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
+      'elementFields' =>  [],
     );
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_section.name]');
@@ -369,160 +367,28 @@ class Section extends My_Controller {
     }   
   }
 
-  /*Create*/
-  public function entries_section_create() {
-    $section_id =  $this->input->get('section_id');
+  /*Enteie Type Delete*/
+  public function entrytypes_delete($section_id, $id) {
     $settings = array(
-      'title'      =>  'entries',
-      'subheader'  =>  'Manage entries',
-      'content'    =>  'admin/section/entries/create',
-      'table'      =>  'entries',
-      'action'     =>  'admin/section/entries',
-      'session'    =>  $this->data,
-      'no'         =>  $this->uri->segment(3),
-      'field'      =>  $this->fields_m->get_all_results(),
-      'element'    =>  $this->general_m->get_result_by_id('element', $section_id, 'section_id'),
-      'section_id' =>  $section_id,
+      'title'        => 'Entries',
+      'section_id'   => $section_id,
+      'getDataby_id' => $this->entries_m->get_row_by_id($id),
+      'action'       =>  "admin/section/{$section_id}/entrytypes",
     );
 
-    if ($settings['element']) {
-      foreach ($settings['element'] as $key => $value) {
-        $settings['field_checked'][] = $value->field_id;
-      }
-    } else {
-        $settings['field_checked'][] = '';
-    }
-    // var_dump($settings['section_id']); die;
-
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    $this->form_validation->set_rules('title', 'Title', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
-        $data = array(
-          'name'        =>  $this->input->post('name'),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'section_id'  =>  $section_id,
-          'title'       =>  $this->input->post('title'),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'description' =>  $this->input->post('description'),
-          'created_by'  =>  $this->data['userdata']['id'],
-        );
-        $entries_id = $this->entries_m->create($data);
-
-        $field = $this->input->post('field');
-        if (!empty($field)) {
-          $this->general_m->delete('element', $entries_id, 'section_id');
-          $i = 0;
-          foreach ($field as $key => $value) {
-            $element = array(
-              'entries_id' =>  $entries_id,
-              'section_id' =>  $section_id,
-              'field_id'   =>  $value,
-              'order'      =>  $i++, 
-            );
-            $this->general_m->create('element', $element, FALSE);
-          }
-        }
-        helper_log('add', "add data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");        
-        $this->session->set_flashdata('message', 'Data has created');
-        redirect("{$settings['action']}?section_id={$section_id}");
-      }
-    } else {
-      $this->load->view('admin/layout/_default', $settings);
-    }    
-  }
-
-  /*uPDATE*/
-  public function entries_section_update($id='') {
-    $section_id =  $this->input->get('section_id');
-    $settings = array(
-      'title'      =>  'entries',
-      'subheader'  =>  'Manage entries',
-      'content'    =>  'admin/section/entries/edit',
-      'table'      =>  'entries',
-      'action'     =>  'admin/section/entries',
-      'session'    =>  $this->data,
-      'no'         =>  $this->uri->segment(4),
-      'field'      =>  $this->fields_m->get_all_results(),
-      'element'    =>  $this->general_m->get_result_by_id('element', $id, 'entries_id'),
-      'section_id' =>  $section_id,
-    );
-    $settings['getdataby_id'] = $this->entries_m->get_row_by_id($id);
-    if ($settings['element']) {
-      foreach ($settings['element'] as $key => $value) {
-        $settings['field_checked'][] = $value->field_id;
-      }
-    } else {
-        $settings['field_checked'][] = '';
-    }
-    // var_dump($settings['getdataby_id']); die;
-
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    $this->form_validation->set_rules('title', 'Title', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['update'])) {
-        $data = array(
-          'name'        =>  $this->input->post('name'),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'section_id'  =>  $settings['section_id'],
-          'title'       =>  $this->input->post('title'),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'description' =>  $this->input->post('description'),
-          'updated_by'  =>  $this->data['userdata']['id'],
-        );
-        $this->entries_m->update($data, $id);
-
-        $field = $this->input->post('field');
-        $this->general_m->delete('element', $id, 'entries_id');
-        $i = 0;
-        foreach ($field as $key => $value) {
-          $element = array(
-            'entries_id' =>  $id,
-            'section_id' =>  $settings['section_id'],
-            'field_id'   =>  $value,
-            'order'      =>  $i++, 
-          );
-          // var_dump($element);die;
-          $this->general_m->create('element', $element, FALSE);
-        }
-        
-        helper_log('add', "add data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");        
-        $this->session->set_flashdata('message', 'Data has created');
-        redirect("{$settings['action']}/?section_id={$section_id}");
-      }
-    } else {
-      $this->load->view('admin/layout/_default', $settings);
-    }    
-  }
-
-  /*Delete*/
-  public function entries_section_delete($id='') {
-    $section_id =  $this->input->get('section_id');
-    $settings = array(
-      'title'      =>  'entries',
-      'subheader'  =>  'Manage entries',
-      'content'    =>  'admin/section/entries/index',
-      'table'      =>  'entries',
-      'action'     =>  'admin/section/entries',
-      'session'    =>  $this->data,
-      'no'         =>  $this->uri->segment(4),
-      'field'      =>  $this->fields_m->get_all_results(),
-      'element'    =>  $this->general_m->get_result_by_id('element', $id, 'entries_id'),
-      'section_id' =>  $section_id,
-    );
-
-    if ($this->entries_m->get_row_by_id($id)) {
-      $this->general_m->delete('content', $id, 'entries_id');
-      $this->general_m->delete('element', $id, 'entries_id');
+    if ($settings['getDataby_id']) {
+      $element_del = $this->general_m->delete('element', $id, 'entries_id');
       $delete = $this->entries_m->delete($id);
-      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
-      redirect("{$settings['action']}/?section_id={$section_id}");
+      helper_log('update', "Delete data {$settings['title']} has successfully");        
+      $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");
+      redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
-      redirect("{$settings['action']}/?section_id={$section_id}");
+      redirect($settings['action']);
     }
+
   }
+
 
   /*Type Section*/
   public function type() {

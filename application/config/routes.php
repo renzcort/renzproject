@@ -103,9 +103,10 @@ $route['admin/section/type/edit/(:num)']      = 'admin/section/type_update/$1';
 $route['admin/section/type/delete/(:num)']    = 'admin/section/type_delete/$1';
 
 /*Entries*/
-$route['admin/section/(:num)/entrytypes']                 = 'admin/section/entrytypes/$1';
+$route['admin/section/(:num)/entrytypes']             = 'admin/section/entrytypes/$1';
 $route['admin/section/(:num)/entrytypes/create']      = 'admin/section/entrytypes_create/$1';
 $route['admin/section/(:num)/entrytypes/edit/(:num)'] = 'admin/section/entrytypes_update/$1/$2';
+$route['admin/section/(:num)/entrytypes/delete/(:num)'] = 'admin/section/entrytypes_delete/$1/$2';
 
 $route['admin/section/entries']               = 'admin/section/entries_section';
 $route['admin/section/entries/create']        = 'admin/section/entries_section_create';

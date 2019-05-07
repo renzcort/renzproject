@@ -17,7 +17,10 @@ class Api extends My_Controller {
     );
   }
 
-  /*Section Entries Create*/
+  /**
+   * Section Entries Create
+   * @return [type] [description]
+   */
   public function jsonEntrytypes() {
     $section_id = $this->input->post('section_id');
     $id         = $this->input->post('id');
@@ -90,7 +93,7 @@ class Api extends My_Controller {
         $i = 0;
         foreach ($fieldsId as $value) {
           $element = array(
-            'entries_id'  =>  $entries,
+            'entries_id'  =>  (($button == 'create') ? $entries : $id),
             'section_id'  =>  $section_id,
             'fields_id'   =>  $value,
             'order'       =>  ++$i,
@@ -112,6 +115,16 @@ class Api extends My_Controller {
       echo json_encode($settings);
     }    
   }
+
+  // Update Order
+  public function jsonEntrytypesOrder(){
+    $id = $this->input->post();
+    $order = $this->input->post();
+    var_dump(array_values($id));die;
+    foreach ($id as $key => $value) {
+    }
+  }
+  /*END Section*/
 
   /**
    * GROUP API
