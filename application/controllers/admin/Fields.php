@@ -364,7 +364,7 @@ class fields extends My_Controller {
       $fields = array(
         'handle' => $settings['getDataby_id']->handle,
       );
-      // Drop field column
+      // Drop field column in content
       modifyColumn($fields, 'drop');
       $fields_del = $this->fields_m->delete($id);
       $option_del = $this->general_m->delete('fields_option', $settings['getDataby_id']->option_id);
@@ -374,28 +374,6 @@ class fields extends My_Controller {
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
       redirect($this->data['parentLink']);
-    }
-  }
-
-  // delete by json
-  public function deleteFieldsById() {
-    header('Content-type: application/json');
-    $id = $this->input->post('id');
-    $getDataby_id = $this->fields_m->get_row_by_id($id);
-    if ($getDataby_id) {
-      $element_del = $this->general_m->delete('element', $id, 'fields_id');
-      $fields = array(
-        'handle' => $getDataby_id->handle,
-      );
-      // Drop field column
-      modifyColumn($fields, 'drop');
-      $fields_del = $this->fields_m->delete($id);
-      $option_del = $this->general_m->delete('fields_option', $getDataby_id->option_id);
-      helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has deleted {$delete} Records");
-      echo json_encode($getDataby_id);
-    } else {
-      $this->session->set_flashdata('message', 'Your Id Not Valid');
     }
   }
 

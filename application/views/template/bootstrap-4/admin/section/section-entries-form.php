@@ -6,8 +6,9 @@
     ); 
     echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes);
   ?>
-  <input type="hidden" name="<?php echo $button_name; ?>">
-  <input type="hidden" name="id_section" value="<?php echo $id_section; ?>">
+  <input type="hidden" id="button_name" name="<?php echo $button_name; ?>" value="<?php echo $button_name; ?>">
+  <input type="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
+  <input type="hidden" name="section_id" value="<?php echo $section_id; ?>">
     <div class="form-group">
       <label class="heading required" for="inputName">Name</label>
       <small class="form-text text-muted">What this entry type will be called in the CP.</small>
@@ -48,6 +49,13 @@
           <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
               <ul id="sortable1" class="text-center list-group connectedSortable">
+              <?php if ($element): ?>
+                  <?php foreach ($fields as $key): ?>
+                    <?php if (in_array($key->id, $elementFields)): ?>
+                    <li class="list-group-item fields-list" data-fieldsId='<?php echo $key->id; ?>'><?php echo $key->name; ?></li>
+                    <?php endif ?>
+                  <?php endforeach ?>  
+              <?php endif ?>  
               </ul>
             </div>
           </div>
@@ -72,11 +80,15 @@
             <div class="tab-content" id="myTabContent">
               <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                 <ul id="sortable2" class="text-center list-group connectedSortable">
-                <?php foreach ($fields as $value): ?>
-                  <?php if ($value->group_id == $key->id): ?>
-                    <li class="list-group-item fields-list" data-fieldsId='<?php echo $value->id; ?>' name="fieldsId[]" value="<?php echo $value->id ?>"><?php echo $value->name; ?></li>
-                  <?php endif ?>
-                <?php endforeach ?>
+                <?php if ($fields): ?>
+                  <?php foreach ($fields as $value): ?>
+                    <?php if ($value->group_id == $key->id): ?>
+                      <?php if (!in_array($value->id, $elementFields)): ?>
+                        <li class="list-group-item fields-list" data-fieldsId='<?php echo $value->id; ?>'><?php echo $value->name; ?></li>
+                      <?php endif ?>
+                    <?php endif ?>
+                  <?php endforeach ?>
+                <?php endif ?>
                 </ul>
               </div>
             </div>

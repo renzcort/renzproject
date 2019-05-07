@@ -158,14 +158,17 @@
           $(this).addClass('active');
         });
 
-        // modal rename
+        /**
+         * Modal Groups Json Start
+        */
+        // Rename Groups 
         $('#groupsRename').click(function(){
           var id = $(".sidebar-content .nav-link.active").attr('data-id');
           $.ajax({
               type: 'POST',
               datatype: 'json',
               data: {id: id},
-              url: '<?php echo base_url("admin/groups/fields_getdataById") ?>',
+              url: '<?php echo base_url("admin/api/jsonGetGroupsByFieldsId") ?>',
           })
           .done(function (data) {
               updateModalSuccess(data); 
@@ -175,8 +178,7 @@
           });
           return false;
         });
-
-        // Modal Delete
+        // Delete Groups
         $('#groupsDelete').click(function(){
           var id = $(".sidebar-content .nav-link.active").attr('data-id');
           if (confirm("Are you sure?")) {
@@ -184,7 +186,7 @@
               type: 'POST',
               dataType: 'json',
               data: {id: id},
-              url: '<?php echo base_url("admin/groups/fields_deleteById") ?>'
+              url: '<?php echo base_url("admin/api/jsonGroupsDeleteById") ?>'
             })
             .done(function(data) {
               deleteModalSuccess(data);
@@ -195,18 +197,25 @@
           }
           return false;
         });
+        /*End Groups Json*/
+
 
         // Button Submit
         $('#buttonHeader').click(function(){
           if ($(this).data("tabs") == 1) {
             // get fields list value
-            getFieldsList();
+            getTabsFieldsList();
           } else {
            $('#MyForm').submit();
           }
         });
 
-        /*Fields Forms*/
+
+        /**
+         * Fields Forms 
+         * @param  {[type]} $('input[name [description]
+         * @return {[type]}               [description]
+         */
         if ($('input[name=plainLineBreak]').attr('checked')) {
           $('.plainLineBreak').show();
         } else {
@@ -227,6 +236,7 @@
           $('.assetsRestrictFileType').toggle();
         })
 
+        // Delete Fields List
         $('#deleteFields').click(function(){
           var id = $('#deleteFields').data('id');
           if (confirm("are you sure?")) {
@@ -234,7 +244,7 @@
               type : 'POST',
               dataType : 'json',
               data : {id : id},
-              url : '<?php echo base_url("admin/fields/deleteFieldsById") ?>'
+              url : '<?php echo base_url("admin/api/jsonDeleteFieldsById") ?>'
             }).done(function(data) {
               window.location.reload();
             }).fail(function(error) {
@@ -244,13 +254,14 @@
           return false;
         })
 
+        // Show Fields By Groups
         $('#fieldsGroup .nav-item').click(function(){
           var group_id = $('#fieldsGroup .nav-link.active').data('id');
           $.ajax({
             type : 'POST',
             dataType : 'json',
             data : {group_id : group_id},
-            url : '<?php echo base_url("admin/groups/getFieldsByGroupsId") ?>',
+            url : '<?php echo base_url("admin/api/jsonGetFieldsByIdGroups") ?>',
           }).done(function(data){
             $('#right-content table').remove();
             $('#right-content .empty-data').remove();
@@ -259,10 +270,13 @@
 
           });
         });
-        /*end Fields Forms*/
+        /*END Fields Forms*/
+
+        /*Tabs Fields*/
         $( "#sortable1, #sortable2" ).sortable({
           connectWith: ".connectedSortable"
         }).disableSelection();   
+        /*End Tabs Fields*/
 
         window.onscroll = function() {myFunction()};
         var leftbar = document.getElementById('left-content');
@@ -282,21 +296,38 @@
         }
       }
 
-      function getFieldsList() {
+      function getTabsFieldsList() {
         var fieldsId = $('#sortable1 .fields-list').map(function(){
           return $(this).data('fieldsid');
         }).get();
-        var id_section = $('input[name=id_section]').val();
+        var section_id = $('input[name=section_id]').val();
+        var id         = $('input[name=id]').val()
         var name       = $('input[name=name]').val();
         var handle     = $('input[name=handle]').val();
         var title      = $('input[name=title]').val();
+        var button     = $('#button_name').val();
+
         $.ajax({
           type : 'POST',
           dataType : 'json',
-          data : {id_section: id_section, name : name, handle : handle, title : title, fieldsId : fieldsId},
-          url : '<?php echo base_url("admin/section/jsonEntrytypesCreate") ?>',
+          data : {
+                  section_id: section_id, 
+                  id : id, 
+                  name : name, 
+                  handle : handle, 
+                  title : title, 
+                  fieldsId : fieldsId, 
+                  button : button
+                },
+          url : '<?php echo base_url("admin/api/jsonEntrytypes") ?>',
         }).done(function(data){
-          alert(data);
+          if (data.status == true) {
+            window.location.href = '<?php echo base_url() ?>'+data.action;
+          } else {
+           $.each(data.errors, function(key, val){
+            $('input[name="'+key+'"]').next().html(val).addClass('form-error');
+           }); 
+          }
         }).fail(function(errot){
 
         });

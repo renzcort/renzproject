@@ -24,7 +24,7 @@ class Entries_m extends My_Model {
   /*Get Data By Id*/
   public function get_row_by_id($id, $key='') {
     ((!empty($key)) ? $key : $key = 'id');
-    $this->db->select("$this->_table.*, b.name as name_section");
+    $this->db->select("$this->_table.*, b.name as section_name");
     $this->db->join('section as b', "b.id = {$this->_table}.section_id", "LEFT");
     return $this->db->get_where($this->_table, array("{$this->_table}.{$key}" => $id))->row();
   }

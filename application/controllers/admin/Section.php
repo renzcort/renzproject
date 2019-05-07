@@ -154,6 +154,7 @@ class Section extends My_Controller {
 
   public function name_check($str) {
     $id = $this->uri->segment(4);
+    var_dump($id);die;
     $field = $this->section_m->get_row_by_id($id);
     $data = array('name' => $str);
     $check = $this->general_m->get_row_by_fields('section', $data);
@@ -205,8 +206,8 @@ class Section extends My_Controller {
 	}
 
   /*Entries Section*/
-  public function entrytypes($id_section='') {
-    $section = $this->section_m->get_row_by_id($id_section);
+  public function entrytypes($section_id='') {
+    $section = $this->section_m->get_row_by_id($section_id);
     $settings = array(
       'title'         =>  ucfirst("{$section->name} Entry Type"),
       'subtitle'      =>  FALSE,
@@ -215,10 +216,11 @@ class Section extends My_Controller {
       'button_link'   =>  "entrytypes/create",
       'content'       =>  'template/bootstrap-4/admin/section/section-entries-list',
       'table'         =>  'section',
-      'action'        =>  "admin/section/{id_section}/entrytypes",
+      'action'        =>  "admin/section/{$section_id}/entrytypes",
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
     );
+
 
     // pagination
     $config                 = $this->config->item('setting_pagination');
@@ -230,7 +232,7 @@ class Section extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->entries_m->get_result_by_id($id_section, $config['per_page'], $start_offset, 'section_id');
+    $settings['record_all'] = $this->entries_m->get_result_by_id($section_id, $config['per_page'], $start_offset, 'section_id');
     $settings['links']      = $this->pagination->create_links();
     // end pagination
     
@@ -238,7 +240,7 @@ class Section extends My_Controller {
   }
 
   /*entrues type create*/
-  public function entrytypes_create($id_section='') {
+  public function entrytypes_create($section_id='') {
     $settings = array(
       'title'         =>  ucfirst("New Entry Type"),
       'subtitle'      =>  FALSE,
@@ -249,11 +251,11 @@ class Section extends My_Controller {
       'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/section/section-entries-form',
       'table'         =>  'entries',
-      'action'        =>  "admin/section/{$id_section}/entrytypes/create",
+      'action'        =>  "admin/section/{$section_id}/entrytypes/create",
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'id_section'    =>  $id_section,
-      'section'       =>  $this->section_m->get_row_by_id($id_section),
+      'section_id'    =>  $section_id,
+      'section'       =>  $this->section_m->get_row_by_id($section_id),
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
     );
@@ -262,12 +264,11 @@ class Section extends My_Controller {
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_section.handle]');
     $this->form_validation->set_rules('title', 'Title', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      var_dump($this->input->post());die;
       if ($_POST['create']) {
         $data = array(
           'name'        =>  $this->input->post('name'),
           'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'section_id'  =>  $id_section,
+          'section_id'  =>  $section_id,
           'title'       =>  ucfirst($this->input->post('title')),
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'description' =>  $this->input->post('description'),
@@ -275,102 +276,97 @@ class Section extends My_Controller {
           'created_by'  =>  $this->data['userdata']['id'],
         );
         $entries = $this->entries_m->create($data);
+        helper_log('add', "add data entries has successfully");        
         //get fields to element 
-        
+        $fieldsId = $this->input->post('fieldsId');
+        if (!empty($fieldsId)) {
+          $i = 0;
+          foreach ($fieldsId as $value) {
+            $element = array(
+              'entries_id'  =>  $entries,
+              'section_id'  =>  $id_section,
+              'fields_id'   =>  $value,
+              'order'       =>  ++$i,
+            );
+            $this->general_m->create('element', $element, FALSE);
+          }
+          helper_log('add', "add element create has successfully {$element['order']} record");
+          $this->session->set_flashdata("message", "Entries has successfully Create");
+        }
       }
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
     }    
   }
 
-  public function jsonEntrytypesCreate() {
-    $id_section = $this->input->post('id_section');
+  /*entries type update*/
+  public function entrytypes_update($section_id='', $id) {
     $settings = array(
       'title'         =>  ucfirst("New Entry Type"),
       'subtitle'      =>  FALSE,
       'subbreadcrumb' =>  FALSE,
-      'button'        =>  'Save',
+      'button'        =>  'Update',
       'button_type'   =>  'submit',
-      'button_name'   =>  'create',
+      'button_name'   =>  'update',
       'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/section/section-entries-form',
       'table'         =>  'entries',
-      'action'        =>  "admin/section/{$id_section}/entrytypes/create",
+      'action'        =>  "admin/section/{$section_id}/entrytypes/create",
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'id_section'    =>  $id_section,
-      'section'       =>  $this->section_m->get_row_by_id($id_section),
+      'section_id'    =>  $section_id,
+      'section'       =>  $this->section_m->get_row_by_id($section_id),
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
+      'getDataby_id'  =>  $this->entries_m->get_row_by_id($id),
+      'element'       =>  $this->general_m->get_result_by_id('element', $id, 'entries_id'),
     );
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_section.name]');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_section.handle]');
+    if ($settings['element']) {
+      foreach ($settings['element'] as $key) {
+        $fieldsId[] = $key->fields_id; 
+      }
+      $settings['elementFields'] = $fieldsId;
+    } else {
+      $settings['elementFields'] = [];
+    }
+
+    $this->form_validation->set_rules('name', 'Name', 'trim|required|callback_name_check');
+    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|callback_handle_check');
     $this->form_validation->set_rules('title', 'Title', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-        $data = array(
-          'name'        =>  $this->input->post('name'),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'section_id'  =>  $this->input->post('id_section'),
-          'title'       =>  ucfirst($this->input->post('title')),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'description' =>  $this->input->post('description'),
-          'order'       =>  $this->input->post('order'),
-          'created_by'  =>  $this->data['userdata']['id'],
-        );
-        $entries = $this->entries_m->create($data);
-        //get fields to element 
-        $fieldsId = $this->input->post('fieldsId');
+      $data = array(
+        'name'        =>  $this->input->post('name'),
+        'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+        'section_id'  =>  $section_id,
+        'title'       =>  ucfirst($this->input->post('title')),
+        'slug'        =>  url_title(strtolower($this->input->post('name'))),
+        'description' =>  $this->input->post('description'),
+        'order'       =>  $this->input->post('order'),
+        'created_by'  =>  $this->data['userdata']['id'],
+      );
+      $entries = $this->entries_m->update($data, $id);
+      helper_log('edit', "Update data entries has successfully");        
+      //get fields to element 
+      $fieldsId = $this->input->post('fieldsId');
+      if (!empty($fieldsId)) {
+        $this->general_m->delete('elemet', $id, 'entries_id');
         $i = 0;
         foreach ($fieldsId as $value) {
           $element = array(
             'entries_id'  =>  $entries,
-            'section_id'  =>  $this->input->post('id_section'),
+            'section_id'  =>  $section_id,
             'fields_id'   =>  $value,
             'order'       =>  ++$i,
           );
-          $this->general_m->create('element', $element);
+          $this->general_m->create('element', $element, FALSE);
         }
-
-        
+        helper_log('edit', "edit element entries id {$id} has successfully {$element['order']} record");
+        $this->session->set_flashdata("message", "Entries has successfully Updated");
+      }
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }    
-  }
-
-
-  /*entries type update*/
-  public function entrytypes_update($id='') {
-    $section = $this->section_m->get_row_by_id($id);
-    $settings = array(
-      'title'         =>  "{$section->name} Entry Type",
-      'subtitle'      =>  FALSE,
-      'subbreadcrumb' =>  FALSE,
-      'button'        =>  '+ New entry type',
-      'button_link'   =>  'section/entrytypes/create',
-      'content'       =>  'template/bootstrap-4/admin/section/section-entries-list',
-      'table'         =>  'section',
-      'action'        =>  'admin/section',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
-      'section_id'    =>  $id
-    );
-
-    // pagination
-    $config                 = $this->config->item('setting_pagination');
-    $config['base_url']     = base_url($settings['action']);
-    $config['total_rows']   = $this->entries_m->count_all_results();
-    $config['per_page']     = 10;
-    $num_pages              = $config['total_rows'] / $config['per_page'];
-    $config['uri_segment']  = 5;
-    $config['num_links']    = round($num_pages);
-    $this->pagination->initialize($config);
-    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->entries_m->get_result_by_id($id, $config['per_page'], $start_offset, 'section_id');
-    $settings['links']      = $this->pagination->create_links();
-    // end pagination
-    
-    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+    }   
   }
 
   /*Create*/
