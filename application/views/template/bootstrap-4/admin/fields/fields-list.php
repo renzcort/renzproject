@@ -1,13 +1,13 @@
   <div id="left-content" class="left-content">
     <div class="sidebar-content">
-      <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="fieldsGroup">
+      <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebarGroups" data-groups-name="<?php echo ($group_name ? $group_name : ''); ?>" data-table="<?php echo ($table ? $table : ''); ?>">
         <li class="nav-item">
           <a class="nav-link active" href="#" data-id="all">All Fields</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#" data-id="default">Default</a>
         </li>
-        <?php foreach ($fields_group as $key): ?>
+        <?php foreach ($group as $key): ?>
           <li class="nav-item">
             <a class="nav-link" href="#" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
           </li>
@@ -15,7 +15,7 @@
       </ul>
       <div class="btn-new text-center d-flex flex-row flex-wrap justify-content-start">
         <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#groupsModal">+ New Group</button>
-        <?php if ($fields_group_count >= 1) { ?>
+        <?php if ($group_count >= 1) { ?>
           <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               <i class="fas fa-cog"></i>

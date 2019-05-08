@@ -51,8 +51,23 @@ class Entries_m extends My_Model {
   /*Update Data By ID*/
   public function update($data, $id) {
     $data['updated_at'] = mdate("%Y-%m-%d %H:%i:%s");
+    $this->db->trans_start();
     $this->db->where('id', $id);
     $this->db->update($this->_table, $data);
+    $this->db->trans_complete();
+
+    if ($this->db->trans_status() === FALSE) {
+      $res = array(
+        'message' => 'unable to update',
+        'status'  =>  FALSE
+      );
+    } else {
+      $res = array(
+        'message' =>  'Updated Successfully',
+        'status'  =>  TRUE,
+      );
+    }
+    return $res;
   }
 
   /*Delete Data By ID*/

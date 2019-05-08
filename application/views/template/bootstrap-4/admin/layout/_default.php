@@ -56,13 +56,15 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Group Field</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Group <?php echo (isset($title) ? ucfirst($title) : ''); ?></h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
-      <?php echo form_open('admin/groups/fields', ''); ?>
+      <?php echo form_open('admin/groups', ''); ?>
       <div class="modal-body">
+          <input type="hidden" name="group_name" value="<?php echo (isset($group_name) ? $group_name : ''); ?>">
+          <input type="hidden" name="table" value="<?php echo (isset($table) ? $table : ''); ?>">
           <div class="form-group">
             <label class="heading" for="inputNameGroup">What do you want to name the group?</label>
             <input type="text" name="name" class="form-control form-control-sm">
@@ -158,48 +160,6 @@
           $(this).addClass('active');
         });
 
-        /**
-         * Modal Groups Json Start
-        */
-        // Rename Groups 
-        $('#groupsRename').click(function(){
-          var id = $(".sidebar-content .nav-link.active").attr('data-id');
-          $.ajax({
-              type: 'POST',
-              datatype: 'json',
-              data: {id: id},
-              url: '<?php echo base_url("admin/api/jsonGetGroupsByFieldsId") ?>',
-          })
-          .done(function (data) {
-              updateModalSuccess(data); 
-          })
-          .fail(function (jqXHR, textStatus, errorThrown) { 
-            // serrorFunction(); 
-          });
-          return false;
-        });
-        // Delete Groups
-        $('#groupsDelete').click(function(){
-          var id = $(".sidebar-content .nav-link.active").attr('data-id');
-          if (confirm("Are you sure?")) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              data: {id: id},
-              url: '<?php echo base_url("admin/api/jsonGroupsDeleteById") ?>'
-            })
-            .done(function(data) {
-              deleteModalSuccess(data);
-            })
-            .fail(function(error) {
-
-            });
-          }
-          return false;
-        });
-        /*End Groups Json*/
-
-
         // Button Submit
         $('#buttonHeader').click(function(){
           if ($(this).data("tabs") == 1) {
@@ -209,7 +169,6 @@
            $('#MyForm').submit();
           }
         });
-
 
         /**
          * Fields Forms 
@@ -235,7 +194,124 @@
         $('input[name=assetsRestrictFileType]').click(function(){
           $('.assetsRestrictFileType').toggle();
         })
+        /*END Fields Forms*/
 
+        /**
+         * Tabs Fields
+         */
+        $( "#sortable1, #sortable2" ).sortable({
+          connectWith: ".connectedSortable"
+        }).disableSelection();   
+        /*End Tabs Fields*/
+
+        var leftbar = document.getElementById('left-content');
+        var leftbarTop = leftbar.offsetTop;
+        var leftbarButton = leftbar.offsetHeight;
+        var rightbar = document.getElementById('right-content');
+        var rightbarTop = rightbar.offsetHeight;
+        window.onscroll = function() {myFunction()};
+
+        getGroupsById();
+        deleteGroupsById();
+        getDataByIdGroups();
+        deleteFieldsById();
+        updatOrderEntrytypes();
+      })
+
+      
+      function myFunction() {
+        if (window.pageYOffset >= leftbarTop && window.pageYOffset <= leftbarButton) {
+          leftbar.classList.add("fixed-bar")
+        } else {
+          leftbar.classList.remove("fixed-bar");
+        }
+      }
+      // function update modal success
+      function updateGroupsModal(data){
+        $('#groupsModal .modal-body').append('<input type="hidden" name="id" value="'+data.id+'" class="form-control">');
+        $('#groupsModal input[type="text"]').val(data.name);
+        $('#groupsModal textarea').val(data.description);
+        $('#groupsModal button[type="submit"]').attr('name', 'update');
+        $('#groupsModal button[type="submit"]').text('Update');
+        $('#groupsModal').modal('show');
+      }
+      // function delete modal success
+      function deleteModalSuccess(data){
+        window.location.reload();
+      }
+
+
+      /**
+       * GROUPS API
+       * @return {[type]} [description]
+       */
+      function getGroupsById() {
+        // Rename Groups 
+        $('#groupsRename').click(function(){
+          var group_name = $('#sidebarGroups').data('groups-name');
+          var table = $('#sidebarGroups').data('table');
+          var group_id = $(".sidebar-content .nav-link.active").attr('data-id');
+          $.ajax({
+              type: 'POST',
+              datatype: 'json',
+              data: {group_name: group_name, group_id : group_id, table : table},
+              url: '<?php echo base_url("admin/api/jsonGetGroupsById") ?>',
+          })
+          .done(function (data) {
+              updateGroupsModal(data); 
+          })
+          .fail(function (jqXHR, textStatus, errorThrown) { 
+          });
+          return false;
+        });
+      }
+
+      function deleteGroupsById(){
+        // Delete Groups
+        $('#groupsDelete').click(function(){
+          var group_name = $('#sidebarGroups').data('groups-name');
+          var group_id = $(".sidebar-content .nav-link.active").attr('data-id');
+          var table = $('#sidebarGroups').data('table');
+
+          if (confirm("Are you sure?")) {
+            $.ajax({
+              type: 'POST',
+              dataType: 'json',
+              data: {group_name: group_name, group_id : group_id, table : table},
+              url: '<?php echo base_url("admin/api/jsonDeleteGroupsById") ?>'
+            })
+            .done(function(data) {
+              deleteModalSuccess(data);
+            })
+            .fail(function(error) {
+            });
+          }
+          return false;
+        });
+      }
+
+      function getDataByIdGroups(){
+        // Show Fields By Groups
+        $('#sidebarGroups .nav-item').click(function(){
+          var group_name = $('#sidebarGroups').data('groups-name');
+          var group_id = $('#sidebarGroups .nav-link.active').data('id');
+          $.ajax({
+            type : 'POST',
+            dataType : 'json',
+            data : {group_name: group_name, group_id : group_id},
+            url : '<?php echo base_url("admin/api/jsonGetDataByIdGroups") ?>',
+          }).done(function(data){
+            $('#right-content table').remove();
+            $('#right-content .empty-data').remove();
+            $('#right-content').append(data);
+          }).fail(function(error){
+
+          });
+        });
+      }
+      /*END Groups*/
+
+      function deleteFieldsById(){
         // Delete Fields List
         $('#deleteFields').click(function(){
           var id = $('#deleteFields').data('id');
@@ -253,41 +329,21 @@
           } 
           return false;
         })
+      }
 
-        // Show Fields By Groups
-        $('#fieldsGroup .nav-item').click(function(){
-          var group_id = $('#fieldsGroup .nav-link.active').data('id');
-          $.ajax({
-            type : 'POST',
-            dataType : 'json',
-            data : {group_id : group_id},
-            url : '<?php echo base_url("admin/api/jsonGetFieldsByIdGroups") ?>',
-          }).done(function(data){
-            $('#right-content table').remove();
-            $('#right-content .empty-data').remove();
-            $('#right-content').append(data);
-          }).fail(function(error){
-
-          });
-        });
-        /*END Fields Forms*/
-
-        /**
-         * Tabs Fields
-         */
-        // Entrytypes List Moved Row Table
+      function updatOrderEntrytypes(){
         $('#section-entries-list tbody').sortable({
           update: function(event, ui) {
             var order = $(this).sortable('toArray');
             var id = $("#section-entries-list tbody tr").map(function() {
                 return $(this).data("id");
             }).get();
-
+            var section_id = $("input[name=section_id]").val();
             $.ajax({
               type : 'POST',
               dataType : 'json',
               data : {id : id, order : order},
-              url : '<?php echo base_url("admin/api/jsonEntrytypesOrder") ?>',
+              url : '<?php echo base_url("admin/api/jsonUpdateOrderEntrytypes") ?>',
             }).done(function(data){
 
             }).fail(function(error){
@@ -295,28 +351,6 @@
             });
            }
         });
-
-        $( "#sortable1, #sortable2" ).sortable({
-          connectWith: ".connectedSortable"
-        }).disableSelection();   
-        /*End Tabs Fields*/
-
-        window.onscroll = function() {myFunction()};
-        var leftbar = document.getElementById('left-content');
-        var leftbarTop = leftbar.offsetTop;
-        var leftbarButton = leftbar.offsetHeight;
-        var rightbar = document.getElementById('right-content');
-        var rightbarTop = rightbar.offsetHeight;
-
-      })
-
-      
-      function myFunction() {
-        if (window.pageYOffset >= leftbarTop && window.pageYOffset <= leftbarButton) {
-          leftbar.classList.add("fixed-bar")
-        } else {
-          leftbar.classList.remove("fixed-bar");
-        }
       }
 
       function getTabsFieldsList() {
@@ -329,6 +363,7 @@
         var handle     = $('input[name=handle]').val();
         var title      = $('input[name=title]').val();
         var button     = $('#button_name').val();
+        var order      = $('input[name=order]').val();
 
         $.ajax({
           type : 'POST',
@@ -356,20 +391,7 @@
         });
       }
 
-      // function update modal success
-      function updateModalSuccess(data){
-        $('#groupsModal .modal-body').append('<input type="hidden" name="id" value="'+data.id+'" class="form-control">');
-        $('#groupsModal input[type="text"]').val(data.name);
-        $('#groupsModal textarea').val(data.description);
-        $('#groupsModal button[type="submit"]').attr('name', 'update');
-        $('#groupsModal button[type="submit"]').text('Update');
-        $('#groupsModal').modal('show');
-      }
 
-      // function delete modal success
-      function deleteModalSuccess(data){
-        window.location.reload();
-      }
 
     </script>
   </body>

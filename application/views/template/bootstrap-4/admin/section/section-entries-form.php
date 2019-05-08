@@ -9,6 +9,7 @@
   <input type="hidden" id="button_name" name="<?php echo $button_name; ?>" value="<?php echo $button_name; ?>">
   <input type="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
   <input type="hidden" name="section_id" value="<?php echo $section_id; ?>">
+  <input type="hidden" name="order" value="<?php echo (!empty($getDataby_id->order) ? $getDataby_id->order : $order ); ?>">
     <div class="form-group">
       <label class="heading required" for="inputName">Name</label>
       <small class="form-text text-muted">What this entry type will be called in the CP.</small>

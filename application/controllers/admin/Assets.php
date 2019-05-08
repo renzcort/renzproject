@@ -10,20 +10,27 @@ class Assets extends My_Controller {
     $this->load->model('admin/General_m', 'general_m');
     $this->load->model('admin/Assets_m', 'assets_m');
     $this->data = array(
-      'title'    =>  'Assets',
       'userdata' =>  $this->first_load(),
+      'parentLink' => 'admin/assets', 
     );
   }
 
   public function index() {
     $settings = array(
-      'title'     =>  'Assets',
-      'subheader' =>  'Manage Assets',
-      'content'   =>  'admin/assets/index',
-      'table'     =>  'assets',
-      'action'    =>  'admin/assets',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(3),
+      'title'         =>  ucfirst('assets'),
+      'subtitle'      =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  '+ New Assets',
+      'button_link'   =>  'assets/create',
+      'content'       =>  'template/bootstrap-4/admin/assets/assets-group-list',
+      'table'         =>  'assets',
+      'action'        =>  'admin/assets',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'group_name'    =>  'assets_group',
+      'group'         =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'   =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
     );
 
     // Pagination
@@ -39,25 +46,28 @@ class Assets extends My_Controller {
     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
     $settings['links']      = $this->pagination->create_links();
     // end Pagination
-    
-    $this->load->view('admin/layout/_default', $settings);
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
   /*CREATE*/
   public function create() {
-    $settings = array(
-      'title'     =>  'Assets',
-      'subheader' =>  'Manage Assets',
-      'content'   =>  'admin/assets/create',
-      'table'     =>  'assets',
-      'action'    =>  'admin/assets',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(3),
-      'type'      =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+     $settings = array(
+      'title'         =>  'assets',
+      'subtitle'      =>  'create',
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  'Save',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'create',
+      'content'       =>  'template/bootstrap-4/admin/assets/assets-group-form',
+      'table'         =>  'assets',
+      'action'        =>  'admin/assets/create',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'type'          =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
     );
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    // $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
+    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_section.name]');
+    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_section.handle]');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
         $data = array(
@@ -72,12 +82,12 @@ class Assets extends My_Controller {
           'created_by' => $this->data['userdata']['id'],
         );
         $this->general_m->create($settings['table'], $data);
-        helper_log('add', 'add '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
-        $this->session->set_flashdata('message', 'Data has created');
+        helper_log('add', "add data {$settings['title']} has successfully");        
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully Create");
         redirect($settings['action']);
       } 
     } else {
-      $this->load->view('admin/layout/_default', $settings);
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
     }
   }
 

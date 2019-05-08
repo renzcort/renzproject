@@ -10,28 +10,39 @@
   <div class="middle-content">
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-        <form class="form">
+        <?php
+          $attributes = array('class' => 'form',
+                              'id' => 'MyForm',
+                        ); 
+          echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
+        ?>
+          <input type="hidden" name="<?php echo $button_name; ?>">
           <div class="form-group">
             <label class="heading required" for="inputName">Name</label>
             <small class="form-text text-muted">What this site will be called in the CP.</small>
-            <input type="text" name="name" class="form-control">
+            <input type="text" name="name" class="form-control"  placeholder="Name" 
+            value="<?php echo (!empty($getDataby_id->name) ? $getDataby_id->name : set_value('name')); ?>">
+            <div class="form-error"><?php echo form_error('name'); ?></div>
           </div>
           <div class="form-group">
             <label class="heading required" for="inputHandle">Handle</label>
             <label class="form-text text-muted">How you’ll refer to this site in the templates.</label>
-            <input type="text" name="handle" class="form-control">
+            <input type="text" name="handle" class="form-control"  placeholder="Handle" 
+            value="<?php echo (!empty($getDataby_id->handle) ? $getDataby_id->handle : set_value('handle')); ?>">
+            <div class="form-error"><?php echo form_error('handle'); ?></div>
           </div>
           <div class="form-group">
             <label class="heading" for="inputAssets">Assets in this volume have public URLs</label>
             <div class="custom-control custom-switch">
-              <input type="checkbox" class="custom-control-input" id="customSwitch1">
+              <input type="checkbox" class="custom-control-input" id="customSwitch1" name="url" value="1" <?php echo (!empty($getFieldType->url) ? 'checked' : '') ?>>
               <label class="custom-control-label" for="customSwitch1">Disabled</label>
             </div>
           </div>
           <div id="base-url" class="form-group d-none">
             <label class="heading" for="inputBaseURL">Base URL</label>
             <label class="form-text text-muted">The base URL to the assets in this volume. An absolute URL (“http://example.com/path/to/folder”) or protocol-relative URL (“//example.com/path/to/folder”) is recommended. It can begin with an alias, such as @web.</label>
-            <input type="text" name="base-url" class="form-control">
+            <input type="text" name="url" class="form-control"  placeholder="url" 
+            value="<?php echo (!empty($getDataby_id->url) ? $getDataby_id->url : set_value('url')); ?>">
           </div>
           <hr class="break-line">
           <div class="form-group">
@@ -44,9 +55,10 @@
           <div class="form-group">
             <label class="heading" for="inputFileSystemPath">File System Path</label>
             <small class="form-text text-muted">The path to the volume’s directory on the file system.</small>
-            <input type="text" name="handle" class="form-control" placeholder="/path/folder">
+             <input type="text" name="path" class="form-control"  placeholder="/path/folder" 
+            value="<?php echo (!empty($getDataby_id->path) ? $getDataby_id->path : set_value('path')); ?>">
           </div>
-        </form>
+          <?php echo form_close(); ?>
       </div>
       <div class="tab-pane fade" id="layout" role="tabpanel" aria-labelledby="layout-tab">
         <div class="form-tabs" id="layout">

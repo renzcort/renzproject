@@ -93,6 +93,18 @@ class General_m extends My_Model {
     return $this->db->affected_rows();
   }
 
+  /*Get Max order*/
+  public function get_max_fields($table, $data) {
+    $this->db->select_max("{$data}");
+    $result = $this->db->get($table);
+    if($result->num_rows() > 0) {
+      $max = $result->row();
+      return $max->order+1;
+    } else {
+      return FALSE;
+    }
+  }
+
 }
 
 /* End of file General_m.php */

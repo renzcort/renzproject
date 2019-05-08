@@ -11,7 +11,7 @@
       <small class="form-text text-muted">Which group should this field be displayed in?</small>
       <!-- <input type="hidden" name="fieldsGroupId" value="3"> -->
       <select name="fieldsGroupId" class="form-control costum-select">
-        <?php foreach ($fields_group as $key): ?>
+        <?php foreach ($group as $key): ?>
           <option value="<?php echo $key->id; ?>" data-id="<?php echo $key->id; ?>" 
             <?php echo ((!empty($getDataby_id->group_id) && $getDataby_id->group_id == $key->id) ? 'selected' : '' ) ?>>
             <?php echo ucfirst($key->name); ?>

@@ -16,11 +16,12 @@ class Groups extends My_Controller {
     );
   }
 
-  public function fields($id='') {
+  public function index($id='') {
+    $table = ($this->input->post('table') ? $this->input->post('table').'_group' : '');
     $settings = array(
-      'title'     => 'Group Fields',
-      'table'     => 'fields_group',
-      'action'    => 'admin/fields',
+      'title'     =>  ($this->input->post('group_name') ? ucfirst($this->input->post('group_name')) : ''),
+      'table'     =>  $table,
+      'action'    => "admin/($table}",
       'session'   =>  $this->data,
       'id'        =>  $this->input->post('id')
     );
@@ -40,21 +41,21 @@ class Groups extends My_Controller {
 
         $data['created_by'] = $this->data['userdata']['id'];
         $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add ".($settings['title'] ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
+        helper_log('add', "Create {$settings['title']} successfully");
         $this->session->set_flashdata('message', 'Data has created');
       
       } elseif (isset($_POST['update'])) {
       
         $data['updated_by'] = $this->data['userdata']['id'];
         $this->general_m->update($settings['table'], $data, $settings['id']);
-        helper_log('update', "update ".($settings['title'] ? $settings['title'] : $this->data['title']." ".$settings['header'] )." has successfully");
+        helper_log('update', "Update {$settings['title']} has successfully");
         $this->session->set_flashdata('message', 'Data has Updated');
       }
       redirect($settings['action']);
     } else {
       if (isset($_POST['delete'])) {
         $delete = $this->general_m->delete($settings['table'], $id);
-        helper_log('delete', "Delete data ".($settings['title'] ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
+        helper_log('delete', "Delete data {$settings['title']} with {$id} successfully");
         $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
         redirect($settings['action']);
       }

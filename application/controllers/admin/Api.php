@@ -117,12 +117,15 @@ class Api extends My_Controller {
   }
 
   // Update Order
-  public function jsonEntrytypesOrder(){
-    $id = $this->input->post();
-    $order = $this->input->post();
-    var_dump(array_values($id));die;
-    foreach ($id as $key => $value) {
+  public function jsonUpdateOrderEntrytypes(){
+    $id = $this->input->post('id');
+    $order = $this->input->post('order');
+    $i = 0;
+    foreach ($id as $key => $val) {
+      $data = array('order' => ++$i);
+      $update = $this->entries_m->update($data, $val);
     }
+    echo json_encode($update);
   }
   /*END Section*/
 
@@ -130,18 +133,21 @@ class Api extends My_Controller {
    * GROUP API
    */
     // JSON update data 
-  public function jsonGetGroupsByFieldsId() {
+  public function jsonGetGroupsById() {
     header('Content-type: application/json');
-    $id = $this->input->post('id');
-    $getdataby_id =  $this->general_m->get_row_by_id('fields_group', $id);
-    echo json_encode($getdataby_id);
+    $group_id = $this->input->post('group_id');
+    $group_name = $this->input->post('group_name');
+    $groups =  $this->general_m->get_row_by_id($group_name, $group_id);
+    echo json_encode($groups);
   }
 
     // JSON Delete
-  public function jsonGroupsDeleteById() {
+  public function jsonDeleteGroupsById() {
     header('Content-type: application/json');
-    $group_id = $this->input->post('id');
-    $getFields = $this->general_m->get_result_by_id('fields', $group_id, 'group_id');
+    $group_id   = $this->input->post('group_id');
+    $group_name = $this->input->post('group_name');
+    $table      = $this->input->post('table');
+    $getFields = $this->general_m->get_result_by_id($table, $group_id, 'group_id');
     if (!empty($getFields)) {
       foreach ($getFields as $key) {
         $element_del = $this->general_m->delete('element', $key->id, 'fields_id');
@@ -158,51 +164,21 @@ class Api extends My_Controller {
     echo json_encode($delete);
   }
 
-  /*End Group API*/
+  // CRUD Groups
+  public function jsonGroupsManage() {
 
-  /**
-   * Fields API Start
-   */
-  // delete by json
-  public function jsonDeleteFieldsById() {
-    header('Content-type: application/json');
-    $id = $this->input->post('id');
-    $getDataby_id = $this->fields_m->get_row_by_id($id);
-    if ($getDataby_id) {
-      $element_del = $this->general_m->delete('element', $id, 'fields_id');
-      $fields = array(
-        'handle' => $getDataby_id->handle,
-      );
-      // Drop field column
-      modifyColumn($fields, 'drop');
-      $fields_del = $this->fields_m->delete($id);
-      $option_del = $this->general_m->delete('fields_option', $getDataby_id->option_id);
-      helper_log('delete', "Delete fields with id = {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has deleted {$delete} Records");
-      echo json_encode($getDataby_id);
-    } else {
-      $this->session->set_flashdata('message', 'Your Id Not Valid');
-    }
   }
-
+  
   // Show Fields By Id Groups
-  public function jsonGetFieldsByIdGroups(){
+  public function jsonGetDataByIdGroups(){
     header('content-type: application/json');
-    
+    $group_name = $this->input->post('group_name');
     $settings = array(
-      'title'              =>  'fields',
-      'subtitle'           =>  FALSE,
-      'subbreadcrumb'      =>  FALSE,
-      'button'             =>  '+ New Fields',
-      'button_link'        =>  'fields/create',
-      'content'            =>  'template/bootstrap-4/admin/fields/fields-list',
-      'table'              =>  'fields',
-      'action'             =>  'admin/fields',
-      'session'            =>  $this->data,
-      'no'                 =>  $this->uri->segment(3),
-      'fields_group'       =>  $this->general_m->get_all_results('fields_group'),
-      'fields_group_count' =>  $this->general_m->count_all_results('fields_group'),
-      'fields_group_id'    =>  (($this->input->post('group_id') == 'all') ? '' : $this->input->post('group_id')),
+      'table'       =>  'fields',
+      'action'      =>  'admin/fields',
+      'group'       =>  $this->general_m->get_all_results($group_name),
+      'group_count' =>  $this->general_m->count_all_results($group_name),
+      'group_id'    =>  (($this->input->post('group_id') == 'all') ? '' : $this->input->post('group_id')),
     );
 
     // Pagination
@@ -215,7 +191,7 @@ class Api extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->fields_m->get_all_results($config['per_page'], $start_offset, $settings['fields_group_id']);
+    $settings['record_all'] = $this->fields_m->get_all_results($config['per_page'], $start_offset, $settings['group_id']);
     $settings['links']      = $this->pagination->create_links();
     
     if($settings['record_all']) {
@@ -249,7 +225,36 @@ class Api extends My_Controller {
     }
     echo json_encode($table);
   }
-  /*End Fields API*/
+  /*End Group API*/
+
+  
+
+  /**
+   * Fields API Start
+   */
+  // delete by json
+  public function jsonDeleteFieldsById() {
+    header('Content-type: application/json');
+    $id = $this->input->post('id');
+    $getDataby_id = $this->fields_m->get_row_by_id($id);
+    if ($getDataby_id) {
+      $element_del = $this->general_m->delete('element', $id, 'fields_id');
+      $fields = array(
+        'handle' => $getDataby_id->handle,
+      );
+      // Drop field column
+      modifyColumn($fields, 'drop');
+      $fields_del = $this->fields_m->delete($id);
+      $option_del = $this->general_m->delete('fields_option', $getDataby_id->option_id);
+      helper_log('delete', "Delete fields with id = {$id} has successfully");
+      $this->session->set_flashdata('message', "Data has deleted {$delete} Records");
+      echo json_encode($getDataby_id);
+    } else {
+      $this->session->set_flashdata('message', 'Your Id Not Valid');
+    }
+  }
+
+
 }
 
 /* End of file Api.php */

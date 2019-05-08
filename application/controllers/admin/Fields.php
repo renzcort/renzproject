@@ -19,19 +19,20 @@ class fields extends My_Controller {
 
   public function index() {
     $settings = array(
-      'title'              =>  'fields',
-      'subtitle'           =>  FALSE,
-      'subbreadcrumb'      =>  FALSE,
-      'button'             =>  '+ New Fields',
-      'button_link'        =>  'fields/create',
-      'content'            =>  'template/bootstrap-4/admin/fields/fields-list',
-      'table'              =>  'fields',
-      'action'             =>  'admin/fields',
-      'session'            =>  $this->data,
-      'no'                 =>  $this->uri->segment(3),
-      'fields_group'       =>  $this->general_m->get_all_results('fields_group'),
-      'fields_group_count' =>  $this->general_m->count_all_results('fields_group'),
-      'fields_group_id'    =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'title'         =>  'fields',
+      'subtitle'      =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  '+ New Fields',
+      'button_link'   =>  'fields/create',
+      'content'       =>  'template/bootstrap-4/admin/fields/fields-list',
+      'table'         =>  'fields',
+      'action'        =>  'admin/fields',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'group_name'    =>  'fields_group',
+      'group'         =>  $this->general_m->get_all_results('fields_group'),
+      'group_count'   =>  $this->general_m->count_all_results('fields_group'),
+      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
     );
     
     // Pagination
@@ -44,7 +45,7 @@ class fields extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->fields_m->get_all_results($config['per_page'], $start_offset, $settings['fields_group_id']);
+    $settings['record_all'] = $this->fields_m->get_all_results($config['per_page'], $start_offset, $settings['group_id']);
     $settings['links']      = $this->pagination->create_links();
     // end Pagination
     
@@ -53,21 +54,21 @@ class fields extends My_Controller {
 
   public function create() {
     $settings = array(
-      'title'              =>  'fields',
-      'subtitle'           =>  'create',
-      'subbreadcrumb'      =>  FALSE,
-      'button'             =>  'Save',
-      'button_type'        =>  'submit',
-      'button_name'        =>  'create',
-      'content'            =>  'template/bootstrap-4/admin/fields/fields-form',
-      'table'              =>  'fields',
-      'action'             =>  'admin/fields/create',
-      'session'            =>  $this->data,
-      'no'                 =>  $this->uri->segment(3),
-      'fields_type'        =>  $this->general_m->get_all_results('fields_type'),
-      'fields_group'       =>  $this->general_m->get_all_results('fields_group'),
-      'fields_group_count' =>  $this->general_m->count_all_results('fields_group'),
-      'fields_group_id'    =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'title'         =>  'fields',
+      'subtitle'      =>  'create',
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  'Save',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'create',
+      'content'       =>  'template/bootstrap-4/admin/fields/fields-form',
+      'table'         =>  'fields',
+      'action'        =>  'admin/fields/create',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'fields_type'   =>  $this->general_m->get_all_results('fields_type'),
+      'group'         =>  $this->general_m->get_all_results('fields_group'),
+      'group_count'   =>  $this->general_m->count_all_results('fields_group'),
+      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
       'attributes'    =>  arraY('type' =>
                                     array(
                                     'text'     => array('maxlength', 'minlength', 'placeholder'),
@@ -184,23 +185,23 @@ class fields extends My_Controller {
   /*fields Update*/
   public function update($id='') {
     $settings = array(
-      'title'              =>  'fields',
-      'subtitle'           =>  'edit',
-      'subbreadcrumb'      =>  FALSE,
-      'button'             =>  'Update',
-      'button_type'        =>  'submit',
-      'button_name'        =>  'update',
-      'content'            =>  'template/bootstrap-4/admin/fields/fields-form',
-      'table'              =>  'fields',
-      'action'             =>  'admin/fields/update',
-      'session'            =>  $this->data,
-      'no'                 =>  $this->uri->segment(3),
-      'fields_type'        =>  $this->general_m->get_all_results('fields_type'),
-      'fields_group'       =>  $this->general_m->get_all_results('fields_group'),
-      'fields_group_count' =>  $this->general_m->count_all_results('fields_group'),
-      'fields_group_id'    =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
-      'id'                 =>  $id,
-      'getDataby_id'       =>  $this->fields_m->get_row_by_id($id),
+      'title'         =>  'fields',
+      'subtitle'      =>  'edit',
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  'Update',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'update',
+      'content'       =>  'template/bootstrap-4/admin/fields/fields-form',
+      'table'         =>  'fields',
+      'action'        =>  'admin/fields/update',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'fields_type'   =>  $this->general_m->get_all_results('fields_type'),
+      'group'         =>  $this->general_m->get_all_results('fields_group'),
+      'group_count'   =>  $this->general_m->count_all_results('fields_group'),
+      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'id'            =>  $id,
+      'getDataby_id'  =>  $this->fields_m->get_row_by_id($id),
       'attributes'    =>  arraY('type' =>
                                     array(
                                     'text'     => array('maxlength', 'minlength', 'placeholder'),
@@ -346,16 +347,16 @@ class fields extends My_Controller {
   /*Delete fields*/
   public function delete($id='') {
     $settings = array(
-      'title'              =>  'fields',
-      'subtitle'           =>  FALSE,
-      'subbreadcrumb'      =>  FALSE,
-      'session'            =>  $this->data,
-      'no'                 =>  $this->uri->segment(3),
-      'fields_type'        =>  $this->general_m->get_all_results('fields_type'),
-      'fields_group'       =>  $this->general_m->get_all_results('fields_group'),
-      'fields_group_count' =>  $this->general_m->count_all_results('fields_group'),
-      'fields_group_id'    =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
-      'getDataby_id'       =>  $this->fields_m->get_row_by_id($id),
+      'title'         =>  'fields',
+      'subtitle'      =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'fields_type'   =>  $this->general_m->get_all_results('fields_type'),
+      'group'         =>  $this->general_m->get_all_results('fields_group'),
+      'group_count'   =>  $this->general_m->count_all_results('fields_group'),
+      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'getDataby_id'  =>  $this->fields_m->get_row_by_id($id),
     );
     $settings['getFieldType'] = json_decode($settings['getDataby_id']->settings);
 

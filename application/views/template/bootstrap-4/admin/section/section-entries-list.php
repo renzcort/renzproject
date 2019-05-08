@@ -14,6 +14,8 @@
         foreach ($record_all as $key): 
       ?>
       <tr data-id="<?php echo $key->id; ?>" id="<?php echo ++$i; ?>">
+        <input type="hidden" name="id" value="<?php echo $key->id; ?>">
+        <input type="hidden" name="section_id" value="<?php echo $key->section_id; ?>">
         <td><a href="<?php echo base_url($action.'/edit/'.$key->id); ?>"><?php echo $key->name; ?></a></td>
         <td><?php echo $key->handle; ?></td>
         <td scope="row" colspan="2">

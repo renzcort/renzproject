@@ -218,7 +218,6 @@ class Section extends My_Controller {
       'no'            =>  $this->uri->segment(5),
     );
 
-
     // pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
@@ -256,7 +255,9 @@ class Section extends My_Controller {
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
+      'order'         =>  $this->general_m->get_max_fields('entries', 'order'),
     );
+
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_section.name]');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_section.handle]');
