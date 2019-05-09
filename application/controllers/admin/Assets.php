@@ -7,6 +7,7 @@ class Assets extends My_Controller {
   {
     parent::__construct();
     //Do your magic here
+    $this->load->model('admin/Fields_m', 'fields_m');
     $this->load->model('admin/General_m', 'general_m');
     $this->load->model('admin/Assets_m', 'assets_m');
     $this->data = array(
@@ -63,7 +64,11 @@ class Assets extends My_Controller {
       'action'        =>  'admin/assets/create',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'type'          =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'assets_type'   =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
+      'fields'        =>  $this->fields_m->get_all_results(),
+      'elementFields' =>  [],
+      'order'         =>  $this->general_m->get_max_fields('entries', 'order'),
     );
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_section.name]');
@@ -71,6 +76,7 @@ class Assets extends My_Controller {
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
         $data = array(
+          'group_id'   => $this->input->post('group_id'),
           'name'       => $this->input->post('name'),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'type'       => $this->input->post('type'),
@@ -81,8 +87,23 @@ class Assets extends My_Controller {
           'description'=> $this->input->post('description'),
           'created_by' => $this->data['userdata']['id'],
         );
-        $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add data {$settings['title']} has successfully");        
+        $assets = $this->general_m->create($settings['table'], $data);
+        helper_log('add', "add data {$settings['title']} has successfully");
+        //get fields to element 
+        $fieldsId = $this->input->post('fieldsId');
+        if (!empty($fieldsId)) {
+          $i = 0;
+          foreach ($fieldsId as $value) {
+            $element = array(
+              'assets_id'   =>  $assets,
+              'fields_id'   =>  $value,
+              'order'       =>  ++$i,
+            );
+            $this->general_m->create('assets_element', $element, FALSE);
+          }
+          helper_log('add', "add element create has successfully {$element['order']} record");
+          $this->session->set_flashdata("message", "Entries has successfully Create");
+        }        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Create");
         redirect($settings['action']);
       } 
