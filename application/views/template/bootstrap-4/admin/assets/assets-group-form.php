@@ -16,8 +16,10 @@
   <div class="middle-content">
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-        
-          <input type="hidden" name="<?php echo $button_name; ?>">
+          <input type="hidden" id="button_name" name="<?php echo $button_name; ?>" value="<?php echo $button_name; ?>">
+          <input type="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
+          <input type="hidden" name="table" value="<?php echo $table; ?>">
+          <input type="hidden" name="order" value="<?php echo (!empty($getDataby_id->order) ? $getDataby_id->order : $order ); ?>"> 
           <div class="form-group">
             <label class="heading required" for="inputName">Name</label>
             <small class="form-text text-muted">What this site will be called in the CP.</small>
@@ -27,7 +29,7 @@
           </div>
           <div class="form-group">
             <label class="heading required" for="inputHandle">Handle</label>
-            <label class="form-text text-muted">How you’ll refer to this site in the templates.</label>
+            <small class="form-text text-muted">How you’ll refer to this site in the templates.</small>
             <input type="text" name="handle" class="form-control"  placeholder="Handle" 
             value="<?php echo (!empty($getDataby_id->handle) ? $getDataby_id->handle : set_value('handle')); ?>">
             <div class="form-error"><?php echo form_error('handle'); ?></div>

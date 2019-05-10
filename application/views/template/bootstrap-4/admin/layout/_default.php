@@ -357,38 +357,43 @@
         var fieldsId = $('#sortable1 .fields-list').map(function(){
           return $(this).data('fieldsid');
         }).get();
-        var section_id = $('input[name=section_id]').val();
-        var id         = $('input[name=id]').val()
-        var name       = $('input[name=name]').val();
-        var handle     = $('input[name=handle]').val();
-        var title      = $('input[name=title]').val();
-        var button     = $('#button_name').val();
-        var order      = $('input[name=order]').val();
+        var table      = $('input[name=table]').val();
+        if (table == 'entries') {
+          var section_id = $('input[name=section_id]').val();
+          var id         = $('input[name=id]').val()
+          var name       = $('input[name=name]').val();
+          var handle     = $('input[name=handle]').val();
+          var title      = $('input[name=title]').val();
+          var button     = $('#button_name').val();
+          var order      = $('input[name=order]').val();
 
-        $.ajax({
-          type : 'POST',
-          dataType : 'json',
-          data : {
-                  section_id: section_id, 
-                  id : id, 
-                  name : name, 
-                  handle : handle, 
-                  title : title, 
-                  fieldsId : fieldsId, 
-                  button : button
-                },
-          url : '<?php echo base_url("admin/api/jsonEntrytypes") ?>',
-        }).done(function(data){
-          if (data.status == true) {
-            window.location.href = '<?php echo base_url() ?>'+data.action;
-          } else {
-           $.each(data.errors, function(key, val){
-            $('input[name="'+key+'"]').next().html(val).addClass('form-error');
-           }); 
-          }
-        }).fail(function(errot){
+          $.ajax({
+            type : 'POST',
+            dataType : 'json',
+            data : {
+                    section_id: section_id, 
+                    id : id, 
+                    name : name, 
+                    handle : handle, 
+                    title : title, 
+                    fieldsId : fieldsId, 
+                    button : button
+                  },
+            url : '<?php echo base_url("admin/api/jsonEntrytypes") ?>',
+          }).done(function(data){
+            if (data.status == true) {
+              window.location.href = '<?php echo base_url() ?>'+data.action;
+            } else {
+             $.each(data.errors, function(key, val){
+              $('input[name="'+key+'"]').next().html(val).addClass('form-error');
+             }); 
+            }
+          }).fail(function(errot){
 
-        });
+          });
+        } else if(table == 'assets') {
+          
+        }
       }
 
 
