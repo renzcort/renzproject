@@ -32,6 +32,7 @@
     </div>
   </div>
   <div id="right-content" class="right-content ml-auto">
+    <?php if ($record_all): ?>
     <table class="table table-sm">
       <thead>
         <tr>
@@ -43,33 +44,21 @@
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-          <td>
-            <a href=""><i class="fas fa-minus-circle"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-          <td>
-            <a href=""><i class="fas fa-minus-circle"></i></a>
-          </td>
-        </tr>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-          <td>
-            <a href=""><i class="fas fa-minus-circle"></i></a>
-          </td>
-        </tr>
+        <?php foreach ($record_all as $key): ?>
+          <tr>
+            <td scope="row"><?php echo ++$no; ?></td>
+            <td><a href="<?php echo base_url($action.'/edit/'.$key->id); ?>"><?php echo $key->name; ?></a></td>
+            <td><?php echo $key->handle; ?></td>
+            <td><?php echo $key->type; ?></td>
+            <td scope="row">
+              <a href="<?php echo base_url($action.'/delete/'.$key->id); ?>"><i class="fas fa-minus-circle"></i></a>
+            </td>
+          </tr>
+        <?php endforeach ?>
+
       </tbody>
     </table>
+    <?php else: ?>
+    <p class="empty-data">Data is Empty</p>
+    <?php endif ?>
   </div>

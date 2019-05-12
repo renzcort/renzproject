@@ -52,23 +52,26 @@ class Assets extends My_Controller {
 
   /*CREATE*/
   public function create() {
-     $settings = array(
+
+    $settings = array(
       'title'         =>  'assets',
       'subtitle'      =>  'create',
       'subbreadcrumb' =>  FALSE,
       'button'        =>  'Save',
       'button_type'   =>  'submit',
       'button_name'   =>  'create',
+      'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/assets/assets-group-form',
       'table'         =>  'assets',
-      'action'        =>  'admin/assets/create',
+      'action'        =>  'admin/assets',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
+      'fields_table'  =>  'assets_element',
       'assets_type'   =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
-      'order'         =>  $this->general_m->get_max_fields('entries', 'order'),
+      'order'         =>  $this->general_m->get_max_fields('assets', 'order'),
     );
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_section.name]');
@@ -114,15 +117,25 @@ class Assets extends My_Controller {
 
   /*UPDATE*/
   public function update($id='') {
-    $settings = array(
-      'title'     =>  'Assets',
-      'subheader' =>  'Manage Assets',
-      'content'   =>  'admin/assets/edit',
-      'table'     =>  'assets',
-      'action'    =>  'admin/assets',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(3),
-      'type'      =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+     $settings = array(
+      'title'         =>  'assets',
+      'subtitle'      =>  'create',
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  'Save',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'create',
+      'button_tabs'   =>  TRUE,
+      'content'       =>  'template/bootstrap-4/admin/assets/assets-group-form',
+      'table'         =>  'assets',
+      'action'        =>  'admin/assets',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'fields_table'  =>  'assets_element',
+      'assets_type'   =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
+      'fields'        =>  $this->fields_m->get_all_results(),
+      'elementFields' =>  [],
+      'order'         =>  $this->general_m->get_max_fields('assets', 'order'),
     );
     $settings['getdataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 

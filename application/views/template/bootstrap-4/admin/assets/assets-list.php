@@ -51,7 +51,8 @@
         <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
       </div>
     </div>
-
+  
+    <?php if ($record_all): ?>
     <table class="table table-sm">
       <thead>
         <tr>
@@ -92,4 +93,8 @@
         </tr>
       </tbody>
     </table>
+    <?php else: ?>
+    <p class="empty-data">Data is Empty</p>
+    <?php endif ?>
+
   </div>

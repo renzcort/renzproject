@@ -21,22 +21,22 @@ class Api extends My_Controller {
    * Section Entries Create
    * @return [type] [description]
    */
-  public function jsonEntrytypes() {
-    $section_id = $this->input->post('section_id');
-    $id         = $this->input->post('id');
+  public function jsonTabsFields() {
+    ($this->input->post('id') ? $id = $this->input->post('id') : $id = '');
+    ($this->input->post('section_id') ? $section_id = $this->input->post('section_id') : $section_id = '');
     $button     = $this->input->post('button');
-
     $settings = array(
-      'title'         =>  ucfirst("New Entry Types"),
-      'subtitle'      =>  FALSE,
+      'title'         =>  $this->input->post('header'),
+      'subtitle'      =>  ($this->input->post('subtitle') ? $this->input->post('subtitle') : FALSE),
       'subbreadcrumb' =>  FALSE,
       'button'        =>  (($button == 'create') ? 'Save' : 'Update'),
       'button_type'   =>  'submit',
       'button_name'   =>  (($button == 'create') ? 'create' : 'Update'),
       'button_tabs'   =>  TRUE,
-      'content'       =>  'template/bootstrap-4/admin/section/section-entries-form',
-      'table'         =>  'entries',
-      'action'        =>  "admin/section/{$section_id}/entrytypes",
+      'content'       =>  $this->input->post('content'),
+      'table'         =>  $this->input->post('table'),
+      'fields_table'  =>  $this->input->post('fields_table'),
+      'action'        =>  $this->input->post('action'),
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'section_id'    =>  $section_id,
@@ -44,10 +44,9 @@ class Api extends My_Controller {
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
     );
-
     if ($button == 'update') {
       $settings['getDataby_id']  =  $this->entries_m->get_row_by_id($id);
-      $settings['element']       =  $this->general_m->get_result_by_id('element', $id, 'entries_id');
+      $settings['element']       =  $this->general_m->get_result_by_id($settings['fields_table'], $id, "{$settings['table']}_id");
 
       if ($settings['element']) {
         foreach ($settings['element'] as $key) {
@@ -61,44 +60,73 @@ class Api extends My_Controller {
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_entries.name]');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_entries.handle]');
-    $this->form_validation->set_rules('title', 'Title', 'trim|required');
+    if (isset($_POST['title'])) {
+      $this->form_validation->set_rules('title', 'Title', 'trim|required');
+    }
+
     if ($this->form_validation->run() == TRUE) {
       $settings['errors'] = array(
         'name'   => form_error('name'),
         'handle' => form_error('handle'),
-        'title'  => form_error('title'),
+        'title'  => (isset($_POST['title']) ? form_error('title') : ''),
       );
 
-      $data = array(
-        'name'        =>  $this->input->post('name'),
-        'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-        'section_id'  =>  $section_id,
-        'title'       =>  ucfirst($this->input->post('title')),
-        'slug'        =>  url_title(strtolower($this->input->post('name'))),
-        'description' =>  $this->input->post('description'),
-        'order'       =>  $this->input->post('order'),
-        'created_by'  =>  $this->data['userdata']['id'],
-      );
+      if ($settings['table'] == 'entries') {
+        $data = array(
+          'name'        =>  $this->input->post('name'),
+          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'section_id'  =>  $section_id,
+          'title'       =>  ucfirst($this->input->post('title')),
+          'slug'        =>  url_title(strtolower($this->input->post('name'))),
+          'description' =>  $this->input->post('description'),
+          'order'       =>  $this->input->post('order'),
+        );
+      } elseif ($settings['table'] == 'assets') {
+        $data = array(
+          'name'       => $this->input->post('name'),
+          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'type'       => $this->input->post('type'),
+          'path'       => $this->input->post('path'),
+          'url'        => $this->input->post('url'),
+          'order'      => $this->input->post('order'),
+          'description'=> $this->input->post('description'),
+          'created_by' => $this->data['userdata']['id'],
+        );
+      }
+
       if ($button == 'create') {
-        $entries = $this->entries_m->create($data);
-        helper_log('add', "add data entries has successfully");        
+        $data['created_by'] = $this->data['userdata']['id'];
+        $tableFieldsId = $this->general_m->create($settings['table'], $data);
+        helper_log('add', "add data entries has successfully");   
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully Created");     
       } else {
-        $entries = $this->entries_m->update($data, $id);
+        $data['updated_by'] = $this->data['userdata']['id'];
+        $this->general_m->update($settings['table'], $data, $id);
         helper_log('edit', "Update data entries has successfully");        
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");     
       }
       //get fields to element 
       if (!empty($this->input->post('fieldsId'))) {
         $fieldsId = $this->input->post('fieldsId');
-        $this->general_m->delete('element', $id, 'fields_id');
+        (empty($id) ? $id = $tableFieldsId : $id = $id);
+        $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
         $i = 0;
         foreach ($fieldsId as $value) {
-          $element = array(
-            'entries_id'  =>  (($button == 'create') ? $entries : $id),
-            'section_id'  =>  $section_id,
-            'fields_id'   =>  $value,
-            'order'       =>  ++$i,
-          );
-          $this->general_m->create('element', $element, FALSE);
+          if ($settings['table'] == 'entries') {
+            $element = array(
+              "{$settings['table']}_id" =>  $id,
+              'section_id'              =>  $section_id,
+              'fields_id'               =>  $value,
+              'order'                   =>  ++$i,
+            );
+          } elseif ($settings['table'] == 'assets') {
+            $element = array(
+              "{$settings['table']}_id" =>  $id,
+              'fields_id'               =>  $value,
+              'order'                   =>  ++$i,
+            );
+          }
+          $this->general_m->create($settings['fields_table'], $element, FALSE);
         }
         helper_log('add', "add element create has successfully {$element['order']} record");
         $this->session->set_flashdata("message", "Entries has successfully Create");
@@ -109,7 +137,7 @@ class Api extends My_Controller {
       $settings['errors'] = array(
         'name'   => form_error('name'),
         'handle' => form_error('handle'),
-        'title'  => form_error('title'),
+        'title'  => (isset($_POST['title']) ? form_error('title') : ''),
       );
       $settings['status'] = FALSE;
       echo json_encode($settings);

@@ -15,11 +15,16 @@
   ?>
   <div class="middle-content">
     <div class="tab-content" id="myTabContent">
-      <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
-          <input type="hidden" id="button_name" name="<?php echo $button_name; ?>" value="<?php echo $button_name; ?>">
+        <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+          <input type="hidden" id="button_name" name="button" value="<?php echo $button_name; ?>">
           <input type="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
           <input type="hidden" name="table" value="<?php echo $table; ?>">
-          <input type="hidden" name="order" value="<?php echo (!empty($getDataby_id->order) ? $getDataby_id->order : $order ); ?>"> 
+          <input type="hidden" name="fields_table" value="<?php echo $fields_table; ?>">
+          <input type="hidden" name="header" value="<?php echo $title; ?>">
+          <input type="hidden" name="subtitle" value="<?php echo $subtitle; ?>">
+          <input type="hidden" name="content" value="<?php echo $content; ?>">
+          <input type="hidden" name="action" value="<?php echo $action; ?>">
+          <input type="hidden" name="order" value="<?php echo (!empty($getDataby_id->order) ? $getDataby_id->order : $order ); ?>">
           <div class="form-group">
             <label class="heading required" for="inputName">Name</label>
             <small class="form-text text-muted">What this site will be called in the CP.</small>
