@@ -58,8 +58,8 @@ class Api extends My_Controller {
       }
     }        
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_entries.name]');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_entries.handle]');
+    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
+    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if (isset($_POST['title'])) {
       $this->form_validation->set_rules('title', 'Title', 'trim|required');
     }
@@ -92,6 +92,20 @@ class Api extends My_Controller {
           'description'=> $this->input->post('description'),
           'created_by' => $this->data['userdata']['id'],
         );
+      } elseif ($settings['table'] == 'categories') {
+        (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
+        (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
+        $data = array(
+          'name'       => $this->input->post('name'),
+          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'url'        => $this->input->post('url'),
+          'template'   => $this->input->post('template'),
+          'locale'     => $locale,
+          'parent'     => $parent,
+          'maxlevel'   => $this->input->post('maxlevel'),
+          'description'=> $this->input->post('description'),
+          'created_by' => $this->data['userdata']['id'],
+        );
       }
 
       if ($button == 'create') {
@@ -119,7 +133,7 @@ class Api extends My_Controller {
               'fields_id'               =>  $value,
               'order'                   =>  ++$i,
             );
-          } elseif ($settings['table'] == 'assets') {
+          } else {
             $element = array(
               "{$settings['table']}_id" =>  $id,
               'fields_id'               =>  $value,
@@ -129,7 +143,7 @@ class Api extends My_Controller {
           $this->general_m->create($settings['fields_table'], $element, FALSE);
         }
         helper_log('add', "add element create has successfully {$element['order']} record");
-        $this->session->set_flashdata("message", "Entries has successfully Create");
+        $this->session->set_flashdata("message", "{$settings['table']} has successfully Create");
       }
       $settings['status'] = TRUE;
       echo json_encode($settings);

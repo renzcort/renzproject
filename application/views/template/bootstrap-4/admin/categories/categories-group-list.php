@@ -1,25 +1,28 @@
 <div class="middle-content flex-grow-1">
-  <table class="table table-sm">
-    <thead>
-      <tr>
-        <th scope="col">#</th>
-        <th scope="col">Name</th>
-        <th scope="col">Handle</th>
-        <th scope="col"></th>
-        <th scope="col"></th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td><a href="">About Sinar Sosro</a></td>
-        <td>@mdo</td>
-        <td><a href="">Manage Categories</a></td>
-        <td scope="row" colspan="2">
-          <a href=""><i class="fas fa-arrows-alt"></i></a>
-          <a href=""><i class="fas fa-minus-circle"></i></a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <?php if ($record_all): ?>
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th scope="row">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Handle</th>
+          <th scope="row"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php foreach ($record_all as $key): ?>
+          <tr>
+            <td scope="row"><?php echo ++$no; ?></td>
+            <td><a href="<?php echo base_url($action.'/edit/'.$key->id); ?>"><?php echo $key->name; ?></a></td>
+            <td><?php echo $key->handle; ?></td>
+            <td scope="row">
+              <a href="<?php echo base_url($action.'/delete/'.$key->id); ?>"><i class="fas fa-minus-circle"></i></a>
+            </td>
+          </tr>
+        <?php endforeach ?>
+      </tbody>
+    </table>
+    <?php else: ?>
+    <p class="empty-data">Data is Empty</p>
+    <?php endif ?>
 </div>

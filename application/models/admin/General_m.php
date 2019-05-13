@@ -94,8 +94,8 @@ class General_m extends My_Model {
   }
 
   /*Get Max order*/
-  public function get_max_fields($table, $data) {
-    $this->db->select_max("{$data}");
+  public function get_max_fields($table, $field) {
+    $this->db->select_max("{$field}");
     $result = $this->db->get($table);
     if($result->num_rows() > 0) {
       $max = $result->row();

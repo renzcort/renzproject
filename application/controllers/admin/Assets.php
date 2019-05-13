@@ -74,8 +74,8 @@ class Assets extends My_Controller {
       'order'         =>  $this->general_m->get_max_fields('assets', 'order'),
     );
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_section.name]');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_section.handle]');
+    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
+    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
         $data = array(
@@ -90,15 +90,17 @@ class Assets extends My_Controller {
           'description'=> $this->input->post('description'),
           'created_by' => $this->data['userdata']['id'],
         );
-        $assets = $this->general_m->create($settings['table'], $data);
+        $tableFieldsId = $this->general_m->create($settings['table'], $data);
         helper_log('add', "add data {$settings['title']} has successfully");
         //get fields to element 
         $fieldsId = $this->input->post('fieldsId');
         if (!empty($fieldsId)) {
           $i = 0;
+          (isset($id) ? $id = $tableFieldsId : $id = $id);
+          $this->general_m->delete($settings['fields_table'], $id);
           foreach ($fieldsId as $value) {
             $element = array(
-              'assets_id'   =>  $assets,
+              'assets_id'   =>  $id,
               'fields_id'   =>  $value,
               'order'       =>  ++$i,
             );
@@ -117,13 +119,13 @@ class Assets extends My_Controller {
 
   /*UPDATE*/
   public function update($id='') {
-     $settings = array(
+    $settings = array(
       'title'         =>  'assets',
-      'subtitle'      =>  'create',
+      'subtitle'      =>  'update',
       'subbreadcrumb' =>  FALSE,
-      'button'        =>  'Save',
+      'button'        =>  'Update',
       'button_type'   =>  'submit',
-      'button_name'   =>  'create',
+      'button_name'   =>  'update',
       'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/assets/assets-group-form',
       'table'         =>  'assets',
@@ -137,13 +139,24 @@ class Assets extends My_Controller {
       'elementFields' =>  [],
       'order'         =>  $this->general_m->get_max_fields('assets', 'order'),
     );
-    $settings['getdataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
-
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    // $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
+    $settings['element']      = $this->general_m->get_result_by_id($settings['fields_table'], $id, "{$settings['table']}_id");
+    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
+    
+    if ($settings['element']) {
+      foreach ($settings['element'] as $key) {
+        $fieldsId[] = $key->fields_id; 
+      }
+      $settings['elementFields'] = $fieldsId;
+    } else {
+      $settings['elementFields'] = [];
+    }
+    
+    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
+    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['update'])) {
         $data = array(
+          'group_id'   => $this->input->post('group_id'),
           'name'       => $this->input->post('name'),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'type'       => $this->input->post('type'),
@@ -152,40 +165,55 @@ class Assets extends My_Controller {
           'parent'     => $this->input->post('parent'),
           'order'      => $this->input->post('order'),
           'description'=> $this->input->post('description'),
-          'updated_by' => $this->data['userdata']['id'],
+          'created_by' => $this->data['userdata']['id'],
         );
         $this->general_m->update($settings['table'], $data, $id);
-        helper_log('update', 'update '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
-        $this->session->set_flashdata('message', 'Data has created');
+        helper_log('edit', "Update data {$settings['title']} has successfully");
+        //get fields to element 
+        $fieldsId = $this->input->post('fieldsId');
+        if (!empty($fieldsId)) {
+          $i = 0;
+          (isset($id) ? $id = $tableFieldsId : $id = $id);
+          $this->general_m->delete($settings['fields_table'], $id);
+          foreach ($fieldsId as $value) {
+            $element = array(
+              'assets_id'   =>  $id,
+              'fields_id'   =>  $value,
+              'order'       =>  ++$i,
+            );
+            $this->general_m->create('assets_element', $element, FALSE);
+          }
+          helper_log('add', "add element create has successfully {$element['order']} record");
+          $this->session->set_flashdata("message", "Entries has successfully Create");
+        }        
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
         redirect($settings['action']);
       } 
     } else {
-      $this->load->view('admin/layout/_default', $settings);
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
     }
   }  
 
   /*DELETE*/
   public function delete($id='') {
     $settings = array(
-      'title'     =>  'Assets',
-      'subheader' =>  'Manage Assets',
-      'content'   =>  'admin/assets/update',
-      'table'     =>  'assets',
-      'action'    =>  'admin/assets',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(3),
+      'title'        => 'Assets',
+      'table'        =>  'assets',
+      'action'       => 'admin/assets',
+      'fields_table' => 'assets_element',
     );
+    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
-    if ($this->general_m->get_row_by_id($settings['table'], $id)) {
+    if ($settings['getDataby_id']) {
+      $element_del = $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
       $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
+      helper_log('delete', "Delete data {$settings['title']} has successfully");        
+      $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
       redirect($settings['action']);
     }
-    
   }
 
 }

@@ -15,13 +15,16 @@ class Settings extends My_Controller {
   public function index()
   {
     $settings = array(
-      'title'       =>  'Home',
-      'subtitle'    =>  array('field'),
-      'header'      =>  'Home',
-      'button'      =>  '+ New Widget',
-      'button_conf' =>  FALSE,
-      'content'     =>  'template/bootstrap-4/admin/settings',
-      'session'     =>  $this->data,
+      'title'         =>  'settings',
+      'subtitle'      =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  '+ New Categories',
+      'button_link'   =>  'categories/create',
+      'content'       =>  'template/bootstrap-4/admin/settings',
+      'table'         =>  '',
+      'action'        =>  '',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
     );
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }

@@ -140,7 +140,7 @@ class Section extends My_Controller {
           'activated'   =>  (($this->input->post('activated') == 'on') ? 1 : 0 ),
           'description' =>  $this->input->post('description'),
           'order'       =>  $this->input->post('order'),
-          'created_by'  =>  $this->data['userdata']['id'],
+          'updated_by'  =>  $this->data['userdata']['id'],
         );
         $this->section_m->update($data, $id);
         helper_log('update', "update data {$settings['title']} has successfully");        
@@ -344,7 +344,7 @@ class Section extends My_Controller {
         'slug'        =>  url_title(strtolower($this->input->post('name'))),
         'description' =>  $this->input->post('description'),
         'order'       =>  $this->input->post('order'),
-        'created_by'  =>  $this->data['userdata']['id'],
+        'updated_by'  =>  $this->data['userdata']['id'],
       );
       $entries = $this->entries_m->update($data, $id);
       helper_log('edit', "Update data entries has successfully");        
@@ -382,7 +382,7 @@ class Section extends My_Controller {
     if ($settings['getDataby_id']) {
       $element_del = $this->general_m->delete('element', $id, 'entries_id');
       $delete = $this->entries_m->delete($id);
-      helper_log('update', "Delete data {$settings['title']} has successfully");        
+      helper_log('delete', "Delete data {$settings['title']} has successfully");        
       $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");
       redirect($settings['action']);
     } else {
@@ -441,7 +441,7 @@ class Section extends My_Controller {
 					'name'        =>	$this->input->post('name'),
 					'description' =>	$this->input->post('description'),
 					'slug'        =>	url_title($this->input->post('name')),
-					'created_at'  =>	$this->data['userdata']['id'],
+					'created_by'  =>	$this->data['userdata']['id'],
 				);
 				$this->general_m->create($settings['table'], $data);
 				helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
@@ -473,7 +473,7 @@ class Section extends My_Controller {
 					'name'        =>	$this->input->post('name'),
 					'description' =>	$this->input->post('description'),
 					'slug'        =>	url_title($this->input->post('name')),
-					'created_at'  =>	$this->data['userdata']['id'],
+					'created_by'  =>	$this->data['userdata']['id'],
 				);
 				$this->general_m->update($settings['table'], $data, $id);
 	      helper_log('update', "update data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");				$this->session->set_flashdata('message', 'Data has Updated');

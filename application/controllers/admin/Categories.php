@@ -9,23 +9,32 @@ class Categories extends My_Controller {
     parent::__construct();
     //Do your magic here
     $this->load->model('admin/General_m', 'general_m');
+    $this->load->model('admin/Fields_m', 'fields_m');
+    $this->load->model('admin/General_m', 'general_m');
     $this->data = array(
-      'title'    =>  'categories',
       'userdata' =>  $this->first_load(),
+      'parentLink' => 'admin/categories', 
     );
   }
 
   public function index() {
     $settings = array(
-      'title'     =>  'categories',
-      'subheader' =>  'Manage categories',
-      'content'   =>  'admin/categories/index',
-      'table'     =>  'categories',
-      'action'    =>  'admin/categories',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(3),
+      'title'         =>  'categories',
+      'subtitle'      =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  '+ New Categories',
+      'button_link'   =>  'categories/create',
+      'content'       =>  'template/bootstrap-4/admin/categories/categories-group-list',
+      'table'         =>  'categories',
+      'action'        =>  'admin/categories',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'fields_table'  =>  'categories_element',
+      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
+      'fields'        =>  $this->fields_m->get_all_results(),
+      'elementFields' =>  [],
+      'order'         =>  $this->general_m->get_max_fields('categories', 'order'),
     );
-
     // Pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
@@ -39,103 +48,174 @@ class Categories extends My_Controller {
     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
     $settings['links']      = $this->pagination->create_links();
     // end Pagination
-    
-    $this->load->view('admin/layout/_default', $settings);
+
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
   /*CREATE*/
   public function create() {
     $settings = array(
-      'title'     =>  'categories',
-      'subheader' =>  'Manage categories',
-      'content'   =>  'admin/categories/create',
-      'table'     =>  'categories',
-      'action'    =>  'admin/categories',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(3),
-      'type'      =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'title'         =>  'categories',
+      'subtitle'      =>  'create',
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  'Create',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'create',
+      'button_tabs'   =>  TRUE,
+      'content'       =>  'template/bootstrap-4/admin/categories/categories-group-form',
+      'table'         =>  'categories',
+      'action'        =>  'admin/categories',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'fields_table'  =>  'categories_element',
+      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
+      'fields'        =>  $this->fields_m->get_all_results(),
+      'elementFields' =>  [],
+      'order'         =>  $this->general_m->get_max_fields('categories', 'order'),
     );
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    // $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
+    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
+    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
+        (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
+        (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
         $data = array(
           'name'       => $this->input->post('name'),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'url'        => $this->input->post('url'),
+          'template'   => $this->input->post('template'),
+          'locale'     => $locale,
+          'parent'     => $parent,
           'maxlevel'   => $this->input->post('maxlevel'),
           'description'=> $this->input->post('description'),
           'created_by' => $this->data['userdata']['id'],
         );
-        $this->general_m->create($settings['table'], $data);
-        helper_log('add', 'add '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
-        $this->session->set_flashdata('message', 'Data has created');
+        $tableFieldsId = $this->general_m->create($settings['table'], $data);
+        helper_log('add', "add data {$settings['title']} has successfully");
+        //get fields to element 
+        $fieldsId = $this->input->post('fieldsId');
+        if (!empty($fieldsId)) {
+          $i = 0;
+          (isset($id) ? $id = $tableFieldsId : $id = $id);
+          $this->general_m->delete($settings['fields_table'], $id);
+          foreach ($fieldsId as $value) {
+            $element = array(
+              'assets_id'   =>  $id,
+              'fields_id'   =>  $value,
+              'order'       =>  ++$i,
+            );
+            $this->general_m->create('assets_element', $element, FALSE);
+          }
+          helper_log('add', "add element create has successfully {$element['order']} record");
+          $this->session->set_flashdata("message", "Entries has successfully Create");
+        }        
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully Create");
         redirect($settings['action']);
       } 
     } else {
-      $this->load->view('admin/layout/_default', $settings);
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
     }
   }
 
   /*UPDATE*/
   public function update($id='') {
     $settings = array(
-      'title'     =>  'categories',
-      'subheader' =>  'Manage categories',
-      'content'   =>  'admin/categories/edit',
-      'table'     =>  'categories',
-      'action'    =>  'admin/categories',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(3),
-      'type'      =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'title'         =>  'categories',
+      'subtitle'      =>  'Update',
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  'Update',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'update',
+      'button_tabs'   =>  TRUE,
+      'content'       =>  'template/bootstrap-4/admin/categories/categories-group-form',
+      'table'         =>  'categories',
+      'action'        =>  'admin/categories',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'fields_table'  =>  'categories_element',
+      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
+      'fields'        =>  $this->fields_m->get_all_results(),
+      'elementFields' =>  [],
+      'order'         =>  $this->general_m->get_max_fields('categories', 'order'),
     );
-    $settings['getdataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    // $this->form_validation->set_rules('handle', 'Handle', 'trim|required');
+    $settings['element']      = $this->general_m->get_result_by_id($settings['fields_table'], $id, "{$settings['table']}_id");
+    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
+    
+    if ($settings['element']) {
+      foreach ($settings['element'] as $key) {
+        $fieldsId[] = $key->fields_id; 
+      }
+      $settings['elementFields'] = $fieldsId;
+    } else {
+      $settings['elementFields'] = [];
+    }
+
+    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
+    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['update'])) {
+      if (isset($_POST['create'])) {
+        (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
+        (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
         $data = array(
           'name'       => $this->input->post('name'),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'url'        => $this->input->post('url'),
+          'template'   => $this->input->post('template'),
+          'locale'     => $locale,
+          'parent'     => $parent,
           'maxlevel'   => $this->input->post('maxlevel'),
           'description'=> $this->input->post('description'),
-          'updated_by' => $this->data['userdata']['id'],
+          'created_by' => $this->data['userdata']['id'],
         );
         $this->general_m->update($settings['table'], $data, $id);
-        helper_log('update', 'update '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
-        $this->session->set_flashdata('message', 'Data has created');
+        helper_log('edit', "Update data {$settings['title']} has successfully");
+        //get fields to element 
+        $fieldsId = $this->input->post('fieldsId');
+        if (!empty($fieldsId)) {
+          $i = 0;
+          (isset($id) ? $id = $tableFieldsId : $id = $id);
+          $this->general_m->delete($settings['fields_table'], $id);
+          foreach ($fieldsId as $value) {
+            $element = array(
+              'assets_id'   =>  $id,
+              'fields_id'   =>  $value,
+              'order'       =>  ++$i,
+            );
+            $this->general_m->create('assets_element', $element, FALSE);
+          }
+          helper_log('add', "add element create has successfully {$element['order']} record");
+          $this->session->set_flashdata("message", "Entries has successfully Create");
+        }        
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
         redirect($settings['action']);
       } 
     } else {
-      $this->load->view('admin/layout/_default', $settings);
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
     }
   }  
 
   /*DELETE*/
   public function delete($id='') {
     $settings = array(
-      'title'     =>  'categories',
-      'subheader' =>  'Manage categories',
-      'content'   =>  'admin/categories/update',
-      'table'     =>  'categories',
-      'action'    =>  'admin/categories',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(3),
+      'title'        => 'Categories',
+      'table'        => 'categories',
+      'action'       => 'admin/categories',
+      'fields_table' => 'categories_element',
     );
+    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
-    if ($this->general_m->get_row_by_id($settings['table'], $id)) {
+    if ($settings['getDataby_id']) {
+      $element_del = $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
       $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
+      helper_log('delete', "Delete data {$settings['title']} has successfully");        
+      $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
       redirect($settings['action']);
     }
-    
   }
 
 }
