@@ -235,10 +235,6 @@
         $('#groupsModal button[type="submit"]').text('Update');
         $('#groupsModal').modal('show');
       }
-      // function delete modal success
-      function deleteModalSuccess(data){
-        window.location.reload();
-      }
 
 
       /**
@@ -269,21 +265,19 @@
       function deleteGroupsById(){
         // Delete Groups
         $('#groupsDelete').click(function(){
+          var table      = $('#sidebarGroups').data('table');
           var group_name = $('#sidebarGroups').data('groups-name');
-          var group_id = $(".sidebar-content .nav-link.active").attr('data-id');
-          var table = $('#sidebarGroups').data('table');
+          var group_id   = $(".sidebar-content .nav-link.active").attr('data-id');
 
           if (confirm("Are you sure?")) {
             $.ajax({
               type: 'POST',
               dataType: 'json',
-              data: {group_name: group_name, group_id : group_id, table : table},
+              data: {table: table, group_name: group_name, group_id : group_id},
               url: '<?php echo base_url("admin/api/jsonDeleteGroupsById") ?>'
-            })
-            .done(function(data) {
-              deleteModalSuccess(data);
-            })
-            .fail(function(error) {
+            }).done(function(data) {
+              window.location.reload();
+            }).fail(function(error) {
             });
           }
           return false;
@@ -293,12 +287,13 @@
       function getDataByIdGroups(){
         // Show Fields By Groups
         $('#sidebarGroups .nav-item').click(function(){
+          var table      = $('#sidebarGroups').data('table');
           var group_name = $('#sidebarGroups').data('groups-name');
-          var group_id = $('#sidebarGroups .nav-link.active').data('id');
+          var group_id   = $('#sidebarGroups .nav-link.active').data('id');
           $.ajax({
             type : 'POST',
             dataType : 'json',
-            data : {group_name: group_name, group_id : group_id},
+            data : {table: table, group_name: group_name, group_id : group_id},
             url : '<?php echo base_url("admin/api/jsonGetDataByIdGroups") ?>',
           }).done(function(data){
             $('#right-content table').remove();

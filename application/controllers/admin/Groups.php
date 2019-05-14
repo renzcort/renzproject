@@ -17,16 +17,17 @@ class Groups extends My_Controller {
   }
 
   public function index($id='') {
-    $table = ($this->input->post('table') ? $this->input->post('table').'_group' : '');
+    $table = ($this->input->post('table') ? $this->input->post('table') : '');
     $settings = array(
-      'title'     =>  ($this->input->post('group_name') ? ucfirst($this->input->post('group_name')) : ''),
+      'title'     =>  ($this->input->post('table') ? ucfirst($this->input->post('table')) : ''),
       'table'     =>  $table,
-      'action'    => "admin/($table}",
+      'action'    =>  "admin/{$table}",
       'session'   =>  $this->data,
-      'id'        =>  $this->input->post('id')
+      'group_name'=>  ($this->input->post('group_name') ? $this->input->post('group_name') : ''),
+      'id'        =>  ($this->input->post('id') ? $this->input->post('id') : ''), 
     );
     if ($settings['id']) { 
-      $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $settings['id']);
+      $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['group_name'], $settings['id']);
     }
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
@@ -38,23 +39,21 @@ class Groups extends My_Controller {
         'description' => $this->input->post('description'),
       );
       if (isset($_POST['create'])) {
-
         $data['created_by'] = $this->data['userdata']['id'];
-        $this->general_m->create($settings['table'], $data);
+        $this->general_m->create($settings['group_name'], $data);
         helper_log('add', "Create {$settings['title']} successfully");
         $this->session->set_flashdata('message', 'Data has created');
       
       } elseif (isset($_POST['update'])) {
-      
         $data['updated_by'] = $this->data['userdata']['id'];
-        $this->general_m->update($settings['table'], $data, $settings['id']);
+        $this->general_m->update($settings['group_name'], $data, $settings['id']);
         helper_log('update', "Update {$settings['title']} has successfully");
         $this->session->set_flashdata('message', 'Data has Updated');
       }
       redirect($settings['action']);
     } else {
       if (isset($_POST['delete'])) {
-        $delete = $this->general_m->delete($settings['table'], $id);
+        $delete = $this->general_m->delete($settings['group_name'], $id);
         helper_log('delete', "Delete data {$settings['title']} with {$id} successfully");
         $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
         redirect($settings['action']);

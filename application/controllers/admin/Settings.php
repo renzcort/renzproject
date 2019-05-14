@@ -20,7 +20,7 @@ class Settings extends My_Controller {
       'subbreadcrumb' =>  FALSE,
       'button'        =>  '+ New Categories',
       'button_link'   =>  'categories/create',
-      'content'       =>  'template/bootstrap-4/admin/settings',
+      'content'       =>  'template/bootstrap-4/admin/info/settings',
       'table'         =>  '',
       'action'        =>  '',
       'session'       =>  $this->data,

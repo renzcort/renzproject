@@ -16,7 +16,7 @@ class Login extends CI_Controller {
       $userdata = $this->session->userdata('logged_in');
       redirect('admin/home','refresh');
     } else {
-      $data['content'] = 'template/bootstrap-4/admin/login';
+      $data['content'] = 'template/bootstrap-4/admin/login/login';
       $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
     }
   }
@@ -28,9 +28,9 @@ class Login extends CI_Controller {
     );
 
     if ($this->form_validation->run() == TRUE) {
-      $email   = $this->input->post('email');
-      $password= $this->input->post('password');
-      $result  = $this->login_m->check_login($email, $password);
+      $email    = $this->input->post('email');
+      $password = $this->input->post('password');
+      $result   = $this->login_m->check_login($email, $password);
       if ($result) {
         $this->session->set_userdata('logged_in', $result);
         $this->session->set_flashdata('message', 'Welcome to your dashboard');
@@ -41,7 +41,7 @@ class Login extends CI_Controller {
         redirect('admin', 'refresh');
       }
     } else {
-      $data['content'] = 'template/bootstrap-4/admin/login';
+      $data['content'] = 'template/bootstrap-4/admin/login/login';
       $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
      }
   }
@@ -63,8 +63,8 @@ class Login extends CI_Controller {
           'username'        =>  $this->input->post('username'),
           'email'           =>  $this->input->post('email'),
           'password'        =>  md5($this->input->post('password')),
-          'created_at'      => mdate("%Y-%m-%d %H:%i:%s"), 
-          'updated_at'      => mdate("%Y-%m-%d %H:%i:%s"), 
+          'created_at'      =>  mdate("%Y-%m-%d %H:%i:%s"), 
+          'updated_at'      =>  mdate("%Y-%m-%d %H:%i:%s"), 
           'token'           =>  random_string('alnum', 30),
           'activation_code' =>  random_string('numeric', 6),
         );
@@ -76,13 +76,13 @@ class Login extends CI_Controller {
         redirect("admin/validation-token/?username={$data['username']}&token={$data['token']}","refresh");
       } else {
         $this->session->set_flashdata('message', 'Please correct your data');
-        $data['content']  = 'template/bootstrap-4/admin/register';
+        $data['content'] = 'template/bootstrap-4/admin/login/register';
         $this->load->view('template/bootstrap-4/admin/layout/_register', $data);
       }
     } else {
       // $data['content']  = 'admin/register';
       // $this->load->view('admin/layout/_register', $data);
-      $data['content']  = 'template/bootstrap-4/admin/register';
+      $data['content'] = 'template/bootstrap-4/admin/login/register';
       $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
     }
   }
@@ -122,17 +122,17 @@ class Login extends CI_Controller {
       // var_dump($data);die;
       $activated = $this->login_m->activated($data);
       if ($activated) {
-        $data['content']  = 'template/bootstrap-4/admin/activation-success';
+        $data['content'] = 'template/bootstrap-4/admin/login/activation-success';
         $this->load->view('template/bootstrap-4/admin/layout/_activate', $data);
       } else {
         $this->session->set_flashdata('message', 'Please Correct, your code not valid');
-        $data['params']  = $params;
-        $data['content'] = 'template/bootstrap-4/admin/activation-code';
+        $data['params']  = $arams;
+        $data['content'] = 'tpemplate/bootstrap-4/admin/login/activation-code';
         $this->load->view('template/bootstrap-4/admin/layout/_activate', $data);
       }
     } else {
       $data['params']  = $params;
-      $data['content'] = 'template/bootstrap-4/admin/activation-code';
+      $data['content'] = 'template/bootstrap-4/admin/login/activation-code';
       $this->load->view('template/bootstrap-4/admin/layout/_activate', $data);
     }     
   }
@@ -142,7 +142,7 @@ class Login extends CI_Controller {
     $params   = $_SERVER['QUERY_STRING'];
     parse_str($params, $data);
     $this->login_m->activated($data);
-    $data['content']  = 'template/bootstrap-4/admin/activated';
+    $data['content'] = 'template/bootstrap-4/admin/login/activated';
     $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
   }
 
@@ -164,11 +164,11 @@ class Login extends CI_Controller {
           helper_log('forgot-password', "Your Email {$data['email']} invalid");
           $this->session->set_flashdata('message', 'Your email is invalid');
         }
-        $data['content'] = 'template/bootstrap-4/admin/forgot-password';
+        $data['content'] = 'template/bootstrap-4/admin/login/forgot-password';
         $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
       }     
     } else {
-      $data['content'] = 'template/bootstrap-4/admin/forgot-password';
+      $data['content'] = 'template/bootstrap-4/admin/login/forgot-password';
       $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
     }
   }
@@ -185,13 +185,13 @@ class Login extends CI_Controller {
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['submit'])) {
         $data['password'] = md5($this->input->post('password'));
-        $new_password = $this->login_m->forgot_password($data, TRUE);
+        $new_password     = $this->login_m->forgot_password($data, TRUE);
         helper_log('success', "reset password {$data['email']} successfully");
         $this->session->set_flashdata('message', 'Your Password has changes');
       }
     }     
     $data['params']  = $params;
-    $data['content'] = 'template/bootstrap-4/admin/reset-password';
+    $data['content'] = 'template/bootstrap-4/admin/login/reset-password';
     $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
   
   }

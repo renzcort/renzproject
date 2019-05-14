@@ -86,7 +86,7 @@ class General_m extends My_Model {
   /*Delete Data By ID*/
   public function delete($table, $id, $key='') {
     ((!empty($key)) ? $key : $key = 'id');
-    // var_dump($key, $id);die;
+    
     $this->db->where("{$key}", $id);
     $this->db->delete($table);
     // affected_rows this function use to know number data delete
@@ -95,7 +95,7 @@ class General_m extends My_Model {
 
   /*Get Max order*/
   public function get_max_fields($table, $field) {
-    $this->db->select_max("{$field}");
+    $this->db->select_max($field);
     $result = $this->db->get($table);
     if($result->num_rows() > 0) {
       $max = $result->row();
@@ -103,6 +103,12 @@ class General_m extends My_Model {
     } else {
       return FALSE;
     }
+  }
+
+  /*GET LAST Records*/
+  public function get_last_records($table, $fields) {
+    return $this->db->order_by($fields, 'desc')->limit(1)->get($table)->row();
+    print_r($this->db->last_query());
   }
 
 }

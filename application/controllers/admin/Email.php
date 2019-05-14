@@ -1,7 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class General extends My_Controller {
+class Email extends My_Controller {
 
   public function __construct()
   {
@@ -11,22 +11,22 @@ class General extends My_Controller {
     $this->load->model('admin/General_m', 'general_m');
     $this->data = array(
       'userdata' =>  $this->first_load(),
-      'parentLink' => 'admin/general', 
+      'parentLink' => 'admin/email', 
     );
   }
 
   public function index()
   {
     $settings = array(
-      'title'         =>  'general',
+      'title'         =>  'email',
       'subtitle'      =>  FALSE,
       'subbreadcrumb' =>  FALSE,
       'button'        =>  'Save',
       'button_type'   =>  'submit',
       'button_name'   =>  'save',
-      'content'       =>  'template/bootstrap-4/admin/info/general',
+      'content'       =>  'template/bootstrap-4/admin/info/email',
       'table'         =>  'info',
-      'action'        =>  'admin/general',
+      'action'        =>  'admin/email',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
     );
@@ -35,9 +35,11 @@ class General extends My_Controller {
 
     if (isset($_POST['save'])) {
       $data = array(
-        'systemname' => $this->input->post('systemname'),
-        'status'     => $this->input->post('status'),
-        'timezone'   => $this->input->post('timezone'),
+        'email'            => $this->input->post('email'),
+        'email_sendername' => $this->input->post('email_sendername'),
+        'email_template'   => $this->input->post('email_template'),
+        'email_type'       => $this->input->post('email_type'),
+        'email_status'     => $this->input->post('email_status'),
       );
       $checkRecord = $this->general_m->count_all_results($settings['table']);
       if ($checkRecord == 0) {
@@ -57,7 +59,8 @@ class General extends My_Controller {
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
+
 }
 
-/* End of file General.php */
-/* Location: ./application/controllers/admin/General.php */
+/* End of file Email.php */
+/* Location: ./application/controllers/admin/Email.php */

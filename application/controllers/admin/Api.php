@@ -190,34 +190,47 @@ class Api extends My_Controller {
     $group_name = $this->input->post('group_name');
     $table      = $this->input->post('table');
     $getFields = $this->general_m->get_result_by_id($table, $group_id, 'group_id');
+    
     if (!empty($getFields)) {
-      foreach ($getFields as $key) {
-        $element_del = $this->general_m->delete('element', $key->id, 'fields_id');
-        $fields = array(
-          'handle' => $key->handle,
-        );
-        // Drop field column in content
-        modifyColumn($fields, 'drop');
-        $fields_del = $this->fields_m->delete($key->id);
-        $option_del = $this->general_m->delete('fields_option', $key->option_id);
+      if ($table == 'fields') {
+        foreach ($getFields as $key) {
+          $element_del = $this->general_m->delete('element', $key->id, 'fields_id');
+          $fields = array(
+            'handle' => $key->handle,
+          );
+          // Drop field column in content
+          modifyColumn($fields, 'drop');
+          $delete     = $this->fields_m->delete($key->id);
+          $option_del = $this->general_m->delete('fields_option', $key->option_id);
+        } 
+      } else {
+        $delete = $this->general_m->delete($table, $group_id, 'group_id');
       }
     }
-    $delete = $this->general_m->delete('fields_group', $group_id);
-    echo json_encode($delete);
-  }
-
-  // CRUD Groups
-  public function jsonGroupsManage() {
-
+    $delete = $this->general_m->delete($group_name, $group_id);
+    if ($delete >= 1) {
+      $data = array(
+        'action' => "admin/{$table}",
+        'delete' => 'success'
+      );
+    } else {
+      $data = array(
+        'action' => "admin/{$table}",
+        'delete' => 'failed'
+      );
+    }
+    $this->session->set_flashdata('message', "Data {$table} has deleted {$delete} Records");
+    echo json_encode($data);
   }
   
   // Show Fields By Id Groups
   public function jsonGetDataByIdGroups(){
     header('content-type: application/json');
-    $group_name = $this->input->post('group_name');
+    $table = ($this->input->post('table') ? $this->input->post('table') : '');
+    $group_name = ($this->input->post('group_name') ? $this->input->post('group_name') : '');
     $settings = array(
-      'table'       =>  'fields',
-      'action'      =>  'admin/fields',
+      'table'       =>  $table,
+      'action'      =>  "admin/{$table}",
       'group'       =>  $this->general_m->get_all_results($group_name),
       'group_count' =>  $this->general_m->count_all_results($group_name),
       'group_id'    =>  (($this->input->post('group_id') == 'all') ? '' : $this->input->post('group_id')),
@@ -237,31 +250,66 @@ class Api extends My_Controller {
     $settings['links']      = $this->pagination->create_links();
     
     if($settings['record_all']) {
-      $table = '
-      <table class="table table-sm">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Name</th>
-            <th scope="col">Handle</th>
-            <th scope="col">Type</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>'; 
-      $no = 0;
-      foreach ($settings['record_all'] as $key) {
-         $table .= '<tr>
-            <th scope="row">'.++$no.'</th>
-            <td><a href="'.base_url($settings['action'].'/update/'.$key->id).'">'.($key->name ? $key->name : '').'</a></td>
-            <td>'.($key->handle ? $key->handle : '').'</td>
-            <td>'.($key->type_name ? $key->type_name : '').'</td>
-            <td><a href="'.base_url($settings['action'].'/delete/'.$key->id).'" data-id="'.$key->id.'">
-              <i class="fas fa-minus-circle"></i></a>
-            </td>
-          </tr>';
-        }
-      $table .= '</tbody></table>';
+      if ($table == 'sites') {
+        $table = '
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th scope="row">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Handle</th>
+                <th scope="col">Languange</th>
+                <th scope="col">Primary</th>
+                <th scope="col">Base URL</th>
+                <th scope="col">Group</th>
+                <th scope="row"></th>
+              </tr>
+            </thead>
+            <tbody>'; 
+          $no = 0;
+          foreach ($settings['record_all'] as $key) {
+             $table .= '<tr>
+                <td scope="row">'.++$no.'</td>
+                <td><a href="'.base_url($settings['action'].'/update/'.$key->id).'</a></td>
+                <td>'.$key->handle.'</td>
+                <td>'.$key->locale.'</td>
+                <td>'.(!empty($key->primary) ? 'Yes' : 'No').'</td>
+                <td>'.(!empty($key->url) ? $key->url : '').'</td>
+                <td>'.$key->group_name.'</td>
+                <td scope="row">
+                  <a href="'.base_url($settings['action'].'/delete/'.$key->id).'" data-id="'.$key->id.'"><i class="fas fa-minus-circle"></i></a>
+                </td> 
+              </tr>';
+            }
+          $table .= '</tbody></table>';
+      } else {
+        $table = '
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">Handle</th>
+                <th scope="col">Type</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>'; 
+          $no = 0;
+          foreach ($settings['record_all'] as $key) {
+             $table .= '<tr>
+                <th scope="row">'.++$no.'</th>
+                <td><a href="'.base_url($settings['action'].'/update/'.$key->id).'">'.($key->name ? $key->name : '').'</a></td>
+                <td>'.($key->handle ? $key->handle : '').'</td>
+                <td>'.($key->type_name ? $key->type_name : '').'</td>
+                <td><a href="'.base_url($settings['action'].'/delete/'.$key->id).'" data-id="'.$key->id.'">
+                  <i class="fas fa-minus-circle"></i></a>
+                </td>
+              </tr>';
+            }
+          $table .= '</tbody></table>';
+      }
+      
     } else {
       $table = '<p class="empty-data">Data is Empty</p>';
     }
