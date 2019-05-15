@@ -10,7 +10,7 @@
   <h5 class="heading">Content</h5>
   <ul class="d-flex flex-row flex-wrap border-bottom list-unstyled text-center">
     <li><a href="<?php echo base_url('admin/settings/fields'); ?>"><i class="far fa-file"></i>Fields</a></li>
-    <li><a href="<?php echo base_url('admin/settings/sections'); ?>"><i class="fas fa-copy"></i>Sections</a></li>
+    <li><a href="<?php echo base_url('admin/settings/section'); ?>"><i class="fas fa-copy"></i>Sections</a></li>
     <li><a href="<?php echo base_url('admin/settings/assets'); ?>"><i class="far fa-images"></i>Assets</a></li>
     <li><a href="<?php echo base_url('admin/settings/globals'); ?>"><i class="fas fa-globe"></i>Globals</a></li>
     <li><a href="<?php echo base_url('admin/settings/categories'); ?>"><i class="fas fa-align-left"></i>Categories</a></li>

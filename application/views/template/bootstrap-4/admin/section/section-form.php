@@ -5,7 +5,7 @@
                   ); 
     echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
   ?>
-    <input type="hidden" name="<?php echo $button_name; ?>">
+    <input type="hidden" name="button" value="<?php echo $button_name; ?>">
     <div class="form-group">
       <label class="heading required" for="inputName">Name</label>
       <small class="form-text text-muted">What this site will be called in the CP.</small>

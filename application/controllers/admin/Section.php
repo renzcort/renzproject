@@ -21,16 +21,17 @@ class Section extends My_Controller {
 
 	public function index() {
     $settings = array(
-      'title'              =>  ucfirst('section'),
-      'subtitle'           =>  FALSE,
-      'subbreadcrumb'      =>  FALSE,
-      'button'             =>  '+ New section',
-      'button_link'        =>  'section/create',
-      'content'            =>  'template/bootstrap-4/admin/section/section-list',
-      'table'              =>  'section',
-      'action'             =>  'admin/section',
-      'session'            =>  $this->data,
-      'no'                 =>  $this->uri->segment(3),
+      'title'         =>  'section',
+      'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  '+ New section',
+      'button_link'   =>  'section/create',
+      'content'       =>  'template/bootstrap-4/admin/section/section-list',
+      'table'         =>  'section',
+      'action'        =>  'admin/settings/section',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
     );
     // Pagination
     $config                 = $this->config->item('setting_pagination');
@@ -52,15 +53,16 @@ class Section extends My_Controller {
 	/*Create Section*/
 	public function create(){
     $settings = array(
-      'title'         =>  ucfirst('section'),
+      'title'         =>  'section',
       'subtitle'      =>  'create',
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('create'),
       'button'        =>  'Save',
       'button_type'   =>  'submit',
       'button_name'   =>  'create',
       'content'       =>  'template/bootstrap-4/admin/section/section-form',
       'table'         =>  'section',
-      'action'        =>  'admin/section/create',
+      'action'        =>  'admin/settings/section/create',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'section_type'  =>  $this->general_m->get_all_results('section_type'),
@@ -70,7 +72,7 @@ class Section extends My_Controller {
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_section.handle]');
 		$this->form_validation->set_rules('sectionType', 'Type Section', 'trim|required');
 		if ($this->form_validation->run() == TRUE) {
-			if (isset($_POST['create'])) {
+			if ($_POST['button'] == 'create') {
 				$data = array(
 					'name'        =>	ucfirst($this->input->post('name')),
 					'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
@@ -96,8 +98,8 @@ class Section extends My_Controller {
           'created_by'  =>  $this->data['userdata']['id'],
         );
         $this->entries_m->create($entries_data);
-      	helper_log('add', "add data {$settings['title']} has successfully");				
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Create");
+      	helper_log('add', "Create {$settings['title']} has successfully");				
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully Created");
 				redirect($this->data['parentLink']);
 			}
 		} else {
@@ -110,13 +112,14 @@ class Section extends My_Controller {
     $settings = array(
       'title'         =>  ucfirst('section'),
       'subtitle'      =>  'edit',
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('edit'),
       'button'        =>  'Update',
       'button_type'   =>  'submit',
       'button_name'   =>  'update',
       'content'       =>  'template/bootstrap-4/admin/section/section-form',
       'table'         =>  'section',
-      'action'        =>  'admin/section/edit',
+      'action'        =>  'admin/settings/section/edit',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'section_type'  =>  $this->general_m->get_all_results('section_type'),
@@ -129,7 +132,7 @@ class Section extends My_Controller {
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|callback_handle_check');
     $this->form_validation->set_rules('sectionType', 'Type Section', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['update'])) {
+      if ($_POST['button'] == 'update') {
         $data = array(
           'name'        =>  ucfirst($this->input->post('name')),
           'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
@@ -143,7 +146,7 @@ class Section extends My_Controller {
           'updated_by'  =>  $this->data['userdata']['id'],
         );
         $this->section_m->update($data, $id);
-        helper_log('update', "update data {$settings['title']} has successfully");        
+        helper_log('update', "Update {$settings['title']} has successfully");        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
         redirect($this->data['parentLink']);
       }
@@ -152,9 +155,29 @@ class Section extends My_Controller {
     }
 	}
 
+	/*Delete Section*/
+	public function delete($id='') {
+    $settings = array(
+      'title'         =>  ucfirst('section'),
+      'table'         =>  'section',
+      'getDataby_id'  =>  $this->section_m->get_row_by_id($id)
+    );
+
+		if ($settings['getDataby_id']) {
+      $deleteElement = $this->general_m->delete('element', $id, 'section_id');
+      $deleteEntries = $this->general_m->delete('entries', $id, 'section_id');
+      $delete        = $this->section_m->delete($id);
+      helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
+      $this->session->set_flashdata('message', "{settings['title']} has deleted {$delete} Records");      
+      redirect($this->data['parentLink']);
+    } else {
+      $this->session->set_flashdata('message', 'Your Id Not Valid');
+      redirect($this->data['parentLink']);
+    }
+	}
+
   public function name_check($str) {
-    $id = $this->uri->segment(4);
-    var_dump($id);die;
+    $id = $this->uri->segment(5);
     $field = $this->section_m->get_row_by_id($id);
     $data = array('name' => $str);
     $check = $this->general_m->get_row_by_fields('section', $data);
@@ -168,7 +191,7 @@ class Section extends My_Controller {
   }
 
   public function handle_check($str) {
-    $id = $this->uri->segment(4);
+    $id = $this->uri->segment(5);
     $field = $this->section_m->get_row_by_id($id);
     $data = array('handle' => $str); 
     $check = $this->general_m->get_row_by_fields('section', $data);
@@ -181,39 +204,19 @@ class Section extends My_Controller {
     }
   }
 
-	/*Delete Section*/
-	public function delete($id='') {
-    $settings = array(
-      'title'         =>  ucfirst('section'),
-      'table'         =>  'section',
-      'getDataby_id'  =>  $this->section_m->get_row_by_id($id)
-    );
-
-		if ($settings['getDataby_id']) {
-      $element_del = $this->general_m->delete('element', $id, 'section_id');
-      $entries_del = $this->general_m->delete('entries', $id, 'section_id');
-      $delete      = $this->section_m->delete($id);
-      helper_log('update', "Delete data {$settings['title']} has successfully");        
-      $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");
-      redirect($this->data['parentLink']);
-    } else {
-      $this->session->set_flashdata('message', 'Your Id Not Valid');
-      redirect($this->data['parentLink']);
-    }
-	}
-
   /*Entries Section*/
   public function entrytypes($section_id='') {
     $section = $this->section_m->get_row_by_id($section_id);
     $settings = array(
-      'title'         =>  ucfirst("{$section->name} Entry Type"),
+      'title'         =>  "{$section->name} Entry Type",
       'subtitle'      =>  FALSE,
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('entries'),
       'button'        =>  '+ New entry type',
       'button_link'   =>  "entrytypes/create",
       'content'       =>  'template/bootstrap-4/admin/section/section-entries-list',
       'table'         =>  'section',
-      'action'        =>  "admin/section/{$section_id}/entrytypes",
+      'action'        =>  "admin/settings/section/{$section_id}/entrytypes",
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(5),
     );
@@ -238,21 +241,22 @@ class Section extends My_Controller {
   /*entrues type create*/
   public function entrytypes_create($section_id='') {
     $settings = array(
-      'title'         =>  ucfirst("New Entry Type"),
-      'subtitle'      =>  FALSE,
-      'subbreadcrumb' =>  FALSE,
+      'title'         =>  "Entry Type",
+      'subtitle'      =>  'Create',
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('create'),
       'button'        =>  'Save',
       'button_type'   =>  'submit',
       'button_name'   =>  'create',
       'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/section/section-entries-form',
       'table'         =>  'entries',
-      'action'        =>  "admin/section/{$section_id}/entrytypes",
+      'action'        =>  "admin/settings/section/{$section_id}/entrytypes",
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'fields_table'  =>  'element',
       'section_id'    =>  $section_id,
       'section'       =>  $this->section_m->get_row_by_id($section_id),
+      'fields_table'  =>  'element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
@@ -260,13 +264,13 @@ class Section extends My_Controller {
     );
 
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_section.name]');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_section.handle]');
+    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_entries.name]');
+    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_entries.handle]');
     $this->form_validation->set_rules('title', 'Title', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      if ($_POST['create']) {
+      if ($_POST['button'] == 'create') {
         $data = array(
-          'name'        =>  $this->input->post('name'),
+          'name'        =>  ucfirst($this->input->post('name')),
           'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'section_id'  =>  $section_id,
           'title'       =>  ucfirst($this->input->post('title')),
@@ -276,7 +280,7 @@ class Section extends My_Controller {
           'created_by'  =>  $this->data['userdata']['id'],
         );
         $entries = $this->entries_m->create($data);
-        helper_log('add', "add data entries has successfully");        
+        helper_log('add', "Create {$settings['title']} has successfully");
         //get fields to element 
         $fieldsId = $this->input->post('fieldsId');
         if (!empty($fieldsId)) {
@@ -290,9 +294,9 @@ class Section extends My_Controller {
             );
             $this->general_m->create('element', $element, FALSE);
           }
-          helper_log('add', "add element create has successfully {$element['order']} record");
-          $this->session->set_flashdata("message", "Entries has successfully Create");
+          helper_log('add', "Create element has successfully {$element['order']} records");
         }
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
       }
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -311,7 +315,7 @@ class Section extends My_Controller {
       'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/section/section-entries-form',
       'table'         =>  'entries',
-      'action'        =>  "admin/section/{$section_id}/entrytypes",
+      'action'        =>  "admin/settings/section/{$section_id}/entrytypes",
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'fields_table'  =>  'element',
@@ -398,9 +402,9 @@ class Section extends My_Controller {
     $settings = array(
       'header'    =>  'Type',
       'subheader' =>  'Manage Section',
-      'content'   =>  'admin/section/type/index',
+      'content'   =>  'admin/settings/section/type/index',
       'table'     =>  'section_type',
-      'action'    =>  'admin/section/type',
+      'action'    =>  'admin/settings/section/type',
       'session'   =>  $this->data,
       'no'        =>  $this->uri->segment(4),
     );
@@ -436,7 +440,7 @@ class Section extends My_Controller {
 
 		$this->form_validation->set_rules('name', 'Name', 'trim|required');
 		if ($this->form_validation->run() == TRUE) {
-			if (isset($_POST['create'])) {
+			if ($_POST['button'] == 'create') {
 				$data = array(
 					'name'        =>	$this->input->post('name'),
 					'description' =>	$this->input->post('description'),
@@ -468,7 +472,7 @@ class Section extends My_Controller {
 
 		$this->form_validation->set_rules('name', 'Name', 'trim|required');
 		if ($this->form_validation->run() == TRUE) {
-			if (isset($_POST['update'])) {
+			if ($_POST['button'] == 'update') {
 				$data = array(
 					'name'        =>	$this->input->post('name'),
 					'description' =>	$this->input->post('description'),

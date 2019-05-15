@@ -89,19 +89,19 @@ $route['admin/settings/fields/type/edit/(:num)']    = 'admin/fields/type_update/
 $route['admin/settings/fields/type/delete/(:num)']  = 'admin/fields/type_delete/$1';
 
 /*Section*/
-$route['admin/section']                       = 'admin/section';
-$route['admin/section/create']                = 'admin/section/create';
-$route['admin/section/edit/(:num)']           = 'admin/section/update/$1';
-$route['admin/section/delete/(:num)']         = 'admin/section/delete/$1';
-$route['admin/section/type']                  = 'admin/section/type';
-$route['admin/section/type/create']           = 'admin/section/type_create';
-$route['admin/section/type/edit/(:num)']      = 'admin/section/type_update/$1';
-$route['admin/section/type/delete/(:num)']    = 'admin/section/type_delete/$1';
+$route['admin/settings/section']                       = 'admin/section';
+$route['admin/settings/section/create']                = 'admin/section/create';
+$route['admin/settings/section/edit/(:num)']           = 'admin/section/update/$1';
+$route['admin/settings/section/delete/(:num)']         = 'admin/section/delete/$1';
+$route['admin/settings/section/type']                  = 'admin/section/type';
+$route['admin/settings/section/type/create']           = 'admin/section/type_create';
+$route['admin/settings/section/type/edit/(:num)']      = 'admin/section/type_update/$1';
+$route['admin/settings/section/type/delete/(:num)']    = 'admin/section/type_delete/$1';
 /*Entries*/
-$route['admin/section/(:num)/entrytypes']             = 'admin/section/entrytypes/$1';
-$route['admin/section/(:num)/entrytypes/create']      = 'admin/section/entrytypes_create/$1';
-$route['admin/section/(:num)/entrytypes/edit/(:num)'] = 'admin/section/entrytypes_update/$1/$2';
-$route['admin/section/(:num)/entrytypes/delete/(:num)'] = 'admin/section/entrytypes_delete/$1/$2';
+$route['admin/settings/section/(:num)/entrytypes']             = 'admin/section/entrytypes/$1';
+$route['admin/settings/section/(:num)/entrytypes/create']      = 'admin/section/entrytypes_create/$1';
+$route['admin/settings/section/(:num)/entrytypes/edit/(:num)'] = 'admin/section/entrytypes_update/$1/$2';
+$route['admin/settings/section/(:num)/entrytypes/delete/(:num)'] = 'admin/section/entrytypes_delete/$1/$2';
 
 
 /*Content*/

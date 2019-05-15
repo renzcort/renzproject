@@ -16,12 +16,13 @@ class fields extends My_Controller {
       'parentLink' => 'admin/fields', 
     );
   }
-
+  
+  /*Fields Index*/
   public function index() {
     $settings = array(
       'title'         =>  'fields',
       'subtitle'      =>  FALSE,
-      'breadcrumb'    =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
       'button'        =>  '+ New Fields',
       'button_link'   =>  'fields/create',
@@ -53,12 +54,13 @@ class fields extends My_Controller {
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
+  /*Fields Create*/
   public function create() {
     $settings = array(
       'title'         =>  'fields',
       'subtitle'      =>  'create',
-      'breadcrumb'    =>  FALSE,
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('create'),
       'button'        =>  'Save',
       'button_type'   =>  'submit',
       'button_name'   =>  'create',
@@ -91,7 +93,7 @@ class fields extends My_Controller {
     $this->form_validation->set_rules('fieldsGroupId', 'fields Group', 'trim|required');
     $this->form_validation->set_rules('fieldsTypeId', 'fields Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
+      if ($_POST['button'] == 'create') {
         if ($this->input->post('fieldsType')  == 'plainText') {
           $opt_settings = array(
             'plainPlaceholder'         => $this->input->post('plainPlaceholder'),
@@ -152,39 +154,36 @@ class fields extends My_Controller {
         $handle           = lcfirst(str_replace(' ', '', ucwords($this->input->post('name'))));
         $getFieldsType    = $this->general_m->get_row_by_id('fields_type', $this->input->post('fieldsTypeId'));
         $getContentFields = $this->db->list_fields('content');
-        foreach ($getContentFields as $key => $value) {
-          if ($value == "field_{$handle}") {
-            $this->session->set_flashdata('message', "field_{$handle} has Exists");
-          } else {
-            $fields = array(
-              'handle' =>  $handle,
-              'type'   =>  $getFieldsType->type,
-            );
-            // add Column content
-            modifyColumn($fields, 'add'); 
-          }
-        }  
+        if (!in_array("field_{$handle}", $getContentFields)) {
+          $fields = array(
+            'handle' =>  $handle,
+            'type'   =>  $getFieldsType->type,
+          );
+          // add Column content
+          modifyColumn($fields, 'add'); 
+        } else {
+          $this->session->set_flashdata('message', "This fields {field_{$handle}} has exists");
+        }
 
         $opt = array(
           'settings' => json_encode($opt_settings),
         );
-        $option = $this->general_m->create('fields_option', $opt, FALSE);
+        $option_id = $this->general_m->create('fields_option', $opt, FALSE);
         $data = array(
           'group_id'    =>  $this->input->post('fieldsGroupId'),
           'type_id'     =>  $this->input->post('fieldsTypeId'),
-          'option_id'   =>  $option,
+          'option_id'   =>  $option_id,
           'name'        =>  $this->input->post('name'),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'handle'      =>  $handle,
           'label'       =>  ucfirst($this->input->post('name')),
           'description' =>  $this->input->post('description'),
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'status'      =>  $this->input->post('status'),
           'created_by'  =>  $this->data['userdata']['id'],
         );
-        $this->fields_m->create($data);
-        
+        $this->fields_m->create($data);        
         helper_log('add', "Create {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully Create");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
         redirect($this->data['parentLink']);
       }
     } else {
@@ -197,14 +196,14 @@ class fields extends My_Controller {
     $settings = array(
       'title'         =>  'fields',
       'subtitle'      =>  'edit',
-      'breadcrumb'    =>  FALSE,
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('edit'),
       'button'        =>  'Update',
       'button_type'   =>  'submit',
       'button_name'   =>  'update',
       'content'       =>  'template/bootstrap-4/admin/fields/fields-form',
       'table'         =>  'fields',
-      'action'        =>  'admin/settings/fields/update',
+      'action'        =>  'admin/settings/fields/edit',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'fields_type'   =>  $this->general_m->get_all_results('fields_type'),
@@ -233,7 +232,7 @@ class fields extends My_Controller {
     $this->form_validation->set_rules('fieldsGroupId', 'fields Group', 'trim|required');
     $this->form_validation->set_rules('fieldsTypeId', 'fields Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['update'])) {
+      if ($_POST['button'] == 'update') {
         if ($this->input->post('fieldsType')  == 'plainText') {
           $opt_settings = array(
             'plainPlaceholder'         => $this->input->post('plainPlaceholder'),
@@ -288,18 +287,34 @@ class fields extends My_Controller {
           );
         } else {
           $opt_settings = NULL;
+        }   
+
+        $handle           = lcfirst(str_replace(' ', '', ucwords($this->input->post('name'))));
+        $getFields_type   = $this->general_m->get_row_by_id('fields_type', $this->input->post('fieldsTypeId'));
+        $getContentFields = $this->db->list_fields('content');
+        if ($handle != $settings['getDataby_id']->handle) {
+          if (!in_array("field_{$handle}", $getContentFields)) {
+            $fields = array(
+              'old_name' =>  $settings['getDataby_id']->handle,
+              'handle'   =>  $handle,
+              'type'     =>  $getFields_type->type,
+            );
+            // Modify Column content
+            modifyColumn($fields, 'modify'); 
+          }
         }
 
         $opt = array(
           'settings' => json_encode($opt_settings),
         );
-          
-        $upt = $this->general_m->update('fields_option', $opt, $settings['getDataby_id']->option_id, '', FALSE);
-        $option = $settings['getDataby_id']->option_id;
+        //update Fields Options 
+        $this->general_m->update('fields_option', $opt, $settings['getDataby_id']->option_id, '', FALSE);
+        $option_id = $settings['getDataby_id']->option_id;
+
         $data = array(
           'group_id'    =>  $this->input->post('fieldsGroupId'),
           'type_id'     =>  $this->input->post('fieldsTypeId'),
-          'option_id'   =>  $option,
+          'option_id'   =>  $option_id,
           'name'        =>  $this->input->post('name'),
           'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'label'       =>  ucfirst($this->input->post('name')),
@@ -308,16 +323,7 @@ class fields extends My_Controller {
           'status'      =>  $this->input->post('status'),
           'created_by'  =>  $this->data['userdata']['id'],
         );
-
-        $this->fields_m->update($data, $id);
-        $getFields_type = $this->general_m->get_row_by_id('fields_type', $data['type_id']);
-        $content_fields = array(
-          'old_name' =>  $settings['getDataby_id']->handle,
-          'handle'   =>  $data['handle'],
-          'type'     =>  $getFields_type->type,
-        );
-        // Modify Column content
-        modifyColumn($content_fields, 'modify'); 
+        $this->fields_m->update($data, $id); 
         helper_log('edit', "Update {$settings['title']} has successfully");
         $this->session->set_flashdata('message', "{$settings['title']} has successfully Updated");
         redirect($this->data['parentLink']);
@@ -327,10 +333,37 @@ class fields extends My_Controller {
     }
   }
 
+  /*Delete fields*/
+  public function delete($id='') {
+    $settings = array(
+      'title'        =>  'fields',
+      'getDataby_id' => $this->fields_m->get_row_by_id($id)
+    );
+    if ($settings['getDataby_id']) {
+      $getContentFields = $this->db->list_fields('content');
+      if (in_array($settings['getDataby_id']->handle, $getContentFields)) {
+        $fields = array(
+          'handle' => $settings['getDataby_id']->handle,
+        );
+        // Drop field column in content
+        modifyColumn($fields, 'drop');
+      }
+      $deleteElement = $this->general_m->delete('element', $id, 'fields_id');
+      $delete        = $this->fields_m->delete($id);
+      $deleteOption  = $this->general_m->delete('fields_option', $settings['getDataby_id']->option_id);
+      helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
+      $this->session->set_flashdata('message', "{settings['title']} has deleted {$delete} Records");
+      redirect($this->data['parentLink']);
+    } else {
+      $this->session->set_flashdata('message', 'Delete Failed, Your data is Not Valid');
+      redirect($this->data['parentLink']);
+    }
+  }
+
   public function name_check($str) {
-    $id = $this->uri->segment(4);
+    $id    = $this->uri->segment(5);
     $field = $this->fields_m->get_row_by_id($id);
-    $data = array('name' => $str);
+    $data  = array('name' => $str);
     $check = $this->general_m->get_row_by_fields('fields', $data);
     if(empty($check)) {
       return TRUE;
@@ -342,9 +375,9 @@ class fields extends My_Controller {
   }
 
   public function handle_check($str) {
-    $id = $this->uri->segment(4);
+    $id    = $this->uri->segment(5);
     $field = $this->fields_m->get_row_by_id($id);
-    $data = array('handle' => $str); 
+    $data  = array('handle' => $str); 
     $check = $this->general_m->get_row_by_fields('fields', $data);
     if (empty($check)) {
       return TRUE;
@@ -354,41 +387,6 @@ class fields extends My_Controller {
       return TRUE;
     }
   }
-
-  /*Delete fields*/
-  public function delete($id='') {
-    $settings = array(
-      'title'         =>  'fields',
-      'subtitle'      =>  FALSE,
-      'subbreadcrumb' =>  FALSE,
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
-      'fields_type'   =>  $this->general_m->get_all_results('fields_type'),
-      'group'         =>  $this->general_m->get_all_results('fields_group'),
-      'group_count'   =>  $this->general_m->count_all_results('fields_group'),
-      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
-      'getDataby_id'  =>  $this->fields_m->get_row_by_id($id),
-    );
-    $settings['getFieldType'] = json_decode($settings['getDataby_id']->settings);
-
-    if ($settings['getDataby_id']) {
-      $element_del = $this->general_m->delete('element', $id, 'fields_id');
-      $fields = array(
-        'handle' => $settings['getDataby_id']->handle,
-      );
-      // Drop field column in content
-      modifyColumn($fields, 'drop');
-      $fields_del = $this->fields_m->delete($id);
-      $option_del = $this->general_m->delete('fields_option', $settings['getDataby_id']->option_id);
-      helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has deleted {$delete} Records");
-      redirect($this->data['parentLink']);
-    } else {
-      $this->session->set_flashdata('message', 'Your Id Not Valid');
-      redirect($this->data['parentLink']);
-    }
-  }
-
 
   /*TYPE fields*/
   public function type() {
@@ -434,7 +432,7 @@ class fields extends My_Controller {
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     if ($this->form_validation->run() == TRUE ) {
-      if (isset($_POST['create'])) {
+      if ($_POST['button'] == 'create') {
         $data = array(
           'name'        => $this->input->post('name'),
           'type'        => $this->input->post('type'),
@@ -468,7 +466,7 @@ class fields extends My_Controller {
     $settings['getDataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     if ($this->form_validation->run() == TRUE ) {
-      if (isset($_POST['update'])) {
+      if ($_POST['button'] == 'update') {
         $data = array(
           'name'        => $this->input->post('name'),
           'type'        => $this->input->post('type'),
