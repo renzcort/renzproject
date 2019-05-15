@@ -17,7 +17,7 @@
           <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
         </a>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" href="#">
           <i class="fab fa-elementor"></i><span>Entries</span>
         </a>
@@ -41,17 +41,17 @@
         <a class="nav-link" href="#">
           <i class="fas fa-wrench"></i><span>Utilites</span>
         </a>
-      </li>
+      </li> -->
       <li class="nav-item">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="<?php echo base_url('admin/settings') ?>">
           <i class="fas fa-cogs"></i><span>Settings</span>
         </a>
       </li>
-      <li class="nav-item">
+      <!-- <li class="nav-item">
         <a class="nav-link" href="#">
           <i class="fas fa-plug"></i><span>Plugins Store</span>
         </a>
-      </li>
+      </li> -->
     </ul>
   </div>
 </div>

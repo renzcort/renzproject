@@ -79,18 +79,14 @@ $route['admin/users/group/delete/(:num)'] =  'admin/users/group_delete/$1';
 $route['admin/info']                      =  'admin/info/update';
 
 /*fields*/
-$route['admin/fields']                     = 'admin/fields';
-$route['admin/fields/create']              = 'admin/fields/create';
-$route['admin/fields/edit/(:num)']         = 'admin/fields/update/$1';
-$route['admin/fields/delete/(:num)']       = 'admin/fields/delete/$1';
-$route['admin/fields/group']               = 'admin/fields/group';
-$route['admin/fields/group/create']        = 'admin/fields/group_create';
-$route['admin/fields/group/edit/(:num)']   = 'admin/fields/group_update/$1';
-$route['admin/fields/group/delete/(:num)'] = 'admin/fields/group_delete/$1';
-$route['admin/fields/type']                = 'admin/fields/type';
-$route['admin/fields/type/create']         = 'admin/fields/type_create';
-$route['admin/fields/type/edit/(:num)']    = 'admin/fields/type_update/$1';
-$route['admin/fields/type/delete/(:num)']  = 'admin/fields/type_delete/$1';
+$route['admin/settings/fields']                     = 'admin/fields';
+$route['admin/settings/fields/create']              = 'admin/fields/create';
+$route['admin/settings/fields/edit/(:num)']         = 'admin/fields/update/$1';
+$route['admin/settings/fields/delete/(:num)']       = 'admin/fields/delete/$1';
+$route['admin/settings/fields/type']                = 'admin/fields/type';
+$route['admin/settings/fields/type/create']         = 'admin/fields/type_create';
+$route['admin/settings/fields/type/edit/(:num)']    = 'admin/fields/type_update/$1';
+$route['admin/settings/fields/type/delete/(:num)']  = 'admin/fields/type_delete/$1';
 
 /*Section*/
 $route['admin/section']                       = 'admin/section';
@@ -126,5 +122,14 @@ $route['admin/categories/create']                = 'admin/categories/create';
 $route['admin/categories/edit/(:num)']           = 'admin/categories/update/$1';
 $route['admin/categories/delete/(:num)']         = 'admin/categories/delete/$1';
 
+
+/*Assets*/
+$route['admin/sites']                       = 'admin/sites';
+$route['admin/sites/create']                = 'admin/sites/create';
+$route['admin/sites/edit/(:num)']           = 'admin/sites/update/$1';
+$route['admin/sites/delete/(:num)']         = 'admin/sites/delete/$1';
+
 // settings 
-$route['admin/settings'] = 'admin/settings';
+$route['admin/settings']         = 'admin/settings';
+$route['admin/settings/general'] = 'admin/general';
+$route['admin/settings/email']   = 'admin/email';

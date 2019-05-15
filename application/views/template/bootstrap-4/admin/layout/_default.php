@@ -274,8 +274,9 @@
               type: 'POST',
               dataType: 'json',
               data: {table: table, group_name: group_name, group_id : group_id},
-              url: '<?php echo base_url("admin/api/jsonDeleteGroupsById") ?>'
+              url: '<?php echo base_url("admin/api/jsonDeleteGroupsById") ?>',
             }).done(function(data) {
+              alert(data);
               window.location.reload();
             }).fail(function(error) {
             });

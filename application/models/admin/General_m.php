@@ -86,7 +86,7 @@ class General_m extends My_Model {
   /*Delete Data By ID*/
   public function delete($table, $id, $key='') {
     ((!empty($key)) ? $key : $key = 'id');
-    
+
     $this->db->where("{$key}", $id);
     $this->db->delete($table);
     // affected_rows this function use to know number data delete

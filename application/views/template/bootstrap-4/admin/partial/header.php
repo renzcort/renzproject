@@ -1,16 +1,25 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <div class="container">
-    <?php if ($title != 'Home'): ?>
-      <?php if ($subbreadcrumb): ?>
+    <?php if ($title == 'Home'): ?>
+      <li class="breadcrumb-item"><a href="<?php echo base_url('admin/home'); ?>">Home</a></li>
+    <?php else :?>
+      <?php if ($breadcrumb): ?>
         <li class="breadcrumb-item"><a href="<?php echo base_url('admin/home'); ?>">Home</a></li>
-        <li class="breadcrumb-item"><a href=""><?php echo ($title ? ucfirst($title) : ''); ?></a></li>
-        <?php foreach ($subbreadcrumb as $key): ?>
-        <li class="breadcrumb-item <?php echo ((end($subbreadcrumb) == $key) ? 'active aria-current="page"' : ''); ?>">
-          <?php echo ((end($subbreadcrumb) == $key) ? ucfirst($key) : '<a href="">'.ucfirst($key).'</a>');?>
-        </li>  
+        <?php foreach ($breadcrumb as $key): ?>
+        <li class="breadcrumb-item"><a href="<?php echo base_url("admin/{$key}"); ?>"><?php echo ucfirst($key); ?></a></li>
         <?php endforeach ?>
-      <?php else:?>
+        <li <?php echo ($subbreadcrumb ? 'class="breadcrumb-item"' : 'class="breadcrumb-item active" aria-current="page" ');?>>
+          <?php echo ($subbreadcrumb ? '<a href="'.base_url("admin/{$title}").'">'.ucfirst($title).'</a>' : ucfirst($title)); ?>
+        </li>
+        <?php if ($subbreadcrumb): ?>
+          <?php foreach ($subbreadcrumb as $key): ?>
+          <li class="breadcrumb-item <?php echo ((end($subbreadcrumb) == $key) ? 'active aria-current="page"' : ''); ?>">
+            <?php echo ((end($subbreadcrumb) == $key) ? ucfirst($key) : '<a href="">'.ucfirst($key).'</a>');?>
+          </li>  
+        <?php endforeach ?>
+        <?php endif ?>
+      <?php else : ?>
         <li class="breadcrumb-item"><a href="<?php echo base_url('admin/home'); ?>">Home</a></li>
         <li class="breadcrumb-item active" aria-current="page"><?php echo ($title ? ucfirst($title) : ''); ?></li>
       <?php endif ?>

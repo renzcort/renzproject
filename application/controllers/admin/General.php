@@ -19,7 +19,8 @@ class General extends My_Controller {
   {
     $settings = array(
       'title'         =>  'general',
-      'subtitle'      =>  FALSE,
+      'subtitle'      =>  'Settings',
+      'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
       'button'        =>  'Save',
       'button_type'   =>  'submit',

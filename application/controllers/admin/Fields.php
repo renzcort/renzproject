@@ -21,12 +21,13 @@ class fields extends My_Controller {
     $settings = array(
       'title'         =>  'fields',
       'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  FALSE,
       'subbreadcrumb' =>  FALSE,
       'button'        =>  '+ New Fields',
       'button_link'   =>  'fields/create',
       'content'       =>  'template/bootstrap-4/admin/fields/fields-list',
       'table'         =>  'fields',
-      'action'        =>  'admin/fields',
+      'action'        =>  'admin/settings/fields',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'group_name'    =>  'fields_group',
@@ -56,13 +57,14 @@ class fields extends My_Controller {
     $settings = array(
       'title'         =>  'fields',
       'subtitle'      =>  'create',
+      'breadcrumb'    =>  FALSE,
       'subbreadcrumb' =>  FALSE,
       'button'        =>  'Save',
       'button_type'   =>  'submit',
       'button_name'   =>  'create',
       'content'       =>  'template/bootstrap-4/admin/fields/fields-form',
       'table'         =>  'fields',
-      'action'        =>  'admin/fields/create',
+      'action'        =>  'admin/settings/fields/create',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'fields_type'   =>  $this->general_m->get_all_results('fields_type'),
@@ -146,10 +148,26 @@ class fields extends My_Controller {
           $opt_settings = NULL;
         }
 
+        // Alter Add Column Table Content 
+        $handle           = lcfirst(str_replace(' ', '', ucwords($this->input->post('name'))));
+        $getFieldsType    = $this->general_m->get_row_by_id('fields_type', $this->input->post('fieldsTypeId'));
+        $getContentFields = $this->db->list_fields('content');
+        foreach ($getContentFields as $key => $value) {
+          if ($value == "field_{$handle}") {
+            $this->session->set_flashdata('message', "field_{$handle} has Exists");
+          } else {
+            $fields = array(
+              'handle' =>  $handle,
+              'type'   =>  $getFieldsType->type,
+            );
+            // add Column content
+            modifyColumn($fields, 'add'); 
+          }
+        }  
+
         $opt = array(
           'settings' => json_encode($opt_settings),
         );
-        
         $option = $this->general_m->create('fields_option', $opt, FALSE);
         $data = array(
           'group_id'    =>  $this->input->post('fieldsGroupId'),
@@ -163,16 +181,8 @@ class fields extends My_Controller {
           'status'      =>  $this->input->post('status'),
           'created_by'  =>  $this->data['userdata']['id'],
         );
-
         $this->fields_m->create($data);
-        // Alter Add Column Table Content 
-        $getFields_type = $this->general_m->get_row_by_id('fields_type', $data['type_id']);
-        $content_fields = array(
-          'handle' =>  $data['handle'],
-          'type'   =>  $getFields_type->type,
-        );
-        // add Column content
-        modifyColumn($content_fields, 'add'); 
+        
         helper_log('add', "Create {$settings['title']} has successfully");
         $this->session->set_flashdata('message', "{$settings['title']} has successfully Create");
         redirect($this->data['parentLink']);
@@ -187,13 +197,14 @@ class fields extends My_Controller {
     $settings = array(
       'title'         =>  'fields',
       'subtitle'      =>  'edit',
+      'breadcrumb'    =>  FALSE,
       'subbreadcrumb' =>  FALSE,
       'button'        =>  'Update',
       'button_type'   =>  'submit',
       'button_name'   =>  'update',
       'content'       =>  'template/bootstrap-4/admin/fields/fields-form',
       'table'         =>  'fields',
-      'action'        =>  'admin/fields/update',
+      'action'        =>  'admin/settings/fields/update',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'fields_type'   =>  $this->general_m->get_all_results('fields_type'),
@@ -378,120 +389,6 @@ class fields extends My_Controller {
     }
   }
 
-
-  /*GROUP fields*/
-  public function group() {
-    $settings = array(
-      'header'    => 'Group',
-      'subheader' => 'Manage fields',
-      'content'   =>  'admin/fields/group/index',
-      'table'     =>  'fields_group',
-      'action'    => 'admin/fields/group',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(4), 
-    );
-
-    // pagination
-    $config                 = $this->config->item('setting_pagination');
-    $config['base_url']     = base_url($settings['action']);
-    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']     = 10;
-    $num_pages              = $config['total_rows'] / $config['per_page'];
-    $config['uri_segment']  = 4;
-    $config['num_links']    = round($num_pages);
-    $this->pagination->initialize($config);
-    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
-    $settings['links']      = $this->pagination->create_links();
-    // end pagination
-    $this->load->view('admin/layout/_default', $settings);
-  }
-
-  /*Group Create*/
-  public function group_create() {
-    $settings = array(
-      'header'    => 'Group',
-      'subheader' => 'Manage fields',
-      'content'   =>  'admin/fields/group/create',
-      'table'     =>  'fields_group',
-      'action'    => 'admin/fields/group',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(4), 
-    );
-
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    if ($this->form_validation->run() == TRUE ) {
-      if (isset($_POST['create'])) {
-        $data = array(
-          'name'        => $this->input->post('name'),
-          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'slug'        => url_title(strtolower($this->input->post('name'))),
-          'description' => $this->input->post('description'),
-          'created_by'  => $this->data['userdata']['id'],
-        );
-        $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
-        $this->session->set_flashdata('message', 'Data has created');
-        redirect($settings['action']);
-      }
-    } else {
-      $this->load->view('admin/layout/_default', $settings);
-    }
-  }
-
-  /*Group Update*/
-  public function group_update($id='') {
-    $settings = array(
-      'header'    => 'Group',
-      'subheader' => 'Manage fields',
-      'content'   =>  'admin/fields/group/edit',
-      'table'     =>  'fields_group',
-      'action'    => 'admin/fields/group',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(4), 
-    );
-    $settings['getDataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    if ($this->form_validation->run() == TRUE ) {
-      if (isset($_POST['update'])) {
-        $data = array(
-          'name'        => $this->input->post('name'),
-          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'slug'        => url_title(strtolower($this->input->post('name'))),
-          'description' => $this->input->post('description'),
-          'updated_by'  => $this->data['userdata']['id'],
-        );
-        $this->general_m->update($settings['table'], $data, $id);
-        helper_log('update', "update ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." has successfully");
-        $this->session->set_flashdata('message', 'Data has Updated');
-        redirect($settings['action']);
-      }
-    } else {
-      $this->load->view('admin/layout/_default', $settings);
-    }
-  }
-
-  /*Delete Group*/
-  public function group_delete($id='') {
-    $settings = array(
-      'header'    =>  'Group',
-      'subheader' =>  'Manage fields',
-      'content'   =>  'admin/fields/group/index',
-      'table'     =>  'fields_group',
-      'action'    =>  'admin/fields/group',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(4), 
-    );
-    if ($this->general_m->get_row_by_id($settings['table'], $id)) {
-      $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
-      redirect($settings['action']);
-    } else {
-      $this->session->set_flashdata('message', 'Your Id Not Valid');
-      redirect($settings['action']);
-    }
-  }
 
   /*TYPE fields*/
   public function type() {

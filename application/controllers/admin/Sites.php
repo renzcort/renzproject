@@ -59,51 +59,36 @@ class Sites extends My_Controller {
       'button'        =>  'Save',
       'button_type'   =>  'submit',
       'button_name'   =>  'create',
-      'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/sites/sites-form',
       'table'         =>  'sites',
-      'action'        =>  'admin/sites',
+      'action'        =>  'admin/sites/create',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
+      'group_name'    =>  'sites_group',
+      'group'         =>  $this->general_m->get_all_results('sites_group'),
+      'group_count'   =>  $this->general_m->count_all_results('sites_group'),
+      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
     );
 
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
     $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
+      if ($_POST['button'] == 'create') {
         $data = array(
-          'group_id'   => $this->input->post('group_id'),
-          'name'       => $this->input->post('name'),
-          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'type'       => $this->input->post('type'),
-          'path'       => $this->input->post('path'),
-          'url'        => $this->input->post('url'),
-          'parent'     => $this->input->post('parent'),
-          'order'      => $this->input->post('order'),
-          'description'=> $this->input->post('description'),
-          'created_by' => $this->data['userdata']['id'],
+          'group_id'    => $this->input->post('group'),
+          'name'        => ucfirst($this->input->post('name')),
+          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'primary'     => $this->input->post('primary'),
+          'url'         => $this->input->post('url'),
+          'baseurl'     => $this->input->post('baseurl'),
+          'locale'      => $this->input->post('locale'),
+          'description' => $this->input->post('description'),
+          'created_by'  => $this->data['userdata']['id'],
         );
-        $tableFieldsId = $this->general_m->create($settings['table'], $data);
+        $this->general_m->create($settings['table'], $data);
         helper_log('add', "add data {$settings['title']} has successfully");
-        //get fields to element 
-        $fieldsId = $this->input->post('fieldsId');
-        if (!empty($fieldsId)) {
-          $i = 0;
-          (isset($id) ? $id = $tableFieldsId : $id = $id);
-          $this->general_m->delete($settings['fields_table'], $id);
-          foreach ($fieldsId as $value) {
-            $element = array(
-              'sites_id'   =>  $id,
-              'fields_id'   =>  $value,
-              'order'       =>  ++$i,
-            );
-            $this->general_m->create('sites_element', $element, FALSE);
-          }
-          helper_log('add', "add element create has successfully {$element['order']} record");
-          $this->session->set_flashdata("message", "Entries has successfully Create");
-        }        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Create");
-        redirect($settings['action']);
+        redirect($this->data['parentLink']);
       } 
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -114,73 +99,43 @@ class Sites extends My_Controller {
   public function update($id='') {
     $settings = array(
       'title'         =>  'sites',
-      'subtitle'      =>  'update',
+      'subtitle'      =>  'create',
       'subbreadcrumb' =>  FALSE,
       'button'        =>  'Update',
       'button_type'   =>  'submit',
       'button_name'   =>  'update',
-      'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/sites/sites-form',
       'table'         =>  'sites',
-      'action'        =>  'admin/sites',
+      'action'        =>  'admin/sites/edit',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'fields_table'  =>  'sites_element',
-      'sites_type'   =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
-      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
-      'fields'        =>  $this->fields_m->get_all_results(),
-      'elementFields' =>  [],
-      'order'         =>  $this->general_m->get_max_fields('sites', 'order'),
+      'id'            =>  $id,
+      'group_name'    =>  'sites_group',
+      'group'         =>  $this->general_m->get_all_results('sites_group'),
+      'group_count'   =>  $this->general_m->count_all_results('sites_group'),
+      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
     );
-    $settings['element']      = $this->general_m->get_result_by_id($settings['fields_table'], $id, "{$settings['table']}_id");
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
-    
-    if ($settings['element']) {
-      foreach ($settings['element'] as $key) {
-        $fieldsId[] = $key->fields_id; 
-      }
-      $settings['elementFields'] = $fieldsId;
-    } else {
-      $settings['elementFields'] = [];
-    }
-    
+
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
     $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['update'])) {
+      if ($_POST['button'] == 'update') {
         $data = array(
-          'group_id'   => $this->input->post('group_id'),
-          'name'       => $this->input->post('name'),
-          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'type'       => $this->input->post('type'),
-          'path'       => $this->input->post('path'),
-          'url'        => $this->input->post('url'),
-          'parent'     => $this->input->post('parent'),
-          'order'      => $this->input->post('order'),
-          'description'=> $this->input->post('description'),
-          'updated_by' => $this->data['userdata']['id'],
+          'group_id'    => $this->input->post('group'),
+          'name'        => ucfirst($this->input->post('name')),
+          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'primary'     => $this->input->post('primary'),
+          'url'         => $this->input->post('url'),
+          'baseurl'     => $this->input->post('baseurl'),
+          'locale'      => $this->input->post('locale'),
+          'description' => $this->input->post('description'),
+          'updated_by'  => $this->data['userdata']['id'],
         );
-        $this->general_m->update($settings['table'], $data, $id);
+        $update = $this->general_m->update($settings['table'], $data, $id);
         helper_log('edit', "Update data {$settings['title']} has successfully");
-        //get fields to element 
-        $fieldsId = $this->input->post('fieldsId');
-        if (!empty($fieldsId)) {
-          $i = 0;
-          (isset($id) ? $id = $tableFieldsId : $id = $id);
-          $this->general_m->delete($settings['fields_table'], $id);
-          foreach ($fieldsId as $value) {
-            $element = array(
-              'sites_id'   =>  $id,
-              'fields_id'   =>  $value,
-              'order'       =>  ++$i,
-            );
-            $this->general_m->create('sites_element', $element, FALSE);
-          }
-          helper_log('add', "add element create has successfully {$element['order']} record");
-          $this->session->set_flashdata("message", "Entries has successfully Create");
-        }        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
-        redirect($settings['action']);
+        redirect($this->data['parentLink']);
       } 
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -198,7 +153,6 @@ class Sites extends My_Controller {
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
     if ($settings['getDataby_id']) {
-      $element_del = $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
       $delete = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete data {$settings['title']} has successfully");        
       $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");

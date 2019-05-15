@@ -189,37 +189,41 @@ class Api extends My_Controller {
     $group_id   = $this->input->post('group_id');
     $group_name = $this->input->post('group_name');
     $table      = $this->input->post('table');
-    $getFields = $this->general_m->get_result_by_id($table, $group_id, 'group_id');
-    
-    if (!empty($getFields)) {
+    $getFields  = $this->general_m->get_result_by_id($table, $group_id, 'group_id');
+  
+    if ($getFields) {
       if ($table == 'fields') {
+        $opt_id = [];
         foreach ($getFields as $key) {
-          $element_del = $this->general_m->delete('element', $key->id, 'fields_id');
-          $fields = array(
-            'handle' => $key->handle,
-          );
-          // Drop field column in content
-          modifyColumn($fields, 'drop');
-          $delete     = $this->fields_m->delete($key->id);
-          $option_del = $this->general_m->delete('fields_option', $key->option_id);
+          $getContentFields = $this->db->list_fields('content');
+          foreach ($getContentFields as $value) {
+            if ($value == "field_{$key->handle}") {
+              $fields = array(
+                'handle' => $key->handle,
+              );
+              modifyColumn($fields, 'drop');
+            }
+          }
+          $opt_id[] = $key->option_id;
+          $getElement = $this->general_m->get_row_by_id('element', $key->id, 'fields_id');
+          if ($getElement) {
+            $deleteElement = $this->general_m->delete('element', $key->id, 'fields_id');
+          }
         } 
+        $deleteTable = $this->general_m->delete($table, $group_id, 'group_id'); 
+        foreach ($opt_id as $value) {
+          $deleteOption = $this->general_m->delete('fields_option', $value);  
+        }
       } else {
         $delete = $this->general_m->delete($table, $group_id, 'group_id');
       }
     }
-    $delete = $this->general_m->delete($group_name, $group_id);
-    if ($delete >= 1) {
-      $data = array(
-        'action' => "admin/{$table}",
-        'delete' => 'success'
-      );
-    } else {
-      $data = array(
-        'action' => "admin/{$table}",
-        'delete' => 'failed'
-      );
-    }
-    $this->session->set_flashdata('message', "Data {$table} has deleted {$delete} Records");
+    $deleteGroup = $this->general_m->delete($group_name, $group_id);
+    $data = array(
+      'action' => "admin/{$table}",
+      'delete' => 'success'
+    );
+    $this->session->set_flashdata('message', "Data has deleted Records");
     echo json_encode($data);
   }
   

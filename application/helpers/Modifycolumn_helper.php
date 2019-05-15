@@ -70,6 +70,7 @@
     $CI->load->model('admin/Content_m', 'content_m');
     if ($action == 'add') {
       $CI->content_m->add_column($column);
+    
     } elseif ($action == 'modify') {
       $column = arraY( 
           "field_{$fields['old_name']}" => array(
@@ -82,6 +83,7 @@
 
       );
       $CI->content_m->modify_column($column);
+    
     } elseif ($action == 'drop') {
       $column = "field_{$fields['handle']}"; 
       $CI->content_m->drop_column($column);

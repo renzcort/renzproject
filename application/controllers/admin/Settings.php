@@ -17,6 +17,7 @@ class Settings extends My_Controller {
     $settings = array(
       'title'         =>  'settings',
       'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  FALSE,
       'subbreadcrumb' =>  FALSE,
       'button'        =>  '+ New Categories',
       'button_link'   =>  'categories/create',

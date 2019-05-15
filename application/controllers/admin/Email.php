@@ -20,6 +20,7 @@ class Email extends My_Controller {
     $settings = array(
       'title'         =>  'email',
       'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
       'button'        =>  'Save',
       'button_type'   =>  'submit',

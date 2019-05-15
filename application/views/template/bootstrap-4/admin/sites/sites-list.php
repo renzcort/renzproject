@@ -2,15 +2,15 @@
     <div class="sidebar-content">
       <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebarGroups" data-groups-name="<?php echo ($group_name ? $group_name : ''); ?>" data-table="<?php echo ($table ? $table : ''); ?>">
         <li class="nav-item">
-          <a class="nav-link active" href="#" data-id="all">All Fields</a>
+          <a class="nav-link active" data-id="all">All Fields</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-id="default">Default</a>
+          <a class="nav-link" data-id="default">Default</a>
         </li>
         <?php if ($group): ?>
           <?php foreach ($group as $key): ?>
             <li class="nav-item">
-              <a class="nav-link" href="#" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
+              <a class="nav-link" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
             </li>
           <?php endforeach ?>
         <?php endif ?>
@@ -23,8 +23,8 @@
               <i class="fas fa-cog"></i>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#" id="groupsRename">Rename Selected Group</a>
-              <a class="dropdown-item" href="#" id="groupsDelete">Delete Selected Group</a>
+              <a class="dropdown-item" id="groupsRename">Rename Selected Group</a>
+              <a class="dropdown-item" id="groupsDelete">Delete Selected Group</a>
             </div>
           </div>
         <?php } ?>
@@ -55,7 +55,9 @@
           <td><?php echo $key->locale; ?></td>
           <td><?php echo (!empty($key->primary) ? 'Yes' : 'No');?></td>
           <td><?php echo (!empty($key->url) ? $key->url : ''); ?></td>
-          <td><?php echo $key->group_name; ?></td>
+          <?php foreach ($group as $key2): ?>
+            <td><?php echo (($key->group_id == $key2->id) ? $key2->name : ''); ?></td>
+          <?php endforeach ?>
           <td scope="row">
             <a href="<?php echo base_url($action.'/delete/'.$key->id); ?>"><i class="fas fa-minus-circle"></i></a>
           </td>        

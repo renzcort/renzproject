@@ -6,11 +6,11 @@
                     ); 
       echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
     ?>
-    <input type="hidden" name="<?php echo $button_name; ?>">
+    <input type="hidden" name="button" value="<?php echo $button_name; ?>">
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
       <small class="form-text text-muted">Which group should this site belong to?</small>
-      <select name="group" class="form-control costum-select">
+      <select name="group" name="group_id" class="form-control costum-select">
       <?php foreach ($group as $key): ?>
         <option value="<?php echo $key->id; ?>" data-id="<?php echo $key->id; ?>" 
           <?php echo ((!empty($getDataby_id->group_id) && $getDataby_id->group_id == $key->id) ? 'selected' : '' ) ?>>
@@ -20,7 +20,7 @@
       </select>
     </div>
     <div class="form-group">
-      <label class="heading required" for="inputName">Name</label>
+      <label class="heading required" for="inputName">Name</label>  
       <small class="form-text text-muted">What this site will be called in the CP.</small>
       <input type="text" name="name" class="form-control"
       value="<?php echo (!empty($getDataby_id->name) ? $getDataby_id->name : set_value('name')); ?>">
@@ -59,7 +59,7 @@
     <div class="form-group">
       <label class="heading" for="inputBaseurl">Base URL</label>
       <small class="form-text text-muted">The base URL for the site.</small>
-      <input type="text" name="baseURL" class="form-control" placeholder="@web/" 
+      <input type="text" name="baseurl" class="form-control" placeholder="@web/" 
       value="<?php echo (!empty($getDataby_id->url) ? $getDataby_id->url : set_value('url')); ?>">
       <small class="form-text text-muted">The @web alias is not recommended if it is determined automatically.</small>
     </div>
