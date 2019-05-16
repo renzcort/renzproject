@@ -19,18 +19,20 @@ class Sites extends My_Controller {
     $settings = array(
       'title'         =>  'sites',
       'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
       'button'        =>  '+ New sites',
       'button_link'   =>  'sites/create',
       'content'       =>  'template/bootstrap-4/admin/sites/sites-list',
       'table'         =>  'sites',
-      'action'        =>  'admin/sites',
+      'action'        =>  'admin/settings/sites',
       'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
+      'no'            =>  $this->uri->segment(4),
+      'element_name'  =>  FALSE,
       'group_name'    =>  'sites_group',
       'group'         =>  $this->general_m->get_all_results('sites_group'),
       'group_count'   =>  $this->general_m->count_all_results('sites_group'),
-      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
     );
 
     // Pagination
@@ -51,23 +53,23 @@ class Sites extends My_Controller {
 
   /*CREATE*/
   public function create() {
-
     $settings = array(
       'title'         =>  'sites',
       'subtitle'      =>  'create',
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('create'),
       'button'        =>  'Save',
       'button_type'   =>  'submit',
       'button_name'   =>  'create',
       'content'       =>  'template/bootstrap-4/admin/sites/sites-form',
       'table'         =>  'sites',
-      'action'        =>  'admin/sites/create',
+      'action'        =>  'admin/settings/sites/create',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'group_name'    =>  'sites_group',
       'group'         =>  $this->general_m->get_all_results('sites_group'),
       'group_count'   =>  $this->general_m->count_all_results('sites_group'),
-      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
     );
 
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
@@ -86,8 +88,8 @@ class Sites extends My_Controller {
           'created_by'  => $this->data['userdata']['id'],
         );
         $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add data {$settings['title']} has successfully");
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Create");
+        helper_log('add', "Create {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
         redirect($this->data['parentLink']);
       } 
     } else {
@@ -100,20 +102,21 @@ class Sites extends My_Controller {
     $settings = array(
       'title'         =>  'sites',
       'subtitle'      =>  'create',
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('edit'),
       'button'        =>  'Update',
       'button_type'   =>  'submit',
       'button_name'   =>  'update',
       'content'       =>  'template/bootstrap-4/admin/sites/sites-form',
       'table'         =>  'sites',
-      'action'        =>  'admin/sites/edit',
+      'action'        =>  'admin/settings/sites/edit',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'id'            =>  $id,
       'group_name'    =>  'sites_group',
       'group'         =>  $this->general_m->get_all_results('sites_group'),
       'group_count'   =>  $this->general_m->count_all_results('sites_group'),
-      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
@@ -132,8 +135,8 @@ class Sites extends My_Controller {
           'description' => $this->input->post('description'),
           'updated_by'  => $this->data['userdata']['id'],
         );
-        $update = $this->general_m->update($settings['table'], $data, $id);
-        helper_log('edit', "Update data {$settings['title']} has successfully");
+        $this->general_m->update($settings['table'], $data, $id);
+        helper_log('edit', "Update {$settings['title']} has successfully");
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
         redirect($this->data['parentLink']);
       } 
@@ -154,8 +157,8 @@ class Sites extends My_Controller {
 
     if ($settings['getDataby_id']) {
       $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete data {$settings['title']} has successfully");        
-      $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");
+      helper_log('delete', "Delete {settings['title']} with id = has successfully");
+      $this->session->set_flashdata('message', "{settings['title']} has deleted {$delete} Records");   
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');

@@ -8,7 +8,6 @@ class Categories extends My_Controller {
   {
     parent::__construct();
     //Do your magic here
-    $this->load->model('admin/General_m', 'general_m');
     $this->load->model('admin/Fields_m', 'fields_m');
     $this->load->model('admin/General_m', 'general_m');
     $this->data = array(
@@ -21,15 +20,16 @@ class Categories extends My_Controller {
     $settings = array(
       'title'         =>  'categories',
       'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
       'button'        =>  '+ New Categories',
       'button_link'   =>  'categories/create',
       'content'       =>  'template/bootstrap-4/admin/categories/categories-group-list',
       'table'         =>  'categories',
-      'action'        =>  'admin/categories',
+      'action'        =>  'admin/settings/categories',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'fields_table'  =>  'categories_element',
+      'element_name'  =>  'categories_element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
@@ -57,17 +57,18 @@ class Categories extends My_Controller {
     $settings = array(
       'title'         =>  'categories',
       'subtitle'      =>  'create',
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('create'),
       'button'        =>  'Create',
       'button_type'   =>  'submit',
       'button_name'   =>  'create',
       'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/categories/categories-group-form',
       'table'         =>  'categories',
-      'action'        =>  'admin/categories',
+      'action'        =>  'admin/settings/categories',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'fields_table'  =>  'categories_element',
+      'element_name'  =>  'categories_element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
@@ -77,11 +78,11 @@ class Categories extends My_Controller {
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
     $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
+      if ($_POST['button'] == 'create') {
         (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
         (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
         $data = array(
-          'name'       => $this->input->post('name'),
+          'name'       => ucfirst($this->input->post('name')),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'url'        => $this->input->post('url'),
           'template'   => $this->input->post('template'),
@@ -92,25 +93,24 @@ class Categories extends My_Controller {
           'created_by' => $this->data['userdata']['id'],
         );
         $tableFieldsId = $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add data {$settings['title']} has successfully");
+        helper_log('add', "Create {$settings['title']} has successfully");
         //get fields to element 
         $fieldsId = $this->input->post('fieldsId');
+        (isset($id) ? $id = $tableFieldsId : $id = $id);
+        $this->general_m->delete("{$settings['table']}_element", $id);
         if (!empty($fieldsId)) {
           $i = 0;
-          (isset($id) ? $id = $tableFieldsId : $id = $id);
-          $this->general_m->delete($settings['fields_table'], $id);
           foreach ($fieldsId as $value) {
             $element = array(
-              'assets_id'   =>  $id,
-              'fields_id'   =>  $value,
-              'order'       =>  ++$i,
+              'categories_id' =>  $id,
+              'fields_id'     =>  $value,
+              'order'         =>  ++$i,
             );
-            $this->general_m->create('assets_element', $element, FALSE);
+            $this->general_m->create("{$settings['table']}_element", $element, FALSE);
           }
           helper_log('add', "add element create has successfully {$element['order']} record");
-          $this->session->set_flashdata("message", "Entries has successfully Create");
         }        
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Create");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
         redirect($settings['action']);
       } 
     } else {
@@ -123,24 +123,25 @@ class Categories extends My_Controller {
     $settings = array(
       'title'         =>  'categories',
       'subtitle'      =>  'Update',
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('edit'),
       'button'        =>  'Update',
       'button_type'   =>  'submit',
       'button_name'   =>  'update',
       'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/categories/categories-group-form',
       'table'         =>  'categories',
-      'action'        =>  'admin/categories',
+      'action'        =>  'admin/settings/categories',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'fields_table'  =>  'categories_element',
+      'element_name'  =>  'categories_element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
       'order'         =>  $this->general_m->get_max_fields('categories', 'order'),
     );
 
-    $settings['element']      = $this->general_m->get_result_by_id($settings['fields_table'], $id, "{$settings['table']}_id");
+    $settings['element']      = $this->general_m->get_result_by_id($settings['element_name'], $id, "{$settings['table']}_id");
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
     
     if ($settings['element']) {
@@ -155,11 +156,11 @@ class Categories extends My_Controller {
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
     $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
+      if ($_POST['button'] == 'update') {
         (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
         (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
         $data = array(
-          'name'       => $this->input->post('name'),
+          'name'       => ucfirst($this->input->post('name')),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'url'        => $this->input->post('url'),
           'template'   => $this->input->post('template'),
@@ -170,23 +171,22 @@ class Categories extends My_Controller {
           'created_by' => $this->data['userdata']['id'],
         );
         $this->general_m->update($settings['table'], $data, $id);
-        helper_log('edit', "Update data {$settings['title']} has successfully");
+       helper_log('edit', "Update {$settings['title']} has successfully");
         //get fields to element 
         $fieldsId = $this->input->post('fieldsId');
+        (isset($id) ? $id = $tableFieldsId : $id = $id);
+        $this->general_m->delete("{$settings['table']}_element", $id);
         if (!empty($fieldsId)) {
           $i = 0;
-          (isset($id) ? $id = $tableFieldsId : $id = $id);
-          $this->general_m->delete($settings['fields_table'], $id);
           foreach ($fieldsId as $value) {
             $element = array(
-              'assets_id'   =>  $id,
-              'fields_id'   =>  $value,
-              'order'       =>  ++$i,
+              'categories_id' =>  $id,
+              'fields_id'     =>  $value,
+              'order'         =>  ++$i,
             );
-            $this->general_m->create('assets_element', $element, FALSE);
+            $this->general_m->create("{$settings['table']}_element", $element, FALSE);
           }
           helper_log('add', "add element create has successfully {$element['order']} record");
-          $this->session->set_flashdata("message", "Entries has successfully Create");
         }        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
         redirect($settings['action']);
@@ -202,12 +202,12 @@ class Categories extends My_Controller {
       'title'        => 'Categories',
       'table'        => 'categories',
       'action'       => 'admin/categories',
-      'fields_table' => 'categories_element',
+      'element_name' => 'categories_element',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
     if ($settings['getDataby_id']) {
-      $element_del = $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
+      $element_del = $this->general_m->delete($settings['element_name'], $id, "{$settings['table']}_id");
       $delete = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete data {$settings['title']} has successfully");        
       $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");

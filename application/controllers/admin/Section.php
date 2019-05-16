@@ -297,6 +297,7 @@ class Section extends My_Controller {
           helper_log('add', "Create element has successfully {$element['order']} records");
         }
         $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
+        redirect($settings['action']);
       }
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -306,9 +307,10 @@ class Section extends My_Controller {
   /*entries type update*/
   public function entrytypes_update($section_id='', $id) {
     $settings = array(
-      'title'         =>  ucfirst("New Entry Type"),
-      'subtitle'      =>  FALSE,
-      'subbreadcrumb' =>  FALSE,
+      'title'         =>  "Entry Type",
+      'subtitle'      =>  'Edit',
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('create'),
       'button'        =>  'Update',
       'button_type'   =>  'submit',
       'button_name'   =>  'update',
@@ -340,34 +342,37 @@ class Section extends My_Controller {
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|callback_handle_check');
     $this->form_validation->set_rules('title', 'Title', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      $data = array(
-        'name'        =>  $this->input->post('name'),
-        'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-        'section_id'  =>  $section_id,
-        'title'       =>  ucfirst($this->input->post('title')),
-        'slug'        =>  url_title(strtolower($this->input->post('name'))),
-        'description' =>  $this->input->post('description'),
-        'order'       =>  $this->input->post('order'),
-        'updated_by'  =>  $this->data['userdata']['id'],
-      );
-      $entries = $this->entries_m->update($data, $id);
-      helper_log('edit', "Update data entries has successfully");        
-      //get fields to element 
-      $fieldsId = $this->input->post('fieldsId');
-      if (!empty($fieldsId)) {
+      if ($_POST['button'] == 'update') {
+        $data = array(
+          'name'        =>  ucfirst($this->input->post('name')),
+          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'section_id'  =>  $section_id,
+          'title'       =>  ucfirst($this->input->post('title')),
+          'slug'        =>  url_title(strtolower($this->input->post('name'))),
+          'description' =>  $this->input->post('description'),
+          'order'       =>  $this->input->post('order'),
+          'updated_by'  =>  $this->data['userdata']['id'],
+        );
+        $this->entries_m->update($data, $id);
+        helper_log('edit', "Update {$settings['title']} has successfully");
+        //get fields to element 
         $this->general_m->delete('elemet', $id, 'entries_id');
-        $i = 0;
-        foreach ($fieldsId as $value) {
-          $element = array(
-            'entries_id'  =>  $entries,
-            'section_id'  =>  $section_id,
-            'fields_id'   =>  $value,
-            'order'       =>  ++$i,
-          );
-          $this->general_m->create('element', $element, FALSE);
+        $fieldsId = $this->input->post('fieldsId');
+        if (!empty($fieldsId)) {
+          $i = 0;
+          foreach ($fieldsId as $value) {
+            $element = array(
+              'entries_id'  =>  $id,
+              'section_id'  =>  $section_id,
+              'fields_id'   =>  $value,
+              'order'       =>  ++$i,
+            );
+            $this->general_m->create('element', $element, FALSE);
+          }
+          helper_log('edit', "edit element entries id {$id} has successfully {$element['order']} record");
         }
-        helper_log('edit', "edit element entries id {$id} has successfully {$element['order']} record");
         $this->session->set_flashdata("message", "Entries has successfully Updated");
+        redirect($settings['action']);
       }
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -380,14 +385,14 @@ class Section extends My_Controller {
       'title'        => 'Entries',
       'section_id'   => $section_id,
       'getDataby_id' => $this->entries_m->get_row_by_id($id),
-      'action'       =>  "admin/section/{$section_id}/entrytypes",
+      'action'       =>  "admin/settings/section/{$section_id}/entrytypes",
     );
 
     if ($settings['getDataby_id']) {
-      $element_del = $this->general_m->delete('element', $id, 'entries_id');
-      $delete = $this->entries_m->delete($id);
-      helper_log('delete', "Delete data {$settings['title']} has successfully");        
-      $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");
+      $deleteElement = $this->general_m->delete('element', $id, 'entries_id');
+      $delete        = $this->entries_m->delete($id);
+      helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
+      $this->session->set_flashdata('message', "{settings['title']} has deleted {$delete} Records");
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');

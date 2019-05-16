@@ -1,6 +1,8 @@
   <div id="left-content" class="left-content">
     <div class="sidebar-content">
-      <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebarGroups" data-groups-name="<?php echo ($group_name ? $group_name : ''); ?>" data-table="<?php echo ($table ? $table : ''); ?>">
+      <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebarGroups" 
+        data-groups-name="<?php echo ($group_name ? $group_name : ''); ?>" data-table="<?php echo ($table ? $table : ''); ?>" 
+        data-element="<?php echo ($element_name ? $element_name : ''); ?>">
         <li class="nav-item">
           <a class="nav-link active" data-id="all">All Fields</a>
         </li>
@@ -42,7 +44,6 @@
           <th scope="col">Languange</th>
           <th scope="col">Primary</th>
           <th scope="col">Base URL</th>
-          <th scope="col">Group</th>
           <th scope="row"></th>
         </tr>
       </thead>
@@ -55,9 +56,6 @@
           <td><?php echo $key->locale; ?></td>
           <td><?php echo (!empty($key->primary) ? 'Yes' : 'No');?></td>
           <td><?php echo (!empty($key->url) ? $key->url : ''); ?></td>
-          <?php foreach ($group as $key2): ?>
-            <td><?php echo (($key->group_id == $key2->id) ? $key2->name : ''); ?></td>
-          <?php endforeach ?>
           <td scope="row">
             <a href="<?php echo base_url($action.'/delete/'.$key->id); ?>"><i class="fas fa-minus-circle"></i></a>
           </td>        

@@ -49,17 +49,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | Examples:	my-controller/index	-> my_controller/index
 |		my-controller/my-method	-> my_controller/my_method
 */
-$route['default_controller']     = 'welcome';
-$route['404_override']           = '';
-$route['translate_uri_dashes']   = FALSE;
+$route['default_controller']   = 'welcome';
+$route['404_override']         = '';
+$route['translate_uri_dashes'] = FALSE;
 
-$route['admin']                   =  'admin/login';
-$route['admin/check-login']       =  'admin/login/check_login';
-$route['admin/register']          =  'admin/login/register';
-$route['admin/validation-token']  =  'admin/login/validation_token';
-$route['admin/activated']         =	 'admin/login/activated';
-$route['admin/forgot-password']   =  'admin/login/forgot_password';
-$route['admin/reset-password']    =  'admin/login/reset_password';
+$route['admin']                  =  'admin/login';
+$route['admin/check-login']      =  'admin/login/check_login';
+$route['admin/register']         =  'admin/login/register';
+$route['admin/validation-token'] =  'admin/login/validation_token';
+$route['admin/activated']        =	 'admin/login/activated';
+$route['admin/forgot-password']  =  'admin/login/forgot_password';
+$route['admin/reset-password']   =  'admin/login/reset_password';
 
 /*Users*/
 $route['admin/users/(:num)']              =  'admin/users';
@@ -76,58 +76,58 @@ $route['admin/users/group/edit/(:num)']   =  'admin/users/group_update/$1';
 $route['admin/users/group/delete/(:num)'] =  'admin/users/group_delete/$1';
 
 /*Info*/
-$route['admin/info']                      =  'admin/info/update';
+$route['admin/info'] =  'admin/info/update';
 
 /*fields*/
-$route['admin/settings/fields']                     = 'admin/fields';
-$route['admin/settings/fields/create']              = 'admin/fields/create';
-$route['admin/settings/fields/edit/(:num)']         = 'admin/fields/update/$1';
-$route['admin/settings/fields/delete/(:num)']       = 'admin/fields/delete/$1';
-$route['admin/settings/fields/type']                = 'admin/fields/type';
-$route['admin/settings/fields/type/create']         = 'admin/fields/type_create';
-$route['admin/settings/fields/type/edit/(:num)']    = 'admin/fields/type_update/$1';
-$route['admin/settings/fields/type/delete/(:num)']  = 'admin/fields/type_delete/$1';
+$route['admin/settings/fields']                    = 'admin/fields';
+$route['admin/settings/fields/create']             = 'admin/fields/create';
+$route['admin/settings/fields/edit/(:num)']        = 'admin/fields/update/$1';
+$route['admin/settings/fields/delete/(:num)']      = 'admin/fields/delete/$1';
+$route['admin/settings/fields/type']               = 'admin/fields/type';
+$route['admin/settings/fields/type/create']        = 'admin/fields/type_create';
+$route['admin/settings/fields/type/edit/(:num)']   = 'admin/fields/type_update/$1';
+$route['admin/settings/fields/type/delete/(:num)'] = 'admin/fields/type_delete/$1';
 
 /*Section*/
 $route['admin/settings/section']                       = 'admin/section';
-$route['admin/settings/section/create']                = 'admin/section/create';
-$route['admin/settings/section/edit/(:num)']           = 'admin/section/update/$1';
-$route['admin/settings/section/delete/(:num)']         = 'admin/section/delete/$1';
-$route['admin/settings/section/type']                  = 'admin/section/type';
-$route['admin/settings/section/type/create']           = 'admin/section/type_create';
-$route['admin/settings/section/type/edit/(:num)']      = 'admin/section/type_update/$1';
-$route['admin/settings/section/type/delete/(:num)']    = 'admin/section/type_delete/$1';
+$route['admin/settings/section/create']             = 'admin/section/create';
+$route['admin/settings/section/edit/(:num)']        = 'admin/section/update/$1';
+$route['admin/settings/section/delete/(:num)']      = 'admin/section/delete/$1';
+$route['admin/settings/section/type']               = 'admin/section/type';
+$route['admin/settings/section/type/create']        = 'admin/section/type_create';
+$route['admin/settings/section/type/edit/(:num)']   = 'admin/section/type_update/$1';
+$route['admin/settings/section/type/delete/(:num)'] = 'admin/section/type_delete/$1';
 /*Entries*/
-$route['admin/settings/section/(:num)/entrytypes']             = 'admin/section/entrytypes/$1';
-$route['admin/settings/section/(:num)/entrytypes/create']      = 'admin/section/entrytypes_create/$1';
-$route['admin/settings/section/(:num)/entrytypes/edit/(:num)'] = 'admin/section/entrytypes_update/$1/$2';
+$route['admin/settings/section/(:num)/entrytypes']               = 'admin/section/entrytypes/$1';
+$route['admin/settings/section/(:num)/entrytypes/create']        = 'admin/section/entrytypes_create/$1';
+$route['admin/settings/section/(:num)/entrytypes/edit/(:num)']   = 'admin/section/entrytypes_update/$1/$2';
 $route['admin/settings/section/(:num)/entrytypes/delete/(:num)'] = 'admin/section/entrytypes_delete/$1/$2';
 
 
 /*Content*/
-$route['admin/entries']                       = 'admin/entries';
-$route['admin/entries/create']                = 'admin/entries/create';
-$route['admin/entries/edit/(:num)']           = 'admin/entries/update/$1';
-$route['admin/entries/delete/(:num)']         = 'admin/entries/delete/$1';
+$route['admin/entries']               = 'admin/entries';
+$route['admin/entries/create']        = 'admin/entries/create';
+$route['admin/entries/edit/(:num)']   = 'admin/entries/update/$1';
+$route['admin/entries/delete/(:num)'] = 'admin/entries/delete/$1';
 
 /*Assets*/
-$route['admin/assets']                       = 'admin/assets';
-$route['admin/assets/create']                = 'admin/assets/create';
-$route['admin/assets/edit/(:num)']           = 'admin/assets/update/$1';
-$route['admin/assets/delete/(:num)']         = 'admin/assets/delete/$1';
+$route['admin/settings/assets']               = 'admin/assets';
+$route['admin/settings/assets/create']        = 'admin/assets/create';
+$route['admin/settings/assets/edit/(:num)']   = 'admin/assets/update/$1';
+$route['admin/settings/assets/delete/(:num)'] = 'admin/assets/delete/$1';
 
 /*categories*/
-$route['admin/categories']                       = 'admin/categories';
-$route['admin/categories/create']                = 'admin/categories/create';
-$route['admin/categories/edit/(:num)']           = 'admin/categories/update/$1';
-$route['admin/categories/delete/(:num)']         = 'admin/categories/delete/$1';
+$route['admin/settings/categories']               = 'admin/categories';
+$route['admin/settings/categories/create']        = 'admin/categories/create';
+$route['admin/settings/categories/edit/(:num)']   = 'admin/categories/update/$1';
+$route['admin/settings/categories/delete/(:num)'] = 'admin/categories/delete/$1';
 
 
 /*Assets*/
-$route['admin/sites']                       = 'admin/sites';
-$route['admin/sites/create']                = 'admin/sites/create';
-$route['admin/sites/edit/(:num)']           = 'admin/sites/update/$1';
-$route['admin/sites/delete/(:num)']         = 'admin/sites/delete/$1';
+$route['admin/settings/sites']               = 'admin/sites';
+$route['admin/settings/sites/create']        = 'admin/sites/create';
+$route['admin/settings/sites/edit/(:num)']   = 'admin/sites/update/$1';
+$route['admin/settings/sites/delete/(:num)'] = 'admin/sites/delete/$1';
 
 // settings 
 $route['admin/settings']         = 'admin/settings';

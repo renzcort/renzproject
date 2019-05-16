@@ -26,6 +26,18 @@
         <input type="hidden" name="action" value="<?php echo $action; ?>">
         <input type="hidden" name="order" value="<?php echo (!empty($getDataby_id->order) ? $getDataby_id->order : $order ); ?>">
         <div class="form-group">
+          <label class="heading" for="inputGroup">Group</label>
+          <small class="form-text text-muted">Which group should this field be displayed in?</small>
+          <select name="group" class="form-control costum-select">
+            <?php foreach ($group as $key): ?>
+              <option value="<?php echo $key->id; ?>" data-id="<?php echo $key->id; ?>" 
+                <?php echo ((!empty($getDataby_id->group_id) && $getDataby_id->group_id == $key->id) ? 'selected' : '' ) ?>>
+                <?php echo ucfirst($key->name); ?>
+              </option>
+            <?php endforeach ?>
+          </select>
+        </div>
+        <div class="form-group">
           <label class="heading required" for="inputName">Name</label>
           <small class="form-text text-muted">What this site will be called in the CP.</small>
           <input type="text" name="name" class="form-control"  placeholder="Name" 
@@ -73,7 +85,7 @@
       <div class="tab-pane fade" id="layout" role="tabpanel" aria-labelledby="layout-tab">
         <div class="form-tabs" id="layout">
           <h5 class="heading">Design Your Field Layout</h5>
-          <div class="field-tabs my-5 d-flex flex-row flex-wrap">
+          <div class="field-tabs d-flex flex-row flex-wrap">
             <div class="field-group">
               <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
@@ -97,7 +109,7 @@
             <button type="button" class="btn btn-info">+ New Tabs</button>
           </div>
           <hr class="break-line"></hr>
-          <div class="my-5 d-flex flex-row flex-wrap">
+          <div class="field-column d-flex flex-row flex-wrap">
             <?php if ($fields_group): ?>
               <?php $i = 0; ?>
               <?php foreach ($fields_group as $key): ?>
@@ -127,23 +139,6 @@
               </div>
               <?php endforeach ?>
             <?php endif ?>
-            <div class="field-group">
-              <ul class="nav nav-tabs" id="myTab" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-                </li>
-              </ul>
-              <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                  <ul id="sortable1" class="text-center list-group connectedSortable">
-                    <li class="list-group-item active">Lion</li>
-                    <li class="list-group-item">Dog</li>
-                    <li class="list-group-item">Cat</li>
-                    <li class="list-group-item">Tiger</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

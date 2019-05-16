@@ -469,6 +469,15 @@ header nav.menu .navbar-nav > li {
 .wraper {
   margin-top: 2rem;
 }
+.breadcrumb {
+  padding: .5rem .5rem !important;
+}
+.breadcrumb-item+.breadcrumb-item::before {
+  padding-right: .2rem;
+}
+.breadcrumb-item+.breadcrumb-item {
+    padding-left: .2rem;
+}
 .breadcrumb li {
   display: inline-block;
   padding: 5px 0 1px;
@@ -597,13 +606,14 @@ header nav.menu .navbar-nav > li {
   padding: .5rem 1rem;
   width: 100%;
   max-width: 100px;
+  margin: 0 .5rem;
 }
 .middle-content.settings ul li > a {
   text-decoration: none;
   color: #000;
 }
 .middle-content.settings ul li a > i {
-  font-size:2rem;
+  font-size:2.5rem;
   width: 100%;
   max-width: 100px;
   height: auto;
@@ -643,9 +653,15 @@ header nav.menu .navbar-nav > li {
   border-color: #454d55;
 }
 .middle-content #layout.form-tabs{
-  margin: 2rem 0 1rem;
+  margin: 1rem 0 .5rem;
 }
 .middle-content #layout.form-tabs > .heading{
+  padding: 1rem 0;
+}
+.middle-content #layout.form-tabs .field-tabs{
+  padding: 0;
+}
+.middle-content #layout.form-tabs .field-column{
   padding: 1rem 0;
 }
 .middle-content #layout .nav-tabs{

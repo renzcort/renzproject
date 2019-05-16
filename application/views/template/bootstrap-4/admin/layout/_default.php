@@ -204,6 +204,26 @@
         }).disableSelection();   
         /*End Tabs Fields*/
 
+        $('#section-entries-list tbody').sortable({
+          update: function(event, ui) {
+            var order = $(this).sortable('toArray');
+            var id = $("#section-entries-list tbody tr").map(function() {
+                return $(this).data("id");
+            }).get();
+            var section_id = $("input[name=section_id]").val();
+            $.ajax({
+              type : 'POST',
+              dataType : 'json',
+              data : {id : id, order : order},
+              url : '<?php echo base_url("admin/api/jsonUpdateOrderEntrytypes") ?>',
+            }).done(function(data){
+
+            }).fail(function(error){
+
+            });
+           }
+        });
+
         var leftbar = document.getElementById('left-content');
         var leftbarTop = leftbar.offsetTop;
         var leftbarButton = leftbar.offsetHeight;
@@ -215,7 +235,6 @@
         deleteGroupsById();
         getDataByIdGroups();
         deleteFieldsById();
-        updatOrderEntrytypes();
       })
 
       
@@ -265,15 +284,16 @@
       function deleteGroupsById(){
         // Delete Groups
         $('#groupsDelete').click(function(){
-          var table      = $('#sidebarGroups').data('table');
-          var group_name = $('#sidebarGroups').data('groups-name');
-          var group_id   = $(".sidebar-content .nav-link.active").attr('data-id');
+          var table        = $('#sidebarGroups').data('table');
+          var group_name   = $('#sidebarGroups').data('groups-name');
+          var element_name = $('#sidebarGroups').data('element');
+          var group_id     = $(".sidebar-content .nav-link.active").attr('data-id');
 
           if (confirm("Are you sure?")) {
             $.ajax({
               type: 'POST',
               dataType: 'json',
-              data: {table: table, group_name: group_name, group_id : group_id},
+              data: {table: table, group_name: group_name, element_name : element_name, group_id : group_id},
               url: '<?php echo base_url("admin/api/jsonDeleteGroupsById") ?>',
             }).done(function(data) {
               alert(data);
@@ -325,28 +345,6 @@
           } 
           return false;
         })
-      }
-
-      function updatOrderEntrytypes(){
-        $('#section-entries-list tbody').sortable({
-          update: function(event, ui) {
-            var order = $(this).sortable('toArray');
-            var id = $("#section-entries-list tbody tr").map(function() {
-                return $(this).data("id");
-            }).get();
-            var section_id = $("input[name=section_id]").val();
-            $.ajax({
-              type : 'POST',
-              dataType : 'json',
-              data : {id : id, order : order},
-              url : '<?php echo base_url("admin/api/jsonUpdateOrderEntrytypes") ?>',
-            }).done(function(data){
-
-            }).fail(function(error){
-
-            });
-           }
-        });
       }
 
       function getTabsFieldsList() {

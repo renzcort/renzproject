@@ -36,7 +36,7 @@
     <div class="form-group">
       <label class="heading" for="inputLanguange">Languange</label>
       <small class="form-text text-muted">The language content in this site will use.</small>
-      <select name="languange" class="form-control costum-select">
+      <select name="locale" class="form-control costum-select">
         <option value="0">- Select Languange -</option>
       </select>
       <small class="form-test text-muted">Enable the Intl extension or install additional locale data files for more language options.</small>
@@ -60,7 +60,7 @@
       <label class="heading" for="inputBaseurl">Base URL</label>
       <small class="form-text text-muted">The base URL for the site.</small>
       <input type="text" name="baseurl" class="form-control" placeholder="@web/" 
-      value="<?php echo (!empty($getDataby_id->url) ? $getDataby_id->url : set_value('url')); ?>">
+      value="<?php echo (!empty($getDataby_id->baseurl) ? $getDataby_id->baseurl : set_value('baseurl')); ?>">
       <small class="form-text text-muted">The @web alias is not recommended if it is determined automatically.</small>
     </div>
   <?php echo form_close();?>

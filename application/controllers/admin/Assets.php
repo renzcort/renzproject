@@ -12,26 +12,28 @@ class Assets extends My_Controller {
     $this->load->model('admin/Assets_m', 'assets_m');
     $this->data = array(
       'userdata' =>  $this->first_load(),
-      'parentLink' => 'admin/assets', 
+      'parentLink' => 'admin/settings/assets', 
     );
   }
 
   public function index() {
     $settings = array(
-      'title'         =>  ucfirst('assets'),
+      'title'         =>  'assets',
       'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
       'button'        =>  '+ New Assets',
       'button_link'   =>  'assets/create',
       'content'       =>  'template/bootstrap-4/admin/assets/assets-group-list',
       'table'         =>  'assets',
-      'action'        =>  'admin/assets',
+      'action'        =>  'admin/settings/assets',
       'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
+      'no'            =>  $this->uri->segment(4),
+      'element_name'  =>  'assets_element',
       'group_name'    =>  'assets_group',
       'group'         =>  $this->general_m->get_all_results('assets_group'),
       'group_count'   =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
     );
 
     // Pagination
@@ -52,22 +54,26 @@ class Assets extends My_Controller {
 
   /*CREATE*/
   public function create() {
-
     $settings = array(
       'title'         =>  'assets',
       'subtitle'      =>  'create',
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('create'),
       'button'        =>  'Save',
       'button_type'   =>  'submit',
       'button_name'   =>  'create',
       'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/assets/assets-group-form',
       'table'         =>  'assets',
-      'action'        =>  'admin/assets',
+      'action'        =>  'admin/settings/assets',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'fields_table'  =>  'assets_element',
       'assets_type'   =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'group_name'    =>  'assets_group',
+      'group'         =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'   =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'fields_table'  =>  'assets_element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
@@ -77,10 +83,10 @@ class Assets extends My_Controller {
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
     $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
+      if ($_POST['button'] == 'create') {
         $data = array(
-          'group_id'   => $this->input->post('group_id'),
-          'name'       => $this->input->post('name'),
+          'group_id'   => $this->input->post('group'),
+          'name'       => ucFirst($this->input->post('name')),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'type'       => $this->input->post('type'),
           'path'       => $this->input->post('path'),
@@ -91,25 +97,24 @@ class Assets extends My_Controller {
           'created_by' => $this->data['userdata']['id'],
         );
         $tableFieldsId = $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add data {$settings['title']} has successfully");
+        helper_log('add', "Create {$settings['title']} has successfully");
         //get fields to element 
         $fieldsId = $this->input->post('fieldsId');
+        (isset($id) ? $id = $tableFieldsId : $id = $id);
+        $this->general_m->delete("{$settings['table']}_element", $id);
         if (!empty($fieldsId)) {
           $i = 0;
-          (isset($id) ? $id = $tableFieldsId : $id = $id);
-          $this->general_m->delete($settings['fields_table'], $id);
           foreach ($fieldsId as $value) {
             $element = array(
               'assets_id'   =>  $id,
               'fields_id'   =>  $value,
               'order'       =>  ++$i,
             );
-            $this->general_m->create('assets_element', $element, FALSE);
+            $this->general_m->create("{$settings['table']}_element", $element, FALSE);
           }
           helper_log('add', "add element create has successfully {$element['order']} record");
-          $this->session->set_flashdata("message", "Entries has successfully Create");
         }        
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Create");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
         redirect($settings['action']);
       } 
     } else {
@@ -122,18 +127,23 @@ class Assets extends My_Controller {
     $settings = array(
       'title'         =>  'assets',
       'subtitle'      =>  'update',
-      'subbreadcrumb' =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('edit'),
       'button'        =>  'Update',
       'button_type'   =>  'submit',
       'button_name'   =>  'update',
       'button_tabs'   =>  TRUE,
       'content'       =>  'template/bootstrap-4/admin/assets/assets-group-form',
       'table'         =>  'assets',
-      'action'        =>  'admin/assets',
+      'action'        =>  'admin/settings/assets',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'fields_table'  =>  'assets_element',
       'assets_type'   =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'group_name'    =>  'assets_group',
+      'group'         =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'   =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'fields_table'  =>  'assets_element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
@@ -154,10 +164,10 @@ class Assets extends My_Controller {
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
     $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['update'])) {
+      if ($_POST['button'] == 'update') {
         $data = array(
-          'group_id'   => $this->input->post('group_id'),
-          'name'       => $this->input->post('name'),
+          'group_id'   => $this->input->post('group'),
+          'name'       => ucFirst($this->input->post('name')),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'type'       => $this->input->post('type'),
           'path'       => $this->input->post('path'),
@@ -165,26 +175,25 @@ class Assets extends My_Controller {
           'parent'     => $this->input->post('parent'),
           'order'      => $this->input->post('order'),
           'description'=> $this->input->post('description'),
-          'created_by' => $this->data['userdata']['id'],
+          'updated_by' => $this->data['userdata']['id'],
         );
         $this->general_m->update($settings['table'], $data, $id);
-        helper_log('edit', "Update data {$settings['title']} has successfully");
+        helper_log('edit', "Update {$settings['title']} has successfully");
         //get fields to element 
         $fieldsId = $this->input->post('fieldsId');
+        (isset($id) ? $id = $tableFieldsId : $id = $id);
+        $this->general_m->delete("{$settings['table']}_element", $id);
         if (!empty($fieldsId)) {
           $i = 0;
-          (isset($id) ? $id = $tableFieldsId : $id = $id);
-          $this->general_m->delete($settings['fields_table'], $id);
           foreach ($fieldsId as $value) {
             $element = array(
               'assets_id'   =>  $id,
               'fields_id'   =>  $value,
               'order'       =>  ++$i,
             );
-            $this->general_m->create('assets_element', $element, FALSE);
+            $this->general_m->create("{$settings['table']}_element", $element, FALSE);
           }
           helper_log('add', "add element create has successfully {$element['order']} record");
-          $this->session->set_flashdata("message", "Entries has successfully Create");
         }        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
         redirect($settings['action']);
@@ -198,17 +207,17 @@ class Assets extends My_Controller {
   public function delete($id='') {
     $settings = array(
       'title'        => 'Assets',
-      'table'        =>  'assets',
-      'action'       => 'admin/assets',
+      'table'        => 'assets',
+      'action'       => 'admin/settings/assets',
       'fields_table' => 'assets_element',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
     if ($settings['getDataby_id']) {
-      $element_del = $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
-      $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete data {$settings['title']} has successfully");        
-      $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");
+      $deleteElemant = $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
+      $delete        = $this->general_m->delete($settings['table'], $id);
+      helper_log('delete', "Delete {settings['title']} with id = has successfully");
+      $this->session->set_flashdata('message', "{settings['title']} has deleted {$delete} Records");      
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');

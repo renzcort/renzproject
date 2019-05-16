@@ -28,6 +28,7 @@ class Api extends My_Controller {
     $settings = array(
       'title'         =>  $this->input->post('header'),
       'subtitle'      =>  ($this->input->post('subtitle') ? $this->input->post('subtitle') : FALSE),
+      'breadcrumb'    =>  FALSE,
       'subbreadcrumb' =>  FALSE,
       'button'        =>  (($button == 'create') ? 'Save' : 'Update'),
       'button_type'   =>  'submit',
@@ -73,7 +74,7 @@ class Api extends My_Controller {
 
       if ($settings['table'] == 'entries') {
         $data = array(
-          'name'        =>  $this->input->post('name'),
+          'name'        =>  ucfirst($this->input->post('name')),
           'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'section_id'  =>  $section_id,
           'title'       =>  ucfirst($this->input->post('title')),
@@ -83,7 +84,8 @@ class Api extends My_Controller {
         );
       } elseif ($settings['table'] == 'assets') {
         $data = array(
-          'name'       => $this->input->post('name'),
+          'group_id'   => $this->input->post('group'),
+          'name'       => ucfirst($this->input->post('name')),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'type'       => $this->input->post('type'),
           'path'       => $this->input->post('path'),
@@ -96,34 +98,34 @@ class Api extends My_Controller {
         (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
         (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
         $data = array(
-          'name'       => $this->input->post('name'),
-          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'url'        => $this->input->post('url'),
-          'template'   => $this->input->post('template'),
-          'locale'     => $locale,
-          'parent'     => $parent,
-          'maxlevel'   => $this->input->post('maxlevel'),
-          'description'=> $this->input->post('description'),
-          'created_by' => $this->data['userdata']['id'],
+          'name'        => ucfirst($this->input->post('name')),
+          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'url'         => $this->input->post('url'),
+          'template'    => $this->input->post('template'),
+          'locale'      => $locale,
+          'parent'      => $parent,
+          'maxlevel'    => $this->input->post('maxlevel'),
+          'description' => $this->input->post('description'),
+          'created_by'  => $this->data['userdata']['id'],
         );
       }
 
       if ($button == 'create') {
         $data['created_by'] = $this->data['userdata']['id'];
-        $tableFieldsId = $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add data entries has successfully");   
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Created");     
+        $tableFieldsId      = $this->general_m->create($settings['table'], $data);
+        helper_log('add', "Create {$settings['title']} has successfully");        
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully Created");
       } else {
         $data['updated_by'] = $this->data['userdata']['id'];
         $this->general_m->update($settings['table'], $data, $id);
-        helper_log('edit', "Update data entries has successfully");        
+        helper_log('update', "Update {$settings['title']} has successfully");        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");     
       }
       //get fields to element 
-      if (!empty($this->input->post('fieldsId'))) {
-        $fieldsId = $this->input->post('fieldsId');
-        (empty($id) ? $id = $tableFieldsId : $id = $id);
-        $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
+      $fieldsId = $this->input->post('fieldsId');
+      (empty($id) ? $id = $tableFieldsId : $id = $id);
+      $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
+      if (!empty($fieldsId)) {
         $i = 0;
         foreach ($fieldsId as $value) {
           if ($settings['table'] == 'entries') {
@@ -143,7 +145,6 @@ class Api extends My_Controller {
           $this->general_m->create($settings['fields_table'], $element, FALSE);
         }
         helper_log('add', "add element create has successfully {$element['order']} record");
-        $this->session->set_flashdata("message", "{$settings['table']} has successfully Create");
       }
       $settings['status'] = TRUE;
       echo json_encode($settings);
@@ -158,7 +159,7 @@ class Api extends My_Controller {
     }    
   }
 
-  // Update Order
+  // Update Move Order 
   public function jsonUpdateOrderEntrytypes(){
     $id = $this->input->post('id');
     $order = $this->input->post('order');
@@ -186,11 +187,11 @@ class Api extends My_Controller {
     // JSON Delete
   public function jsonDeleteGroupsById() {
     header('Content-type: application/json');
-    $group_id   = $this->input->post('group_id');
-    $group_name = $this->input->post('group_name');
-    $table      = $this->input->post('table');
+    $group_id     = $this->input->post('group_id');
+    $group_name   = $this->input->post('group_name');
+    $element_name = $this->input->post('element_name');
+    $table        = $this->input->post('table');
     $getFields  = $this->general_m->get_result_by_id($table, $group_id, 'group_id');
-  
     if ($getFields) {
       if ($table == 'fields') {
         $opt_id = [];
@@ -215,6 +216,14 @@ class Api extends My_Controller {
           $deleteOption = $this->general_m->delete('fields_option', $value);  
         }
       } else {
+        if ($element_name) {
+          foreach ($getFields as $key) {
+            $getElement = $this->general_m->get_row_by_id("{$table}_element", $key->id, "{$table}_id");
+            if ($getElement) {
+              $deleteElement = $this->general_m->delete("{$table}_element", $key->id, "{$table}_id");
+            }
+          }
+        }
         $delete = $this->general_m->delete($table, $group_id, 'group_id');
       }
     }
@@ -223,7 +232,7 @@ class Api extends My_Controller {
       'action' => "admin/{$table}",
       'delete' => 'success'
     );
-    $this->session->set_flashdata('message', "Data has deleted Records");
+    $this->session->set_flashdata('message', "Groups has successfully deleted");
     echo json_encode($data);
   }
   
@@ -234,12 +243,11 @@ class Api extends My_Controller {
     $group_name = ($this->input->post('group_name') ? $this->input->post('group_name') : '');
     $settings = array(
       'table'       =>  $table,
-      'action'      =>  "admin/{$table}",
+      'action'      =>  "admin/settings/{$table}",
       'group'       =>  $this->general_m->get_all_results($group_name),
       'group_count' =>  $this->general_m->count_all_results($group_name),
       'group_id'    =>  (($this->input->post('group_id') == 'all') ? '' : $this->input->post('group_id')),
     );
-
     // Pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
@@ -250,7 +258,7 @@ class Api extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->fields_m->get_all_results($config['per_page'], $start_offset, $settings['group_id']);
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $settings['group_id'], 'group_id');
     $settings['links']      = $this->pagination->create_links();
     
     if($settings['record_all']) {
@@ -265,7 +273,6 @@ class Api extends My_Controller {
                 <th scope="col">Languange</th>
                 <th scope="col">Primary</th>
                 <th scope="col">Base URL</th>
-                <th scope="col">Group</th>
                 <th scope="row"></th>
               </tr>
             </thead>
@@ -274,14 +281,14 @@ class Api extends My_Controller {
           foreach ($settings['record_all'] as $key) {
              $table .= '<tr>
                 <td scope="row">'.++$no.'</td>
-                <td><a href="'.base_url($settings['action'].'/update/'.$key->id).'</a></td>
-                <td>'.$key->handle.'</td>
-                <td>'.$key->locale.'</td>
+                <td><a href="'.base_url($settings['action'].'/edit/'.$key->id).'">'.($key->name ? $key->name : '').'</a></td>
+                <td>'.($key->handle ? $key->handle : '').'</td>
+                <td>'.($key->locale ? $key->locale : '').'</td>
                 <td>'.(!empty($key->primary) ? 'Yes' : 'No').'</td>
-                <td>'.(!empty($key->url) ? $key->url : '').'</td>
-                <td>'.$key->group_name.'</td>
+                <td>'.($key->url ? $key->url : '').'</td>
                 <td scope="row">
-                  <a href="'.base_url($settings['action'].'/delete/'.$key->id).'" data-id="'.$key->id.'"><i class="fas fa-minus-circle"></i></a>
+                  <a href="'.base_url($settings['action'].'/delete/'.$key->id).'" data-id="'.$key->id.'">
+                  <i class="fas fa-minus-circle"></i></a>
                 </td> 
               </tr>';
             }
@@ -303,9 +310,9 @@ class Api extends My_Controller {
           foreach ($settings['record_all'] as $key) {
              $table .= '<tr>
                 <th scope="row">'.++$no.'</th>
-                <td><a href="'.base_url($settings['action'].'/update/'.$key->id).'">'.($key->name ? $key->name : '').'</a></td>
+                <td><a href="'.base_url($settings['action'].'/edit/'.$key->id).'">'.($key->name ? $key->name : '').'</a></td>
                 <td>'.($key->handle ? $key->handle : '').'</td>
-                <td>'.($key->type_name ? $key->type_name : '').'</td>
+                <td>'.($key->type ? $key->type : '').'</td>
                 <td><a href="'.base_url($settings['action'].'/delete/'.$key->id).'" data-id="'.$key->id.'">
                   <i class="fas fa-minus-circle"></i></a>
                 </td>

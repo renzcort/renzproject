@@ -31,6 +31,7 @@ class fields extends My_Controller {
       'action'        =>  'admin/settings/fields',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
+      'element_name'  =>  'element',
       'group_name'    =>  'fields_group',
       'group'         =>  $this->general_m->get_all_results('fields_group'),
       'group_count'   =>  $this->general_m->count_all_results('fields_group'),

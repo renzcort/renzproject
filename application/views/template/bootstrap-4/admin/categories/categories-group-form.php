@@ -92,7 +92,7 @@
       <div class="tab-pane fade" id="layout" role="tabpanel" aria-labelledby="layout-tab">
         <div class="form-tabs" id="layout">
           <h5 class="heading">Design Your Field Layout</h5>
-          <div class="field-tabs my-5 d-flex flex-row flex-wrap">
+          <div class="field-tabs d-flex flex-row flex-wrap">
             <div class="field-group">
               <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
@@ -116,7 +116,7 @@
             <button type="button" class="btn btn-info">+ New Tabs</button>
           </div>
           <hr class="break-line"></hr>
-          <div class="my-5 d-flex flex-row flex-wrap">
+          <div class="field-column d-flex flex-row flex-wrap">
             <?php if ($fields_group): ?>
               <?php $i = 0; ?>
               <?php foreach ($fields_group as $key): ?>
