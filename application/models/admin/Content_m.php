@@ -29,6 +29,24 @@ class Content_m extends My_Model {
     helper_log("delete", 'Drop column successfully');
   }
 
+    /*Add Column*/
+  public function add_column_table($table, $column) {
+    $this->dbforge->add_column($table, $column);
+    helper_log("add", 'add column successfully');
+  }
+
+  /*Modify Column*/
+  public function modify_column_table($table, $column) {
+    $this->dbforge->modify_column($table, $column);
+    helper_log("update", 'update column successfully');
+  }
+
+  /*Drop Column*/
+  public function drop_column_table($table, $column) {
+    $this->dbforge->drop_column($table, $column);
+    helper_log("delete", 'Drop column successfully');
+  }
+
 }
 
 /* End of file Content_m.php */

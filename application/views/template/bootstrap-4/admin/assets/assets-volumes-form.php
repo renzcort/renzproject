@@ -26,18 +26,6 @@
         <input type="hidden" name="action" value="<?php echo $action; ?>">
         <input type="hidden" name="order" value="<?php echo (!empty($getDataby_id->order) ? $getDataby_id->order : $order ); ?>">
         <div class="form-group">
-          <label class="heading" for="inputGroup">Group</label>
-          <small class="form-text text-muted">Which group should this field be displayed in?</small>
-          <select name="group" class="form-control costum-select">
-            <?php foreach ($group as $key): ?>
-              <option value="<?php echo $key->id; ?>" data-id="<?php echo $key->id; ?>" 
-                <?php echo ((!empty($getDataby_id->group_id) && $getDataby_id->group_id == $key->id) ? 'selected' : '' ) ?>>
-                <?php echo ucfirst($key->name); ?>
-              </option>
-            <?php endforeach ?>
-          </select>
-        </div>
-        <div class="form-group">
           <label class="heading required" for="inputName">Name</label>
           <small class="form-text text-muted">What this site will be called in the CP.</small>
           <input type="text" name="name" class="form-control"  placeholder="Name" 
@@ -95,11 +83,13 @@
               <div class="tab-content" id="myTabContent">
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                   <ul id="sortable1" class="text-center list-group connectedSortable">
+                    <?php if ($fields): ?>
                       <?php foreach ($fields as $key): ?>
                         <?php if (in_array($key->id, $elementFields)): ?>
                         <li class="list-group-item fields-list" data-fieldsId='<?php echo $key->id; ?>'><?php echo $key->name; ?></li>
                         <?php endif ?>
-                      <?php endforeach ?>  
+                      <?php endforeach ?> 
+                    <?php endif ?> 
                   </ul>
                 </div>
               </div>

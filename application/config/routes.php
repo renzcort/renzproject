@@ -111,10 +111,14 @@ $route['admin/entries/edit/(:num)']   = 'admin/entries/update/$1';
 $route['admin/entries/delete/(:num)'] = 'admin/entries/delete/$1';
 
 /*Assets*/
-$route['admin/settings/assets']               = 'admin/assets';
-$route['admin/settings/assets/create']        = 'admin/assets/create';
-$route['admin/settings/assets/edit/(:num)']   = 'admin/assets/update/$1';
-$route['admin/settings/assets/delete/(:num)'] = 'admin/assets/delete/$1';
+$route['admin/settings/assets']                          = 'admin/assets/volumes';
+$route['admin/settings/assets/create']                   = 'admin/assets/volumes_create';
+$route['admin/settings/assets/edit/(:num)']              = 'admin/assets/volumes_update/$1';
+$route['admin/settings/assets/delete/(:num)']            = 'admin/assets/volumes_delete/$1';
+$route['admin/settings/assets/transforms']               = 'admin/assets/transforms';
+$route['admin/settings/assets/transforms/create']        = 'admin/assets/transforms_create';
+$route['admin/settings/assets/transforms/edit/(:num)']   = 'admin/assets/transforms_update/$1';
+$route['admin/settings/assets/transforms/delete/(:num)'] = 'admin/assets/transforms_delete/$1';
 
 /*categories*/
 $route['admin/settings/categories']               = 'admin/categories';

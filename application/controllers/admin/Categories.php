@@ -68,7 +68,7 @@ class Categories extends My_Controller {
       'action'        =>  'admin/settings/categories',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'element_name'  =>  'categories_element',
+      'fields_table'  =>  'categories_element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],

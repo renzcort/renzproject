@@ -84,15 +84,13 @@ class Api extends My_Controller {
         );
       } elseif ($settings['table'] == 'assets') {
         $data = array(
-          'group_id'   => $this->input->post('group'),
           'name'       => ucfirst($this->input->post('name')),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'type'       => $this->input->post('type'),
           'path'       => $this->input->post('path'),
           'url'        => $this->input->post('url'),
-          'order'      => $this->input->post('order'),
           'description'=> $this->input->post('description'),
-          'created_by' => $this->data['userdata']['id'],
+          'order'      => $this->input->post('order'),
         );
       } elseif ($settings['table'] == 'categories') {
         (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
@@ -106,25 +104,61 @@ class Api extends My_Controller {
           'parent'      => $parent,
           'maxlevel'    => $this->input->post('maxlevel'),
           'description' => $this->input->post('description'),
-          'created_by'  => $this->data['userdata']['id'],
+          'order'       => $this->input->post('order'),
         );
       }
 
+      /*add contents*/
+      $fieldsId         = $this->input->post('fieldsId');
+      $getFieldsAll     = $this->fields_m->get_all_results();
+      $getContentFields = $this->db->list_fields('content');
       if ($button == 'create') {
         $data['created_by'] = $this->data['userdata']['id'];
         $tableFieldsId      = $this->general_m->create($settings['table'], $data);
         helper_log('add', "Create {$settings['title']} has successfully");        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Created");
+       
+        foreach ($getFieldsAll as $key) {
+          if (in_array($key->id, $fieldsId)) {
+            if (!in_array("field_{$key->handle}", $getContentFields)) {
+              $fields = array(
+                'handle' =>  $key->handle,
+                'type'   =>  $key->type_name,
+              );
+              // add Column content
+              modifyColumn($fields, 'add-table', "{$settings['table']}_content"); 
+            } else {
+              $this->session->set_flashdata('message', "This fields {field_{$key->handle}} has exists");
+            }
+          }
+        }
       } else {
         $data['updated_by'] = $this->data['userdata']['id'];
         $this->general_m->update($settings['table'], $data, $id);
         helper_log('update', "Update {$settings['title']} has successfully");        
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");     
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");  
+
+        foreach ($getFieldsAll as $key) {
+          if (in_array($key->id, $fieldsId)) {
+            if (!in_array("field_{$key->handle}", $getContentFields)) {
+              $fields = array(
+                'old_name' =>  $settings['getDataby_id']->handle,
+                'handle'   =>  $key->handle,
+                'type'     =>  $key->type_name,
+              );
+              // Modify Column content
+              modifyColumn($fields, 'modify-table', "{$settings['table']}_content"); 
+            } else {
+              $this->session->set_flashdata('message', "This fields {field_{$key->handle}} has exists");
+            }
+          }
+        }   
       }
+
       //get fields to element 
-      $fieldsId = $this->input->post('fieldsId');
       (empty($id) ? $id = $tableFieldsId : $id = $id);
       $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
+      /*add elements*/
       if (!empty($fieldsId)) {
         $i = 0;
         foreach ($fieldsId as $value) {
@@ -263,7 +297,7 @@ class Api extends My_Controller {
     
     if($settings['record_all']) {
       if ($table == 'sites') {
-        $table = '
+        $table_view = '
           <table class="table table-sm">
             <thead>
               <tr>
@@ -279,7 +313,7 @@ class Api extends My_Controller {
             <tbody>'; 
           $no = 0;
           foreach ($settings['record_all'] as $key) {
-             $table .= '<tr>
+             $table_view .= '<tr>
                 <td scope="row">'.++$no.'</td>
                 <td><a href="'.base_url($settings['action'].'/edit/'.$key->id).'">'.($key->name ? $key->name : '').'</a></td>
                 <td>'.($key->handle ? $key->handle : '').'</td>
@@ -292,9 +326,9 @@ class Api extends My_Controller {
                 </td> 
               </tr>';
             }
-          $table .= '</tbody></table>';
+          $table_view .= '</tbody></table>';
       } else {
-        $table = '
+        $table_view = '
           <table class="table table-sm">
             <thead>
               <tr>
@@ -308,7 +342,7 @@ class Api extends My_Controller {
             <tbody>'; 
           $no = 0;
           foreach ($settings['record_all'] as $key) {
-             $table .= '<tr>
+             $table_view .= '<tr>
                 <th scope="row">'.++$no.'</th>
                 <td><a href="'.base_url($settings['action'].'/edit/'.$key->id).'">'.($key->name ? $key->name : '').'</a></td>
                 <td>'.($key->handle ? $key->handle : '').'</td>
@@ -318,13 +352,12 @@ class Api extends My_Controller {
                 </td>
               </tr>';
             }
-          $table .= '</tbody></table>';
+          $table_view .= '</tbody></table>';
       }
-      
     } else {
-      $table = '<p class="empty-data">Data is Empty</p>';
+      $table_view = '<p class="empty-data">Data is Empty</p>';
     }
-    echo json_encode($table);
+    echo json_encode($table_view);
   }
   /*End Group API*/
 
@@ -354,6 +387,8 @@ class Api extends My_Controller {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
     }
   }
+
+ 
 
 
 }

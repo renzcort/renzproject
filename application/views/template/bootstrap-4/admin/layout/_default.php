@@ -235,6 +235,7 @@
         deleteGroupsById();
         getDataByIdGroups();
         deleteFieldsById();
+        getAssetsListType();
       })
 
       
@@ -380,7 +381,6 @@
         });
         return json;
       }
-
 
     </script>
   </body>

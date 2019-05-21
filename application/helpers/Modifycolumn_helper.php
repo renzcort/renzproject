@@ -43,7 +43,7 @@
     // }
 
 
-  function modifyColumn($fields= '', $action= '') {
+  function modifyColumn($fields= '', $action= '', $table= '') {
     $CI =& get_instance();
 
     if ($fields['type'] == 'VARCHAR') {
@@ -87,7 +87,28 @@
     } elseif ($action == 'drop') {
       $column = "field_{$fields['handle']}"; 
       $CI->content_m->drop_column($column);
+
+    } elseif ($action == 'add-table') {
+      $CI->content_m->add_column_table($table, $column);
+    } elseif ($action == 'modify-table') {
+      $column = arraY( 
+          "field_{$fields['old_name']}" => array(
+                                    'name'       => "field_{$fields['handle']}",
+                                    'type'       => $fields['type'],
+                                    'constraint' => $constraint,
+                                    'null'       => $null,
+                                    'after'      => 'title',
+                                  ),
+
+      );
+      $CI->content_m->modify_column_table($table, $column);
+    } elseif ($action == 'drop-table') {
+      $column = "field_{$fields['handle']}"; 
+      $CI->content_m->drop_column_table($table, $column);
     }
+
+
+
   }
 
 ?>

@@ -16,7 +16,7 @@ class Assets extends My_Controller {
     );
   }
 
-  public function index() {
+  public function volumes() {
     $settings = array(
       'title'         =>  'assets',
       'subtitle'      =>  FALSE,
@@ -29,6 +29,7 @@ class Assets extends My_Controller {
       'action'        =>  'admin/settings/assets',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(4),
+      'right_content' =>  'template/bootstrap-4/admin/assets/assets-volumes-list',
       'element_name'  =>  'assets_element',
       'group_name'    =>  'assets_group',
       'group'         =>  $this->general_m->get_all_results('assets_group'),
@@ -53,7 +54,7 @@ class Assets extends My_Controller {
   }
 
   /*CREATE*/
-  public function create() {
+  public function volumes_create() {
     $settings = array(
       'title'         =>  'assets',
       'subtitle'      =>  'create',
@@ -63,7 +64,7 @@ class Assets extends My_Controller {
       'button_type'   =>  'submit',
       'button_name'   =>  'create',
       'button_tabs'   =>  TRUE,
-      'content'       =>  'template/bootstrap-4/admin/assets/assets-group-form',
+      'content'       =>  'template/bootstrap-4/admin/assets/assets-volumes-form',
       'table'         =>  'assets',
       'action'        =>  'admin/settings/assets',
       'session'       =>  $this->data,
@@ -85,7 +86,6 @@ class Assets extends My_Controller {
     if ($this->form_validation->run() == TRUE) {
       if ($_POST['button'] == 'create') {
         $data = array(
-          'group_id'   => $this->input->post('group'),
           'name'       => ucFirst($this->input->post('name')),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'type'       => $this->input->post('type'),
@@ -123,7 +123,7 @@ class Assets extends My_Controller {
   }
 
   /*UPDATE*/
-  public function update($id='') {
+  public function volumes_update($id='') {
     $settings = array(
       'title'         =>  'assets',
       'subtitle'      =>  'update',
@@ -133,7 +133,7 @@ class Assets extends My_Controller {
       'button_type'   =>  'submit',
       'button_name'   =>  'update',
       'button_tabs'   =>  TRUE,
-      'content'       =>  'template/bootstrap-4/admin/assets/assets-group-form',
+      'content'       =>  'template/bootstrap-4/admin/assets/assets-volumes-form',
       'table'         =>  'assets',
       'action'        =>  'admin/settings/assets',
       'session'       =>  $this->data,
@@ -166,7 +166,6 @@ class Assets extends My_Controller {
     if ($this->form_validation->run() == TRUE) {
       if ($_POST['button'] == 'update') {
         $data = array(
-          'group_id'   => $this->input->post('group'),
           'name'       => ucFirst($this->input->post('name')),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'type'       => $this->input->post('type'),
@@ -204,7 +203,7 @@ class Assets extends My_Controller {
   }  
 
   /*DELETE*/
-  public function delete($id='') {
+  public function volumes_delete($id='') {
     $settings = array(
       'title'        => 'Assets',
       'table'        => 'assets',
@@ -216,14 +215,192 @@ class Assets extends My_Controller {
     if ($settings['getDataby_id']) {
       $deleteElemant = $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
       $delete        = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete {settings['title']} with id = has successfully");
-      $this->session->set_flashdata('message', "{settings['title']} has deleted {$delete} Records");      
+      helper_log('delete', "Delete {$settings['title']} with id = has successfully");
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");      
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
       redirect($settings['action']);
     }
   }
+
+
+  public function transforms() {
+    $settings = array(
+      'title'         =>  'assets',
+      'subtitle'      =>  'transforms',
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  '+ New Assets',
+      'button_link'   =>  'transforms/create',
+      'content'       =>  'template/bootstrap-4/admin/assets/assets-group-list',
+      'table'         =>  'assets_transforms',
+      'action'        =>  'admin/settings/assets/transforms',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(5),
+      'right_content' => 'template/bootstrap-4/admin/assets/assets-transforms-list',
+      'element_name'  =>  'assets_element',
+      'group_name'    =>  'assets_group',
+      'group'         =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'   =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
+    );
+
+    // Pagination
+    $config                 = $this->config->item('setting_pagination');
+    $config['base_url']     = base_url($settings['action']);
+    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']     = 10;
+    $num_pages              = $config["total_rows"] / $config["per_page"];
+    $config['uri_segment']  = 3;
+    $config['num_links']    = round($num_pages);
+    $this->pagination->initialize($config);
+    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    $settings['links']      = $this->pagination->create_links();
+    // end Pagination
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+  }
+
+  /*CREATE*/
+  public function transforms_create() {
+    $settings = array(
+      'title'            =>  'assets Transforms',
+      'subtitle'         =>  'create',
+      'breadcrumb'       =>  array('settings'),
+      'subbreadcrumb'    =>  array('create'),
+      'button'           =>  'Save',
+      'button_type'      =>  'submit',
+      'button_name'      =>  'create',
+      'content'          =>  'template/bootstrap-4/admin/assets/assets-transforms-form',
+      'table'            =>  'assets_transforms',
+      'action'           =>  'admin/settings/assets/transforms',
+      'session'          =>  $this->data,
+      'no'               =>  $this->uri->segment(4),
+      'transforms_mode'  =>  array('Crop', 'Fit', 'Strech'),
+      'transforms_point' =>  array(
+                                  'top-left', 
+                                  'top-center', 
+                                  'top-right', 
+                                  'center-left', 
+                                  'center-center', 
+                                  'center-right', 
+                                  'bottom-left', 
+                                  'bottom-center', 
+                                  'bottom-right'),
+      'transforms_quality'     =>  array('Auto', 'Low', 'Medium', 'High', 'Very High (Recommended)', 'Maximum'),
+      'transforms_interlacing' =>  array('none', 'line', 'plane', 'partition'),
+      'transforms_format'      =>  array('auto', 'jpg', 'png', 'gif'),
+    );
+
+    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
+    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
+    if ($this->form_validation->run() == TRUE) {
+      if ($_POST['button'] == 'create') {
+        $data = array(
+          'name'        => ucFirst($this->input->post('name')),
+          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'mode'        => $this->input->post('mode'),
+          'point'       => $this->input->post('point'),
+          'width'       => $this->input->post('width'),
+          'height'      => $this->input->post('height'),
+          'quality'     => $this->input->post('quality'),
+          'interlacing' => $this->input->post('interlacing'),
+          'format'      => $this->input->post('format'),
+          'description' => $this->input->post('description'),
+          'created_by'  => $this->data['userdata']['id'],
+        );
+        $tableFieldsId = $this->general_m->create($settings['table'], $data);
+        helper_log('add', "Create {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
+        redirect($settings['action']);
+      } 
+    } else {
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+    }
+  }
+
+  /*UPDATE*/
+  public function transforms_update($id='') {
+    $settings = array(
+      'title'           =>  'assets Transforms',
+      'subtitle'        =>  'update',
+      'breadcrumb'      =>  array('settings'),
+      'subbreadcrumb'   =>  array('edit'),
+      'button'          =>  'Update',
+      'button_type'     =>  'submit',
+      'button_name'     =>  'update',
+      'content'         =>  'template/bootstrap-4/admin/assets/assets-transforms-form',
+      'table'           =>  'assets_transforms',
+      'action'          =>  'admin/settings/assets/transforms',
+      'session'         =>  $this->data,
+      'no'              =>  $this->uri->segment(3),
+      'transforms_mode' =>  array('Crop', 'Fit', 'Strech'),
+      'transforms_point' =>  array(
+                                  'top-left', 
+                                  'top-center', 
+                                  'top-right', 
+                                  'center-left', 
+                                  'center-center', 
+                                  'center-right', 
+                                  'bottom-left', 
+                                  'bottom-center', 
+                                  'bottom-right'),
+      'transforms_quality'     =>  array('Auto', 'Low', 'Medium', 'High', 'Very High (Recommended)', 'Maximum'),
+      'transforms_interlacing' =>  array('none', 'line', 'plane', 'partition'),
+      'transforms_format'      =>  array('auto', 'jpg', 'png', 'gif'),
+      'id'                     => $id
+    );
+    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
+    
+    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
+    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
+    if ($this->form_validation->run() == TRUE) {
+      if ($_POST['button'] == 'update') {
+        $data = array(
+          'name'        => ucFirst($this->input->post('name')),
+          'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'mode'        => $this->input->post('mode'),
+          'point'       => $this->input->post('point'),
+          'width'       => $this->input->post('width'),
+          'height'      => $this->input->post('height'),
+          'quality'     => $this->input->post('quality'),
+          'interlacing' => $this->input->post('interlacing'),
+          'format'      => $this->input->post('format'),
+          'description' => $this->input->post('description'),
+          'updated_by'  => $this->data['userdata']['id'],
+        );
+        $this->general_m->update($settings['table'], $data, $id);
+        helper_log('edit', "Update {$settings['title']} has successfully");
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
+        redirect($settings['action']);
+      } 
+    } else {
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+    }
+  }  
+
+  /*DELETE*/
+  public function transforms_delete($id='') {
+    $settings = array(
+      'title'        => 'Assets',
+      'table'        => 'assets_transforms',
+      'action'       => 'admin/settings/assets/transforms',
+      'fields_table' => 'assets_element',
+    );
+    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
+
+    if ($settings['getDataby_id']) {
+      $delete        = $this->general_m->delete($settings['table'], $id);
+      helper_log('delete', "Delete {settings['title']} with id = has successfully");
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");      
+      redirect($settings['action']);
+    } else {
+      $this->session->set_flashdata('message', 'Your Id Not Valid');
+      redirect($settings['action']);
+    }
+  }
+
 
 }
 
