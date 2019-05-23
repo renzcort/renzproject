@@ -13,7 +13,7 @@ class fields extends My_Controller {
     //Do your magic here
     $this->data = array(
       'userdata'  =>  $this->first_load(),
-      'parentLink' => 'admin/fields', 
+      'parentLink' => 'admin/settings/fields', 
     );
   }
   
@@ -155,7 +155,7 @@ class fields extends My_Controller {
         $handle           = lcfirst(str_replace(' ', '', ucwords($this->input->post('name'))));
         $getFieldsType    = $this->general_m->get_row_by_id('fields_type', $this->input->post('fieldsTypeId'));
         $getContentFields = $this->db->list_fields('content');
-        if (!in_array("field_{$handle}", $getContentFields)) {
+        if (!in_array("fields_{$handle}", $getContentFields)) {
           $fields = array(
             'handle' =>  $handle,
             'type'   =>  $getFieldsType->type,
@@ -294,7 +294,7 @@ class fields extends My_Controller {
         $getFields_type   = $this->general_m->get_row_by_id('fields_type', $this->input->post('fieldsTypeId'));
         $getContentFields = $this->db->list_fields('content');
         if ($handle != $settings['getDataby_id']->handle) {
-          if (!in_array("field_{$handle}", $getContentFields)) {
+          if (!in_array("fields_{$handle}", $getContentFields)) {
             $fields = array(
               'old_name' =>  $settings['getDataby_id']->handle,
               'handle'   =>  $handle,

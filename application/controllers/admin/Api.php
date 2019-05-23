@@ -108,58 +108,44 @@ class Api extends My_Controller {
         );
       }
 
-      /*add contents*/
-      $fieldsId         = $this->input->post('fieldsId');
-      $getFieldsAll     = $this->fields_m->get_all_results();
-      $getContentFields = $this->db->list_fields('content');
+      
       if ($button == 'create') {
         $data['created_by'] = $this->data['userdata']['id'];
         $tableFieldsId      = $this->general_m->create($settings['table'], $data);
         helper_log('add', "Create {$settings['title']} has successfully");        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Created");
-       
-        foreach ($getFieldsAll as $key) {
-          if (in_array($key->id, $fieldsId)) {
-            if (!in_array("field_{$key->handle}", $getContentFields)) {
-              $fields = array(
-                'handle' =>  $key->handle,
-                'type'   =>  $key->type_name,
-              );
-              // add Column content
-              modifyColumn($fields, 'add-table', "{$settings['table']}_content"); 
-            } else {
-              $this->session->set_flashdata('message', "This fields {field_{$key->handle}} has exists");
-            }
-          }
-        }
       } else {
         $data['updated_by'] = $this->data['userdata']['id'];
         $this->general_m->update($settings['table'], $data, $id);
         helper_log('update', "Update {$settings['title']} has successfully");        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");  
+      // }
 
-        foreach ($getFieldsAll as $key) {
-          if (in_array($key->id, $fieldsId)) {
-            if (!in_array("field_{$key->handle}", $getContentFields)) {
-              $fields = array(
-                'old_name' =>  $settings['getDataby_id']->handle,
-                'handle'   =>  $key->handle,
-                'type'     =>  $key->type_name,
-              );
-              // Modify Column content
-              modifyColumn($fields, 'modify-table', "{$settings['table']}_content"); 
-            } else {
-              $this->session->set_flashdata('message', "This fields {field_{$key->handle}} has exists");
-            }
-          }
-        }   
-      }
-
+      /*add contents*/
+      $fieldsId         = $this->input->post('fieldsId');
+      $getFieldsAll     = $this->fields_m->get_all_results();
+      $getContentFields = $this->db->list_fields("{$settings['table']}_content");
+      $getElement       = $this->general_m->get_all_results("{$settings['table']}_element");
       //get fields to element 
       (empty($id) ? $id = $tableFieldsId : $id = $id);
       $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
       /*add elements*/
       if (!empty($fieldsId)) {
+
+        // Altewr Column Content
+        foreach ($getFieldsAll as $key) {
+          if (in_array($key->id, $fieldsId)) {
+            if (!in_array("fields_{$key->handle}", $getContentFields)) {
+              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+              $fields = array (
+                'handle' => $key->handle,
+                'type'   => $getFieldsType->type,
+              );
+              modifyColumn($fields, 'add-table', "{$settings['table']}_content"); 
+            }
+          }
+        }
+
         $i = 0;
         foreach ($fieldsId as $value) {
           if ($settings['table'] == 'entries') {
@@ -232,7 +218,7 @@ class Api extends My_Controller {
         foreach ($getFields as $key) {
           $getContentFields = $this->db->list_fields('content');
           foreach ($getContentFields as $value) {
-            if ($value == "field_{$key->handle}") {
+            if ($value == "fields_{$key->handle}") {
               $fields = array(
                 'handle' => $key->handle,
               );

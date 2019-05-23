@@ -2,7 +2,7 @@
 
     // if ($fields['type'] == 'VARCHAR') {
     //   $column = arraY(
-    //     "field_{$fields['handle']}" => array(
+    //     "fields_{$fields['handle']}" => array(
     //                                 'type' => 'VARCHAR',
     //                                 'constraint' => '255',
     //                                 'null'  =>  TRUE,
@@ -11,7 +11,7 @@
     //   );
     // } elseif ($fields['type'] == 'INT') {
     //   $column = arraY(
-    //     "field_{$fields['handle']}" => array(
+    //     "fields_{$fields['handle']}" => array(
     //                                 'type' => 'INT',
     //                                 'constraint' => '11',
     //                                 'null'  =>  TRUE,
@@ -20,7 +20,7 @@
     //   );
     // } elseif ($fields['type'] == 'TEXT') {
     //   $column = arraY(
-    //     "field_{$fields['handle']}" => array(
+    //     "fields_{$fields['handle']}" => array(
     //                                 'type' => 'TEXT',
     //                                 'null'  =>  TRUE,
     //                                 'after' =>  'title',
@@ -28,14 +28,14 @@
     //   );
     // } elseif ($fields['type'] == 'DATE') {
     //   $column = arraY(
-    //     "field_{$fields['handle']}" => array(
+    //     "fields_{$fields['handle']}" => array(
     //                                 'type' => 'DATE',
     //                                 'after' =>  'title',
     //                               ),
     //   );
     // } elseif ($fields['type'] == 'DATETIME') {
     //   $column = arraY( 
-    //     "field_{$fields['handle']}" => array(
+    //     "fields_{$fields['handle']}" => array(
     //                                 'type' => 'DATETIME',
     //                                 'after' =>  'title',
     //                               ),
@@ -58,7 +58,7 @@
     }
 
     $column = arraY( 
-        "field_{$fields['handle']}" => array(
+        "fields_{$fields['handle']}" => array(
                                     'type'       => $fields['type'],
                                     'constraint' => $constraint,
                                     'null'       => $null,
@@ -73,8 +73,8 @@
     
     } elseif ($action == 'modify') {
       $column = arraY( 
-          "field_{$fields['old_name']}" => array(
-                                    'name'       => "field_{$fields['handle']}",
+          "fields_{$fields['old_name']}" => array(
+                                    'name'       => "fields_{$fields['handle']}",
                                     'type'       => $fields['type'],
                                     'constraint' => $constraint,
                                     'null'       => $null,
@@ -85,15 +85,15 @@
       $CI->content_m->modify_column($column);
     
     } elseif ($action == 'drop') {
-      $column = "field_{$fields['handle']}"; 
+      $column = "fields_{$fields['handle']}"; 
       $CI->content_m->drop_column($column);
 
     } elseif ($action == 'add-table') {
       $CI->content_m->add_column_table($table, $column);
     } elseif ($action == 'modify-table') {
       $column = arraY( 
-          "field_{$fields['old_name']}" => array(
-                                    'name'       => "field_{$fields['handle']}",
+          "fields_{$fields['old_name']}" => array(
+                                    'name'       => "fields_{$fields['handle']}",
                                     'type'       => $fields['type'],
                                     'constraint' => $constraint,
                                     'null'       => $null,
@@ -103,7 +103,7 @@
       );
       $CI->content_m->modify_column_table($table, $column);
     } elseif ($action == 'drop-table') {
-      $column = "field_{$fields['handle']}"; 
+      $column = "fields_{$fields['handle']}"; 
       $CI->content_m->drop_column_table($table, $column);
     }
 
