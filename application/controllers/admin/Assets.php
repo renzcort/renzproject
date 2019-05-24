@@ -18,7 +18,7 @@ class Assets extends My_Controller {
 
   public function volumes() {
     $settings = array(
-      'title'         =>  'assets',
+                                                                                                 'title'         =>  'assets',
       'subtitle'      =>  FALSE,
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
@@ -30,7 +30,7 @@ class Assets extends My_Controller {
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(4),
       'right_content' =>  'template/bootstrap-4/admin/assets/assets-volumes-list',
-      'element_name'  =>  'assets_element',
+      'fields_element'  =>  'assets_element',
       'group_name'    =>  'assets_group',
       'group'         =>  $this->general_m->get_all_results('assets_group'),
       'group_count'   =>  $this->general_m->count_all_results('assets_group'),
@@ -56,29 +56,29 @@ class Assets extends My_Controller {
   /*CREATE*/
   public function volumes_create() {
     $settings = array(
-      'title'         =>  'assets',
-      'subtitle'      =>  'create',
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  array('create'),
-      'button'        =>  'Save',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'create',
-      'button_tabs'   =>  TRUE,
-      'content'       =>  'template/bootstrap-4/admin/assets/assets-volumes-form',
-      'table'         =>  'assets',
-      'action'        =>  'admin/settings/assets',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
-      'assets_type'   =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
-      'group_name'    =>  'assets_group',
-      'group'         =>  $this->general_m->get_all_results('assets_group'),
-      'group_count'   =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
-      'fields_table'  =>  'assets_element',
-      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
-      'fields'        =>  $this->fields_m->get_all_results(),
-      'elementFields' =>  [],
-      'order'         =>  $this->general_m->get_max_fields('assets', 'order'),
+      'title'          =>  'assets',
+      'subtitle'       =>  'create',
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  array('create'),
+      'button'         =>  'Save',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',
+      'button_tabs'    =>  TRUE,
+      'content'        =>  'template/bootstrap-4/admin/assets/assets-volumes-form',
+      'table'          =>  'assets',
+      'action'         =>  'admin/settings/assets',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'assets_type'    =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'group_name'     =>  'assets_group',
+      'group'          =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'    =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'       =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'fields_element' =>  'assets_element',
+      'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('assets', 'order'),
     );
 
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
@@ -125,31 +125,31 @@ class Assets extends My_Controller {
   /*UPDATE*/
   public function volumes_update($id='') {
     $settings = array(
-      'title'         =>  'assets',
-      'subtitle'      =>  'update',
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  array('edit'),
-      'button'        =>  'Update',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'update',
-      'button_tabs'   =>  TRUE,
-      'content'       =>  'template/bootstrap-4/admin/assets/assets-volumes-form',
-      'table'         =>  'assets',
-      'action'        =>  'admin/settings/assets',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
-      'assets_type'   =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
-      'group_name'    =>  'assets_group',
-      'group'         =>  $this->general_m->get_all_results('assets_group'),
-      'group_count'   =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
-      'fields_table'  =>  'assets_element',
-      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
-      'fields'        =>  $this->fields_m->get_all_results(),
-      'elementFields' =>  [],
-      'order'         =>  $this->general_m->get_max_fields('assets', 'order'),
+      'title'          =>  'assets',
+      'subtitle'       =>  'update',
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  array('edit'),
+      'button'         =>  'Update',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'update',
+      'button_tabs'    =>  TRUE,
+      'content'        =>  'template/bootstrap-4/admin/assets/assets-volumes-form',
+      'table'          =>  'assets',
+      'action'         =>  'admin/settings/assets',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'assets_type'    =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'group_name'     =>  'assets_group',
+      'group'          =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'    =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'       =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'fields_element' =>  'assets_element',
+      'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('assets', 'order'),
     );
-    $settings['element']      = $this->general_m->get_result_by_id($settings['fields_table'], $id, "{$settings['table']}_id");
+    $settings['element']      = $this->general_m->get_result_by_id($settings['fields_element'], $id, "{$settings['table']}_id");
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
     
     if ($settings['element']) {
@@ -205,15 +205,15 @@ class Assets extends My_Controller {
   /*DELETE*/
   public function volumes_delete($id='') {
     $settings = array(
-      'title'        => 'Assets',
-      'table'        => 'assets',
-      'action'       => 'admin/settings/assets',
-      'fields_table' => 'assets_element',
+      'title'          => 'Assets',
+      'table'          => 'assets',
+      'action'         => 'admin/settings/assets',
+      'fields_element' => 'assets_element',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
     if ($settings['getDataby_id']) {
-      $deleteElemant = $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
+      $deleteElemant = $this->general_m->delete($settings['fields_element'], $id, "{$settings['table']}_id");
       $delete        = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete {$settings['title']} with id = has successfully");
       $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");      
@@ -227,23 +227,23 @@ class Assets extends My_Controller {
 
   public function transforms() {
     $settings = array(
-      'title'         =>  'assets',
-      'subtitle'      =>  'transforms',
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  FALSE,
-      'button'        =>  '+ New Assets',
-      'button_link'   =>  'transforms/create',
-      'content'       =>  'template/bootstrap-4/admin/assets/assets-group-list',
-      'table'         =>  'assets_transforms',
-      'action'        =>  'admin/settings/assets/transforms',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(5),
-      'right_content' => 'template/bootstrap-4/admin/assets/assets-transforms-list',
-      'element_name'  =>  'assets_element',
-      'group_name'    =>  'assets_group',
-      'group'         =>  $this->general_m->get_all_results('assets_group'),
-      'group_count'   =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
+      'title'           =>  'assets',
+      'subtitle'        =>  'transforms',
+      'breadcrumb'      =>  array('settings'),
+      'subbreadcrumb'   =>  FALSE,
+      'button'          =>  '+ New Assets',
+      'button_link'     =>  'transforms/create',
+      'content'         =>  'template/bootstrap-4/admin/assets/assets-group-list',
+      'table'           =>  'assets_transforms',
+      'action'          =>  'admin/settings/assets/transforms',
+      'session'         =>  $this->data,
+      'no'              =>  $this->uri->segment(5),
+      'right_content'   => 'template/bootstrap-4/admin/assets/assets-transforms-list',
+      'fields_element' =>  'assets_element',
+      'group_name'      =>  'assets_group',
+      'group'           =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'     =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'        =>  ($this->input->post('group') ? $this->input->post('group') : ''),
     );
 
     // Pagination
@@ -383,10 +383,10 @@ class Assets extends My_Controller {
   /*DELETE*/
   public function transforms_delete($id='') {
     $settings = array(
-      'title'        => 'Assets',
-      'table'        => 'assets_transforms',
-      'action'       => 'admin/settings/assets/transforms',
-      'fields_table' => 'assets_element',
+      'title'           => 'Assets',
+      'table'           => 'assets_transforms',
+      'action'          => 'admin/settings/assets/transforms',
+      'fields_element' => 'assets_element',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 

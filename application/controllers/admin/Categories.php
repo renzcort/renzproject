@@ -29,7 +29,7 @@ class Categories extends My_Controller {
       'action'        =>  'admin/settings/categories',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'element_name'  =>  'categories_element',
+      'fields_element'  =>  'categories_element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
@@ -68,7 +68,7 @@ class Categories extends My_Controller {
       'action'        =>  'admin/settings/categories',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'fields_table'  =>  'categories_element',
+      'fields_element'=>  'categories_element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
@@ -134,14 +134,14 @@ class Categories extends My_Controller {
       'action'        =>  'admin/settings/categories',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
-      'element_name'  =>  'categories_element',
+      'fields_element'=>  'categories_element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
       'elementFields' =>  [],
       'order'         =>  $this->general_m->get_max_fields('categories', 'order'),
     );
 
-    $settings['element']      = $this->general_m->get_result_by_id($settings['element_name'], $id, "{$settings['table']}_id");
+    $settings['element']      = $this->general_m->get_result_by_id($settings['fields_element'], $id, "{$settings['table']}_id");
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
     
     if ($settings['element']) {
@@ -202,12 +202,12 @@ class Categories extends My_Controller {
       'title'        => 'Categories',
       'table'        => 'categories',
       'action'       => 'admin/categories',
-      'element_name' => 'categories_element',
+      'fields_element' => 'categories_element',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
     if ($settings['getDataby_id']) {
-      $element_del = $this->general_m->delete($settings['element_name'], $id, "{$settings['table']}_id");
+      $element_del = $this->general_m->delete($settings['fields_element'], $id, "{$settings['table']}_id");
       $delete = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete data {$settings['title']} has successfully");        
       $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");

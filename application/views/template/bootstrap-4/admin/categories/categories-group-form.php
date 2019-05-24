@@ -20,7 +20,7 @@
         <input type="hidden" id="button_name" name="button" value="<?php echo $button_name; ?>">
         <input type="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
         <input type="hidden" name="table" value="<?php echo $table; ?>">
-        <input type="hidden" name="fields_table" value="<?php echo $fields_table; ?>">
+        <input type="hidden" name="fields_element" value="<?php echo $fields_element; ?>">
         <input type="hidden" name="header" value="<?php echo $title; ?>">
         <input type="hidden" name="subtitle" value="<?php echo $subtitle; ?>">
         <input type="hidden" name="content" value="<?php echo $content; ?>">

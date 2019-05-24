@@ -26,28 +26,28 @@ class Api extends My_Controller {
     ($this->input->post('section_id') ? $section_id = $this->input->post('section_id') : $section_id = '');
     $button     = $this->input->post('button');
     $settings = array(
-      'title'         =>  $this->input->post('header'),
-      'subtitle'      =>  ($this->input->post('subtitle') ? $this->input->post('subtitle') : FALSE),
-      'breadcrumb'    =>  FALSE,
-      'subbreadcrumb' =>  FALSE,
-      'button'        =>  (($button == 'create') ? 'Save' : 'Update'),
-      'button_type'   =>  'submit',
-      'button_name'   =>  (($button == 'create') ? 'create' : 'Update'),
-      'button_tabs'   =>  TRUE,
-      'content'       =>  $this->input->post('content'),
-      'table'         =>  $this->input->post('table'),
-      'fields_table'  =>  $this->input->post('fields_table'),
-      'action'        =>  $this->input->post('action'),
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
-      'section_id'    =>  $section_id,
-      'section'       =>  $this->section_m->get_row_by_id($section_id),
-      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
-      'fields'        =>  $this->fields_m->get_all_results(),
+      'title'          =>  $this->input->post('header'),
+      'subtitle'       =>  ($this->input->post('subtitle') ? $this->input->post('subtitle') : FALSE),
+      'breadcrumb'     =>  FALSE,
+      'subbreadcrumb'  =>  FALSE,
+      'button'         =>  (($button == 'create') ? 'Save' : 'Update'),
+      'button_type'    =>  'submit',
+      'button_name'    =>  (($button == 'create') ? 'create' : 'Update'),
+      'button_tabs'    =>  TRUE,
+      'content'        =>  $this->input->post('content'),
+      'table'          =>  $this->input->post('table'),
+      'fields_element' =>  $this->input->post('fields_element'),
+      'action'         =>  $this->input->post('action'),
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'section_id'     =>  $section_id,
+      'section'        =>  $this->section_m->get_row_by_id($section_id),
+      'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
+      'fields'         =>  $this->fields_m->get_all_results(),
     );
     if ($button == 'update') {
       $settings['getDataby_id']  =  $this->entries_m->get_row_by_id($id);
-      $settings['element']       =  $this->general_m->get_result_by_id($settings['fields_table'], $id, "{$settings['table']}_id");
+      $settings['element']       =  $this->general_m->get_result_by_id($settings['fields_element'], $id, "{$settings['table']}_id");
 
       if ($settings['element']) {
         foreach ($settings['element'] as $key) {
@@ -119,33 +119,15 @@ class Api extends My_Controller {
         $this->general_m->update($settings['table'], $data, $id);
         helper_log('update', "Update {$settings['title']} has successfully");        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");  
-      // }
+      }
 
       /*add contents*/
       $fieldsId         = $this->input->post('fieldsId');
-      $getFieldsAll     = $this->fields_m->get_all_results();
-      $getContentFields = $this->db->list_fields("{$settings['table']}_content");
-      $getElement       = $this->general_m->get_all_results("{$settings['table']}_element");
       //get fields to element 
       (empty($id) ? $id = $tableFieldsId : $id = $id);
-      $this->general_m->delete($settings['fields_table'], $id, "{$settings['table']}_id");
+      $this->general_m->delete($settings['fields_element'], $id, "{$settings['table']}_id");
       /*add elements*/
       if (!empty($fieldsId)) {
-
-        // Altewr Column Content
-        foreach ($getFieldsAll as $key) {
-          if (in_array($key->id, $fieldsId)) {
-            if (!in_array("fields_{$key->handle}", $getContentFields)) {
-              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
-              $fields = array (
-                'handle' => $key->handle,
-                'type'   => $getFieldsType->type,
-              );
-              modifyColumn($fields, 'add-table', "{$settings['table']}_content"); 
-            }
-          }
-        }
-
         $i = 0;
         foreach ($fieldsId as $value) {
           if ($settings['table'] == 'entries') {
@@ -162,10 +144,63 @@ class Api extends My_Controller {
               'order'                   =>  ++$i,
             );
           }
-          $this->general_m->create($settings['fields_table'], $element, FALSE);
+          $this->general_m->create($settings['fields_element'], $element, FALSE);
         }
         helper_log('add', "add element create has successfully {$element['order']} record");
+      } 
+
+      (($settings['table'] == 'entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
+      $getFieldsAll     = $this->fields_m->get_all_results();
+      $getContentFields = $this->db->list_fields($table_content);
+      $getElement = $this->general_m->get_all_results($settings['fields_element']);
+      if ($getElement) {
+        // check fieldsid in element
+        foreach ($getElement as $elm) {
+          $listFields[] = $elm->fields_id;
+        }
+        /*Check Delete Column*/
+        foreach ($getFieldsAll as $key) {
+          if (in_array("fields_{$key->handle}", $getContentFields)) {
+            if (! in_array($key->id, array_unique($listFields))) {
+              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+              $fields = array(
+                'handle' => $key->handle,
+                'type'   => $getFieldsType->type,
+              );
+              // Drop field column in content
+              modifyColumn($fields, 'drop-table', $table_content);
+            }
+          }
+        }
+
+        // Add Column COntent
+        foreach ($getFieldsAll as $key) {
+          if (!in_array("fields_{$key->handle}", $getContentFields)) {
+            if (in_array($key->id, array_unique($listFields))) {
+              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+              $fields = array (
+                'handle' => $key->handle,
+                'type'   => $getFieldsType->type,
+              );
+              modifyColumn($fields, 'add-table', $table_content); 
+            }
+          }
+        } 
+      } else {
+        /*Check Delete Column*/
+        foreach ($getFieldsAll as $key) {
+          if (in_array("fields_{$key->handle}", $getContentFields)) {
+            $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+            $fields = array(
+              'handle' => $key->handle,
+              'type'   => $getFieldsType->type,
+            );
+            // Drop field column in content
+            modifyColumn($fields, 'drop-table', $table_content);
+          }
+        }
       }
+
       $settings['status'] = TRUE;
       echo json_encode($settings);
     } else {
