@@ -208,6 +208,44 @@ class Categories extends My_Controller {
 
     if ($settings['getDataby_id']) {
       $element_del = $this->general_m->delete($settings['fields_element'], $id, "{$settings['table']}_id");
+      // delte content
+      (($settings['table'] == 'entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
+      $getFieldsAll     = $this->fields_m->get_all_results();
+      $getContentFields = $this->db->list_fields($table_content);
+      $getElement       = $this->general_m->get_all_results($settings['fields_element']);
+      if ($getElement) {
+        // check fieldsid in element
+        foreach ($getElement as $elm) {
+          $listFields[] = $elm->fields_id;
+        }
+        /*Check Delete Column*/
+        foreach ($getFieldsAll as $key) {
+          if (in_array("fields_{$key->handle}", $getContentFields)) {
+            if (! in_array($key->id, array_unique($listFields))) {
+              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+              $fields = array(
+                'handle' => $key->handle,
+                'type'   => $getFieldsType->type,
+              );
+              // Drop field column in content
+              modifyColumn($fields, 'drop-table', $table_content);
+            }
+          }
+        }
+      } else {
+        /*Check Delete Column*/
+        foreach ($getFieldsAll as $key) {
+          if (in_array("fields_{$key->handle}", $getContentFields)) {
+            $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+            $fields = array(
+              'handle' => $key->handle,
+              'type'   => $getFieldsType->type,
+            );
+            // Drop field column in content
+            modifyColumn($fields, 'drop-table', $table_content);
+          }
+        }
+      }
       $delete = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete data {$settings['title']} has successfully");        
       $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");

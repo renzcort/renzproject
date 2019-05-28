@@ -18,24 +18,24 @@ class Assets extends My_Controller {
 
   public function volumes() {
     $settings = array(
-                                                                                                 'title'         =>  'assets',
-      'subtitle'      =>  FALSE,
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  FALSE,
-      'button'        =>  '+ New Assets',
-      'button_link'   =>  'assets/create',
-      'content'       =>  'template/bootstrap-4/admin/assets/assets-group-list',
-      'table'         =>  'assets',
-      'action'        =>  'admin/settings/assets',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(4),
-      'right_content' =>  'template/bootstrap-4/admin/assets/assets-volumes-list',
-      'fields_element'  =>  'assets_element',
-      'group_name'    =>  'assets_group',
-      'group'         =>  $this->general_m->get_all_results('assets_group'),
-      'group_count'   =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
-    );
+      'title'          =>  'assets',
+      'subtitle'       =>  FALSE,
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'button'         =>  '+ New Assets',
+      'button_link'    =>  'assets/create',
+      'content'        =>  'template/bootstrap-4/admin/assets/assets-group-list',
+      'table'          =>  'assets',
+      'action'         =>  'admin/settings/assets',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(4),
+      'right_content'  =>  'template/bootstrap-4/admin/assets/assets-volumes-list',
+      'fields_element' =>  'assets_element',
+      'group_name'     =>  'assets_group',
+      'group'          =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'    =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
+      );
 
     // Pagination
     $config                 = $this->config->item('setting_pagination');
@@ -214,6 +214,45 @@ class Assets extends My_Controller {
 
     if ($settings['getDataby_id']) {
       $deleteElemant = $this->general_m->delete($settings['fields_element'], $id, "{$settings['table']}_id");
+
+      // delte content
+      (($settings['table'] == 'entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
+      $getFieldsAll     = $this->fields_m->get_all_results();
+      $getContentFields = $this->db->list_fields($table_content);
+      $getElement       = $this->general_m->get_all_results($settings['fields_element']);
+      if ($getElement) {
+        // check fieldsid in element
+        foreach ($getElement as $elm) {
+          $listFields[] = $elm->fields_id;
+        }
+        /*Check Delete Column*/
+        foreach ($getFieldsAll as $key) {
+          if (in_array("fields_{$key->handle}", $getContentFields)) {
+            if (! in_array($key->id, array_unique($listFields))) {
+              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+              $fields = array(
+                'handle' => $key->handle,
+                'type'   => $getFieldsType->type,
+              );
+              // Drop field column in content
+              modifyColumn($fields, 'drop-table', $table_content);
+            }
+          }
+        }
+      } else {
+        /*Check Delete Column*/
+        foreach ($getFieldsAll as $key) {
+          if (in_array("fields_{$key->handle}", $getContentFields)) {
+            $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+            $fields = array(
+              'handle' => $key->handle,
+              'type'   => $getFieldsType->type,
+            );
+            // Drop field column in content
+            modifyColumn($fields, 'drop-table', $table_content);
+          }
+        }
+      }
       $delete        = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete {$settings['title']} with id = has successfully");
       $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");      
@@ -235,7 +274,7 @@ class Assets extends My_Controller {
       'button_link'     =>  'transforms/create',
       'content'         =>  'template/bootstrap-4/admin/assets/assets-group-list',
       'table'           =>  'assets_transforms',
-      'action'          =>  'admin/settings/assets/transforms',
+      'action'          =>  'admin/settings/assets',
       'session'         =>  $this->data,
       'no'              =>  $this->uri->segment(5),
       'right_content'   => 'template/bootstrap-4/admin/assets/assets-transforms-list',
