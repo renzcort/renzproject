@@ -103,8 +103,13 @@
         <div class="d-flex flex-row justify-content-between">
           <select name="assetsSourcesList" class="form-control costum-select">
             <option value="0">- Select Sources -</option>
+            <?php if ($assets): ?>
+              <?php foreach ($assets as $key): ?>
+                <option value="<?php echo $key->id; ?>"><?php echo $key->name; ?></option>
+              <?php endforeach ?>
+            <?php endif ?>
           </select>
-          <input type="text" name="assetsSourcesInput" class="form-control flex-grow-1 ml-2">
+          <input type="text" name="assetsSourcesInput" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2">
         </div>
       </div>
       <div class="form-group noAssetsRestrictUpload">
@@ -114,14 +119,14 @@
           <input class="form-check-input" type="checkbox" value="" name="assetsSources[]">
           <label class="form-check-label" for="defaultCheck1">All</label>
         </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="assetsSources[]">
-          <label class="form-check-label" for="defaultCheck1">Products</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="assetsSources[]">
-          <label class="form-check-label" for="defaultCheck1">Images</label>
-        </div>
+        <?php if ($assets): ?>
+          <?php foreach ($assets as $key): ?>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="<?php echo $key->id; ?>" name="assetsSources[]">
+            <label class="form-check-label" for="defaultCheck1"><?php echo $key->name; ?></label>
+          </div>
+          <?php endforeach ?>
+        <?php endif ?>
       </div>
       <div class="form-group noAssetsRestrictUpload">
         <label class="heading" for="inputUploadLocation">Default Upload Location</label>
@@ -129,8 +134,13 @@
         <div class="d-flex flex-row justify-content-between">
           <select name="assetsSourcesList" class="form-control costum-select">
             <option value="0">- Select Sources -</option>
+            <?php if ($assets): ?>
+              <?php foreach ($assets as $key): ?>
+                <option value="<?php echo $key->id; ?>"><?php echo $key->name; ?></option>
+              <?php endforeach ?>
+            <?php endif ?>
           </select>
-          <input type="text" name="assetsSourcesInput" class="form-control flex-grow-1 ml-2">
+          <input type="text" name="assetsSourcesInput" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2">
         </div>
       </div>
       <div class="form-group">
@@ -140,18 +150,14 @@
         </div>
       </div>
       <div class="form-group assetsRestrictFileType">
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="assetsType[]">
-          <label class="form-check-label" for="defaultCheck1">All</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="assetsType[]">
-          <label class="form-check-label" for="defaultCheck1">Products</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="assetsType[]">
-          <label class="form-check-label" for="defaultCheck1">Images</label>
-        </div>
+        <?php if ($file): ?>
+          <?php foreach ($file as $key => $value): ?>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" value="<?php echo $value; ?>" name="assetsType[]">
+            <label class="form-check-label" for="defaultCheck1"><?php echo $value ?></label>
+          </div>
+          <?php endforeach ?>
+        <?php endif ?>
       </div>
       <div class="form-group">
         <label class="heading" for="inputLocale">Target Locale</label>
@@ -169,7 +175,11 @@
         <label class="heading" for="inputMode">View Mode</label>
         <small class="form-text text-muted">Choose how the field should look for authors.</small>
         <select name="assetsViewMode" class="form-control costum-select">
-          <option value="0">- Select Mode -</option>
+        <?php if ($mode): ?>
+          <?php foreach ($mode as $key => $value): ?>
+          <option value="<?php echo $value; ?>"><?php echo $value; ?></option>
+          <?php endforeach ?>
+        <?php endif ?>
         </select>
       </div>
       <div class="form-group">
@@ -238,6 +248,11 @@
         <small class="form-text text-muted">Which source do you want to select categories from?</small>
         <select name="categoriesSource" class="form-control costum-select">
           <option value="0">- Select Source -</option>
+          <?php if ($assets): ?>
+            <?php foreach ($assets as $key): ?>
+            <option value="<?php echo $key->id ?>"><?php echo $key->name; ?></option>
+            <?php endforeach ?>
+          <?php endif ?>
         </select>
       </div>
       <div class="form-group">

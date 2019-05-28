@@ -74,6 +74,24 @@ class fields extends My_Controller {
       'group'         =>  $this->general_m->get_all_results('fields_group'),
       'group_count'   =>  $this->general_m->count_all_results('fields_group'),
       'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'assets'        =>  $this->general_m->get_all_results('assets'),
+      'file'          =>  array(
+                            'Audio', 
+                            'Compressed', 
+                            'Excel', 
+                            'Flash', 
+                            'HTML', 
+                            'Image', 
+                            'JSON', 
+                            'JavaScript', 
+                            'PDF', 
+                            'PowerPoint', 
+                            'Text', 
+                            'Video', 
+                            'Word'
+                          ),
+      'mode'          =>  array('List', 'List Thumbnails'),
+      'categories'    =>  $this->general_m->get_all_results('categories'),
       'attributes'    =>  arraY('type' =>
                                     array(
                                     'text'     => array('maxlength', 'minlength', 'placeholder'),
