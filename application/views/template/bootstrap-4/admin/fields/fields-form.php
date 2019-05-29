@@ -55,7 +55,7 @@
         <?php endforeach ?>
       </select>
     </div>
-    <div id="plainText" class="fields">
+    <div id="plainText" class="fields <?php echo ((!empty($getDataby_id->type_id) && $typeFields->handle == 'plainText') || empty($getDataby_id->type_id)  ? '' : 'd-none');?>">
       <div class="form-group">
         <label class="heading" for="inputPlaceholder">Placeholder Text</label>
         <small class="form-text text-muted">The text that will be shown if the field doesn’t have a value.</small>
@@ -90,10 +90,11 @@
         </select>
       </div>
     </div>
-    <div id="assets" class="d-none fields">
+    <div id="assets" class="fields <?php echo ((!empty($getDataby_id->type_id) && $typeFields->handle == 'assets') ? '' : 'd-none');?>">
       <div class="form-group">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="assetsRestrictUpload">
+          <input class="form-check-input" type="checkbox" name="assetsRestrictUpload" 
+          value="1" <?php echo (!empty($getFieldType->assetsRestrictUpload) ? 'checked' : '') ?>>
           <label class="form-check-label" for="restrictAssets">Restrict uploads to a single folder?</label>
         </div>
       </div>
@@ -102,27 +103,30 @@
         <small class="form-text text-muted">Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end? Note that the subfolder path can contain variables like {slug} or {author.username}.</small>
         <div class="d-flex flex-row justify-content-between">
           <select name="assetsSourcesList" class="form-control costum-select">
-            <option value="0">- Select Sources -</option>
+            <option value="0">- Site Assets -</option>
             <?php if ($assets): ?>
               <?php foreach ($assets as $key): ?>
-                <option value="<?php echo $key->id; ?>"><?php echo $key->name; ?></option>
+                <option value="<?php echo $key->id; ?>" <?php echo (($getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
+                  <?php echo $key->name; ?>
+                </option>
               <?php endforeach ?>
             <?php endif ?>
           </select>
-          <input type="text" name="assetsSourcesInput" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2">
+          <input type="text" name="assetsSourcesInput" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2" 
+          value="<?php echo (!empty($getFieldType->assetsSourcesInput) ? $getFieldType->assetsSourcesInput : set_value('assetsSourcesInput')); ?>">
         </div>
       </div>
       <div class="form-group noAssetsRestrictUpload">
         <label class="heading" for="inputSource">Sources</label>
         <small class="form-text text-muted">Which sources do you want to select assets from?</small>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="assetsSources[]">
-          <label class="form-check-label" for="defaultCheck1">All</label>
+          <input class="form-check-input" type="checkbox" value="all" name="assetsSources[]" checked>
+          <label class="form-check-label" for="defaultCheck1"><strong>All</strong></label>
         </div>
         <?php if ($assets): ?>
           <?php foreach ($assets as $key): ?>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="<?php echo $key->id; ?>" name="assetsSources[]">
+            <input class="form-check-input" type="checkbox" value="<?php echo $key->id; ?>" name="assetsSources[]" checked disabled>
             <label class="form-check-label" for="defaultCheck1"><?php echo $key->name; ?></label>
           </div>
           <?php endforeach ?>
@@ -133,10 +137,12 @@
         <small class="form-text text-muted">Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end? Note that the subfolder path can contain variables like {slug} or {author.username}.</small>
         <div class="d-flex flex-row justify-content-between">
           <select name="assetsSourcesList" class="form-control costum-select">
-            <option value="0">- Select Sources -</option>
+            <option value="0">- Site Assets -</option>
             <?php if ($assets): ?>
               <?php foreach ($assets as $key): ?>
-                <option value="<?php echo $key->id; ?>"><?php echo $key->name; ?></option>
+                <option value="<?php echo $key->id; ?>" <?php echo (($getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
+                  <?php echo $key->name; ?>
+                </option>
               <?php endforeach ?>
             <?php endif ?>
           </select>
@@ -145,7 +151,8 @@
       </div>
       <div class="form-group">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="assetsRestrictFileType">
+          <input class="form-check-input" type="checkbox" name="assetsRestrictFileType" 
+          value="1" <?php echo (!empty($getFieldType->assetsRestrictFileType) ? 'checked' : '') ?>>
           <label class="form-check-label" for="restrictAssets">Restrict allowed file types?</label>
         </div>
       </div>
@@ -153,7 +160,8 @@
         <?php if ($file): ?>
           <?php foreach ($file as $key => $value): ?>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="<?php echo $value; ?>" name="assetsType[]">
+            <input class="form-check-input" type="checkbox" value="<?php echo $value; ?>" name="assetsType[]" 
+            <?php echo ((!empty($getFieldType->assetsType) && in_array($value, $getFieldType->assetsType)) ? 'checked' : '');?>>
             <label class="form-check-label" for="defaultCheck1"><?php echo $value ?></label>
           </div>
           <?php endforeach ?>
@@ -169,7 +177,8 @@
       <div class="form-group">
         <label class="heading" for="inputLimit">Limit</label>
         <small class="form-text text-muted">Limit the number of selectable assets.</small>
-        <input type="text" name="assetsLimit" class="form-control form-number">
+        <input type="text" name="assetsLimit" class="form-control form-number" 
+        value="<?php echo (!empty($getFieldType->assetsLimit) ? $getFieldType->assetsLimit : set_value('assetsLimit')); ?>"> 
       </div>
       <div class="form-group">
         <label class="heading" for="inputMode">View Mode</label>
@@ -177,7 +186,9 @@
         <select name="assetsViewMode" class="form-control costum-select">
         <?php if ($mode): ?>
           <?php foreach ($mode as $key => $value): ?>
-          <option value="<?php echo $value; ?>"><?php echo $value; ?></option>
+          <option value="<?php echo $value; ?>" <?php echo (($getFieldType->assetsViewMode == $key->value) ? 'selected' : '');?>>
+            <?php echo $value; ?>
+          </option>
           <?php endforeach ?>
         <?php endif ?>
         </select>
@@ -185,10 +196,11 @@
       <div class="form-group">
         <label class="heading" for="inputSelectionLabel">Selection Label</label>
         <small class="form-text text-muted">Enter the text you want to appear on the assets selection input.</small>
-        <input type="text" name="assetsSelectionLabel" class="form-control">
+        <input type="text" name="assetsSelectionLabel" class="form-control" placeholder="Add an asset" 
+        value="<?php echo (!empty($getFieldType->assetsSelectionLabel) ? $getFieldType->assetsSelectionLabel : set_value('assetsSelectionLabel')); ?>">
       </div>
     </div>
-    <div id="richText" class="d-none fields">
+    <div id="richText" class="fields <?php echo ((!empty($getDataby_id->type_id) && $typeFields->handle == 'richText') ? '' : 'd-none');?>">
       <div class="form-group">
         <label class="heading" for="inputConfig">Config</label>
         <small class="form-text text-muted">You can save custom Redactor configs as .json files in craft/config/redactor/. View available settings.</small>
@@ -200,36 +212,41 @@
         <label class="heading" for="inputSource">Available Asset Sources</label>
         <small class="form-text text-muted">The asset sources that should be available when selecting assets (if the selected config has an Image or File button).</small>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="sources">
+          <input class="form-check-input" type="checkbox" value="all" name="richAssetsSources[]">
           <label class="form-check-label" for="defaultCheck1">All</label>
         </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="sources">
-          <label class="form-check-label" for="defaultCheck1">Products</label>
-        </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="sources">
-          <label class="form-check-label" for="defaultCheck1">Images</label>
-        </div>
+        <?php if ($assets): ?>
+          <?php foreach ($assets as $key): ?>
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="richAssetsSources[]" value="<?php echo $key->id; ?>" 
+            <?php echo ((!empty($getFieldType->assetsType) && in_array($value, $getFieldType->assetsType)) ? 'checked' : '');?>
+            >
+            <label class="form-check-label" for="defaultCheck1"><?php echo $key->name; ?></label>
+          </div>
+          <?php endforeach ?>
+        <?php endif ?>
       </div>
       <div class="form-group">
         <label class="heading" for="inputTransforms">Available Image Transforms</label>
         <small class="form-text text-muted">The image transforms that should be available when selecting images (if the selected config has an Image button).</small>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="sources">
+          <input class="form-check-input" type="checkbox" \name="richSources" 
+          value="1" <?php echo (!empty($getFieldType->richSources) ? 'checked' : '') ?>>
           <label class="form-check-label" for="defaultCheck1">All</label>
         </div>
       </div>
       <div class="form-group">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="sources">
+          <input class="form-check-input" type="checkbox" name="richCleanHTML"
+          value="1" <?php echo (!empty($getFieldType->richCleanHTML) ? 'checked' : '');?>>
           <label class="form-check-label" for="defaultCheck1">Clean up HTML?</label>
         </div>
         <small class="form-text text-muted">Removes <span>’s, empty tags, and most style attributes on save.</small>
       </div>
       <div class="form-group">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="" name="sources">
+          <input class="form-check-input" type="checkbox" value="" name="richPurifyHTML"
+          value="1" <?php echo (!empty($getFieldType->richPurifyHTML) ? 'checked' : '');?>>
           <label class="form-check-label" for="defaultCheck1">Purify HTML?</label>
         </div>
         <small class="form-text text-muted">Removes any potentially-malicious code on save, by running the submitted data through HTML Purifier.</small>
@@ -242,17 +259,19 @@
         </select>
       </div>
     </div>
-    <div id="categories" class="d-none fields">
+    <div id="categories" class="fields <?php echo ((!empty($getDataby_id->type_id) && $typeFields->handle == 'categories') ? '' : 'd-none');?>">
       <div class="form-group">
         <label class="heading" for="inputSource">Source</label>
         <small class="form-text text-muted">Which source do you want to select categories from?</small>
         <select name="categoriesSource" class="form-control costum-select">
-          <option value="0">- Select Source -</option>
+          <option value="0">- Select Categories -</option>
           <?php if ($assets): ?>
             <?php foreach ($assets as $key): ?>
-            <option value="<?php echo $key->id ?>"><?php echo $key->name; ?></option>
+            <option value="<?php echo $key->id ?>" <?php echo (($getFieldType->categoriesSource == $key->id) ? 'selected' : '');?>>
+              <?php echo $key->name; ?>
+            </option>
             <?php endforeach ?>
-          <?php endif ?>
+          <?php endif ?>  
         </select>
       </div>
       <div class="form-group">
@@ -265,15 +284,17 @@
       <div class="form-group">
         <label class="heading" for="inputLimit">Limit</label>
         <small class="form-text text-muted">Limit the number of selectable assets.</small>
-        <input type="text" name="categorieslimit" class="form-control form-number">
+        <input type="text" name="categoriesLimit" class="form-control form-number" 
+        value="<?php echo (!empty($getFieldType->categoriesLimit) ? $getFieldType->categoriesLimit : set_value('categoriesLimit')); ?>">
       </div>
       <div class="form-group">
         <label class="heading" for="inputSelectionLabel">Selection Label</label>
         <small class="form-text text-muted">Enter the text you want to appear on the assets selection input.</small>
-        <input type="text" name="categoriesSelectionLabel" class="form-control">
+        <input type="text" name="categoriesSelectionLabel" class="form-control"
+        value="<?php echo (!empty($getFieldType->categoriesSelectionLabel) ? $getFieldType->categoriesSelectionLabel : set_value('categoriesSelectionLabel')); ?>">
       </div>
     </div>
-    <div id="checkboxes" class="d-none fields">
+    <div id="checkboxes" class="fields <?php echo ((!empty($getDataby_id->type_id) && $typeFields->handle == 'checkboxes') ? '' : 'd-none');?>">
       <div class="form-group">
         <label class="heading" for="inputCheckbox">Checkbox Options</label>
         <small class="form-text text-muted">Define the available options.</small>
@@ -287,36 +308,52 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><input type="text" name="checkboxesLabel[]" class="form-control"></td>
-              <td><input type="text" name="checkboxesValue[]" class="form-control"></td>
-              <td class="action"><input type="checkbox" name="checkboxesDefault"></td>
-              <td scope="row" colspan="2">
-                <a href="#"><i class="fas fa-arrows-alt"></i></a>
-                <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a>
-              </td>
-            </tr>
+            <?php 
+              if (!empty($getFieldType->checkboxesLabel)):
+                $val = $getFieldType->checkboxesValue; 
+                $i = 0;
+                foreach ($getFieldType->checkboxesLabel as $key => $value) :
+                  $dataResult[] = array(
+                              'label' => $value,
+                              'value' => $val[$i]
+                            );
+                  $i++;
+                endforeach;
+            ?>
+              <?php foreach ($dataResult as $key) : ?>
+              <tr>
+
+                <td><input type="text" name="checkboxesLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
+                <td><input type="text" name="checkboxesValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
+                <td class="action"><input type="checkbox" name="checkboxesDefault[]"></td>
+                <td scope="row" colspan="2">
+                  <a href="#"><i class="fas fa-arrows-alt"></i></a>
+                  <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a>
+                </td>
+              </tr>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </tbody>
         </table>
         <button type="button" class="btn btn btn-outline-secondary btn-block">+ Add an option</button>
       </div>
     </div>
-    <div id="dateTime" class="d-none fields">
+    <div id="dateTime" class="fields <?php echo ((!empty($getDataby_id->type_id) && $typeFields->handle == 'dateTime') ? '' : 'd-none');?>">
       <div class="form-group">
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="datetimeList" value="option1" checked>
+          <input class="form-check-input" type="radio" name="datetimeList" value="1" checked>
           <label class="form-check-label" for="datetimeList1">
             Show Date
           </label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="datetimeList" value="option2">
+          <input class="form-check-input" type="radio" name="datetimeList" value="2">
           <label class="form-check-label" for="datetimeList2">
             Show Time
           </label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="radio" name="datetimeList" value="option3">
+          <input class="form-check-input" type="radio" name="datetimeList" value="3">
           <label class="form-check-label" for="datetimeList3">
             Show date and time 
           </label>
@@ -330,7 +367,7 @@
         </select>
       </div>
     </div>
-    <div id="dropdown" class="d-none fields">
+    <div id="dropdown" class="fields <?php echo ((!empty($getDataby_id->type_id) && $typeFields->handle == 'dropdown') ? '' : 'd-none');?>">
       <div class="form-group">
         <label class="heading" for="inputCheckbox">Checkbox Options</label>
         <small class="form-text text-muted">Define the available options.</small>
@@ -344,21 +381,36 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><input type="text" name="dropdownLabel[]" class="form-control"></td>
-              <td><input type="text" name="dropdownValue[]" class="form-control"></td>
-              <td class="action"><input type="checkbox" name="dropdownDefault"></td>
-              <td scope="row" colspan="2">
-                <a href="#"><i class="fas fa-arrows-alt"></i></a>
-                <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a>
-              </td>
-            </tr>
+            <?php 
+              if (!empty($getFieldType->dropdownLabel)):
+                $val = $getFieldType->dropdownValue; 
+                $i = 0;
+                foreach ($getFieldType->dropdownLabel as $key => $value) :
+                  $dataResult[] = array(
+                              'label' => $value,
+                              'value' => $val[$i]
+                            );
+                  $i++;
+                endforeach;
+            ?>
+              <?php foreach ($dataResult as $key) : ?>
+              <tr>
+                <td><input type="text" name="dropdownLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
+                <td><input type="text" name="dropdownValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
+                <td class="action"><input type="checkbox" name="dropdownDefault"></td>
+                <td scope="row" colspan="2">
+                  <a href="#"><i class="fas fa-arrows-alt"></i></a>
+                  <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a>
+                </td>
+              </tr>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </tbody>
         </table>
         <button type="button" class="btn btn btn-outline-secondary btn-block">+ Add an option</button>
       </div>
     </div>
-    <div id="radio" class="d-none fields">
+    <div id="radio" class="fields <?php echo ((!empty($getDataby_id->type_id) && $typeFields->handle == 'radio') ? '' : 'd-none');?>">
       <div class="form-group">
         <label class="heading" for="inputCheckbox">Checkbox Options</label>
         <small class="form-text text-muted">Define the available options.</small>
@@ -372,15 +424,30 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td><input type="text" name="radioLabel[]" class="form-control"></td>
-              <td><input type="text" name="radioValue[]" class="form-control"></td>
-              <td class="action"><input type="checkbox" name="radioDefault"></td>
-              <td scope="row" colspan="2">
-                <a href="#"><i class="fas fa-arrows-alt"></i></a>
-                <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a>
-              </td>
-            </tr>
+            <?php 
+              if (!empty($getFieldType->radioLabel)):
+                $val = $getFieldType->radioValue; 
+                $i = 0;
+                foreach ($getFieldType->radioLabel as $key => $value) :
+                  $dataResult[] = array(
+                              'label' => $value,
+                              'value' => $val[$i]
+                            );
+                  $i++;
+                endforeach;
+            ?>
+              <?php foreach ($dataResult as $key) : ?>
+                <tr>
+                  <td><input type="text" name="radioLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
+                  <td><input type="text" name="radioValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
+                  <td class="action"><input type="checkbox" name="radioDefault"></td>
+                  <td scope="row" colspan="2">
+                    <a href="#"><i class="fas fa-arrows-alt"></i></a>
+                    <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a>
+                  </td>
+                </tr>
+              <?php endforeach; ?>
+            <?php endif; ?>
           </tbody>
         </table>
         <button type="button" class="btn btn btn-outline-secondary btn-block">+ Add an option</button>

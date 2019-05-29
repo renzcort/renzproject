@@ -231,6 +231,24 @@ class fields extends My_Controller {
       'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
       'id'            =>  $id,
       'getDataby_id'  =>  $this->fields_m->get_row_by_id($id),
+      'assets'        =>  $this->general_m->get_all_results('assets'),
+      'file'          =>  array(
+                            'Audio', 
+                            'Compressed', 
+                            'Excel', 
+                            'Flash', 
+                            'HTML', 
+                            'Image', 
+                            'JSON', 
+                            'JavaScript', 
+                            'PDF', 
+                            'PowerPoint', 
+                            'Text', 
+                            'Video', 
+                            'Word'
+                          ),
+      'mode'          =>  array('List', 'List Thumbnails'),
+      'categories'    =>  $this->general_m->get_all_results('categories'),
       'attributes'    =>  arraY('type' =>
                                     array(
                                     'text'     => array('maxlength', 'minlength', 'placeholder'),
@@ -245,6 +263,8 @@ class fields extends My_Controller {
                           ),
     );
     $settings['getFieldType'] = json_decode($settings['getDataby_id']->settings);
+    $settings['typeFields'] = $this->general_m->get_row_by_id('fields_type', $settings['getDataby_id']->type_id);
+    // var_dump($settings['type_name']);die;
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|callback_name_check');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|callback_handle_check');

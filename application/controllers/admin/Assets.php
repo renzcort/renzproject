@@ -16,6 +16,42 @@ class Assets extends My_Controller {
     );
   }
 
+    /*Assets entries*/
+  public function index() {
+    $settings = array(
+      'title'          =>  'assets',
+      'subtitle'       =>  FALSE,
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'button'         =>  '+ Upload Files',
+      'button_link'    =>  'assets/create',
+      'content'        =>  'template/bootstrap-4/admin/assets/assets-list',
+      'table'          =>  'assets',
+      'action'         =>  'admin/settings/assets',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'assets'         =>  $this->general_m->get_all_results('assets'),
+      'assets_count'   =>  $this->general_m->count_all_results('assets'),
+    );
+
+    // Pagination
+    $config                 = $this->config->item('setting_pagination');
+    $config['base_url']     = base_url($settings['action']);
+    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']     = 10;
+    $num_pages              = $config["total_rows"] / $config["per_page"];
+    $config['uri_segment']  = 3;
+    $config['num_links']    = round($num_pages);
+    $this->pagination->initialize($config);
+    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    $settings['links']      = $this->pagination->create_links();
+    // end Pagination
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+  }
+
+
+  /*Volumens*/
   public function volumes() {
     $settings = array(
       'title'          =>  'assets',
@@ -35,7 +71,7 @@ class Assets extends My_Controller {
       'group'          =>  $this->general_m->get_all_results('assets_group'),
       'group_count'    =>  $this->general_m->count_all_results('assets_group'),
       'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
-      );
+    );
 
     // Pagination
     $config                 = $this->config->item('setting_pagination');

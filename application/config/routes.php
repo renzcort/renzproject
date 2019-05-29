@@ -119,6 +119,10 @@ $route['admin/settings/assets/transforms']               = 'admin/assets/transfo
 $route['admin/settings/assets/transforms/create']        = 'admin/assets/transforms_create';
 $route['admin/settings/assets/transforms/edit/(:num)']   = 'admin/assets/transforms_update/$1';
 $route['admin/settings/assets/transforms/delete/(:num)'] = 'admin/assets/transforms_delete/$1';
+$route['admin/assets']                                   = 'admin/assets';
+$route['admin/assets/create']                            = 'admin/assets/create';
+$route['admin/assets/edit/(:num)']                       = 'admin/assets/update/$1';
+$route['admin/assets/delete/(:num)']                     = 'admin/assets/delete/$1';
 
 /*categories*/
 $route['admin/settings/categories']               = 'admin/categories';
