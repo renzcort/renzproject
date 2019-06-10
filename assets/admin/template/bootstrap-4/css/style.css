@@ -483,6 +483,17 @@ header nav.menu .navbar-nav > li {
   padding: 5px 0 1px;
   color: #8f98a3;
 }
+.header-upload > button {
+  position: relative;
+  overflow: hidden;
+}
+.header-upload > input {
+  position: absolute;
+  font-size: 22px;
+  opacity: 0; 
+  bottom: 54%;
+}
+
 .left-column {
   color: #fff;
   flex-basis: 15%;

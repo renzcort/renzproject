@@ -32,12 +32,19 @@
   <?php if (isset($button)): ?>
     <div class="d-flex flex-row flex-wrap justify-content-start">
     	<?php if (isset($button_link)): ?>
-	      <a href="<?php echo $button_link; ?>" 
-	        class="btn btn-danger btn-sm mx-1" 
-	        type="<?php echo (isset($button_type) ? $button_type : '') ?>"
-	        name="<?php echo (isset($button_name) ? $button_name : ''); ?>">
-	        <?php echo ucfirst($button);?>
-	      </a>
+        <?php if ($button_link == 'Upload'): ?>
+          <div class="header-upload">
+            <button class="btn btn-danger btn-sm mx-1"><?php echo ucfirst($button);?></button>
+            <input type="file" name="upload" id="file">
+          </div>
+        <?php else: ?>
+  	      <a href="<?php echo $button_link; ?>" 
+  	        class="btn btn-danger btn-sm mx-1" 
+  	        type="<?php echo (isset($button_type) ? $button_type : '') ?>"
+  	        name="<?php echo (isset($button_name) ? $button_name : ''); ?>">
+  	        <?php echo ucfirst($button);?>
+  	      </a>
+        <?php endif ?>
       <?php else : ?>
 	    	<button id="buttonHeader" 
 	        class="btn btn-danger btn-sm mx-1" 

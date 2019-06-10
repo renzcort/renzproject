@@ -32,40 +32,14 @@
 </head>
 <body>
 
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-  </li>
-</ul>
-<div class="tab-content">
-  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-    <ul id="sortable2" class="connectedSortable">
-      <li class="ui-state-highlight">Item 1</li>
-      <li class="ui-state-highlight">Item 2</li>
-      <li class="ui-state-highlight">Item 3</li>
-      <li class="ui-state-highlight">Item 4</li>
-      <li class="ui-state-highlight">Item 5</li>
-    </ul>
+  <div class="container" style="width:700px;">
+    <h2 align="center">Upload File without using Form Submit in Ajax PHP</h2>
+    <br />
+    <label>Select Image</label>
+    <input type="file" name="file" id="file" />
+    <br />
+    <span id="uploaded_image"></span>
   </div>
-</div>
-
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-  </li>
-</ul>
-<div class="tab-content">
-  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-    <ul id="sortable2" class="connectedSortable">
-      <li class="ui-state-highlight">Item 1</li>
-      <li class="ui-state-highlight">Item 2</li>
-      <li class="ui-state-highlight">Item 3</li>
-      <li class="ui-state-highlight">Item 4</li>
-      <li class="ui-state-highlight">Item 5</li>
-    </ul>
-  </div>
-</div>
- 
 
 
 
@@ -79,11 +53,44 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
 
   <script>
-  $( function() {
-    $( "#sortable1, #sortable2" ).sortable({
-      connectWith: ".connectedSortable"
-    }).disableSelection();
-  } );
+  $(document).ready(function(){
+   $(document).on('change', '#file', function(){
+    var name = document.getElementById("file").files[0].name;
+    var form_data = new FormData();
+    var ext = name.split('.').pop().toLowerCase();
+    if(jQuery.inArray(ext, ['gif','png','jpg','jpeg']) == -1) 
+    {
+     alert("Invalid Image File");
+    }
+    var oFReader = new FileReader();
+    oFReader.readAsDataURL(document.getElementById("file").files[0]);
+    var f = document.getElementById("file").files[0];
+    var fsize = f.size||f.fileSize;
+    if(fsize > 2000000)
+    {
+     alert("Image File Size is very big");
+    }
+    else
+    {
+     form_data.append("file", document.getElementById('file').files[0]);
+     $.ajax({
+      url:"upload.php",
+      method:"POST",
+      data: form_data,
+      contentType: false,
+      cache: false,
+      processData: false,
+      beforeSend:function(){
+       $('#uploaded_image').html("<label class='text-success'>Image Uploading...</label>");
+      },   
+      success:function(data)
+      {
+       $('#uploaded_image').html(data);
+      }
+     });
+    }
+   });
+  });
   </script>
    
   </body>

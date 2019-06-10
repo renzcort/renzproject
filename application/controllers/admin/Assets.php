@@ -24,7 +24,7 @@ class Assets extends My_Controller {
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
       'button'         =>  '+ Upload Files',
-      'button_link'    =>  'assets/create',
+      'button_link'    =>  'Upload',
       'content'        =>  'template/bootstrap-4/admin/assets/assets-list',
       'table'          =>  'assets',
       'action'         =>  'admin/settings/assets',
