@@ -75,11 +75,11 @@
      form_data.append("file", document.getElementById('file').files[0]);
      $.ajax({
       url:"upload.php",
-      method:"POST",
-      data: form_data,
-      contentType: false,
-      cache: false,
-      processData: false,
+       type: "POST",
+       data:  form_data,
+       contentType: false,
+       cache: false,
+       processData:false,
       beforeSend:function(){
        $('#uploaded_image').html("<label class='text-success'>Image Uploading...</label>");
       },   
