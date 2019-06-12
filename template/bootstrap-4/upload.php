@@ -1,5 +1,4 @@
 <?php
-var_dump($_FILES["file"]);die;
 //upload.php
 if($_FILES["file"]["name"] != '')
 {

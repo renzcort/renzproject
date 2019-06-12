@@ -409,6 +409,42 @@ class Api extends My_Controller {
     }
   }
 
+
+  /*Upload Assets*/
+  public function uploadWithoutSubmit() {
+    var_dump($this->input->post());die;
+    $settings = array(
+      'upload_path' => "uploads/.",
+
+    );
+    //upload.php
+    if($_FILES["file"]["name"] != ''){
+      $config = $this->config->item('setting_upload');
+      $config['upload_path'] = $settings['upload_path'];
+      $config['file_name']   = $_FILES["file"]["name"];
+      if (!is_dir($config['upload_path'])) {
+        mkdir($config['upload_path'], 0777, TRUE);
+      } 
+      $this->upload->initialize($config);
+      if ( ! $this->upload->do_upload('photo')){
+        $error = array('error' => $this->upload->display_errors());
+      }
+      else{
+        $result = array('upload_data' => $this->upload->data());
+        $data['photo'] =  $config['file_name'].$result['upload_data']['file_ext'];
+        // $data['photo'] =  $result['upload_data']['file_name'];
+      }
+
+      var_dump($_FILES['file']);die;
+     $test     = explode('.', $_FILES["file"]["name"]);
+     $ext      = end($test);
+     $name     = rand(100, 999) . '.' . $ext;
+     $location = './upload/' . $name;  
+     move_uploaded_file($_FILES["file"]["tmp_name"], $location);
+     echo '<img src="'.$location.'" height="150" width="225" class="img-thumbnail" />';
+    }
+  }
+
  
 
 

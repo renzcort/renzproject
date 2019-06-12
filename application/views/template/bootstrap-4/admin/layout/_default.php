@@ -238,7 +238,7 @@
         deleteGroupsById();
         getDataByIdGroups();
         deleteFieldsById();
-        getAssetsListType();
+        getTabsFieldsList();
         uploadWithoutSubmit();
       })
 
@@ -388,10 +388,13 @@
 
       function uploadWithoutSubmit(){
         $('#file').change(function(){
-          alert();
           var name = document.getElementById("file").files[0].name;
           var form_data = new FormData();
           var ext = name.split('.').pop().toLowerCase();
+          var group_id = $(".sidebar-content .nav-link.active").attr('data-id');
+          form_data.append("group_id", group_id);
+          console.log(form_data);
+
           if(jQuery.inArray(ext, ['gif','png','jpg','jpeg']) == -1) 
           {
            alert("Invalid Image File");
@@ -408,12 +411,12 @@
           {
            form_data.append("file", document.getElementById('file').files[0]);
            $.ajax({
-            url:"<?php echo base_url("admin/api/jsonTabsFields") ?>",
-            method:"POST",
-            data: form_data,
-            contentType: false,
-            cache: false,
-            processData: false,
+             url: '<?php echo base_url("admin/api/uploadWithoutSubmit") ?>',
+             type: "POST",
+             data:  form_data,
+             contentType: false,
+             cache: false,
+             processData:false,
             beforeSend:function(){
              $('#uploaded_image').html("<label class='text-success'>Image Uploading...</label>");
             },   
@@ -423,7 +426,7 @@
             }
            });
           }
-         });
+        });
       }
 
     </script>

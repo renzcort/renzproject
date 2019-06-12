@@ -35,7 +35,7 @@
         <?php if ($button_link == 'Upload'): ?>
           <div class="header-upload">
             <button class="btn btn-danger btn-sm mx-1"><?php echo ucfirst($button);?></button>
-            <input type="file" name="upload" id="file">
+            <input type="file" name="file" id="file" />
           </div>
         <?php else: ?>
   	      <a href="<?php echo $button_link; ?>" 

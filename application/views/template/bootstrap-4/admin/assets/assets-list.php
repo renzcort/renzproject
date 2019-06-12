@@ -37,7 +37,7 @@
         <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
       </div>
     </div>
-  
+        <span id="uploaded_image"></span>
     <?php if ($record_all): ?>
     <table class="table table-sm">
       <thead>
