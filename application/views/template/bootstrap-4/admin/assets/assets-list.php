@@ -1,22 +1,22 @@
   <div id="left-content" class="left-content overflow-auto">
     <div class="sidebar-content">
       <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebarGroups">
-        <li class="nav-item">
-          <a class="nav-link active" href="#" data-id="all">All Fields</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" data-id="default">Default</a>
-        </li>
-        <?php foreach ($assets as $key): ?>
+        <?php 
+          $i = 1; 
+          foreach ($assets as $key): 
+        ?>
           <li class="nav-item">
-            <a class="nav-link" href="#" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
+            <a class="nav-link <?php echo (($i == 1) ? 'active' : ''); ?>" href="#" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
           </li>
-        <?php endforeach ?>
+        <?php
+          $i = ++$i; 
+          endforeach 
+        ?>
       </ul>
     </div>
   </div>
   <div id="right-content" class="right-content ml-auto">
-    <div class="d-flex flex-row justify-content-center align-content-center align-items-start mb-5">
+    <div class="d-flex flex-row justify-content-center align-content-center align-items-start mb-3">
       <input type="checkbox" name="checkall" class="align-self-center mr-2">
       <div class="input-group mr-2">
         <input type="text" class="form-control form-control-sm" aria-label="Text input with dropdown button">
@@ -37,7 +37,6 @@
         <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
       </div>
     </div>
-        <span id="uploaded_image"></span>
     <?php if ($record_all): ?>
     <table class="table table-sm">
       <thead>
@@ -50,6 +49,7 @@
         </tr>
       </thead>
       <tbody>
+        <div id="uploaded_image"></div>
         <tr>
           <th scope="row">1</th>
           <td>Mark</td>

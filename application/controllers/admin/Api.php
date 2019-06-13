@@ -412,11 +412,13 @@ class Api extends My_Controller {
 
   /*Upload Assets*/
   public function uploadWithoutSubmit() {
-    var_dump($this->input->post());die;
+    (($this->input->post('group_id') == 'all') ? $id = '' : $id = $this->input->post('group_id'));
+    (($id == '') ? '' : $assets = $this->general_m->get_row_by_id('assets', $id));
+    (($id == '') ? $folder = 'default' : $folder = lcfirst($assets->handle));
     $settings = array(
-      'upload_path' => "uploads/.",
-
+      'upload_path' => "uploads/admin/assets/{$folder}",
     );
+
     //upload.php
     if($_FILES["file"]["name"] != ''){
       $config = $this->config->item('setting_upload');
@@ -426,22 +428,79 @@ class Api extends My_Controller {
         mkdir($config['upload_path'], 0777, TRUE);
       } 
       $this->upload->initialize($config);
-      if ( ! $this->upload->do_upload('photo')){
+
+      if ( ! $this->upload->do_upload('file')){
         $error = array('error' => $this->upload->display_errors());
       }
       else{
         $result = array('upload_data' => $this->upload->data());
-        $data['photo'] =  $config['file_name'].$result['upload_data']['file_ext'];
-        // $data['photo'] =  $result['upload_data']['file_name'];
+        $data = array(
+          'assets_id'  => (($id == '') ? 0 : $id),
+          'file'       => $result['upload_data']['file_name'],
+          'ext'        => $result['upload_data']['file_ext'],
+          'created_by' => $this->data['userdata']['id'],
+        );
+        //INSERT Assets content 
+        $this->general_m->create('assets_content', $data);
+        helper_log('add', "Create Assets Content has successfully");
+      }
+      // create Thumbs
+      $config = $this->config->item('settings_image');
+      $config['source_image'] = "{$settings['upload_path']}/{$_FILES["file"]["name"]}";
+      $config['create_thumb'] = TRUE;
+      $config['new_image']    = "{$settings['upload_path']}/thumb";
+      if (!is_dir($config['new_image'])) {
+        mkdir($config['new_image'], 0777, TRUE);
+      } 
+      $this->image_lib->initialize($config);
+      if ( ! $this->image_lib->resize()){
+        echo $this->image_lib->display_errors();
+      }
+      // clear //
+      $this->image_lib->clear();
+
+
+     /* $test          = explode('.', $_FILES["file"]["name"]);
+      var_dump(current($test));die;
+      $ext           = end($test);
+      $name          = rand(100, 999) . '.' . $ext;
+      $location_file = base_url("{$settings['upload_path']}/{$_FILES["file"]["name"]}");  
+      $location = './upload/' . $name;  
+      move_uploaded_file($_FILES["file"]["tmp_name"], $location);*/
+      
+      $record_all = $this->general_m->get_result_by_id('assets_content', $id);
+      $no = 0;
+      if ($record_all) {
+        $table_view = '
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th scope="row">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Post Date</th>
+                <th scope="col">Expiry Date</th>
+              </tr>
+            </thead>
+            <tbody>'; 
+          $no = 0;
+        foreach ($record_all as $key) {
+          $filename = explode('.', $key->file);
+          $name = current($filename);
+          $thumb = current($filename).'_thumb.'.end($filename);
+          $file_thumb = base_url("{$config['new_image']}/{$thumb}"); 
+          $table_view .= '<tr>
+              <td scope="row">'.++$no.'</td>
+              <td><img src="'.$file_thumb.'" class="img-thumbnail"/>'.$name.'</td>
+              <td>'.($key->file ? $key->file : '').'</td>
+              <td>'.($key->created_at ? $key->created_at : '').'</td>
+              </tr>';
+        }
+        $table_view .= '</tbody></table>';
+      } else {
+        $table_view = '<p class="empty-data">Data is Empty</p>';
       }
 
-      var_dump($_FILES['file']);die;
-     $test     = explode('.', $_FILES["file"]["name"]);
-     $ext      = end($test);
-     $name     = rand(100, 999) . '.' . $ext;
-     $location = './upload/' . $name;  
-     move_uploaded_file($_FILES["file"]["tmp_name"], $location);
-     echo '<img src="'.$location.'" height="150" width="225" class="img-thumbnail" />';
+      echo $table_view;
     }
   }
 
