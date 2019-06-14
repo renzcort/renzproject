@@ -313,13 +313,14 @@
       function getDataByIdGroups(){
         // Show Fields By Groups
         $('#sidebarGroups .nav-item').click(function(){
-          var table      = $('#sidebarGroups').data('table');
-          var group_name = $('#sidebarGroups').data('groups-name');
-          var group_id   = $('#sidebarGroups .nav-link.active').data('id');
+          var table       = $('#sidebarGroups').data('table');
+          var group_name  = $('#sidebarGroups').data('groups-name');
+          var action_name = $('#sidebarGroups').data('action-name');
+          var group_id    = $('#sidebarGroups .nav-link.active').data('id');
           $.ajax({
             type : 'POST',
             dataType : 'json',
-            data : {table: table, group_name: group_name, group_id : group_id},
+            data : {table: table, group_name: group_name, action_name : action_name, group_id : group_id},
             url : '<?php echo base_url("admin/api/jsonGetDataByIdGroups") ?>',
           }).done(function(data){
             $('#right-content table').remove();
@@ -418,11 +419,11 @@
              cache: false,
              processData:false,
             beforeSend:function(){
-             $('#uploaded_image').html("<label class='text-success'>Image Uploading...</label>");
+             $('#table-content').html("<label class='text-success'>Image Uploading...</label>");
             },   
             success:function(data)
             {
-             $('#uploaded_image').html(data);
+             $('#table-content').html(data);
             }
            });
           }

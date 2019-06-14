@@ -26,12 +26,14 @@ class Assets extends My_Controller {
       'button'         =>  '+ Upload Files',
       'button_link'    =>  'Upload',
       'content'        =>  'template/bootstrap-4/admin/assets/assets-list',
-      'table'          =>  'assets',
+      'table'          =>  'assets_content',
       'action'         =>  'admin/settings/assets',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
       'assets'         =>  $this->general_m->get_all_results('assets'),
       'assets_count'   =>  $this->general_m->count_all_results('assets'),
+      'group_name'     => 'assets',
+      'element_name'   => 'assets_content'
     );
 
     // Pagination

@@ -296,13 +296,15 @@ class Api extends My_Controller {
     header('content-type: application/json');
     $table = ($this->input->post('table') ? $this->input->post('table') : '');
     $group_name = ($this->input->post('group_name') ? $this->input->post('group_name') : '');
+    $action_name = ($this->input->post('action_name') ? $this->input->post('action_name') : '');
     $settings = array(
       'table'       =>  $table,
-      'action'      =>  "admin/settings/{$table}",
+      'action'      =>  $action_name,
       'group'       =>  $this->general_m->get_all_results($group_name),
       'group_count' =>  $this->general_m->count_all_results($group_name),
       'group_id'    =>  (($this->input->post('group_id') == 'all') ? '' : $this->input->post('group_id')),
     );
+    $fields = ((in_array($table, array('fields', 'sites'))) ? 'group_id' : "{$group_name}_id");
     // Pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
@@ -313,9 +315,9 @@ class Api extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $settings['group_id'], 'group_id');
-    $settings['links']      = $this->pagination->create_links();
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $settings['group_id'], $fields);
     
+    $settings['links']      = $this->pagination->create_links();
     if($settings['record_all']) {
       if ($table == 'sites') {
         $table_view = '
@@ -348,7 +350,7 @@ class Api extends My_Controller {
               </tr>';
             }
           $table_view .= '</tbody></table>';
-      } else {
+      } elseif ($table == 'fields') {
         $table_view = '
           <table class="table table-sm">
             <thead>
@@ -363,17 +365,47 @@ class Api extends My_Controller {
             <tbody>'; 
           $no = 0;
           foreach ($settings['record_all'] as $key) {
+            $type = $this->general_m->get_row_by_id('fields_type', $key->type_id);
              $table_view .= '<tr>
                 <th scope="row">'.++$no.'</th>
                 <td><a href="'.base_url($settings['action'].'/edit/'.$key->id).'">'.($key->name ? $key->name : '').'</a></td>
                 <td>'.($key->handle ? $key->handle : '').'</td>
-                <td>'.($key->type ? $key->type : '').'</td>
+                <td>'.$type->name.'</td>
                 <td><a href="'.base_url($settings['action'].'/delete/'.$key->id).'" data-id="'.$key->id.'">
                   <i class="fas fa-minus-circle"></i></a>
                 </td>
               </tr>';
             }
           $table_view .= '</tbody></table>';
+      } elseif ($table = 'assets_content') {
+        $table_view = '
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th scope="row">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Post Date</th>
+                <th scope="col">File Size</th>
+                <th scope="col">File Modified Date</th>
+              </tr>
+            </thead>
+            <tbody>'; 
+          $no = 0;
+        foreach ($settings['record_all'] as $key) {
+          $filename   = explode('.', $key->file);
+          $name       = current($filename);
+          $thumb      = current($filename).'_thumb.'.end($filename);
+          $file_thumb = base_url("{$key->path}/{$thumb}");
+          $getSize    = get_headers($file_thumb, 1); 
+          $table_view .= '<tr>
+              <td scope="row">'.++$no.'</td>
+              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.$name.'</td>
+              <td>'.($key->file ? $key->file : '').'</td>
+              <td>'.$key->size.' kB </td>
+              <td>'.($key->created_at ? $key->created_at : '').'</td>
+              </tr>';
+        }
+        $table_view .= '</tbody></table>';
       }
     } else {
       $table_view = '<p class="empty-data">Data is Empty</p>';
@@ -419,6 +451,11 @@ class Api extends My_Controller {
       'upload_path' => "uploads/admin/assets/{$folder}",
     );
 
+    // if (file_exists("{$settings['upload_path']}/{$_FILES["file"]["name"]}")) {
+    //   $this->output->set_status_header(401);
+    //   exit;
+    // }
+
     //upload.php
     if($_FILES["file"]["name"] != ''){
       $config = $this->config->item('setting_upload');
@@ -434,16 +471,20 @@ class Api extends My_Controller {
       }
       else{
         $result = array('upload_data' => $this->upload->data());
+        $path = "{$settings['upload_path']}/thumb";
         $data = array(
           'assets_id'  => (($id == '') ? 0 : $id),
           'file'       => $result['upload_data']['file_name'],
           'ext'        => $result['upload_data']['file_ext'],
+          'size'       => $result['upload_data']['file_size'],
+          'path'       => $path,
           'created_by' => $this->data['userdata']['id'],
         );
         //INSERT Assets content 
         $this->general_m->create('assets_content', $data);
         helper_log('add', "Create Assets Content has successfully");
       }
+
       // create Thumbs
       $config = $this->config->item('settings_image');
       $config['source_image'] = "{$settings['upload_path']}/{$_FILES["file"]["name"]}";
@@ -467,8 +508,10 @@ class Api extends My_Controller {
       $location_file = base_url("{$settings['upload_path']}/{$_FILES["file"]["name"]}");  
       $location = './upload/' . $name;  
       move_uploaded_file($_FILES["file"]["tmp_name"], $location);*/
-      
-      $record_all = $this->general_m->get_result_by_id('assets_content', $id);
+
+      $query = (($id == '') ? $this->general_m->get_all_results('assets_content') : 
+                $this->general_m->get_result_by_id('assets_content', $id, 'assets_id'));
+      $record_all = $query;
       $no = 0;
       if ($record_all) {
         $table_view = '
@@ -478,7 +521,8 @@ class Api extends My_Controller {
                 <th scope="row">#</th>
                 <th scope="col">Title</th>
                 <th scope="col">Post Date</th>
-                <th scope="col">Expiry Date</th>
+                <th scope="col">File Size</th>
+                <th scope="col">File Modified Date</th>
               </tr>
             </thead>
             <tbody>'; 
@@ -487,11 +531,13 @@ class Api extends My_Controller {
           $filename = explode('.', $key->file);
           $name = current($filename);
           $thumb = current($filename).'_thumb.'.end($filename);
-          $file_thumb = base_url("{$config['new_image']}/{$thumb}"); 
+          $file_thumb = base_url("{$config['new_image']}/{$thumb}");
+          $getSize = get_headers($file_thumb, 1); 
           $table_view .= '<tr>
               <td scope="row">'.++$no.'</td>
-              <td><img src="'.$file_thumb.'" class="img-thumbnail"/>'.$name.'</td>
+              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.$name.'</td>
               <td>'.($key->file ? $key->file : '').'</td>
+              <td>'.$getSize['Content-Length'].' kB </td>
               <td>'.($key->created_at ? $key->created_at : '').'</td>
               </tr>';
         }

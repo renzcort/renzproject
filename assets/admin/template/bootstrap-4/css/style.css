@@ -652,7 +652,7 @@ header nav.menu .navbar-nav > li {
 }
 .middle-content .table tr > td,
 .right-content .table tr > td {
-  font-size: 12px;
+  /*font-size: 12px;*/
   vertical-align: middle;
 }
 .middle-content .table tr.start > td {
