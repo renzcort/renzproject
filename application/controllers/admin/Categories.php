@@ -16,7 +16,44 @@ class Categories extends My_Controller {
     );
   }
 
-  public function index() {
+  public function index(){
+    $settings = array(
+      'title'         =>  'categories',
+      'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  '+ New Categories',
+      'button_link'   =>  'categories/create',
+      'content'       =>  'template/bootstrap-4/admin/categories/categories-list',
+      'table'         =>  'categories',
+      'action'        =>  'admin/settings/categories',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'fields_element'  =>  'categories_element',
+      'fields_group'  =>  $this->general_m->get_all_results('categories_group'),
+      'fields'        =>  $this->fields_m->get_all_results(),
+      'elementFields' =>  [],
+      'order'         =>  $this->general_m->get_max_fields('categories', 'order'),
+    );
+    // Pagination
+    $config                 = $this->config->item('setting_pagination');
+    $config['base_url']     = base_url($settings['action']);
+    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']     = 10;
+    $num_pages              = $config["total_rows"] / $config["per_page"];
+    $config['uri_segment']  = 3;
+    $config['num_links']    = round($num_pages);
+    $this->pagination->initialize($config);
+    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    $settings['links']      = $this->pagination->create_links();
+    // end Pagination
+
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);    
+  }
+
+
+  public function groups() {
     $settings = array(
       'title'         =>  'categories',
       'subtitle'      =>  FALSE,
@@ -53,7 +90,7 @@ class Categories extends My_Controller {
   }
 
   /*CREATE*/
-  public function create() {
+  public function groups_create() {
     $settings = array(
       'title'         =>  'categories',
       'subtitle'      =>  'create',
@@ -119,7 +156,7 @@ class Categories extends My_Controller {
   }
 
   /*UPDATE*/
-  public function update($id='') {
+  public function groups_update($id='') {
     $settings = array(
       'title'         =>  'categories',
       'subtitle'      =>  'Update',
@@ -197,7 +234,7 @@ class Categories extends My_Controller {
   }  
 
   /*DELETE*/
-  public function delete($id='') {
+  public function groups_delete($id='') {
     $settings = array(
       'title'        => 'Categories',
       'table'        => 'categories',

@@ -423,6 +423,7 @@
             },   
             success:function(data)
             {
+             $('#table-content').empty(); 
              $('#table-content').html(data);
             }
            });

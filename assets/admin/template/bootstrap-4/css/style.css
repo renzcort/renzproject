@@ -488,10 +488,11 @@ header nav.menu .navbar-nav > li {
   overflow: hidden;
 }
 .header-upload > input {
+  font-size: 100px;
   position: absolute;
-  font-size: 22px;
-  opacity: 0; 
-  bottom: 66%;
+  left: auto;
+  top: 0;
+  opacity: 0;
 }
 
 .left-column {
