@@ -1113,6 +1113,19 @@ header nav.menu .navbar-nav > li {
   font-size: 2rem;
 }
 
+.left-content-entries {
+  width: 100%;
+  max-width: 70%;
+  padding: 1rem;
+}
+.right-content-entries {
+  width: 100%;
+  max-width: 30%;
+  padding: .5rem;
+  background: #F1F5F8;
+  color: #76606F;
+}
+
 
 @media (max-width: 319.98px) {
   header {

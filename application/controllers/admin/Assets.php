@@ -30,11 +30,16 @@ class Assets extends My_Controller {
       'action'         =>  'admin/settings/assets',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
-      'assets'         =>  $this->general_m->get_all_results('assets'),
-      'assets_count'   =>  $this->general_m->count_all_results('assets'),
+      'assets'         =>  $this->general_m->get_all_results('assets_content'),
+      'assets_count'   =>  $this->general_m->count_all_results('assets_content'),
       'group_name'     => 'assets',
-      'element_name'   => 'assets_content'
+      'fields_element' => 'assets_content',
+      'group_name'     =>  'assets',
+      'group'          =>  $this->general_m->get_all_results('assets'),
+      'group_count'    =>  $this->general_m->count_all_results('assets'),
+      'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
     );
+    
 
     // Pagination
     $config                 = $this->config->item('setting_pagination');

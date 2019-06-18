@@ -125,10 +125,10 @@ $route['admin/assets/edit/(:num)']                       = 'admin/assets/update/
 $route['admin/assets/delete/(:num)']                     = 'admin/assets/delete/$1';
 
 /*categories*/
-$route['admin/categories']               = 'admin/categories/index';
-$route['admin/categories/create']        = 'admin/categories/create';
-$route['admin/categories/edit/(:num)']   = 'admin/categories/update/$1';
-$route['admin/categories/delete/(:num)'] = 'admin/categories/delete/$1';
+$route['admin/categories/(:any)']                 = 'admin/categories/index/$1';
+$route['admin/categories/create/(:any)']          = 'admin/categories/create';
+$route['admin/categories/edit/(:num)']            = 'admin/categories/update/$1';
+$route['admin/categories/delete/(:num)']          = 'admin/categories/delete/$1';
 $route['admin/settings/categories']               = 'admin/categories/groups/';
 $route['admin/settings/categories/create']        = 'admin/categories/groups_create';
 $route['admin/settings/categories/edit/(:num)']   = 'admin/categories/groups_update/$1';

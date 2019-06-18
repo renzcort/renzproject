@@ -20,22 +20,22 @@ class fields extends My_Controller {
   /*Fields Index*/
   public function index() {
     $settings = array(
-      'title'         =>  'fields',
-      'subtitle'      =>  FALSE,
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  FALSE,
-      'button'        =>  '+ New Fields',
-      'button_link'   =>  'fields/create',
-      'content'       =>  'template/bootstrap-4/admin/fields/fields-list',
-      'table'         =>  'fields',
-      'action'        =>  'admin/settings/fields',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(4),
-      'element_name'  =>  'element',
-      'group_name'    =>  'fields_group',
-      'group'         =>  $this->general_m->get_all_results('fields_group'),
-      'group_count'   =>  $this->general_m->count_all_results('fields_group'),
-      'group_id'      =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'title'          =>  'fields',
+      'subtitle'       =>  FALSE,
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'button'         =>  '+ New Fields',
+      'button_link'    =>  'fields/create',
+      'content'        =>  'template/bootstrap-4/admin/fields/fields-list',
+      'table'          =>  'fields',
+      'action'         =>  'admin/settings/fields',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(4),
+      'fields_element' =>  'element',
+      'group_name'     =>  'fields_group',
+      'group'          =>  $this->general_m->get_all_results('fields_group'),
+      'group_count'    =>  $this->general_m->count_all_results('fields_group'),
+      'group_id'       =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
     );
     
     // Pagination

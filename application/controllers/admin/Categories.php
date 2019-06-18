@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Categories extends My_Controller {
-
+  private $catGroup = [];
 
   public function __construct()
   {
@@ -10,30 +10,35 @@ class Categories extends My_Controller {
     //Do your magic here
     $this->load->model('admin/Fields_m', 'fields_m');
     $this->load->model('admin/General_m', 'general_m');
+
+    $cat = $this->general_m->get_all_results('categories');
+    $catGroup['handle'] = ($cat ? $cat[0]->handle : '');
     $this->data = array(
-      'userdata' =>  $this->first_load(),
-      'parentLink' => 'admin/categories', 
+      'userdata'   =>  $this->first_load(),
+      'parentLink' => 'admin/categories',
     );
   }
 
   public function index(){
     $settings = array(
-      'title'         =>  'categories',
-      'subtitle'      =>  FALSE,
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  FALSE,
-      'button'        =>  '+ New Categories',
-      'button_link'   =>  'categories/create',
-      'content'       =>  'template/bootstrap-4/admin/categories/categories-list',
-      'table'         =>  'categories',
-      'action'        =>  'admin/settings/categories',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
-      'fields_element'  =>  'categories_element',
-      'fields_group'  =>  $this->general_m->get_all_results('categories_group'),
-      'fields'        =>  $this->fields_m->get_all_results(),
-      'elementFields' =>  [],
-      'order'         =>  $this->general_m->get_max_fields('categories', 'order'),
+      'title'          =>  'categories',
+      'subtitle'       =>  FALSE,
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'button'         =>  '+ New Categories',
+      'button_link'    =>  "categories/create",
+      'content'        =>  'template/bootstrap-4/admin/categories/categories-list',
+      'table'          =>  'categories_content',
+      'action'         =>  'admin/categories',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'group_name'    =>  'categories',
+      'fields_element' => 'categories_element',
+      'group'          =>  $this->general_m->get_all_results('categories'),
+      'group_count'    =>  $this->general_m->count_all_results('categories'),
+      'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );
     // Pagination
     $config                 = $this->config->item('setting_pagination');
@@ -52,6 +57,71 @@ class Categories extends My_Controller {
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);    
   }
 
+
+  public function create() {
+    $settings = array(
+      'title'          =>  'categories',
+      'subtitle'       =>  FALSE,
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'button'         =>  '+ New Categories',
+      'button_link'    =>  'categories/create',
+      'content'        =>  'template/bootstrap-4/admin/categories/categories-form',
+      'table'          =>  'categories_content',
+      'action'         =>  'admin/categories',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'group_name'    =>  'categories',
+      'fields_element' => 'categories_element',
+      'group'          =>  $this->general_m->get_all_results('categories'),
+      'group_count'    =>  $this->general_m->count_all_results('categories'),
+      'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
+    );
+
+    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
+    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
+    if ($this->form_validation->run() == TRUE) {
+      if ($_POST['button'] == 'create') {
+        (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
+        (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
+        $data = array(
+          'name'       => ucfirst($this->input->post('name')),
+          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'url'        => $this->input->post('url'),
+          'template'   => $this->input->post('template'),
+          'locale'     => $locale,
+          'parent'     => $parent,
+          'maxlevel'   => $this->input->post('maxlevel'),
+          'description'=> $this->input->post('description'),
+          'created_by' => $this->data['userdata']['id'],
+        );
+        $tableFieldsId = $this->general_m->create($settings['table'], $data);
+        helper_log('add', "Create {$settings['title']} has successfully");
+        //get fields to element 
+        $fieldsId = $this->input->post('fieldsId');
+        (isset($id) ? $id = $tableFieldsId : $id = $id);
+        $this->general_m->delete("{$settings['table']}_element", $id);
+        if (!empty($fieldsId)) {
+          $i = 0;
+          foreach ($fieldsId as $value) {
+            $element = array(
+              'categories_id' =>  $id,
+              'fields_id'     =>  $value,
+              'order'         =>  ++$i,
+            );
+            $this->general_m->create("{$settings['table']}_element", $element, FALSE);
+          }
+          helper_log('add', "add element create has successfully {$element['order']} record");
+        }        
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
+        redirect($settings['action']);
+      } 
+    } else {
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+    }
+  }
 
   public function groups() {
     $settings = array(

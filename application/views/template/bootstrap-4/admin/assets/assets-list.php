@@ -4,13 +4,13 @@
         data-groups-name="<?php echo ($group_name ? $group_name : ''); ?>" 
         data-table="<?php echo ($table ? $table : ''); ?>" 
         data-action-name="<?php echo ($action ? $action : '');?>"
-        data-element="<?php echo ($element_name ? $element_name : ''); ?>">
+        data-element="<?php echo ($fields_element ? $fields_element : ''); ?>">
        <li class="nav-item">
           <a class="nav-link active" data-id="all">All Fields</a>
        </li>
         <?php 
           $i = 1; 
-          foreach ($assets as $key): 
+          foreach ($group as $key): 
         ?>
           <li class="nav-item">
             <a class="nav-link <?php echo (($i == 1) ? '' : ''); ?>" href="#" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
