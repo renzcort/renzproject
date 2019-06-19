@@ -14,7 +14,7 @@ class fields_m extends My_Model {
   public function get_all_results($limit = '', $offset = '', $group_id='')
    {
 
-    $this->db->select("d.*, {$this->_table}.*, b.name as group_name, c.name as type_name");
+    $this->db->select("d.*, {$this->_table}.*, b.name as group_name, c.handle as type_name");
     $this->db->join("fields_group as b", "b.id = {$this->_table}.group_id", "LEFT");
     $this->db->join("fields_type as c", "c.id = {$this->_table}.type_id", "LEFT");
     $this->db->join("fields_option as d", "d.id = {$this->_table}.option_id", "LEFT");
@@ -45,7 +45,6 @@ class fields_m extends My_Model {
     $data['updated_at'] = mdate("%Y-%m-%d %H:%i:%s");
     
     $this->db->insert($this->_table, $data);
-    
     return $this->db->insert_id();
   } 
 

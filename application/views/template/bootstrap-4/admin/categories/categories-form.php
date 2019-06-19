@@ -21,6 +21,83 @@
           <label for="inputTitle" class="heading">Title</label>
           <input type="text" name="title" placeholder="Title" class="form-control">
         </div>
+        <?php if ($fields_element) {
+          foreach ($fields as $key) {
+            if (in_array($key->id, $fields_id)) {
+              $settings = json_decode($key->settings);
+              echo '<div class="form-group">
+                <label class="heading" for="input{$key->handle}">'.ucfirst($key->name).'</label>';
+                if ($key->type_name == 'plainText') {
+                  if ($settings->plainLineBreak == 1) {
+                    echo '<textarea class="form-control" 
+                            name="fields_{$key->handle}"
+                            id="exampleFormControlTextarea1"
+                            rows="{$setting->plainInitialRows}">
+                          </textarea>';
+
+                  } else {
+                    echo '<input type="text"  class="form-control form-control-sm" 
+                            name="fields_{key->handle}" 
+                            placeholder="{$setttings->plainPlaceholder}"
+                            maxlength="{$settings->plainCharlimit}">';                    
+                  }
+                } elseif ($key->type_name == 'assets') {
+
+                } elseif ($key->type_name == 'richText') {
+                } elseif ($key->type_name == 'categories') {
+                } elseif ($key->type_name == 'checkboxes') {
+                  $val = $settings->checkboxesValue; 
+                  $i = 0;
+                  foreach ($settings->checkboxesLabel as $key2 => $value) {
+                    $dataResult[] = array(
+                                'label' => $value,
+                                'value' => $val[$i]
+                              );
+                    $i++;
+                  }
+                  foreach ($dataResult as $key3) {
+                    echo '<div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="'.$key3['value'].'" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">'.$key3['label'].'</label>
+                          </div>';
+                  }
+                } elseif ($key->type_name == 'dateTime') {
+                } elseif ($key->type_name == 'dropdown') {
+                  $val = $settings->dropdownValue; 
+                  $i = 0;
+                  foreach ($settings->dropdownLabel as $key2 => $value) {
+                    $dataResult[] = array(
+                                'label' => $value,
+                                'value' => $val[$i]
+                              );
+                    $i++;
+                  }
+                  echo '<select class="form-control costum-select" name="fields_{$key->handle}">';
+                  foreach ($dataResult as $key3) {
+                    echo '<option value="'.$key3['value'].'">'.$key3['label'].'</option>';
+                  }
+                  echo '</select>';
+                } elseif ($key->type_name == 'radio') {
+                  $val = $settings->radioValue; 
+                  $i = 0;
+                  foreach ($settings->radioLabel as $key2 => $value) {
+                    $dataResult[] = array(
+                                'label' => $value,
+                                'value' => $val[$i]
+                              );
+                    $i++;
+                  }
+                  foreach ($dataResult as $key3) {
+                    echo '<div class="form-check">
+                            <input class="form-check-input" type="radio" value="'.$key3['value'].'" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">'.$key3['label'].'</label>
+                          </div>';
+                  }
+                }
+              echo '</div>';
+            }
+          }
+        } ?>
       </div>
     </div>
   </div>

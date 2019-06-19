@@ -2,7 +2,7 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Categories extends My_Controller {
-  private $catGroup = [];
+  var $handle = [];
 
   public function __construct()
   {
@@ -12,24 +12,55 @@ class Categories extends My_Controller {
     $this->load->model('admin/General_m', 'general_m');
 
     $cat = $this->general_m->get_all_results('categories');
-    $catGroup['handle'] = ($cat ? $cat[0]->handle : '');
+    $this->firstHandle = ($cat ? $cat[0]->handle : '');
+    
+    foreach ($cat as $key) {
+      $handle[] = $key->handle;
+    }
+
     $this->data = array(
       'userdata'   =>  $this->first_load(),
       'parentLink' => 'admin/categories',
     );
-  }
 
-  public function index(){
+    if ($this->router->method == 'index') {
+      if (uri_string() == 'admin/categories') {
+        redirect("admin/categories/{$this->firstHandle}",'refresh');
+      } elseif (! in_array($this->uri->segment(3), $handle)) {
+        redirect("admin/categories/{$this->firstHandle}",'refresh');
+      }
+    }
+  }
+/*
+  function _remap($method, $args) { 
+    $args = $this->handle;
+    if (method_exists($this, $method)){
+       $this->$method($args);
+    } else {
+        $this->index($method, $args);
+    }
+  }*/
+  
+  // public function _remap($method, $params)
+  // {
+  //   $params = $this->handle;
+  //   if ($method == 'index') {
+  //     $this->index($params);
+  //   }
+  // }
+
+  public function index($handle){
+    $params = (($handle != '') ? $this->general_m->get_row_by_fields('categories', array('handle' => $handle)) : '');
     $settings = array(
       'title'          =>  'categories',
       'subtitle'       =>  FALSE,
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
       'button'         =>  '+ New Categories',
-      'button_link'    =>  "categories/create",
+      'button_link'    =>  "create/{$params->handle}",
       'content'        =>  'template/bootstrap-4/admin/categories/categories-list',
       'table'          =>  'categories_content',
-      'action'         =>  'admin/categories',
+      'action'         =>  'admin/categories/create',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
       'group_name'    =>  'categories',
@@ -40,6 +71,7 @@ class Categories extends My_Controller {
       'elementFields'  =>  [],
       'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );
+
     // Pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
@@ -50,7 +82,7 @@ class Categories extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $params->id, 'categories_id');
     $settings['links']      = $this->pagination->create_links();
     // end Pagination
 
@@ -58,7 +90,8 @@ class Categories extends My_Controller {
   }
 
 
-  public function create() {
+  public function create($handle) {
+    $params = (($handle != '') ? $this->general_m->get_row_by_fields('categories', array('handle' => $handle)) : '');
     $settings = array(
       'title'          =>  'categories',
       'subtitle'       =>  FALSE,
@@ -71,14 +104,22 @@ class Categories extends My_Controller {
       'action'         =>  'admin/categories',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
-      'group_name'    =>  'categories',
-      'fields_element' => 'categories_element',
+      'group_name'     =>  'categories',
+      'fields_element' =>  $this->general_m->get_result_by_fields('categories_element', array('categories_id' => $params->id)),
       'group'          =>  $this->general_m->get_all_results('categories'),
       'group_count'    =>  $this->general_m->count_all_results('categories'),
       'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
+      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
       'elementFields'  =>  [],
       'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );
+
+    foreach ($settings['fields_element'] as $key) {
+      $settings['fields_id'][] = $key->fields_id;
+    }
+
 
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
     $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
