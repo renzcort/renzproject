@@ -444,7 +444,7 @@ class Api extends My_Controller {
 
   /*Upload Assets*/
   public function uploadWithoutSubmit() {
-    (($this->input->post('group_id') == 'all') ? $id = '' : $id = $this->input->post('group_id'));
+    (($this->input->post('group_id') == 'all') ? $id = '0' : $id = $this->input->post('group_id'));
     (($id == '') ? '' : $assets = $this->general_m->get_row_by_id('assets', $id));
     (($id == '') ? $folder = 'default' : $folder = lcfirst($assets->handle));
     $settings = array(
@@ -509,7 +509,7 @@ class Api extends My_Controller {
       $location = './upload/' . $name;  
       move_uploaded_file($_FILES["file"]["tmp_name"], $location);*/
 
-      $query = (($id == '') ? $this->general_m->get_all_results('assets_content') : 
+      $query = (($id == '0') ? $this->general_m->get_all_results('assets_content') : 
                 $this->general_m->get_result_by_id('assets_content', $id, 'assets_id'));
       $record_all = $query;
       $no = 0;

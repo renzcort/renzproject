@@ -476,6 +476,7 @@
              processData:false,
             beforeSend:function(){
              $('#table-content').html("<label class='text-success'>Image Uploading...</label>");
+             $('#table-content').empty(); 
             },   
             success:function(data)
             {

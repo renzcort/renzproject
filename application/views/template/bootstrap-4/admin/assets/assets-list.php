@@ -13,7 +13,7 @@
           foreach ($group as $key): 
         ?>
           <li class="nav-item">
-            <a class="nav-link <?php echo (($i == 1) ? '' : ''); ?>" href="<?php echo $key->handle ?>" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
+            <a class="nav-link" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
           </li>
         <?php
           $i = ++$i; 
