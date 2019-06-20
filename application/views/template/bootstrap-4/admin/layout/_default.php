@@ -11,6 +11,7 @@
 
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/admin/template/bootstrap-4/') ?>css/style.css">
+    <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
     <title><?php echo ($title ? ucfirst($title) : ''); ?></title>
 
   </head>
@@ -83,6 +84,33 @@
   </div>
 </div>
 
+<div class="modal fade" id="assetsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body d-flex flex-row flex-wrap justify-content-between p-1">
+        <div class="left-modal">
+          <ul>
+            <li class="assets-list"></li> 
+          </ul>
+        </div>
+        <div class="right-modal">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <input type="file" name="assets" class="btn btn-primary mr-auto p-2 ">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Send message</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
     <!-- Optional JavaScript -->
@@ -94,10 +122,11 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
     <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"></script> -->
+    <script type="text/javascript" src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+
 
     <script type="text/javascript">
       $(document).ready(function(){
-        
         // collapse 
         $('[data-target="#sidebar"]').on('click', function () {
           $('#sidebarCollapse').toggleClass('active');
@@ -227,12 +256,39 @@
            }
         });
 
+
+        $('[data-target="#assetsModal"]').click(function(e) {
+          var assets_id   = $(this).data('assets-id');
+          var assets_name = $(this).data('assets-name');
+          $.ajax({
+            type : 'POST',
+            dataType : 'json',
+            data : {id : assets_id},
+            url : '<?php echo base_url("admin/api/jsonAssetsEntriesUpload") ?>',
+          }).done(function(data){
+            $('li.assets-list').text(data.name);
+            $('#assetsModal .right-modal').html(data.table);
+
+            $('#assetsModal tr').click(function() {
+              if ( $(this).hasClass('selected') ) {
+                  $(this).removeClass('selected');
+              }
+              else {
+                  table.$('tr.selected').removeClass('selected');
+                  $(this).addClass('selected');
+              }
+            });
+          }).fail(function(errot){
+          });
+        });
+
         var leftbar = document.getElementById('left-content');
         var leftbarTop = leftbar.offsetTop;
         var leftbarButton = leftbar.offsetHeight;
         var rightbar = document.getElementById('right-content');
         var rightbarTop = rightbar.offsetHeight;
         window.onscroll = function() {myFunction()};
+
 
         getGroupsById();
         deleteGroupsById();
@@ -430,6 +486,7 @@
           }
         });
       }
+
 
     </script>
   </body>

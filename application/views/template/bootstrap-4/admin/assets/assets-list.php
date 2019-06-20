@@ -6,14 +6,14 @@
         data-action-name="<?php echo ($action ? $action : '');?>"
         data-element="<?php echo ($fields_element ? $fields_element : ''); ?>">
        <li class="nav-item">
-          <a class="nav-link active" data-id="all">All Fields</a>
+          <a class="nav-link active" data-id="all" href="default">All Fields</a>
        </li>
         <?php 
           $i = 1; 
           foreach ($group as $key): 
         ?>
           <li class="nav-item">
-            <a class="nav-link <?php echo (($i == 1) ? '' : ''); ?>" href="#" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
+            <a class="nav-link <?php echo (($i == 1) ? '' : ''); ?>" href="<?php echo $key->handle ?>" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
           </li>
         <?php
           $i = ++$i; 

@@ -112,6 +112,8 @@ class Categories extends My_Controller {
       'fields'         =>  $this->fields_m->get_all_results(),
       'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
       'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
+      'assets'         =>  $this->general_m->get_all_results('assets'),
+      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
       'elementFields'  =>  [],
       'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );

@@ -106,7 +106,7 @@
             <option value="0">- Site Assets -</option>
             <?php if ($assets): ?>
               <?php foreach ($assets as $key): ?>
-                <option value="<?php echo $key->id; ?>" <?php echo (($getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
+                <option value="<?php echo $key->id; ?>" <?php echo ((!empty($getFieldType->assetsSourcesList) && $getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
                   <?php echo $key->name; ?>
                 </option>
               <?php endforeach ?>
@@ -140,7 +140,7 @@
             <option value="0">- Site Assets -</option>
             <?php if ($assets): ?>
               <?php foreach ($assets as $key): ?>
-                <option value="<?php echo $key->id; ?>" <?php echo (($getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
+                <option value="<?php echo $key->id; ?>" <?php echo ((!empty($getFieldType->assetsSourcesList) && $getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
                   <?php echo $key->name; ?>
                 </option>
               <?php endforeach ?>
@@ -186,7 +186,7 @@
         <select name="assetsViewMode" class="form-control costum-select">
         <?php if ($mode): ?>
           <?php foreach ($mode as $key => $value): ?>
-          <option value="<?php echo $value; ?>" <?php echo (($getFieldType->assetsViewMode == $key->value) ? 'selected' : '');?>>
+          <option value="<?php echo $value; ?>" <?php echo ((!empty($getFieldType->assetsSourcesList) && $getFieldType->assetsViewMode == $key->value) ? 'selected' : '');?>>
             <?php echo $value; ?>
           </option>
           <?php endforeach ?>

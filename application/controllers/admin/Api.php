@@ -550,6 +550,56 @@ class Api extends My_Controller {
     }
   }
 
+
+  /*Assets Upload*/
+  public function jsonAssetsEntriesUpload(){
+    $assets_id = $this->input->post('id');
+    $settings = array(
+      'assets'         => $this->general_m->get_row_by_id('assets', $assets_id),
+      'assets_content' => $this->general_m->get_result_by_id('assets_content', $assets_id, 'assets_id'),
+    );
+    if ($settings['assets_content']) {
+      $table_view = '
+        <table class="table table-sm">
+          <thead>
+            <tr>
+              <th scope="row">#</th>
+              <th scope="col">Title</th>
+              <th scope="col">Post Date</th>
+              <th scope="col">File Size</th>
+              <th scope="col">File Modified Date</th>
+            </tr>
+          </thead>
+          <tbody>'; 
+        $no = 0;
+      foreach ($settings['assets_content'] as $key) {
+        $filename   = explode('.', $key->file);
+        $name       = current($filename);
+        $thumb      = current($filename).'_thumb.'.end($filename);
+        $file_thumb = base_url("{$key->path}/{$thumb}");
+        $getSize    = get_headers($file_thumb, 1); 
+        $table_view .= '<tr>
+            <input type="hidden" name="id" value="'.$key->id.'">
+            <td scope="row">'.++$no.'</td>
+            <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.$name.'</td>
+            <td>'.($key->file ? $key->file : '').'</td>
+            <td>'.$key->size.' kB </td>
+            <td>'.($key->created_at ? $key->created_at : '').'</td>
+            </tr>';
+      }
+      $table_view .= '</tbody></table>';
+    } else {
+      $table_view = '<p class="empty-data">Data is Empty</p>';
+    }
+
+    $data = array(
+      'name'  =>  $settings['assets']->name,
+      'table' =>  $table_view,
+    );
+    echo json_encode($data);
+
+  }
+
  
 
 

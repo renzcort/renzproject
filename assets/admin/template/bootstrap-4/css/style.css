@@ -1126,6 +1126,29 @@ header nav.menu .navbar-nav > li {
   color: #76606F;
 }
 
+.left-modal {
+  width: 100%;
+  max-width: 30%;
+  background: #FBFCFD;
+  padding: .5rem;
+}
+.right-modal {
+  width: 100%;
+  max-width: 70%;
+  padding: .5rem;
+}
+#assetsModal .modal-dialog {
+    max-width: 1000px !important;
+}
+#assetsModal .modal-content {
+  height: auto;
+  min-height: 350px;
+  max-height: 400px;
+}
+#assetsModal .modal-footer {
+  background: #EBECEE
+}
+
 
 @media (max-width: 319.98px) {
   header {

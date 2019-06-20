@@ -12,7 +12,7 @@
     $attributes = array('class' => 'form',
                         'id' => 'MyForm',
                   ); 
-    echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
+    echo form_open_multipart($action.(isset($id) ? '/'.$id : ''), $attributes); 
   ?>
   <div class="left-content-entries">
     <div class="tab-content" id="myTabContent">
@@ -20,6 +20,7 @@
         <div class="form-group">
           <label for="inputTitle" class="heading">Title</label>
           <input type="text" name="title" placeholder="Title" class="form-control">
+          
         </div>
         <?php if ($fields_element) {
           foreach ($fields as $key) {
@@ -42,7 +43,16 @@
                             maxlength="{$settings->plainCharlimit}">';                    
                   }
                 } elseif ($key->type_name == 'assets') {
-
+                    foreach ($assets as $key) {
+                      if ($key->id == $settings->assetsSourcesList) {
+                        $data['name'] = $key->name;
+                      }
+                    }
+                  echo '<div>
+                          <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#assetsModal"
+                          data-assets-id = "'.$settings->assetsSourcesList.'" 
+                          data-assets-name="'.$data['name'].'">
+                        + New Assets</button></div>';
                 } elseif ($key->type_name == 'richText') {
                 } elseif ($key->type_name == 'categories') {
                 } elseif ($key->type_name == 'checkboxes') {
@@ -57,7 +67,7 @@
                   }
                   foreach ($dataResult as $key3) {
                     echo '<div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="'.$key3['value'].'" id="defaultCheck1">
+                            <input class="form-check-input" type="checkbox" value="'.$key3['value'].'">
                             <label class="form-check-label" for="defaultCheck1">'.$key3['label'].'</label>
                           </div>';
                   }
@@ -89,7 +99,7 @@
                   }
                   foreach ($dataResult as $key3) {
                     echo '<div class="form-check">
-                            <input class="form-check-input" type="radio" value="'.$key3['value'].'" id="defaultCheck1">
+                            <input class="form-check-input" type="radio" value="'.$key3['value'].'">
                             <label class="form-check-label" for="defaultCheck1">'.$key3['label'].'</label>
                           </div>';
                   }

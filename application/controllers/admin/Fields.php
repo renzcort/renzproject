@@ -106,7 +106,6 @@ class fields extends My_Controller {
                           ),
     );
 
-
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_fields.name]');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_fields.handle]');
     $this->form_validation->set_rules('fieldsGroupId', 'fields Group', 'trim|required');
@@ -168,6 +167,8 @@ class fields extends My_Controller {
         } else {
           $opt_settings = NULL;
         }
+
+        // var_dump($opt_settings);die;
 
         // Alter Add Column Table Content 
         $handle           = lcfirst(str_replace(' ', '', ucwords($this->input->post('name'))));

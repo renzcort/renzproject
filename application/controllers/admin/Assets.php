@@ -14,10 +14,31 @@ class Assets extends My_Controller {
       'userdata' =>  $this->first_load(),
       'parentLink' => 'admin/settings/assets', 
     );
+  
+    $assets = $this->general_m->get_all_results('assets');
+    $this->firstHandle = ($assets ? $assets[0]->handle : '');
+    
+    foreach ($assets as $key) {
+      $handle[] = $key->handle;
+    }
+    array_push($handle, 'default');
+    
+    $this->data = array(
+      'userdata'   =>  $this->first_load(),
+      'parentLink' => 'admin/categories',
+    );
+
+    if ($this->router->method == 'index') {
+      if ((uri_string() == 'admin/assets') || (! in_array($this->uri->segment(3), $handle))) {
+        redirect("admin/assets/default",'refresh');
+      }
+    }
   }
 
     /*Assets entries*/
-  public function index() {
+  public function index($handle) {
+    $handle = ($handle == 'default' ? '0' : $this->general_m->get_row_by_fields('assets', array('handle' => $handle)));
+    ($handle != '0' ? $id = $handle->id : $id = 0);
     $settings = array(
       'title'          =>  'assets',
       'subtitle'       =>  FALSE,
@@ -29,7 +50,7 @@ class Assets extends My_Controller {
       'table'          =>  'assets_content',
       'action'         =>  'admin/settings/assets',
       'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
+      'no'             =>  $this->uri->segment(4),
       'assets'         =>  $this->general_m->get_all_results('assets_content'),
       'assets_count'   =>  $this->general_m->count_all_results('assets_content'),
       'group_name'     => 'assets',
@@ -51,7 +72,7 @@ class Assets extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $id, 'assets_id');
     $settings['links']      = $this->pagination->create_links();
     // end Pagination
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
