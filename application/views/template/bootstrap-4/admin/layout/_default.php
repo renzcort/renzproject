@@ -105,7 +105,7 @@
       <div class="modal-footer">
         <input type="file" name="assets" class="btn btn-primary mr-auto p-2 ">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Send message</button>
+        <button type="button" class="btn btn-primary" id="select-assets" data-dismiss="modal">Select</button>
       </div>
     </div>
   </div>
@@ -268,16 +268,51 @@
           }).done(function(data){
             $('li.assets-list').text(data.name);
             $('#assetsModal .right-modal').html(data.table);
+            
+            var table = $('#datatableModal').DataTable();
+            $('#datatableModal tbody').on( 'click', 'tr', function () {
+              $(this).toggleClass('selected');
+            } );
+            $('#button').click( function () {
+              alert( table.rows('.selected').data().length +' row(s) selected' );
+            } );
 
-            $('#assetsModal tr').click(function() {
-              if ( $(this).hasClass('selected') ) {
-                  $(this).removeClass('selected');
-              }
-              else {
-                  table.$('tr.selected').removeClass('selected');
-                  $(this).addClass('selected');
-              }
+            // $('tbody tr').click(function() {
+            //   if ($(this).hasClass('selected') ) {
+            //     $(this).removeClass('selected');
+            //   } else {
+            //     $('tr.selected').removeClass('selected');
+            //     $(this).addClass('selected');
+            //   }
+            // });
+
+            $('#select-assets').click(function(e){
+              var assets_content_id = $('tr.selected input').data('id');
+              var id = [];
+              $( "tbody tr.selected" ).each(function() {
+                id.push($('tr.selected input').data('id'));
+                $( this ).toggleClass( "selected" );
+              });
+
+              $.ajax({
+                url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
+                type: 'POST',
+                dataType: 'json',
+                data: {assetsContentId: id},
+              })
+              .done(function(data) {
+                $('#selected').html(data.html);
+                console.log("success");
+              })
+              .fail(function() {
+                console.log("error");
+              })
+              .always(function() {
+                console.log("complete");
+              });
+              
             });
+
           }).fail(function(errot){
           });
         });
@@ -478,10 +513,10 @@
              $('#table-content').html("<label class='text-success'>Image Uploading...</label>");
              $('#table-content').empty(); 
             },   
-            success:function(data)
-            {
-             $('#table-content').empty(); 
-             $('#table-content').html(data);
+            success:function(data){
+              location.reload();
+             // $('#table-content').empty(); 
+             // $('#table-content').html(data);
             }
            });
           }

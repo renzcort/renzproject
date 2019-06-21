@@ -13,26 +13,133 @@
     <link rel="stylesheet" type="text/css" href="../../assets/admin/template/bootstrap-4/css/style.css">
     <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
 <style>
-  #sortable1, #sortable2 {
-    border: 1px solid #eee;
-    width: 142px;
-    min-height: 20px;
-    list-style-type: none;
-    margin: 0;
-    padding: 5px 0 0 0;
-    float: left;
-    margin-right: 10px;
-  }
-  #sortable1 li, #sortable2 li {
-    margin: 0 5px 5px 5px;
-    padding: 5px;
-    font-size: 1.2em;
-    width: 120px;
-  }
+  central column on page ***/
+        div#divContainer
+        {
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: Calibri;
+            padding: 0.5em 1em 1em 1em;
+ 
+            /* rounded corners */
+            -moz-border-radius: 10px;
+            -webkit-border-radius: 10px;
+            border-radius: 10px;
+ 
+            /* add gradient */
+            background-color: #808080;
+            background: -webkit-gradient(linear, left top, left bottom, from(#606060), to(#808080));
+            background: -moz-linear-gradient(top, #606060, #808080);
+ 
+            /* add box shadows */
+            -moz-box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+            -webkit-box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+            box-shadow: 5px 5px 10px rgba(0,0,0,0.3);
+        }
+ 
+        h1 {color:#FFE47A; font-size:1.5em;}
+ 
+        /*** sample table to demonstrate CSS3 formatting ***/
+        table.formatHTML5 {
+            width: 100%;
+            border-collapse:collapse;
+            text-align:left;
+            color: #606060;
+        }
+ 
+        /*** table's thead section, head row style ***/
+        table.formatHTML5 thead tr td  {
+            background-color: White;
+            vertical-align:middle;
+            padding: 0.6em;
+            font-size:0.8em;
+        }
+ 
+        /*** table's thead section, coulmns header style ***/
+        table.formatHTML5 thead tr th
+        {
+            padding: 0.5em;
+            /* add gradient */
+            background-color: #808080;
+            background: -webkit-gradient(linear, left top, left bottom, from(#606060), to(#909090));
+            background: -moz-linear-gradient(top, #606060, #909090);
+            color: #dadada;
+        }
+ 
+        /*** table's tbody section, odd rows style ***/
+        table.formatHTML5 tbody tr:nth-child(odd) {
+           background-color: #fafafa;
+        }
+ 
+        /*** hover effect to table's tbody odd rows ***/
+        table.formatHTML5 tbody tr:nth-child(odd):hover
+        {
+            cursor:pointer;
+            /* add gradient */
+            background-color: #808080;
+            background: -webkit-gradient(linear, left top, left bottom, from(#606060), to(#909090));
+            background: -moz-linear-gradient(top, #606060, #909090);
+            color: #dadada;
+        }
+ 
+        /*** table's tbody section, even rows style ***/
+        table.formatHTML5 tbody tr:nth-child(even) {
+            background-color: #efefef;
+        }
+ 
+        /*** hover effect to apply to table's tbody section, even rows ***/
+        table.formatHTML5 tbody tr:nth-child(even):hover
+        {
+            cursor:pointer;
+            /* add gradient */
+            background-color: #808080;
+            background: -webkit-gradient(linear, left top, left bottom, from(#606060), to(#909090));
+            background: -moz-linear-gradient(top, #606060, #909090);
+            color: #dadada;
+        }
+ 
+       /*** table's tbody section, last row style ***/
+        table.formatHTML5 tbody tr:last-child {
+             border-bottom: solid 1px #404040;
+        }
+ 
+        /*** table's tbody section, separator row pseudo-class ***/
+        table.formatHTML5 tbody tr.separator {
+            /* add gradient */
+            background-color: #808080;
+            background: -webkit-gradient(linear, left top, left bottom, from(#606060), to(#909090));
+            background: -moz-linear-gradient(top, #606060, #909090);
+            color: #dadada;
+        }
+ 
+        /*** table's td element, all section ***/
+        table.formatHTML5 td {
+           vertical-align:middle;
+           padding: 0.5em;
+        }
+ 
+        /*** table's tfoot section ***/
+        table.formatHTML5 tfoot{
+            text-align:center;
+            color:#303030;
+            text-shadow: 0 1px 1px rgba(255,255,255,0.3);
+        }
+
+table.formatHTML5 tr.selected {
+            background-color: #e92929 !important;
+    color:#fff;
+            vertical-align: middle;
+            padding: 1.5em;
+        }
   </style>
 </head>
 <body>
-<table id="example" class="display" style="width:100%">
+<!DOCTYPE html>
+    <title>HTML5 TABLE</title>
+ 
+<body>
+  <form id="frm-example" action="/path/to/your/script.php" method="POST">
+ <table id="example" class="display" style="width:100%">
         <thead>
             <tr>
                 <th>Name</th>
@@ -513,6 +620,20 @@
         </tfoot>
     </table>
 
+    <hr>
+
+<p>Press <b>Submit</b> and check console for URL-encoded form data that would be submitted.</p>
+
+<p><button>Submit</button></p>
+
+<p><b>Selected rows data:</b></p>
+<pre id="example-console-rows"></pre>
+
+<p><b>Form data as submitted to the server:</b></p>
+<pre id="example-console-form"></pre>
+
+</form>
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
@@ -528,18 +649,46 @@
    var table = $('#example').DataTable();
  
     $('#example tbody').on( 'click', 'tr', function () {
-        if ( $(this).hasClass('selected') ) {
-            $(this).removeClass('selected');
-        }
-        else {
-            table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
+        $(this).toggleClass('selected');
     } );
  
     $('#button').click( function () {
-        table.row('.selected').remove().draw( false );
+        alert( table.rows('.selected').data().length +' row(s) selected' );
     } );
+
+   
+   // Handle form submission event 
+   $('#frm-example').on('submit', function(e){
+      var form = this;
+      
+      var rows_selected = table.column(0).checkboxes.selected();
+
+      // Iterate over all selected checkboxes
+      $.each(rows_selected, function(index, rowId){
+         // Create a hidden element 
+         $(form).append(
+             $('<input>')
+                .attr('type', 'hidden')
+                .attr('name', 'id[]')
+                .val(rowId)
+         );
+      });
+
+      // FOR DEMONSTRATION ONLY
+      // The code below is not needed in production
+      
+      // Output form data to a console     
+      $('#example-console-rows').text(rows_selected.join(","));
+      
+      // Output form data to a console     
+      $('#example-console-form').text($(form).serialize());
+       
+      // Remove added elements
+      $('input[name="id\[\]"]', form).remove();
+       
+      // Prevent actual form submission
+      e.preventDefault();
+   }); 
 
   });
   </script>

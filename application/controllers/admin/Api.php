@@ -233,9 +233,9 @@ class Api extends My_Controller {
     // JSON update data 
   public function jsonGetGroupsById() {
     header('Content-type: application/json');
-    $group_id = $this->input->post('group_id');
+    $group_id   = $this->input->post('group_id');
     $group_name = $this->input->post('group_name');
-    $groups =  $this->general_m->get_row_by_id($group_name, $group_id);
+    $groups     = $this->general_m->get_row_by_id($group_name, $group_id);
     echo json_encode($groups);
   }
 
@@ -550,7 +550,6 @@ class Api extends My_Controller {
     }
   }
 
-
   /*Assets Upload*/
   public function jsonAssetsEntriesUpload(){
     $assets_id = $this->input->post('id');
@@ -560,14 +559,15 @@ class Api extends My_Controller {
     );
     if ($settings['assets_content']) {
       $table_view = '
-        <table class="table table-sm">
+      <div id="uploadModal">
+        <table class="table table-sm" id="datatableModal">
           <thead>
             <tr>
-              <th scope="row">#</th>
+              <th style="width:5%" scope="row">#</th>
               <th scope="col">Title</th>
               <th scope="col">Post Date</th>
-              <th scope="col">File Size</th>
-              <th scope="col">File Modified Date</th>
+              <th style="width:10%" scope="col">File Size</th>
+              <th style="width:25%" scope="col">File Modified Date</th>
             </tr>
           </thead>
           <tbody>'; 
@@ -579,25 +579,47 @@ class Api extends My_Controller {
         $file_thumb = base_url("{$key->path}/{$thumb}");
         $getSize    = get_headers($file_thumb, 1); 
         $table_view .= '<tr>
-            <input type="hidden" name="id" value="'.$key->id.'">
-            <td scope="row">'.++$no.'</td>
+            <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
+            <td style:"width:5%;" scope="row">'.++$no.'</td>
             <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.$name.'</td>
             <td>'.($key->file ? $key->file : '').'</td>
-            <td>'.$key->size.' kB </td>
-            <td>'.($key->created_at ? $key->created_at : '').'</td>
+            <td style="width:10%;">'.$key->size.' kB </td>
+            <td style="width:25%;">'.($key->created_at ? $key->created_at : '').'</td>
             </tr>';
       }
       $table_view .= '</tbody></table>';
     } else {
       $table_view = '<p class="empty-data">Data is Empty</p>';
     }
+    $table_view .= '</div>';
 
     $data = array(
       'name'  =>  $settings['assets']->name,
       'table' =>  $table_view,
     );
     echo json_encode($data);
+  }
 
+  public function jsonAssetsSelectSubmit(){
+    $assetsContentId = $this->input->post('assetsContentId');
+    $view = '';
+    foreach ($assetsContentId as $key => $value) {
+      $assetsContent  = $this->general_m->get_row_by_id('assets_content', $value);
+      $filename   = explode('.', $assetsContent->file);
+      $name       = current($filename);
+      $thumb      = current($filename).'_thumb.'.end($filename);
+      $file_thumb = base_url("{$assetsContent->path}/{$thumb}");
+      $getSize    = get_headers($file_thumb, 1); 
+      $view .= '
+        <div class="form-group">
+          <td><img src="'.$file_thumb.'" class="img-thumbnail" data-id="'.$value.'" heigth="20" width="30"/>'.$name.'</td>
+        </div>';
+    }
+
+    $data = array(
+      'html' =>  $view,
+    );
+    echo json_encode($data);
   }
 
  

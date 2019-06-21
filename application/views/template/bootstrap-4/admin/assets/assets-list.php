@@ -6,14 +6,16 @@
         data-action-name="<?php echo ($action ? $action : '');?>"
         data-element="<?php echo ($fields_element ? $fields_element : ''); ?>">
        <li class="nav-item">
-          <a class="nav-link active" data-id="all" href="default">All Fields</a>
+          <a class="nav-link <?php echo (($this->uri->segment(3) == 'default') ? 'active' : '') ?>" data-id="all" href="default">All Fields</a>
        </li>
         <?php 
           $i = 1; 
           foreach ($group as $key): 
         ?>
           <li class="nav-item">
-            <a class="nav-link" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
+            <a href="<?php echo $key->handle;?>" class="nav-link <?php echo (($this->uri->segment(3) == $key->handle) ? 'active' : '') ?>" 
+              data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?>
+            </a>
           </li>
         <?php
           $i = ++$i; 
@@ -49,11 +51,11 @@
       <table class="table table-sm">
         <thead>
           <tr>
-            <th scope="row">#</th>
+            <th style="width:5%" scope="row">#</th>
             <th scope="col">Title</th>
             <th scope="col">Post Date</th>
-            <th scope="col">File Size</th>
-            <th scope="col">File Modified Date</th>
+            <th style="width:10%" scope="col">File Size</th>
+            <th style="width:20%" scope="col">File Modified Date</th>
           </tr>
         </thead>
         <tbody>
@@ -65,11 +67,11 @@
           $getSize    = get_headers($file_thumb, 1); 
         ?>
         <tr>
-          <th scope="row"><?php echo ++$no; ?></th>
+          <th style="width:5%" scope="row"><?php echo ++$no; ?></th>
           <td><img src="<?php echo $file_thumb ?>" class="img-thumbnail" heigth="10" width="20"/><?php echo $name; ?></a></td>
           <td><?php echo ($key->file ? $key->file : ''); ?></td>
-          <td><?php echo $key->size; ?> kB</td>
-          <td><?php echo ($key->created_at ? $key->created_at : ''); ?></td>
+          <td style="width:10% "><?php echo $key->size; ?> kB</td>
+          <td style="width:20% "><?php echo ($key->created_at ? $key->created_at : ''); ?></td>
         </tr>
         <?php endforeach ?>
       </tbody>

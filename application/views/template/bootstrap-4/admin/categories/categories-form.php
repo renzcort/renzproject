@@ -12,15 +12,15 @@
     $attributes = array('class' => 'form',
                         'id' => 'MyForm',
                   ); 
-    echo form_open_multipart($action.(isset($id) ? '/'.$id : ''), $attributes); 
+    echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
   ?>
+  <input type="hidden" name="button" value="<?php echo $button_name; ?>">
   <div class="left-content-entries">
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
         <div class="form-group">
           <label for="inputTitle" class="heading">Title</label>
           <input type="text" name="title" placeholder="Title" class="form-control">
-          
         </div>
         <?php if ($fields_element) {
           foreach ($fields as $key) {
@@ -43,11 +43,12 @@
                             maxlength="{$settings->plainCharlimit}">';                    
                   }
                 } elseif ($key->type_name == 'assets') {
-                    foreach ($assets as $key) {
-                      if ($key->id == $settings->assetsSourcesList) {
-                        $data['name'] = $key->name;
-                      }
+                  foreach ($assets as $key) {
+                    if ($key->id == $settings->assetsSourcesList) {
+                      $data['name'] = $key->name;
                     }
+                  }
+                  echo '<div id="selected"></div>';
                   echo '<div>
                           <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#assetsModal"
                           data-assets-id = "'.$settings->assetsSourcesList.'" 

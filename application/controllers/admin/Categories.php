@@ -98,10 +98,12 @@ class Categories extends My_Controller {
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
       'button'         =>  '+ New Categories',
-      'button_link'    =>  'categories/create',
+      'button_link'    =>  "{$params->handle}",
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',      
       'content'        =>  'template/bootstrap-4/admin/categories/categories-form',
       'table'          =>  'categories_content',
-      'action'         =>  'admin/categories',
+      'action'         =>  'admin/settings/categories',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
       'group_name'     =>  'categories',
@@ -122,10 +124,9 @@ class Categories extends My_Controller {
       $settings['fields_id'][] = $key->fields_id;
     }
 
-
-    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
-    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
+    $this->form_validation->set_rules('title', 'title', "trim|required");
     if ($this->form_validation->run() == TRUE) {
+      var_dump('expression');die;
       if ($_POST['button'] == 'create') {
         (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
         (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
