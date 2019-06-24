@@ -22,7 +22,6 @@ class Api extends My_Controller {
    * @return [type] [description]
    */
   public function jsonTabsFields() {
-    var_dump($this->input->post());die;
     ($this->input->post('id') ? $id = $this->input->post('id') : $id = '');
     ($this->input->post('section_id') ? $section_id = $this->input->post('section_id') : $section_id = '');
     $button     = $this->input->post('button');
@@ -631,25 +630,43 @@ class Api extends My_Controller {
   // Manage Entries 
   public function jsonEntriesManage() {
     $settings = array(
-      'table'  => $this->input->post('table'),
+      'table'        => $this->input->post('table'),
+      'button'       => $this->input->post('button'),
+      'action'       => $this->input->post('action'),
+      'parent_table' => $this->input->post('parent_table'),
+      'parent_id'    => $this->input->post('parent_id'),
     ); 
 
     $data = array(
-      'title'      => $this->input->post('title'),
-      'created_by' => $this->data['userdata']['id'],
+      'title'                          => $this->input->post('title'),
+      'created_by'                     => $this->data['userdata']['id'],
+      "{$settings['parent_table']}_id" => $settings['parent_id'],
     );
 
     $keys = array_keys($this->input->post());
     foreach ($keys as $key) {
       if (strpos($key, 'fields') !== false) {
-        $data[$key] = $this->input->post($key);
+        if (is_array($this->input->post($key))) {
+          $data[$key] = implode(', ', $this->input->post($key));
+        } else {
+          $data[$key] = $this->input->post($key);
+        }
       }
     }
-    var_dump($data);die;
-   
+    if ($settings['button'] == 'create') {
+      $this->general_m->create($settings['table'], $data);
+      helper_log('add', "Create {$settings['table']} has successfully");
+      $this->session->set_flashdata('message', "Data has successfully Created");
+      redirect($settings['action']);
+    } elseif ($settings['button'] == 'update') {
+      $this->general_m->update($settings['table'], $data, $id);
+      helper_log('edit', "Update {$settings['table']} has successfully");
+      $this->session->set_flashdata('message', "Data has successfully Updated");
+      redirect($settings['action']);
+    } 
     
-
-
+    $settings['status'] = TRUE;
+    echo json_encode($settings);
   }
  
 

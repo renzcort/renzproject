@@ -118,23 +118,17 @@ class Categories extends My_Controller {
       'assets_content' =>  $this->general_m->get_all_results('assets_content'),
       'elementFields'  =>  [],
       'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
+      'parent_table'   =>  'categories',
+      'parent_id'      =>  $params->id          
     );
+
+    // var_dump($settings['fields']);die;
 
     foreach ($settings['fields_element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
     }
 
-    $this->form_validation->set_rules('title', 'title', "trim|required");
-    if ($this->form_validation->run() == TRUE) {
-      var_dump($this->input->post());die;
-      if ($_POST['button'] == 'create') {
-
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
-        redirect($settings['action']);
-      } 
-    } else {
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
   public function groups() {

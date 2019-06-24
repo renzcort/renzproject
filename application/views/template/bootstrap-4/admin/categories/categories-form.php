@@ -14,11 +14,14 @@
                   ); 
     echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
   ?>
-  <input type="hidden" name="button" value="<?php echo $button_name; ?>" id="entries-template">
+  <input type="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
+  <input type="hidden" name="parent_id" value="<?php echo $parent_id; ?>">
+  <input type="hidden" name="parent_table" value="<?php echo $parent_table; ?>">
+  <input type="hidden" name="button" value="<?php echo $button_name; ?>">
   <input type="hidden" name="table" value="<?php echo $table; ?>">
   <input type="hidden" name="action" value="<?php echo $action; ?>">
 
-  <div class="left-content-entries">
+  <div class="left-content-entries" id="entries-template">
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
         <div class="form-group">
@@ -46,9 +49,9 @@
                             maxlength="'.$settings->plainCharlimit.'">';                    
                   }
                 } elseif ($key->type_name == 'assets') {
-                  foreach ($assets as $key) {
-                    if ($key->id == $settings->assetsSourcesList) {
-                      $data['name'] = $key->name;
+                  foreach ($assets as $key2) {
+                    if ($key2->id == $settings->assetsSourcesList) {
+                      $data['name'] = $key2->name;
                     }
                   }
                   echo '<div id="fields-assets-entries">
