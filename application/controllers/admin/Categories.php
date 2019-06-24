@@ -97,13 +97,13 @@ class Categories extends My_Controller {
       'subtitle'       =>  FALSE,
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
-      'button'         =>  '+ New Categories',
-      'button_link'    =>  "{$params->handle}",
+      'button'         =>  'Save',
       'button_type'    =>  'submit',
-      'button_name'    =>  'create',      
+      'button_name'    =>  'create',
+      'button_tabs'    =>  TRUE,      
       'content'        =>  'template/bootstrap-4/admin/categories/categories-form',
       'table'          =>  'categories_content',
-      'action'         =>  'admin/settings/categories',
+      'action'         =>  "admin/categories/create/{$params->handle}",
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
       'group_name'     =>  'categories',
@@ -126,39 +126,9 @@ class Categories extends My_Controller {
 
     $this->form_validation->set_rules('title', 'title', "trim|required");
     if ($this->form_validation->run() == TRUE) {
-      var_dump('expression');die;
+      var_dump($this->input->post());die;
       if ($_POST['button'] == 'create') {
-        (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
-        (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
-        $data = array(
-          'name'       => ucfirst($this->input->post('name')),
-          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'url'        => $this->input->post('url'),
-          'template'   => $this->input->post('template'),
-          'locale'     => $locale,
-          'parent'     => $parent,
-          'maxlevel'   => $this->input->post('maxlevel'),
-          'description'=> $this->input->post('description'),
-          'created_by' => $this->data['userdata']['id'],
-        );
-        $tableFieldsId = $this->general_m->create($settings['table'], $data);
-        helper_log('add', "Create {$settings['title']} has successfully");
-        //get fields to element 
-        $fieldsId = $this->input->post('fieldsId');
-        (isset($id) ? $id = $tableFieldsId : $id = $id);
-        $this->general_m->delete("{$settings['table']}_element", $id);
-        if (!empty($fieldsId)) {
-          $i = 0;
-          foreach ($fieldsId as $value) {
-            $element = array(
-              'categories_id' =>  $id,
-              'fields_id'     =>  $value,
-              'order'         =>  ++$i,
-            );
-            $this->general_m->create("{$settings['table']}_element", $element, FALSE);
-          }
-          helper_log('add', "add element create has successfully {$element['order']} record");
-        }        
+
         $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
         redirect($settings['action']);
       } 

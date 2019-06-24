@@ -123,6 +123,7 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
     <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"></script> -->
     <script type="text/javascript" src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.9.0/jquery.serializejson.min.js"></script>
 
 
     <script type="text/javascript">
@@ -258,8 +259,8 @@
 
 
         $('[data-target="#assetsModal"]').click(function(e) {
-          var assets_id   = $(this).data('assets-id');
-          var assets_name = $(this).data('assets-name');
+          var assets_id     = $(this).data('assets-id');
+          var assets_fields = $(this).data('assets-fields');
           $.ajax({
             type : 'POST',
             dataType : 'json',
@@ -298,10 +299,10 @@
                 url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
                 type: 'POST',
                 dataType: 'json',
-                data: {assetsContentId: id},
+                data: {assetsContentId: id, assets_fields : assets_fields},
               })
               .done(function(data) {
-                $('#selected').html(data.html);
+                $('.selected').html(data.html);
                 console.log("success");
               })
               .fail(function() {
@@ -450,12 +451,21 @@
         }).get();
         var jTable = ConvertFormToJSON();
         var jFields = {fieldsId : fieldsId};
-        var jData = Object.assign(jTable, jFields);
+        
+        // assets FIELD
+        if ($("#entries-template").length) {
+          var jData = $('#MyForm').serializeJSON();
+          var url   = '<?php echo base_url("admin/api/jsonEntriesManage") ?>';
+        } else {
+          var jData = Object.assign(jTable, jFields);
+          var url   = '<?php echo base_url("admin/api/jsonTabsFields") ?>';
+        }
+
         $.ajax({
           type : 'POST',
           dataType : 'json',
           data : jData,
-          url : '<?php echo base_url("admin/api/jsonTabsFields") ?>',
+          url : url,
         }).done(function(data){
           if (data.status == true) {
             window.location.href = '<?php echo base_url() ?>'+data.action;

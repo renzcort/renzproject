@@ -14,7 +14,10 @@
                   ); 
     echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
   ?>
-  <input type="hidden" name="button" value="<?php echo $button_name; ?>">
+  <input type="hidden" name="button" value="<?php echo $button_name; ?>" id="entries-template">
+  <input type="hidden" name="table" value="<?php echo $table; ?>">
+  <input type="hidden" name="action" value="<?php echo $action; ?>">
+
   <div class="left-content-entries">
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
@@ -27,20 +30,20 @@
             if (in_array($key->id, $fields_id)) {
               $settings = json_decode($key->settings);
               echo '<div class="form-group">
-                <label class="heading" for="input{$key->handle}">'.ucfirst($key->name).'</label>';
+                <label class="heading" for="input'.$key->handle.'">'.ucfirst($key->name).'</label>';
                 if ($key->type_name == 'plainText') {
                   if ($settings->plainLineBreak == 1) {
                     echo '<textarea class="form-control" 
-                            name="fields_{$key->handle}"
+                            name="fields_'.$key->handle.'"
                             id="exampleFormControlTextarea1"
-                            rows="{$setting->plainInitialRows}">
+                            rows="'.$settings->plainInitialRows.'">
                           </textarea>';
 
                   } else {
                     echo '<input type="text"  class="form-control form-control-sm" 
-                            name="fields_{key->handle}" 
-                            placeholder="{$setttings->plainPlaceholder}"
-                            maxlength="{$settings->plainCharlimit}">';                    
+                            name="fields_'.$key->handle.'" 
+                            placeholder="'.$setttings->plainPlaceholder.'"
+                            maxlength="'.$settings->plainCharlimit.'">';                    
                   }
                 } elseif ($key->type_name == 'assets') {
                   foreach ($assets as $key) {
@@ -48,12 +51,14 @@
                       $data['name'] = $key->name;
                     }
                   }
-                  echo '<div id="selected"></div>';
+                  echo '<div id="fields-assets-entries">
+                          <div class="selected"></div>';
                   echo '<div>
                           <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#assetsModal"
                           data-assets-id = "'.$settings->assetsSourcesList.'" 
-                          data-assets-name="'.$data['name'].'">
+                          data-assets-fields="fields_'.$key->handle.'">
                         + New Assets</button></div>';
+                  echo '</div>';
                 } elseif ($key->type_name == 'richText') {
                 } elseif ($key->type_name == 'categories') {
                 } elseif ($key->type_name == 'checkboxes') {
@@ -68,7 +73,7 @@
                   }
                   foreach ($dataResult as $key3) {
                     echo '<div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="'.$key3['value'].'">
+                            <input class="form-check-input" type="checkbox" name="fields_'.$key->handle.'[]" value="'.$key3['value'].'">
                             <label class="form-check-label" for="defaultCheck1">'.$key3['label'].'</label>
                           </div>';
                   }
@@ -100,7 +105,7 @@
                   }
                   foreach ($dataResult as $key3) {
                     echo '<div class="form-check">
-                            <input class="form-check-input" type="radio" value="'.$key3['value'].'">
+                            <input class="form-check-input" type="radio" name="fields_'.$key->handle.'[]" value="'.$key3['value'].'">
                             <label class="form-check-label" for="defaultCheck1">'.$key3['label'].'</label>
                           </div>';
                   }

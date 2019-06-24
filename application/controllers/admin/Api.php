@@ -22,6 +22,7 @@ class Api extends My_Controller {
    * @return [type] [description]
    */
   public function jsonTabsFields() {
+    var_dump($this->input->post());die;
     ($this->input->post('id') ? $id = $this->input->post('id') : $id = '');
     ($this->input->post('section_id') ? $section_id = $this->input->post('section_id') : $section_id = '');
     $button     = $this->input->post('button');
@@ -602,6 +603,7 @@ class Api extends My_Controller {
 
   public function jsonAssetsSelectSubmit(){
     $assetsContentId = $this->input->post('assetsContentId');
+    $assetsFields    = $this->input->post('assets_fields');
     $view = '';
     foreach ($assetsContentId as $key => $value) {
       $assetsContent  = $this->general_m->get_row_by_id('assets_content', $value);
@@ -611,9 +613,12 @@ class Api extends My_Controller {
       $file_thumb = base_url("{$assetsContent->path}/{$thumb}");
       $getSize    = get_headers($file_thumb, 1); 
       $view .= '
-        <div class="form-group">
-          <td><img src="'.$file_thumb.'" class="img-thumbnail" data-id="'.$value.'" heigth="20" width="30"/>'.$name.'</td>
-        </div>';
+        <ul class="list-unstyled">
+          <li><input type="hidden" name="'.$assetsFields.'[]" value="'.$value.'">
+            <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>'.$name.'
+          </li>
+        </ul>
+        ';
     }
 
     $data = array(
@@ -622,6 +627,30 @@ class Api extends My_Controller {
     echo json_encode($data);
   }
 
+
+  // Manage Entries 
+  public function jsonEntriesManage() {
+    $settings = array(
+      'table'  => $this->input->post('table'),
+    ); 
+
+    $data = array(
+      'title'      => $this->input->post('title'),
+      'created_by' => $this->data['userdata']['id'],
+    );
+
+    $keys = array_keys($this->input->post());
+    foreach ($keys as $key) {
+      if (strpos($key, 'fields') !== false) {
+        $data[$key] = $this->input->post($key);
+      }
+    }
+    var_dump($data);die;
+   
+    
+
+
+  }
  
 
 
