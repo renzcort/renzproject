@@ -283,7 +283,19 @@ class Assets extends My_Controller {
       (($settings['table'] == 'entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
 
       $delElement = $this->general_m->delete($settings['table_element'], $id, "{$settings['table']}_id");
-      $delContent = $this->general_m->delete($table_content, $id, "{$settings['table']}_id");
+
+      // delete content with assets
+      $contentList = $this->general_m->get_result_by_id($table_content, $id, "{$settings['table']}_id");
+      if ($contentList) {
+        foreach ($contentList as $key) {  
+          unlink("uploads/admin/assets/{$settings['getDataby_id']->path}/{$key->file}");
+          $filename   = explode('.', $key->file);
+          $name       = current($filename);
+          $thumb      = current($filename).'_thumb.'.end($filename);
+          unlink("{$key->path}/{$thumb}");
+          $delContent = $this->general_m->delete($table_content, $key->id, "{$settings['table']}_id");
+        }
+      }
       
       // delte content
       $getFieldsAll     = $this->fields_m->get_all_results();

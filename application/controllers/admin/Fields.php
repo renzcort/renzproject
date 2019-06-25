@@ -392,9 +392,26 @@ class fields extends My_Controller {
         );
         // Drop field column in content
         modifyColumn($fields, 'drop');
+      }
+
+      if (in_array("fields_{$settings['getDataby_id']->handle}", $fieldsAssetsContent)) {
+        $fields = array(
+          'handle' => $settings['getDataby_id']->handle,
+          'type'   => $settings['getDataby_id']->type_id,
+        );
+        // Drop field column in content
         modifyColumn($fields, 'drop-table', 'assets_content');
+      }
+      
+      if (in_array("fields_{$settings['getDataby_id']->handle}", $fieldsCategoriesContent)) {
+        $fields = array(
+          'handle' => $settings['getDataby_id']->handle,
+          'type'   => $settings['getDataby_id']->type_id,
+        );
+        // Drop field column in content
         modifyColumn($fields, 'drop-table', 'categories_content');
       }
+
       $delElement           = $this->general_m->delete('element', $id, 'fields_id');
       $delAssetsElement     = $this->general_m->delete('assets_element', $id, 'fields_id');
       $delCategoriesElement = $this->general_m->delete('categories_element', $id, 'fields_id');

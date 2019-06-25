@@ -95,10 +95,21 @@
                               );
                     $i++;
                   }
+
+                  if (!empty($getDataby_id->$fieldsName)) {
+                    $checkList = explode(', ', $getDataby_id->$fieldsName);
+                  }
+
                   foreach ($dataResult as $key3) {
                     echo '<div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fields_'.$key->handle.'[]" value="'.$key3['value'].'">
-                            <label class="form-check-label" for="defaultCheck1">'.$key3['label'].'</label>
+                            <input class="form-check-input" 
+                              type="checkbox" 
+                              name="fields_'.$key->handle.'[]" 
+                              value="'.$key3['value'].'"
+                              '.((!empty($getDataby_id->$fieldsName) && in_array($key3['value'], $checkList)) ? 'selected' : '').'>
+                            <label class="form-check-label" 
+                              for="defaultCheck1">'.$key3['label'].'
+                            </label>
                           </div>';
                   }
                 } elseif ($key->type_name == 'dateTime') {
