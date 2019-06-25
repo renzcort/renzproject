@@ -425,7 +425,7 @@ class Api extends My_Controller {
     $id = $this->input->post('id');
     $getDataby_id = $this->fields_m->get_row_by_id($id);
     if ($getDataby_id) {
-      $element_del = $this->general_m->delete('element', $id, 'fields_id');
+      $delElement = $this->general_m->delete('element', $id, 'fields_id');
       $fields = array(
         'handle' => $getDataby_id->handle,
       );
@@ -612,11 +612,9 @@ class Api extends My_Controller {
       $file_thumb = base_url("{$assetsContent->path}/{$thumb}");
       $getSize    = get_headers($file_thumb, 1); 
       $view .= '
-        <ul class="list-unstyled">
           <li><input type="hidden" name="'.$assetsFields.'[]" value="'.$value.'">
             <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>'.$name.'
           </li>
-        </ul>
         ';
     }
 
@@ -657,12 +655,10 @@ class Api extends My_Controller {
       $this->general_m->create($settings['table'], $data);
       helper_log('add', "Create {$settings['table']} has successfully");
       $this->session->set_flashdata('message', "Data has successfully Created");
-      redirect($settings['action']);
     } elseif ($settings['button'] == 'update') {
       $this->general_m->update($settings['table'], $data, $id);
       helper_log('edit', "Update {$settings['table']} has successfully");
       $this->session->set_flashdata('message', "Data has successfully Updated");
-      redirect($settings['action']);
     } 
     
     $settings['status'] = TRUE;

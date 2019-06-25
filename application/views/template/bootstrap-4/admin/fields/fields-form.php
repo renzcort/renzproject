@@ -49,7 +49,7 @@
       <select name="fieldsType" class="form-control costum-select">
         <?php foreach ($fields_type as $key): ?>
           <option value ="<?php echo $key->handle; ?>" data-id="<?php echo $key->id; ?>"
-            <?php ((!empty($getDataby_id->type_id) == $key->id) ? 'selected' : '' ) ?> >
+            <?php echo ((!empty($getDataby_id->type_id) && $getDataby_id->type_id == $key->id) ? 'selected' : '' ) ?> >
             <?php echo $key->name; ?>
           </option>
         <?php endforeach ?>
@@ -146,7 +146,8 @@
               <?php endforeach ?>
             <?php endif ?>
           </select>
-          <input type="text" name="assetsSourcesInput" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2">
+          <input type="text" name="assetsSourcesInput" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2" 
+          value="<?php echo (!empty($getFieldType->assetsSourcesInput) ? $getFieldType->assetsSourcesInput : set_value('assetsSourcesInput')); ?>">
         </div>
       </div>
       <div class="form-group">
@@ -186,7 +187,8 @@
         <select name="assetsViewMode" class="form-control costum-select">
         <?php if ($mode): ?>
           <?php foreach ($mode as $key => $value): ?>
-          <option value="<?php echo $value; ?>" <?php echo ((!empty($getFieldType->assetsSourcesList) && $getFieldType->assetsViewMode == $key->value) ? 'selected' : '');?>>
+          <option value="<?php echo $value; ?>" 
+            <?php echo ((!empty($getFieldType->assetsViewMode) && $getFieldType->assetsViewMode == $value) ? 'selected' : '');?>>
             <?php echo $value; ?>
           </option>
           <?php endforeach ?>

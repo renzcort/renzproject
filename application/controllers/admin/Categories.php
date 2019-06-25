@@ -13,9 +13,11 @@ class Categories extends My_Controller {
 
     $cat = $this->general_m->get_all_results('categories');
     $this->firstHandle = ($cat ? $cat[0]->handle : '');
-    
-    foreach ($cat as $key) {
-      $handle[] = $key->handle;
+
+    if ($cat) {
+      foreach ($cat as $key) {
+        $handle[] = $key->handle;
+      }
     }
 
     $this->data = array(
@@ -24,10 +26,12 @@ class Categories extends My_Controller {
     );
 
     if ($this->router->method == 'index') {
-      if (uri_string() == 'admin/categories') {
-        redirect("admin/categories/{$this->firstHandle}",'refresh');
-      } elseif (! in_array($this->uri->segment(3), $handle)) {
-        redirect("admin/categories/{$this->firstHandle}",'refresh');
+      if ($cat) {
+        if ((uri_string() == 'admin/categories') || !in_array($this->uri->segment(3), $handle)) {
+          redirect("admin/categories/{$this->firstHandle}",'refresh');
+        } 
+      } else {
+        redirect("admin/settings/categories",'refresh');
       }
     }
   }
@@ -60,9 +64,9 @@ class Categories extends My_Controller {
       'button_link'    =>  "create/{$params->handle}",
       'content'        =>  'template/bootstrap-4/admin/categories/categories-list',
       'table'          =>  'categories_content',
-      'action'         =>  'admin/categories/create',
+      'action'         =>  'admin/categories',
       'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
+      'no'             =>  $this->uri->segment(4),
       'group_name'    =>  'categories',
       'fields_element' => 'categories_element',
       'group'          =>  $this->general_m->get_all_results('categories'),
@@ -103,7 +107,7 @@ class Categories extends My_Controller {
       'button_tabs'    =>  TRUE,      
       'content'        =>  'template/bootstrap-4/admin/categories/categories-form',
       'table'          =>  'categories_content',
-      'action'         =>  "admin/categories/create/{$params->handle}",
+      'action'         =>  "admin/categories/{$params->handle}",
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
       'group_name'     =>  'categories',
@@ -121,15 +125,52 @@ class Categories extends My_Controller {
       'parent_table'   =>  'categories',
       'parent_id'      =>  $params->id          
     );
-
     // var_dump($settings['fields']);die;
-
     foreach ($settings['fields_element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
     }
-
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
+
+  public function update($handle, $id) {
+    $params = (($handle != '') ? $this->general_m->get_row_by_fields('categories', array('handle' => $handle)) : '');
+    $settings = array(
+      'title'          =>  'categories',
+      'subtitle'       =>  FALSE,
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'button'         =>  'Save',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',
+      'button_tabs'    =>  TRUE,      
+      'content'        =>  'template/bootstrap-4/admin/categories/categories-form',
+      'table'          =>  'categories_content',
+      'action'         =>  "admin/categories/{$params->handle}",
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'group_name'     =>  'categories',
+      'fields_element' =>  $this->general_m->get_result_by_fields('categories_element', array('categories_id' => $params->id)),
+      'group'          =>  $this->general_m->get_all_results('categories'),
+      'group_count'    =>  $this->general_m->count_all_results('categories'),
+      'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
+      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
+      'assets'         =>  $this->general_m->get_all_results('assets'),
+      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
+      'parent_table'   =>  'categories',
+      'parent_id'      =>  $params->id,
+      'getDataby_id'   =>  $this->general_m->get_row_by_id('categories_content', $id),          
+    );
+    
+    foreach ($settings['fields_element'] as $key) {
+      $settings['fields_id'][] = $key->fields_id;
+    }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+  }
+
 
   public function groups() {
     $settings = array(
@@ -314,20 +355,23 @@ class Categories extends My_Controller {
   /*DELETE*/
   public function groups_delete($id='') {
     $settings = array(
-      'title'        => 'Categories',
-      'table'        => 'categories',
-      'action'       => 'admin/categories',
-      'fields_element' => 'categories_element',
+      'title'         => 'Categories',
+      'table'         => 'categories',
+      'action'        => 'admin/settings/categories',
+      'table_element' => 'categories_element',
+      'table_content' => 'categories_content',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
     if ($settings['getDataby_id']) {
-      $element_del = $this->general_m->delete($settings['fields_element'], $id, "{$settings['table']}_id");
-      // delte content
       (($settings['table'] == 'entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
+      $element_del = $this->general_m->delete($settings['table_element'], $id, "{$settings['table']}_id");
+      $element_del = $this->general_m->delete($table_content, $id, "{$settings['table']}_id");
+
+      // delte content
       $getFieldsAll     = $this->fields_m->get_all_results();
       $getContentFields = $this->db->list_fields($table_content);
-      $getElement       = $this->general_m->get_all_results($settings['fields_element']);
+      $getElement       = $this->general_m->get_all_results($settings['table_element']);
       if ($getElement) {
         // check fieldsid in element
         foreach ($getElement as $elm) {

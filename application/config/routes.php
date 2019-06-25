@@ -127,7 +127,7 @@ $route['admin/assets/delete/(:num)']                     = 'admin/assets/delete/
 /*categories*/
 $route['admin/categories/(:any)']                 = 'admin/categories/index/$1';
 $route['admin/categories/create/(:any)']          = 'admin/categories/create/$1';
-$route['admin/categories/edit/(:num)']            = 'admin/categories/update/$1';
+$route['admin/categories/edit/(:any)/(:num)']     = 'admin/categories/update/$1/$2';
 $route['admin/categories/delete/(:num)']          = 'admin/categories/delete/$1';
 $route['admin/settings/categories']               = 'admin/categories/groups/';
 $route['admin/settings/categories/create']        = 'admin/categories/groups_create';

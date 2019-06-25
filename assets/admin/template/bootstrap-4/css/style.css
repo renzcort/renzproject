@@ -1121,7 +1121,7 @@ header nav.menu .navbar-nav > li {
 .right-content-entries {
   width: 100%;
   max-width: 30%;
-  padding: .5rem;
+  padding: 2rem 1rem;
   background: #F1F5F8;
   color: #76606F;
 }

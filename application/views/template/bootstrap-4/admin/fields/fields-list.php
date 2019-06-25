@@ -50,7 +50,7 @@
       <tbody>
         <?php foreach ($record_all as $key): ?>
         <tr>
-          <th scope="row"><?php echo ++$no; ?></th>
+          <td scope="row"><?php echo ++$no; ?></td>
           <td><a href="<?php echo base_url($action."/edit/".$key->id); ?>"><?php echo ($key->name ? $key->name : ''); ?></a></td>
           <td><?php echo ($key->handle ? $key->handle : ''); ?></td>
           <td><?php echo ($key->type_name ? $key->type_name : ''); ?></td>

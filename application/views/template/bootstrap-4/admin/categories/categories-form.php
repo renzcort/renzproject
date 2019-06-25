@@ -26,27 +26,30 @@
       <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
         <div class="form-group">
           <label for="inputTitle" class="heading">Title</label>
-          <input type="text" name="title" placeholder="Title" class="form-control">
+          <input type="text" name="title" placeholder="Title" class="form-control" 
+          value="<?php echo (!empty($getDataby_id->title) ? $getDataby_id->title : set_value('title')); ?>">
+          <div class="form-error"><?php echo form_error('name'); ?></div>
         </div>
         <?php if ($fields_element) {
           foreach ($fields as $key) {
             if (in_array($key->id, $fields_id)) {
-              $settings = json_decode($key->settings);
+              $settings   = json_decode($key->settings);
+              $fieldsName = "fields_{$key->handle}";
               echo '<div class="form-group">
                 <label class="heading" for="input'.$key->handle.'">'.ucfirst($key->name).'</label>';
                 if ($key->type_name == 'plainText') {
                   if ($settings->plainLineBreak == 1) {
-                    echo '<textarea class="form-control" 
-                            name="fields_'.$key->handle.'"
-                            id="exampleFormControlTextarea1"
-                            rows="'.$settings->plainInitialRows.'">
-                          </textarea>';
-
+                    echo '<textarea class="form-control"
+                          name="fields_'.$key->handle.'" 
+                          id="textarea"
+                          rows="'.$settings->plainInitialRows.'"
+                          placeholder="'.$settings->plainPlaceholder.'">'.(!empty($getDataby_id->$fieldsName) ? trim(strip_tags($getDataby_id->$fieldsName)) : '').'</textarea>';        
                   } else {
-                    echo '<input type="text"  class="form-control form-control-sm" 
+                    echo '<input type="text" class="form-control" 
                             name="fields_'.$key->handle.'" 
-                            placeholder="'.$setttings->plainPlaceholder.'"
-                            maxlength="'.$settings->plainCharlimit.'">';                    
+                            placeholder="'.(!empty($setttings->plainPlaceholder) ? $setttings->plainPlaceholder : '').'"
+                            maxlength="'.(!empty($settings->plainCharlimit) ? $settings->plainCharlimit : '').'"
+                            value="'.(!empty($getDataby_id->$fieldsName) ? $getDataby_id->$fieldsName : set_value($fieldsName)).'">';                    
                   }
                 } elseif ($key->type_name == 'assets') {
                   foreach ($assets as $key2) {
@@ -54,8 +57,26 @@
                       $data['name'] = $key2->name;
                     }
                   }
+
                   echo '<div id="fields-assets-entries">
-                          <div class="selected"></div>';
+                          <ul class="list-unstyled selected">';
+                            if (!empty($getDataby_id->$fieldsName)) {
+                              $assetsList = explode(', ', $getDataby_id->$fieldsName);
+                              foreach ($assets_content as $ast) {
+                                $filename   = explode('.', $ast->file);
+                                $name       = current($filename);
+                                $thumb      = current($filename).'_thumb.'.end($filename);
+                                $file_thumb = base_url("{$ast->path}/{$thumb}");
+                                $getSize    = get_headers($file_thumb, 1);
+                                if (in_array($ast->id, $assetsList)) {
+                                  echo '
+                                      <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$ast->id.'">
+                                        <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$ast->id.'" heigth="20" width="30"/>'.$name.'
+                                      </li>';
+                                }
+                              }
+                            }
+                  echo '</ul>';
                   echo '<div>
                           <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#assetsModal"
                           data-assets-id = "'.$settings->assetsSourcesList.'" 
@@ -124,14 +145,13 @@
 <div class="right-content-entries">
   <div class="form-group row">
       <label for="staticEmail" class="col-sm-2 col-form-label">Slug</label>
-    <div class="col-sm-10 pl-5">
-      <input type="text" class="form-control-plaintext" id="staticEmail" name="slug" value="">
+    <div class="col-sm-10">
+      <input type="text" class="form-control-plaintext px-2" id="staticEmail" name="slug" value="" placeholder="Enter Slug">
     </div>
   </div>
   <div class="form-group row">
     <label for="inputPassword" class="col-sm-2 col-form-label">Parent</label>
-    <div class="col-sm-10 pl-5">
-      <input type="password" class="form-control-plaintext" id="inputPassword" name="parent" placeholder="Password">
+    <div class="col-sm-10">
     </div>
   </div>
   <div class="form-group row">

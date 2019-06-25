@@ -17,11 +17,12 @@ class Assets extends My_Controller {
   
     $assets = $this->general_m->get_all_results('assets');
     $this->firstHandle = ($assets ? $assets[0]->handle : '');
-    
-    foreach ($assets as $key) {
-      $handle[] = $key->handle;
+    if ($assets) {
+      foreach ($assets as $key) {
+        $handle[] = $key->handle;
+      }
+      array_push($handle, 'default');
     }
-    array_push($handle, 'default');
     
     $this->data = array(
       'userdata'   =>  $this->first_load(),
@@ -179,7 +180,7 @@ class Assets extends My_Controller {
           }
           helper_log('add', "add element create has successfully {$element['order']} record");
         }        
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
         redirect($settings['action']);
       } 
     } else {
@@ -270,21 +271,24 @@ class Assets extends My_Controller {
   /*DELETE*/
   public function volumes_delete($id='') {
     $settings = array(
-      'title'          => 'Assets',
-      'table'          => 'assets',
-      'action'         => 'admin/settings/assets',
-      'fields_element' => 'assets_element',
+      'title'         => 'Assets',
+      'table'         => 'assets',
+      'action'        => 'admin/settings/assets',
+      'table_element' => 'assets_element',
+      'table_content' => 'assets_content',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
     if ($settings['getDataby_id']) {
-      $deleteElemant = $this->general_m->delete($settings['fields_element'], $id, "{$settings['table']}_id");
-
-      // delte content
       (($settings['table'] == 'entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
+
+      $delElement = $this->general_m->delete($settings['table_element'], $id, "{$settings['table']}_id");
+      $delContent = $this->general_m->delete($table_content, $id, "{$settings['table']}_id");
+      
+      // delte content
       $getFieldsAll     = $this->fields_m->get_all_results();
       $getContentFields = $this->db->list_fields($table_content);
-      $getElement       = $this->general_m->get_all_results($settings['fields_element']);
+      $getElement       = $this->general_m->get_all_results($settings['table_element']);
       if ($getElement) {
         // check fieldsid in element
         foreach ($getElement as $elm) {
@@ -293,7 +297,7 @@ class Assets extends My_Controller {
         /*Check Delete Column*/
         foreach ($getFieldsAll as $key) {
           if (in_array("fields_{$key->handle}", $getContentFields)) {
-            if (! in_array($key->id, array_unique($listFields))) {
+            if (!in_array($key->id, array_unique($listFields))) {
               $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
               $fields = array(
                 'handle' => $key->handle,
@@ -318,7 +322,7 @@ class Assets extends My_Controller {
           }
         }
       }
-      $delete        = $this->general_m->delete($settings['table'], $id);
+      $del = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete {$settings['title']} with id = has successfully");
       $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");      
       redirect($settings['action']);

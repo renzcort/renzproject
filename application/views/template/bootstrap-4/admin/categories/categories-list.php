@@ -48,19 +48,19 @@
       <table class="table table-sm">
         <thead>
           <tr>
-            <th scope="row">#</th>
+            <th scope="row" style="width: 5%;">#</th>
             <th scope="col">Title</th>
-            <th scope="col">Post Date</th>
-            <th scope="col">File Size</th>
-            <th scope="col">File Modified Date</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($record_all as $key): ?>
+          <?php 
+            $handle = $this->uri->segment(3);
+            foreach ($record_all as $key): 
+          ?>
           <tr>
-            <td><a href="<?php echo base_url($action.'/edit/'.$key->id); ?>"><?php echo $key->name; ?></a></td>
-            <td><?php echo $key->handle; ?></td>
-            <td scope="row"><a href="<?php echo base_url($action.'/'.$key->handle); ?>">Manage Categories</a></td>
+            <td scope="row" style="width: 5%;"><?php echo ++$no; ?></td>
+            <td><a href="<?php echo base_url("{$action}/edit/$handle/{$key->id}"); ?>"><?php echo $key->title; ?></a></td>
             <td scope="row">
               <a href="<?php echo base_url($action.'/delete/'.$key->id); ?>"><i class="fas fa-minus-circle"></i></a>
             </td>
