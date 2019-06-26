@@ -158,6 +158,7 @@
         $('#customSwitch1').click(function() {
           var enabled = $('#customSwitch1:checked').val();
           if (enabled == 'on') {
+            alert();
             $('#base-url').removeClass('d-none');
             $('label.custom-control-label').text('Enabled');
           } else {

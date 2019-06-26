@@ -175,17 +175,23 @@ class Categories extends My_Controller {
   public function delete($handle, $id) {
     $params = (($handle != '') ? $this->general_m->get_row_by_fields('categories', array('handle' => $handle)) : '');
     $settings = array(
-      'title'         => 'Categories',
-      'table'         => 'categories_content',
-      'action'        => "admin/categories/{$params}",
-      'parent_table'   => 'categories',
-      'parent_id'      =>  $params->id,
-      'id'             =>  $id,
-      'getDataby_id'   =>  $this->general_m->get_row_by_id('categories_content', $id),          
+      'title'        => 'Categories',
+      'table'        => 'categories_content',
+      'action'       => "admin/categories/{$params}",
+      'parent_table' => 'categories',
+      'parent_id'    =>  $params->id,
+      'id'           =>  $id,
+      'getDataby_id' =>  $this->general_m->get_row_by_id('categories_content', $id),          
     );
 
-    foreach ($settings['fields_element'] as $key) {
-      $settings['fields_id'][] = $key->fields_id;
+    if ($settings['getDataby_id']) {
+      $delete = $this->general_m->delete('categories_content', $id); 
+      helper_log('delete', "Delete {$params} with id = {$id} has successfully");
+      $this->session->set_flashdata("message", "Data has deleted {$delete} Records");
+      redirect($settings['action']);
+    } else {
+      $this->session->set_flashdata('message', 'Delete Failed, Your data is Not Valid');
+      redirect($settings['action']);
     }
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }

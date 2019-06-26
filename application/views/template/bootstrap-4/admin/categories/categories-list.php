@@ -62,7 +62,7 @@
             <td scope="row" style="width: 5%;"><?php echo ++$no; ?></td>
             <td><a href="<?php echo base_url("{$action}/edit/$handle/{$key->id}"); ?>"><?php echo $key->title; ?></a></td>
             <td scope="row">
-              <a href="<?php echo base_url($action.'/delete/'.$key->id); ?>"><i class="fas fa-minus-circle"></i></a>
+              <a href="<?php echo base_url("{$action}/delete/$handle/{$key->id}"); ?>"><i class="fas fa-minus-circle"></i></a>
             </td>
           </tr>
         <?php endforeach ?>

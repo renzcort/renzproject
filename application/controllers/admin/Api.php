@@ -552,7 +552,7 @@ class Api extends My_Controller {
 
   /*Assets Upload*/
   public function jsonAssetsEntriesUpload(){
-    $assets_id = $this->input->post('id');
+    $assets_id = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
     $settings = array(
       'assets'         => $this->general_m->get_row_by_id('assets', $assets_id),
       'assets_content' => $this->general_m->get_result_by_id('assets_content', $assets_id, 'assets_id'),
@@ -594,7 +594,7 @@ class Api extends My_Controller {
     $table_view .= '</div>';
 
     $data = array(
-      'name'  =>  $settings['assets']->name,
+      'name'  =>  (!empty($settings['assets']->name) ? $settings['assets']->name : 'default'),
       'table' =>  $table_view,
     );
     echo json_encode($data);
@@ -615,7 +615,7 @@ class Api extends My_Controller {
           <li><input type="hidden" name="'.$assetsFields.'[]" value="'.$value.'">
             <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>
             <label for="input'.$name.'">'.$name.'</label>
-            <a><i class="fa fa-times" aria-hidden="true"></i></a
+            <a href=""><i class="fa fa-times" aria-hidden="true"></i></a
           </li>
         ';
     }
@@ -640,6 +640,9 @@ class Api extends My_Controller {
 
     $data = array(
       'title'                          => $this->input->post('title'),
+      'handle'                         => lcfirst(str_replace(' ', '', ucwords($this->input->post('title')))),
+      'slug'                           => url_title(strtolower($this->input->post('title'))),
+      'activated'                      => $this->input->post('activated'),
       'created_by'                     => $this->data['userdata']['id'],
       "{$settings['parent_table']}_id" => $settings['parent_id'],
     );

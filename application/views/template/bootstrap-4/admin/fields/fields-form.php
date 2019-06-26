@@ -103,7 +103,7 @@
         <small class="form-text text-muted">Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end? Note that the subfolder path can contain variables like {slug} or {author.username}.</small>
         <div class="d-flex flex-row justify-content-between">
           <select name="assetsSourcesList" class="form-control costum-select">
-            <option value="0">- Site Assets -</option>
+            <option value="0">Default</option>
             <?php if ($assets): ?>
               <?php foreach ($assets as $key): ?>
                 <option value="<?php echo $key->id; ?>" <?php echo ((!empty($getFieldType->assetsSourcesList) && $getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
@@ -137,7 +137,7 @@
         <small class="form-text text-muted">Where should files be uploaded when they are dragged directly onto the field, or uploaded from the front end? Note that the subfolder path can contain variables like {slug} or {author.username}.</small>
         <div class="d-flex flex-row justify-content-between">
           <select name="assetsSourcesList" class="form-control costum-select">
-            <option value="0">- Site Assets -</option>
+            <option value="0">Default</option>
             <?php if ($assets): ?>
               <?php foreach ($assets as $key): ?>
                 <option value="<?php echo $key->id; ?>" <?php echo ((!empty($getFieldType->assetsSourcesList) && $getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>

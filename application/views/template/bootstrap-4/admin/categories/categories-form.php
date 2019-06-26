@@ -159,7 +159,8 @@
   <div class="form-group row">
       <label for="staticEmail" class="col-sm-2 col-form-label">Slug</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control-plaintext px-2" id="staticEmail" name="slug" value="" placeholder="Enter Slug">
+      <input type="text" class="form-control-plaintext px-2" id="staticEmail" name="slug" placeholder="Enter Slug"
+      value="<?php echo (!empty($getDataby_id->slug) ? $getDataby_id->slug : set_value('slug')); ?>">
     </div>
   </div>
   <div class="form-group row">
@@ -170,7 +171,7 @@
   <div class="form-group row">
     <div class="col-sm-2">
       <div class="custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" id="customSwitch1" name="url" value="1">
+        <input type="checkbox" class="custom-control-input" id="customSwitch1" name="activated" value="1">
         <label class="custom-control-label" for="customSwitch1">Disabled</label>
       </div>
     </div>
