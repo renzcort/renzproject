@@ -318,6 +318,10 @@
           });
         });
 
+        $("#fields-assets-entries ul.selected li a").click(function (e) {
+          $(this).closest('li').remove();
+        });
+
         var leftbar = document.getElementById('left-content');
         var leftbarTop = leftbar.offsetTop;
         var leftbarButton = leftbar.offsetHeight;

@@ -71,7 +71,9 @@
                                 if (in_array($ast->id, $assetsList)) {
                                   echo '
                                       <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$ast->id.'">
-                                        <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$ast->id.'" heigth="20" width="30"/>'.$name.'
+                                        <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$ast->id.'" heigth="20" width="30"/>
+                                        <label for="input'.$name.'">'.$name.'</label>
+                                        <a><i class="fa fa-times" aria-hidden="true"></i></a
                                       </li>';
                                 }
                               }
@@ -106,7 +108,7 @@
                               type="checkbox" 
                               name="fields_'.$key->handle.'[]" 
                               value="'.$key3['value'].'"
-                              '.((!empty($getDataby_id->$fieldsName) && in_array($key3['value'], $checkList)) ? 'selected' : '').'>
+                              '.((!empty($getDataby_id->$fieldsName) && in_array($key3['value'], $checkList)) ? 'checked' : '').'>
                             <label class="form-check-label" 
                               for="defaultCheck1">'.$key3['label'].'
                             </label>

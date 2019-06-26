@@ -139,9 +139,9 @@ class Categories extends My_Controller {
       'subtitle'       =>  FALSE,
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
-      'button'         =>  'Save',
+      'button'         =>  'update',
       'button_type'    =>  'submit',
-      'button_name'    =>  'create',
+      'button_name'    =>  'update',
       'button_tabs'    =>  TRUE,      
       'content'        =>  'template/bootstrap-4/admin/categories/categories-form',
       'table'          =>  'categories_content',
@@ -162,9 +162,28 @@ class Categories extends My_Controller {
       'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
       'parent_table'   =>  'categories',
       'parent_id'      =>  $params->id,
+      'id'             =>  $id,
       'getDataby_id'   =>  $this->general_m->get_row_by_id('categories_content', $id),          
     );
-    
+
+    foreach ($settings['fields_element'] as $key) {
+      $settings['fields_id'][] = $key->fields_id;
+    }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+  }
+
+  public function delete($handle, $id) {
+    $params = (($handle != '') ? $this->general_m->get_row_by_fields('categories', array('handle' => $handle)) : '');
+    $settings = array(
+      'title'         => 'Categories',
+      'table'         => 'categories_content',
+      'action'        => "admin/categories/{$params}",
+      'parent_table'   => 'categories',
+      'parent_id'      =>  $params->id,
+      'id'             =>  $id,
+      'getDataby_id'   =>  $this->general_m->get_row_by_id('categories_content', $id),          
+    );
+
     foreach ($settings['fields_element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
     }

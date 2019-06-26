@@ -1149,6 +1149,13 @@ header nav.menu .navbar-nav > li {
   background: #EBECEE
 }
 
+#fields-assets-entries ul.selected li {
+  font-weight: 500;
+}
+#fields-assets-entries ul.selected li > label {
+  padding: 0 1rem 0 0.3rem;
+}
+
 /* #uploadModal tbody tr:nth-child(odd) {
   background-color: #fafafa;
 }

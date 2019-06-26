@@ -613,7 +613,9 @@ class Api extends My_Controller {
       $getSize    = get_headers($file_thumb, 1); 
       $view .= '
           <li><input type="hidden" name="'.$assetsFields.'[]" value="'.$value.'">
-            <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>'.$name.'
+            <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>
+            <label for="input'.$name.'">'.$name.'</label>
+            <a><i class="fa fa-times" aria-hidden="true"></i></a
           </li>
         ';
     }
@@ -633,6 +635,7 @@ class Api extends My_Controller {
       'action'       => $this->input->post('action'),
       'parent_table' => $this->input->post('parent_table'),
       'parent_id'    => $this->input->post('parent_id'),
+      'id'           => $this->input->post('id'),
     ); 
 
     $data = array(
@@ -656,7 +659,7 @@ class Api extends My_Controller {
       helper_log('add', "Create {$settings['table']} has successfully");
       $this->session->set_flashdata('message', "Data has successfully Created");
     } elseif ($settings['button'] == 'update') {
-      $this->general_m->update($settings['table'], $data, $id);
+      $this->general_m->update($settings['table'], $data, $settings['id']);
       helper_log('edit', "Update {$settings['table']} has successfully");
       $this->session->set_flashdata('message', "Data has successfully Updated");
     } 
