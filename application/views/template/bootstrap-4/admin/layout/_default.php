@@ -155,15 +155,16 @@
 
 
         // change enable switch
-        $('#customSwitch1').click(function() {
-          var enabled = $('#customSwitch1:checked').val();
+        $('.customSwitch').click(function() {
+          var enabled = $('.customSwitch:checked').val();
           if (enabled == 'on') {
-            alert();
             $('#base-url').removeClass('d-none');
             $('label.custom-control-label').text('Enabled');
+            $(this).val('1');
           } else {
             $('#base-url').addClass('d-none');
             $('label.custom-control-label').text('Disabled');
+            $(this).val('0');
           }
         });
 

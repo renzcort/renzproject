@@ -89,15 +89,14 @@ $route['admin/settings/fields/type/edit/(:num)']   = 'admin/fields/type_update/$
 $route['admin/settings/fields/type/delete/(:num)'] = 'admin/fields/type_delete/$1';
 
 /*Section*/
-$route['admin/settings/section']                       = 'admin/section';
-$route['admin/settings/section/create']             = 'admin/section/create';
-$route['admin/settings/section/edit/(:num)']        = 'admin/section/update/$1';
-$route['admin/settings/section/delete/(:num)']      = 'admin/section/delete/$1';
-$route['admin/settings/section/type']               = 'admin/section/type';
-$route['admin/settings/section/type/create']        = 'admin/section/type_create';
-$route['admin/settings/section/type/edit/(:num)']   = 'admin/section/type_update/$1';
-$route['admin/settings/section/type/delete/(:num)'] = 'admin/section/type_delete/$1';
-/*Entries*/
+$route['admin/settings/section']                                 = 'admin/section';
+$route['admin/settings/section/create']                          = 'admin/section/create';
+$route['admin/settings/section/edit/(:num)']                     = 'admin/section/update/$1';
+$route['admin/settings/section/delete/(:num)']                   = 'admin/section/delete/$1';
+$route['admin/settings/section/type']                            = 'admin/section/type';
+$route['admin/settings/section/type/create']                     = 'admin/section/type_create';
+$route['admin/settings/section/type/edit/(:num)']                = 'admin/section/type_update/$1';
+$route['admin/settings/section/type/delete/(:num)']              = 'admin/section/type_delete/$1';
 $route['admin/settings/section/(:num)/entrytypes']               = 'admin/section/entrytypes/$1';
 $route['admin/settings/section/(:num)/entrytypes/create']        = 'admin/section/entrytypes_create/$1';
 $route['admin/settings/section/(:num)/entrytypes/edit/(:num)']   = 'admin/section/entrytypes_update/$1/$2';
@@ -105,10 +104,10 @@ $route['admin/settings/section/(:num)/entrytypes/delete/(:num)'] = 'admin/sectio
 
 
 /*Content*/
-$route['admin/entries']               = 'admin/entries';
-$route['admin/entries/create']        = 'admin/entries/create';
-$route['admin/entries/edit/(:num)']   = 'admin/entries/update/$1';
-$route['admin/entries/delete/(:num)'] = 'admin/entries/delete/$1';
+$route['admin/entries/(:any)']               = 'admin/entries/index/$1';
+$route['admin/entries/create/(:any)']        = 'admin/entries/create/$1';
+$route['admin/entries/edit/(:any)/(:num)']   = 'admin/entries/update/$1/$2';
+$route['admin/entries/delete/(:any)/(:num)'] = 'admin/entries/delete/$1/$2';
 
 /*Assets*/
 $route['admin/settings/assets']                          = 'admin/assets/volumes';

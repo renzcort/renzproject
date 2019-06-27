@@ -878,6 +878,7 @@ header nav.menu .navbar-nav > li {
 .form label.form-check-label,
 .form label.custom-control-label {
   font-weight:500;
+  font-size: 13px;
 }
 .required::after {
     content: '*';

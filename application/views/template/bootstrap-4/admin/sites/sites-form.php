@@ -45,7 +45,7 @@
       <label class="heading" for="inputPrimary">Is this the primary site?</label>
       <small class="form-text text-muted">The primary site will be loaded by default on the front end.</small>
       <div class="custom-control custom-switch">
-        <input type="checkbox" name="primary" class="custom-control-input" id="customSwitch1">
+        <input type="checkbox" name="primary" class="custom-control-input customSwitch" id="customSwitch1">
         <label class="custom-control-label" for="customSwitch1">Disabled</label>
       </div>
     </div>

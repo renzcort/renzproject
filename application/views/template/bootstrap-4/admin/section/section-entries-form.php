@@ -56,11 +56,15 @@
           <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
               <ul id="sortable1" class="text-center list-group connectedSortable">
-                  <?php foreach ($fields as $key): ?>
-                    <?php if (in_array($key->id, $elementFields)): ?>
-                    <li class="list-group-item fields-list" data-fieldsId='<?php echo $key->id; ?>'><?php echo $key->name; ?></li>
-                    <?php endif ?>
-                  <?php endforeach ?>  
+              <?php 
+                foreach ($element as $elm) {
+                  foreach ($fields as $key) {
+                    if ($elm->fields_id == $key->id) {
+                      echo '<li class="list-group-item fields-list" data-fieldsId="'.$key->id.'">'.$key->name.'</li>';
+                    }
+                  }
+                }
+              ?>  
               </ul>
             </div>
           </div>
@@ -100,23 +104,6 @@
           </div>
           <?php endforeach ?>
         <?php endif ?>
-        <div class="field-group">
-          <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-            </li>
-          </ul>
-          <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-              <ul id="sortable1" class="text-center list-group connectedSortable">
-                <li class="list-group-item active">Lion</li>
-                <li class="list-group-item">Dog</li>
-                <li class="list-group-item">Cat</li>
-                <li class="list-group-item">Tiger</li>
-              </ul>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </form>

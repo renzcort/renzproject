@@ -42,7 +42,7 @@
         <div class="form-group">
           <label class="heading" for="inputAssets">Assets in this volume have public URLs</label>
           <div class="custom-control custom-switch">
-            <input type="checkbox" class="custom-control-input" id="customSwitch1" name="url" value="1" <?php echo (!empty($getFieldType->url) ? 'checked' : '') ?>>
+            <input type="checkbox" class="custom-control-input customSwitch" id="customSwitch1" name="url" value="1" <?php echo (!empty($getFieldType->url) ? 'checked' : '') ?>>
             <label class="custom-control-label" for="customSwitch1">Disabled</label>
           </div>
         </div>

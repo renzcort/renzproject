@@ -15,7 +15,7 @@
     <div class="form-group">
       <label class="heading" for="inputSystemStatus">System Status</label>
       <div class="custom-control custom-switch">
-        <input type="checkbox" name="status" class="custom-control-input" id="customSwitch1" 
+        <input type="checkbox" name="status" class="custom-control-input customSwitch" id="customSwitch1" 
         value="1" <?php echo ((!empty($getDataby_id->status) && $getDataby_id->status == 1) ? 'on' : '' )?>>
         <label class="custom-control-label" for="customSwitch1">Disabled</label>
       </div>

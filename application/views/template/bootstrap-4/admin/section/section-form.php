@@ -52,7 +52,7 @@
             <td class="p-0"><input type="text" name="template" class="form-control" value="<?php echo (!empty($getDataby_id->template) ? $getDataby_id->template : set_value('template')); ?>"></td>
             <td class="py-0">
               <div class="custom-control custom-switch">
-                <input type="checkbox" name="activated" class="custom-control-input" id="customSwitch1">
+                <input type="checkbox" name="activated" class="custom-control-input customSwitch" id="customSwitch1">
                 <label class="custom-control-label" for="customSwitch1">Disabled</label>
               </div>
             </td>

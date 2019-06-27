@@ -10,7 +10,8 @@
           foreach ($group as $key): 
         ?>
           <li class="nav-item">
-            <a class="nav-link <?php echo (($i == 1) ? 'active' : ''); ?>" href="#" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
+            <a class="nav-link <?php echo (($this->uri->segment(3) == $key->handle) ? 'active' : '') ?>" 
+              href="<?php echo $key->handle;?>" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
           </li>
         <?php
           $i = ++$i; 

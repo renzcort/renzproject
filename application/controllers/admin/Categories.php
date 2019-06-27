@@ -13,17 +13,11 @@ class Categories extends My_Controller {
 
     $cat = $this->general_m->get_all_results('categories');
     $this->firstHandle = ($cat ? $cat[0]->handle : '');
-
     if ($cat) {
       foreach ($cat as $key) {
         $handle[] = $key->handle;
       }
     }
-
-    $this->data = array(
-      'userdata'   =>  $this->first_load(),
-      'parentLink' => 'admin/categories',
-    );
 
     if ($this->router->method == 'index') {
       if ($cat) {
@@ -34,6 +28,11 @@ class Categories extends My_Controller {
         redirect("admin/settings/categories",'refresh');
       }
     }
+
+    $this->data = array(
+      'userdata'   =>  $this->first_load(),
+      'parentLink' => 'admin/categories',
+    );
   }
 /*
   function _remap($method, $args) { 
@@ -61,7 +60,7 @@ class Categories extends My_Controller {
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
       'button'         =>  '+ New Categories',
-      'button_link'    =>  "create/{$params->handle}",
+      'button_link'    =>  "create/{$handle}",
       'content'        =>  'template/bootstrap-4/admin/categories/categories-list',
       'table'          =>  'categories_content',
       'action'         =>  'admin/categories',
@@ -107,7 +106,7 @@ class Categories extends My_Controller {
       'button_tabs'    =>  TRUE,      
       'content'        =>  'template/bootstrap-4/admin/categories/categories-form',
       'table'          =>  'categories_content',
-      'action'         =>  "admin/categories/{$params->handle}",
+      'action'         =>  "admin/categories/{$handle}",
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
       'group_name'     =>  'categories',
@@ -145,7 +144,7 @@ class Categories extends My_Controller {
       'button_tabs'    =>  TRUE,      
       'content'        =>  'template/bootstrap-4/admin/categories/categories-form',
       'table'          =>  'categories_content',
-      'action'         =>  "admin/categories/{$params->handle}",
+      'action'         =>  "admin/categories/{$handle}",
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
       'group_name'     =>  'categories',
@@ -177,7 +176,7 @@ class Categories extends My_Controller {
     $settings = array(
       'title'        => 'Categories',
       'table'        => 'categories_content',
-      'action'       => "admin/categories/{$params}",
+      'action'       => "admin/categories/{$handle}",
       'parent_table' => 'categories',
       'parent_id'    =>  $params->id,
       'id'           =>  $id,
@@ -186,7 +185,7 @@ class Categories extends My_Controller {
 
     if ($settings['getDataby_id']) {
       $delete = $this->general_m->delete('categories_content', $id); 
-      helper_log('delete', "Delete {$params} with id = {$id} has successfully");
+      helper_log('delete', "Delete {$params->handle} with id = {$id} has successfully");
       $this->session->set_flashdata("message", "Data has deleted {$delete} Records");
       redirect($settings['action']);
     } else {

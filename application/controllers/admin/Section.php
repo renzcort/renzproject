@@ -31,7 +31,7 @@ class Section extends My_Controller {
       'table'         =>  'section',
       'action'        =>  'admin/settings/section',
       'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
+      'no'            =>  $this->uri->segment(4),
     );
     // Pagination
     $config                 = $this->config->item('setting_pagination');
@@ -94,10 +94,10 @@ class Section extends My_Controller {
           'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'description' =>  $this->input->post('description'),
-          'order'       =>  $this->input->post('order'),
+          'order'       =>  '1',
           'created_by'  =>  $this->data['userdata']['id'],
         );
-        $this->entries_m->create($entries_data);
+        $this->general_m->create('section_entries', $entries_data);
       	helper_log('add', "Create {$settings['title']} has successfully");				
         $this->session->set_flashdata("message", "{$settings['title']} has successfully Created");
 				redirect($this->data['parentLink']);
@@ -140,7 +140,7 @@ class Section extends My_Controller {
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'url'         =>  $this->input->post('url'),
           'template'    =>  $this->input->post('template'),
-          'activated'   =>  (($this->input->post('activated') == 'on') ? 1 : 0 ),
+          'activated'   =>  $this->input->post('activated'),
           'description' =>  $this->input->post('description'),
           'order'       =>  $this->input->post('order'),
           'updated_by'  =>  $this->data['userdata']['id'],
@@ -165,9 +165,9 @@ class Section extends My_Controller {
 
 		if ($settings['getDataby_id']) {
       $deleteElement = $this->general_m->delete('element', $id, 'section_id');
-      $deleteEntries = $this->general_m->delete('entries', $id, 'section_id');
+      $deleteEntries = $this->general_m->delete('section_entries', $id, 'section_id');
       $delete        = $this->section_m->delete($id);
-      helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
+      helper_log('delete', "Delete {$settings['title']} with id = {$id} has successfully");
       $this->session->set_flashdata('message', "{settings['title']} has deleted {$delete} Records");      
       redirect($this->data['parentLink']);
     } else {
@@ -215,7 +215,7 @@ class Section extends My_Controller {
       'button'        =>  '+ New entry type',
       'button_link'   =>  "entrytypes/create",
       'content'       =>  'template/bootstrap-4/admin/section/section-entries-list',
-      'table'         =>  'section',
+      'table'         =>  'section_entries',
       'action'        =>  "admin/settings/section/{$section_id}/entrytypes",
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(5),
@@ -224,14 +224,14 @@ class Section extends My_Controller {
     // pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
-    $config['total_rows']   = $this->entries_m->count_all_results();
+    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
     $config['per_page']     = 10;
     $num_pages              = $config['total_rows'] / $config['per_page'];
     $config['uri_segment']  = 5;
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->entries_m->get_result_by_id($section_id, $config['per_page'], $start_offset, 'section_id');
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $section_id, 'section_id');
     $settings['links']      = $this->pagination->create_links();
     // end pagination
     
@@ -242,7 +242,7 @@ class Section extends My_Controller {
   public function entrytypes_create($section_id='') {
     $settings = array(
       'title'          =>  "Entry Type",
-      'subtitle'       =>  'Create',
+      'subtitle'       =>  'create',
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  array('create'),
       'button'         =>  'Save',
@@ -250,7 +250,7 @@ class Section extends My_Controller {
       'button_name'    =>  'create',
       'button_tabs'    =>  TRUE,
       'content'        =>  'template/bootstrap-4/admin/section/section-entries-form',
-      'table'          =>  'entries',
+      'table'          =>  'section_entries',
       'action'         =>  "admin/settings/section/{$section_id}/entrytypes",
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
@@ -259,8 +259,9 @@ class Section extends My_Controller {
       'fields_element' =>  'element',
       'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
       'fields'         =>  $this->fields_m->get_all_results(),
+      'element'        =>  [],
       'elementFields'  =>  [],
-      'order'          =>  $this->general_m->get_max_fields('entries', 'order'),
+      'order'          =>  $this->general_m->get_max_fields('section_entries', 'order'),
     );
 
 
@@ -279,7 +280,7 @@ class Section extends My_Controller {
           'order'       =>  $this->input->post('order'),
           'created_by'  =>  $this->data['userdata']['id'],
         );
-        $entries = $this->entries_m->create($data);
+        $entries = $this->general_m->create($settings['table'], $data);
         helper_log('add', "Create {$settings['title']} has successfully");
         //get fields to element 
         $fieldsId = $this->input->post('fieldsId');
@@ -316,7 +317,7 @@ class Section extends My_Controller {
       'button_name'    =>  'update',
       'button_tabs'    =>  TRUE,
       'content'        =>  'template/bootstrap-4/admin/section/section-entries-form',
-      'table'          =>  'entries',
+      'table'          =>  'section_entries',
       'action'         =>  "admin/settings/section/{$section_id}/entrytypes",
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
@@ -325,7 +326,7 @@ class Section extends My_Controller {
       'section'        =>  $this->section_m->get_row_by_id($section_id),
       'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
       'fields'         =>  $this->fields_m->get_all_results(),
-      'getDataby_id'   =>  $this->entries_m->get_row_by_id($id),
+      'getDataby_id'   =>  $this->general_m->get_row_by_id('section_entries', $id),
       'element'        =>  $this->general_m->get_result_by_id('element', $id, 'entries_id'),
     );
 
@@ -406,115 +407,131 @@ class Section extends My_Controller {
   /*Type Section*/
   public function type() {
     $settings = array(
-      'header'    =>  'Type',
-      'subheader' =>  'Manage Section',
-      'content'   =>  'admin/settings/section/type/index',
-      'table'     =>  'section_type',
-      'action'    =>  'admin/settings/section/type',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(4),
+      'title'         =>  'section',
+      'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  FALSE,
+      'button'        =>  '+ New section',
+      'button_link'   =>  'type/create',
+      'content'       =>  'template/bootstrap-4/admin/section/type/section-type-list',
+      'table'         =>  'section_type',
+      'action'        =>  'admin/settings/section/type',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(5),
     );
 
-    // pagination
+    
+    // Pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
     $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
     $config['per_page']     = 10;
-    $num_pages              = $config['total_rows'] / $config['per_page'];
-    $config['uri_segment']  = 4;
+    $num_pages              = $config["total_rows"] / $config["per_page"];
+    $config['uri_segment']  = 3;
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
     $settings['links']      = $this->pagination->create_links();
-    // end pagination
+    // end Pagination
     
-    $this->load->view('admin/layout/_default', $settings);
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
 	/*Create Type Section*/
 	public function type_create() {
-		$settings = array(
-			'header'    =>	'Type',
-			'subheader' =>	'Manage Section',
-			'content'   =>	'admin/section/type/create',
-			'table'     =>	'section_type',
-			'action'    =>	'admin/section/type',
-			'session'   =>	$this->data,
-			'no'        =>	$this->uri->segment(3),
-		);
+    $settings = array(
+      'title'         =>  'Section Type',
+      'subtitle'      =>  'create',
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('create'),
+      'button'        =>  'Save',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'create',
+      'content'       =>  'template/bootstrap-4/admin/section/type/section-type-form',
+      'table'         =>  'section_type',
+      'action'        =>  'admin/settings/section/type',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(4),
+    );
 
 		$this->form_validation->set_rules('name', 'Name', 'trim|required');
 		if ($this->form_validation->run() == TRUE) {
 			if ($_POST['button'] == 'create') {
 				$data = array(
 					'name'        =>	$this->input->post('name'),
+          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
 					'description' =>	$this->input->post('description'),
 					'slug'        =>	url_title($this->input->post('name')),
 					'created_by'  =>	$this->data['userdata']['id'],
 				);
 				$this->general_m->create($settings['table'], $data);
-				helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
-				$this->session->set_flashdata('message', 'Data has created');
+        helper_log('add', "Create {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
 				redirect($settings['action']);
 			}
 		} else {
-			$this->load->view('admin/layout/_default', $settings);
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
 		}
 	}
 
 	/*Update Type Section*/
 	public function type_update($id='') {
 		$settings = array(
-			'header'    =>	'Type',
-			'subheader' =>	'Manage Section',
-			'content'   =>	'admin/section/type/edit',
-			'table'     =>	'section_type',
-			'action'    =>	'admin/section/type',
-			'session'   =>	$this->data,
-			'no'        =>	$this->uri->segment(3),
+      'title'         =>  'Section Type',
+      'subtitle'      =>  'update',
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('edit'),
+      'button'        =>  'Update',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'update',
+      'content'       =>  'template/bootstrap-4/admin/section/type/section-type-form',
+      'table'         =>  'section_type',
+      'action'        =>  'admin/settings/section/type',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(4),
+      'id'            =>  $id,
+      'getDataby_id'  =>  $this->general_m->get_row_by_id('section_type', $id)
 		);
-		$settings['getdataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
 		$this->form_validation->set_rules('name', 'Name', 'trim|required');
 		if ($this->form_validation->run() == TRUE) {
 			if ($_POST['button'] == 'update') {
 				$data = array(
 					'name'        =>	$this->input->post('name'),
+          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
 					'description' =>	$this->input->post('description'),
 					'slug'        =>	url_title($this->input->post('name')),
 					'created_by'  =>	$this->data['userdata']['id'],
 				);
 				$this->general_m->update($settings['table'], $data, $id);
-	      helper_log('update', "update data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");				$this->session->set_flashdata('message', 'Data has Updated');
+        helper_log('edit', "Update {$settings['title']} has successfully");
+        $this->session->set_flashdata("message", "Entries has successfully Updated");
 				redirect($settings['action']);
 			}
 		} else {
-			$this->load->view('admin/layout/_default', $settings);
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
 		}
 	}
 
 	/*Delete Type Section*/
 	public function type_delete($id='') {
 		$settings = array(
-			'header'    =>	'Type',
-			'subheader' =>	'Manage Section',
-			'content'   =>	'admin/section/index',
-			'table'     =>	'section_type',
-			'action'    =>	'admin/section/type',
-			'session'   =>	$this->data,
-			'no'        =>	$this->uri->segment(3),
+			'title'         =>  'Section Type',
+      'table'         =>  'section_type',
+      'action'        =>  'admin/settings/section/type',
+      'getDataby_id'  =>  $this->general_m->get_row_by_id('section_type', $id)
 		);
     
-    if ($this->general_m->get_row_by_id($settings['table'], $id)) {
+    if ($settings['getDataby_id']) {
       $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
+      helper_log('delete', "Delete {settings['title']} with id = has successfully");
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");   
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
       redirect($settings['action']);
-    }		
+    }
 	}
 
 }

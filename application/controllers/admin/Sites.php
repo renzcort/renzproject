@@ -148,10 +148,10 @@ class Sites extends My_Controller {
   /*DELETE*/
   public function delete($id='') {
     $settings = array(
-      'title'        => 'sites',
-      'table'        =>  'sites',
-      'action'       => 'admin/sites',
-      'fields_table' => 'sites_element',
+      'title'          => 'sites',
+      'table'          => 'sites',
+      'action'         => 'admin/sites',
+      'fields_element' => 'sites_element',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 

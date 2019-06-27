@@ -21,7 +21,7 @@
   </div>
   <div class="foield d-flex flex-row justify-content-start align-items-start align-content-center">
     <div class="custom-control custom-switch">
-      <input type="checkbox" class="custom-control-input" id="customSwitch1">
+      <input type="checkbox" class="custom-control-input customSwitch" id="customSwitch1">
       <label class="custom-control-label" for="customSwitch1">Disabled</label>
     </div>
   </div>

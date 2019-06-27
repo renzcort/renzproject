@@ -171,7 +171,7 @@
   <div class="form-group row">
     <div class="col-sm-2">
       <div class="custom-control custom-switch">
-        <input type="checkbox" class="custom-control-input" id="customSwitch1" name="activated" value="1">
+        <input type="checkbox" name="activated" class="custom-control-input customSwitch" id="customSwitch1">
         <label class="custom-control-label" for="customSwitch1">Disabled</label>
       </div>
     </div>

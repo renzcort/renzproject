@@ -24,6 +24,7 @@ class Api extends My_Controller {
   public function jsonTabsFields() {
     ($this->input->post('id') ? $id = $this->input->post('id') : $id = '');
     ($this->input->post('section_id') ? $section_id = $this->input->post('section_id') : $section_id = '');
+
     $button     = $this->input->post('button');
     $settings = array(
       'title'          =>  $this->input->post('header'),
@@ -45,9 +46,10 @@ class Api extends My_Controller {
       'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
       'fields'         =>  $this->fields_m->get_all_results(),
     );
+    $table_id = (($settings['table'] == 'section_entries') ? 'entries_id' : "{$settings['table']}_id" );  
     if ($button == 'update') {
-      $settings['getDataby_id']  =  $this->entries_m->get_row_by_id($id);
-      $settings['element']       =  $this->general_m->get_result_by_id($settings['fields_element'], $id, "{$settings['table']}_id");
+      $settings['getDataby_id']  =  $this->general_m->get_row_by_id($settings['table'], $id);
+      $settings['element']       =  $this->general_m->get_result_by_id($settings['fields_element'], $id, $table_id);
 
       if ($settings['element']) {
         foreach ($settings['element'] as $key) {
@@ -72,7 +74,7 @@ class Api extends My_Controller {
         'title'  => (isset($_POST['title']) ? form_error('title') : ''),
       );
 
-      if ($settings['table'] == 'entries') {
+      if ($settings['table'] == 'section_entries') {
         $data = array(
           'name'        =>  ucfirst($this->input->post('name')),
           'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
@@ -122,26 +124,27 @@ class Api extends My_Controller {
       }
 
       /*add contents*/
-      $fieldsId         = $this->input->post('fieldsId');
+      $fieldsId = $this->input->post('fieldsId');
+
       //get fields to element 
       (empty($id) ? $id = $tableFieldsId : $id = $id);
-      $this->general_m->delete($settings['fields_element'], $id, "{$settings['table']}_id");
+      $this->general_m->delete($settings['fields_element'], $id, $table_id);
       /*add elements*/
       if (!empty($fieldsId)) {
         $i = 0;
         foreach ($fieldsId as $value) {
-          if ($settings['table'] == 'entries') {
+          if ($settings['table'] == 'section_entries') {
             $element = array(
-              "{$settings['table']}_id" =>  $id,
-              'section_id'              =>  $section_id,
-              'fields_id'               =>  $value,
-              'order'                   =>  ++$i,
+              "{$table_id}" =>  $id,
+              'section_id'  =>  $section_id,
+              'fields_id'   =>  $value,
+              'order'       =>  ++$i,
             );
           } else {
             $element = array(
-              "{$settings['table']}_id" =>  $id,
-              'fields_id'               =>  $value,
-              'order'                   =>  ++$i,
+              "{$table_id}" =>  $id,
+              'fields_id'   =>  $value,
+              'order'       =>  ++$i,
             );
           }
           $this->general_m->create($settings['fields_element'], $element, FALSE);
@@ -149,7 +152,7 @@ class Api extends My_Controller {
         helper_log('add', "add element create has successfully {$element['order']} record");
       } 
 
-      (($settings['table'] == 'entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
+      (($settings['table'] == 'section_entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
       $getFieldsAll     = $this->fields_m->get_all_results();
       $getContentFields = $this->db->list_fields($table_content);
       $getElement = $this->general_m->get_all_results($settings['fields_element']);
@@ -642,7 +645,7 @@ class Api extends My_Controller {
       'title'                          => $this->input->post('title'),
       'handle'                         => lcfirst(str_replace(' ', '', ucwords($this->input->post('title')))),
       'slug'                           => url_title(strtolower($this->input->post('title'))),
-      'activated'                      => $this->input->post('activated'),
+      'activated'                      => (empty($this->input->post('activated')) ? '0' : $this->input->post('activated')),
       'created_by'                     => $this->data['userdata']['id'],
       "{$settings['parent_table']}_id" => $settings['parent_id'],
     );
