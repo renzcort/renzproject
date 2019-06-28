@@ -5,11 +5,11 @@
         data-action-name="<?php echo ($action ? $action : '');?>">
         <?php 
           $i = 1; 
-          foreach ($entries_group as $key): 
+          foreach ($section as $key): 
         ?>
           <li class="nav-item">
             <a class="nav-link <?php echo (($this->uri->segment(3) == $key->handle) ? 'active' : '') ?>" 
-              href="<?php echo $key->handle;?>" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->title); ?></a>
+              href="<?php echo $key->handle;?>" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
           </li>
         <?php
           $i = ++$i; 

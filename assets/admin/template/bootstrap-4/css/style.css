@@ -1125,6 +1125,11 @@ header nav.menu .navbar-nav > li {
   padding: 2rem 1rem;
   background: #F1F5F8;
   color: #76606F;
+  font-size: 12px;
+  font-weight: 500;
+}
+.right-content-entries .col-form-label {
+  padding-right: 0;
 }
 
 .left-modal {

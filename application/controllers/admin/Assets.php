@@ -30,8 +30,12 @@ class Assets extends My_Controller {
     );
 
     if ($this->router->method == 'index') {
-      if ((uri_string() == 'admin/assets') || (! in_array($this->uri->segment(3), $handle))) {
-        redirect("admin/assets/default",'refresh');
+      if ($assets) {
+        if ((uri_string() == 'admin/assets') || (! in_array($this->uri->segment(3), $handle))) {
+          redirect("admin/assets/default",'refresh');
+        }
+      } else {
+        redirect("admin/settings/assets",'refresh');
       }
     }
   }
@@ -39,7 +43,7 @@ class Assets extends My_Controller {
     /*Assets entries*/
   public function index($handle) {
     // var_dump($handle);die;
-    $handle = ($handle == 'default' ? '' : $this->general_m->get_row_by_fields('assets', array('handle' => $handle)));
+    $params = ($handle == 'default' ? '' : $this->general_m->get_row_by_fields('assets', array('handle' => $handle)));
     ($handle != '' ? $id = $handle->id : $id = '');
     $settings = array(
       'title'          =>  'assets',
@@ -60,7 +64,6 @@ class Assets extends My_Controller {
       'group_name'     =>  'assets',
       'group'          =>  $this->general_m->get_all_results('assets'),
       'group_count'    =>  $this->general_m->count_all_results('assets'),
-      'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
     );
     
 

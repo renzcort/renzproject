@@ -45,13 +45,13 @@ class Entries extends My_Controller {
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
       'button'         =>  '+ New Entry',
-      'button_link'    =>  "entries/create/{$handle}",
+      'button_link'    =>  "{$handle}/create",
       'content'        =>  'template/bootstrap-4/admin/entries/entries-list',
       'table'          =>  'content',
       'action'         =>  'admin/entries',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(4),
-      'entries_group'  =>  $this->general_m->get_all_results('section_entries'),
+      'section'        =>  $this->section_m->get_all_results(),
     );
 
     // pagination
@@ -71,25 +71,41 @@ class Entries extends My_Controller {
   }
 
   /*Create Entries*/
-  public function create() {
+  public function create($handle) {
+    $params = (($handle != '') ? $this->general_m->get_row_by_fields('section', array('handle' => $handle)) : '');
     $settings = array(
-      'title'               =>  'entries',
-      'subheader'           =>  'Manage entries',
-      'content'             =>  'admin/entries/create',
-      'table'               =>  'entries',
-      'action'              =>  'admin/entries',
-      'session'             =>  $this->data,
-      'no'                  =>  $this->uri->segment(3),
-      'entries_id'          =>  ($this->input->get('entries_id') ? $this->input->get('entries_id') : ''),
-      'section_id'          =>  ($this->input->get('section_id') ? $this->input->get('section_id') : ''),
-      'handle'              =>  ($this->input->get('handle') ? $this->input->get('handle') : ''),
+      'title'           =>  'entries',
+      'subtitle'        =>  'create',
+      'breadcrumb'      =>  array('settings'),
+      'subbreadcrumb'   =>  array('create'),
+      'button'          =>  'Save',
+      'button_type'     =>  'submit',
+      'button_name'     =>  'create',
+      'content'         =>  'template/bootstrap-4/admin/entries/entries-form',
+      'table'           =>  'content',
+      'action'          =>  'admin/entries',
+      'session'         =>  $this->data,
+      'no'              =>  $this->uri->segment(4),
+      'section'         =>  $this->section_m->get_all_results(),
+      'section_entries' =>  $this->general_m->get_all_results('section_entries'),
+      'group_name'     =>  'section',
+      'fields_element' =>  $this->general_m->get_result_by_fields('element', array('section_id' => $params->id)),
+      'group'          =>  $this->section_m->get_all_results(),
+      'group_count'    =>  $this->section_m->count_all_results(),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
+      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
+      'assets'         =>  $this->general_m->get_all_results('assets'),
+      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('section', 'order'),
+      'parent_table'   =>  'section',
+      'parent_id'      =>  $params->id,
     );
-    $settings['elementByEntries_id'] =  $this->general_m->get_row_by_id('element', $settings['entries_id'], 'entries_id');
-    $settings['fields']              =  $this->fields_m->get_field_by_element($settings['entries_id']);
 
     $this->form_validation->set_rules('title', 'Title', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
+      if ($_POST['button'] == 'create') {
         $data = array(
           'entries_id'  =>  $settings['entries_id'],
           'title'       =>  $this->input->post('title'),
@@ -106,7 +122,7 @@ class Entries extends My_Controller {
         redirect("{$settings['action']}/?entries_id={$settings['entries_id']}");
       }
     } else {
-      $this->load->view('admin/layout/_default', $settings);
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
     }    
   }
 

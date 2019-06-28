@@ -105,9 +105,9 @@ $route['admin/settings/section/(:num)/entrytypes/delete/(:num)'] = 'admin/sectio
 
 /*Content*/
 $route['admin/entries/(:any)']               = 'admin/entries/index/$1';
-$route['admin/entries/create/(:any)']        = 'admin/entries/create/$1';
-$route['admin/entries/edit/(:any)/(:num)']   = 'admin/entries/update/$1/$2';
-$route['admin/entries/delete/(:any)/(:num)'] = 'admin/entries/delete/$1/$2';
+$route['admin/entries/(:any)/create']        = 'admin/entries/create/$1';
+$route['admin/entries/(:any)/edit/(:num)']   = 'admin/entries/update/$1/$2';
+$route['admin/entries/(:any)/delete/(:num)'] = 'admin/entries/delete/$1/$2';
 
 /*Assets*/
 $route['admin/settings/assets']                          = 'admin/assets/volumes';
