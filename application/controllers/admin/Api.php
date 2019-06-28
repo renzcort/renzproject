@@ -636,10 +636,13 @@ class Api extends My_Controller {
       'table'        => $this->input->post('table'),
       'button'       => $this->input->post('button'),
       'action'       => $this->input->post('action'),
-      'parent_table' => $this->input->post('parent_table'),
+      'parent_table' => (($this->input->post('parent_table') == 'section_entries') ? 'entries' : $this->input->post('parent_table')),
       'parent_id'    => $this->input->post('parent_id'),
       'id'           => $this->input->post('id'),
     ); 
+
+    (($this->input->post('parent_table') == 'section_entries') ? $settings['section_id'] = $this->input->post('section_id') : ''  );
+
 
     $data = array(
       'title'                          => $this->input->post('title'),
@@ -649,6 +652,7 @@ class Api extends My_Controller {
       'created_by'                     => $this->data['userdata']['id'],
       "{$settings['parent_table']}_id" => $settings['parent_id'],
     );
+    (($this->input->post('parent_table') == 'section_entries') ? $data['section_id'] = $settings['section_id'] : ''  );
 
     $keys = array_keys($this->input->post());
     foreach ($keys as $key) {
@@ -672,6 +676,176 @@ class Api extends My_Controller {
     
     $settings['status'] = TRUE;
     echo json_encode($settings);
+  }
+
+  /*Select Entries Type*/
+  public function jsonSelectEntriesType(){
+    $id = $this->input->post('id');
+    $section_entries = $this->general_m->get_row_by_id('section_entries', $id);
+    $section         = $this->section_m->get_row_by_id($section_entries->section_id);
+    $settings = array(
+      'title'          =>  'entries',
+      'subtitle'       =>  'create',
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  array('create'),
+      'button'         =>  'Save',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',
+      'button_tabs'    =>  TRUE,      
+      'content'        =>  'template/bootstrap-4/admin/entries/entries-form',
+      'table'          =>  'content',
+      'action'         =>  "admin/entries/{$section->handle}",
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(4),
+      'section_id'     =>  $section->id,
+      'section_entries'=>  $section_entries,
+      'fields_element' =>  $this->general_m->get_result_by_fields('element', array('entries_id' => $id)),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
+      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
+      'assets'         =>  $this->general_m->get_all_results('assets'),
+      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('section', 'order'),
+      'parent_table'   =>  'section_entries',
+      'parent_id'      =>  $section_entries->id,
+      'id'             =>  $id,
+      'getDataby_id'   =>  $this->general_m->get_row_by_id('content', $id),    
+    );
+    // var_dump($settings['fields']);die;
+    $fields_id = [];
+    foreach ($settings['fields_element'] as $key) {
+      $fields_id[] = $key->fields_id;
+    }
+    $parent_id      = $settings['parent_id'];
+    $fields_element = $settings['fields_element'];
+    $fields         = $settings['fields'];
+    $assets         = $settings['assets'];
+
+    $html = '';
+    if ($fields_element) {
+      $html .= '<input type="hidden" name="parent_id" value="'.$parent_id.'">';
+      foreach ($fields as $key) {
+        if (in_array($key->id, $fields_id)) {
+          $settings   = json_decode($key->settings);
+          $fieldsName = "fields_{$key->handle}";
+          $html .= '<div class="form-group">
+            <label class="heading" for="input'.$key->handle.'">'.ucfirst($key->name).'</label>';
+            if ($key->type_name == 'plainText') {
+              if ($settings->plainLineBreak == 1) {
+                $html .= '<textarea class="form-control"
+                      name="fields_'.$key->handle.'" 
+                      id="textarea"
+                      rows="'.$settings->plainInitialRows.'"
+                      placeholder="'.$settings->plainPlaceholder.'">'.(!empty($getDataby_id->$fieldsName) ? trim(strip_tags($getDataby_id->$fieldsName)) : '').'</textarea>';        
+              } else {
+                $html .= '<input type="text" class="form-control" 
+                        name="fields_'.$key->handle.'" 
+                        placeholder="'.(!empty($setttings->plainPlaceholder) ? $setttings->plainPlaceholder : '').'"
+                        maxlength="'.(!empty($settings->plainCharlimit) ? $settings->plainCharlimit : '').'"
+                        value="'.(!empty($getDataby_id->$fieldsName) ? $getDataby_id->$fieldsName : set_value($fieldsName)).'">';                    
+              }
+            } elseif ($key->type_name == 'assets') {
+              foreach ($assets as $key2) {
+                if ($key2->id == $settings->assetsSourcesList) {
+                  $data['name'] = $key2->name;
+                }
+              }
+
+              $html .= '<div id="fields-assets-entries">
+                      <ul class="list-unstyled selected">';
+                        if (!empty($getDataby_id->$fieldsName)) {
+                          $assetsList = explode(', ', $getDataby_id->$fieldsName);
+                          foreach ($assets_content as $ast) {
+                            $filename   = explode('.', $ast->file);
+                            $name       = current($filename);
+                            $thumb      = current($filename).'_thumb.'.end($filename);
+                            $file_thumb = base_url("{$ast->path}/{$thumb}");
+                            $getSize    = get_headers($file_thumb, 1);
+                            if (in_array($ast->id, $assetsList)) {
+                              $html .= '
+                                  <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$ast->id.'">
+                                    <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$ast->id.'" heigth="20" width="30"/>
+                                    <label for="input'.$name.'">'.$name.'</label>
+                                    <a><i class="fa fa-times" aria-hidden="true"></i></a
+                                  </li>';
+                            }
+                          }
+                        }
+              $html .= '</ul>';
+              $html .= '<div>
+                      <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#assetsModal"
+                      data-assets-id = "'.$settings->assetsSourcesList.'" 
+                      data-assets-fields="fields_'.$key->handle.'">
+                    + New Assets</button></div>';
+              $html .= '</div>';
+            } elseif ($key->type_name == 'richText') {
+            } elseif ($key->type_name == 'categories') {
+            } elseif ($key->type_name == 'checkboxes') {
+              $val = $settings->checkboxesValue; 
+              $i = 0;
+              foreach ($settings->checkboxesLabel as $key2 => $value) {
+                $dataResult[] = array(
+                            'label' => $value,
+                            'value' => $val[$i]
+                          );
+                $i++;
+              }
+
+              if (!empty($getDataby_id->$fieldsName)) {
+                $checkList = explode(', ', $getDataby_id->$fieldsName);
+              }
+
+              foreach ($dataResult as $key3) {
+                $html .= '<div class="form-check">
+                        <input class="form-check-input" 
+                          type="checkbox" 
+                          name="fields_'.$key->handle.'[]" 
+                          value="'.$key3['value'].'"
+                          '.((!empty($getDataby_id->$fieldsName) && in_array($key3['value'], $checkList)) ? 'checked' : '').'>
+                        <label class="form-check-label" 
+                          for="defaultCheck1">'.$key3['label'].'
+                        </label>
+                      </div>';
+              }
+            } elseif ($key->type_name == 'dateTime') {
+            } elseif ($key->type_name == 'dropdown') {
+              $val = $settings->dropdownValue; 
+              $i = 0;
+              foreach ($settings->dropdownLabel as $key2 => $value) {
+                $dataResult[] = array(
+                            'label' => $value,
+                            'value' => $val[$i]
+                          );
+                $i++;
+              }
+              $html .= '<select class="form-control costum-select" name="fields_{$key->handle}">';
+              foreach ($dataResult as $key3) {
+                $html .= '<option value="'.$key3['value'].'">'.$key3['label'].'</option>';
+              }
+              $html .= '</select>';
+            } elseif ($key->type_name == 'radio') {
+              $val = $settings->radioValue; 
+              $i = 0;
+              foreach ($settings->radioLabel as $key2 => $value) {
+                $dataResult[] = array(
+                            'label' => $value,
+                            'value' => $val[$i]
+                          );
+                $i++;
+              }
+              foreach ($dataResult as $key3) {
+                $html .= '<div class="form-check">
+                        <input class="form-check-input" type="radio" name="fields_'.$key->handle.'[]" value="'.$key3['value'].'">
+                        <label class="form-check-label" for="defaultCheck1">'.$key3['label'].'</label>
+                      </div>';
+              }
+            }
+          $html .= '</div>';
+        }
+      }
+    } 
+    echo json_encode($html);
   }
  
 

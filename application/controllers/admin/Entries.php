@@ -39,6 +39,12 @@ class Entries extends My_Controller {
 
   public function index($handle) {
     $params = (($handle != '') ? $this->general_m->get_row_by_fields('section', array('handle' => $handle)) : '');
+    $section_entries = $this->general_m->get_result_by_id('section_entries', $params->id, 'section_id');
+    foreach ($section_entries as $key) {
+      if ($key->order == '1') {
+        $firstEntries = $this->general_m->get_row_by_id('section_entries', $key->id);
+      }
+    }
     $settings = array(
       'title'          =>  'entries',
       'subtitle'       =>  FALSE,
@@ -64,7 +70,7 @@ class Entries extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->general_m->get_all_results('content', $config['per_page'], $start_offset, $params->id, 'entries_id');
+    $settings['record_all'] = $this->general_m->get_all_results('content', $config['per_page'], $start_offset, $params->id, 'section_id');
     $settings['links']      = $this->pagination->create_links();
     // end pagination
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -73,25 +79,30 @@ class Entries extends My_Controller {
   /*Create Entries*/
   public function create($handle) {
     $params = (($handle != '') ? $this->general_m->get_row_by_fields('section', array('handle' => $handle)) : '');
+    $section_entries = $this->general_m->get_result_by_id('section_entries', $params->id, 'section_id');
+    foreach ($section_entries as $key) {
+      if ($key->order == '1') {
+        $firstEntries = $this->general_m->get_row_by_id('section_entries', $key->id);
+      }
+    }
+
     $settings = array(
-      'title'           =>  'entries',
-      'subtitle'        =>  'create',
-      'breadcrumb'      =>  array('settings'),
-      'subbreadcrumb'   =>  array('create'),
-      'button'          =>  'Save',
-      'button_type'     =>  'submit',
-      'button_name'     =>  'create',
-      'content'         =>  'template/bootstrap-4/admin/entries/entries-form',
-      'table'           =>  'content',
-      'action'          =>  'admin/entries',
-      'session'         =>  $this->data,
-      'no'              =>  $this->uri->segment(4),
-      'section'         =>  $this->section_m->get_all_results(),
-      'section_entries' =>  $this->general_m->get_all_results('section_entries'),
-      'group_name'     =>  'section',
-      'fields_element' =>  $this->general_m->get_result_by_fields('element', array('section_id' => $params->id)),
-      'group'          =>  $this->section_m->get_all_results(),
-      'group_count'    =>  $this->section_m->count_all_results(),
+      'title'          =>  'entries',
+      'subtitle'       =>  'create',
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  array('create'),
+      'button'         =>  'Save',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',
+      'button_tabs'    =>  TRUE,      
+      'content'        =>  'template/bootstrap-4/admin/entries/entries-form',
+      'table'          =>  'content',
+      'action'         =>  "admin/entries/{$handle}",
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(4),
+      'section_id'     =>  $params->id,
+      'section_entries'=>  $this->general_m->get_all_results('section_entries'),
+      'fields_element' =>  $this->general_m->get_result_by_fields('element', array('entries_id' => $firstEntries->id)),
       'fields'         =>  $this->fields_m->get_all_results(),
       'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
       'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
@@ -99,74 +110,57 @@ class Entries extends My_Controller {
       'assets_content' =>  $this->general_m->get_all_results('assets_content'),
       'elementFields'  =>  [],
       'order'          =>  $this->general_m->get_max_fields('section', 'order'),
-      'parent_table'   =>  'section',
-      'parent_id'      =>  $params->id,
+      'parent_table'   =>  'section_entries',
+      'parent_id'      =>  $firstEntries->id,
     );
-
-    $this->form_validation->set_rules('title', 'Title', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if ($_POST['button'] == 'create') {
-        $data = array(
-          'entries_id'  =>  $settings['entries_id'],
-          'title'       =>  $this->input->post('title'),
-          'created_by'  =>  $this->data['userdata']['id'],
-        );
-        //get field content 
-        foreach ($settings['fields'] as $key) {
-          $data["field_{$key->handle}"] = $this->input->post("field_{$key->handle}");
-        }
-
-        $this->general_m->create('content', $data);
-        helper_log('add', "add data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");        
-        $this->session->set_flashdata('message', 'Data has created');
-        redirect("{$settings['action']}/?entries_id={$settings['entries_id']}");
-      }
-    } else {
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }    
+    // var_dump($settings['fields']);die;
+    foreach ($settings['fields_element'] as $key) {
+      $settings['fields_id'][] = $key->fields_id;
+    }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+        
   }
 
   /*Create Entries*/
-  public function update($id='') {
+  public function update($handle, $id='') {
+    $params          = (($handle != '') ? $this->general_m->get_row_by_fields('section', array('handle' => $handle)) : '');
+    $section_entries = $this->general_m->get_result_by_id('section_entries', $params->id, 'section_id');
+    $content         = $this->general_m->get_row_by_id('content', $id);
+    
     $settings = array(
-      'title'               =>  'entries',
-      'subheader'           =>  'Manage entries',
-      'content'             =>  'admin/entries/edit',
-      'table'               =>  'entries',
-      'action'              =>  'admin/entries',
-      'session'             =>  $this->data,
-      'no'                  =>  $this->uri->segment(3),
-      'entries_id'          =>  ($this->input->get('entries_id') ? $this->input->get('entries_id') : ''),
-      'section_id'          =>  ($this->input->get('section_id') ? $this->input->get('section_id') : ''),
-      'handle'              =>  ($this->input->get('handle') ? $this->input->get('handle') : ''),
-      'getdataby_id'        =>  $this->general_m->get_row_by_id('content', $id),
+      'title'          =>  'entries',
+      'subtitle'       =>  'create',
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  array('create'),
+      'button'         =>  'update',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'update',
+      'button_tabs'    =>  TRUE,      
+      'content'        =>  'template/bootstrap-4/admin/entries/entries-form',
+      'table'          =>  'content',
+      'action'         =>  "admin/entries/{$handle}",
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(4),
+      'section_id'     =>  $params->id,
+      'section_entries'=>  $this->general_m->get_all_results('section_entries'),
+      'fields_element' =>  $this->general_m->get_result_by_fields('element', array('entries_id' => $content->entries_id)),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
+      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
+      'assets'         =>  $this->general_m->get_all_results('assets'),
+      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('section', 'order'),
+      'parent_table'   =>  'section_entries',
+      'parent_id'      =>  $content->entries_id,
+      'id'             =>  $id,
+      'getDataby_id'   =>  $content,    
     );
-
-    $settings['elementByEntries_id'] =  $this->general_m->get_row_by_id('element', $settings['entries_id'], 'entries_id');
-    $settings['fields']              =  $this->fields_m->get_field_by_element($settings['entries_id']);
     // var_dump($settings['fields']);die;
-
-    $this->form_validation->set_rules('title', 'Title', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['update'])) {
-        $data = array(
-          'entries_id'  =>  $settings['entries_id'],
-          'title'       =>  $this->input->post('title'),
-          'created_by'  =>  $this->data['userdata']['id'],
-        );
-        //get field content 
-        foreach ($settings['fields'] as $key) {
-          $data["field_{$key->handle}"] = $this->input->post("field_{$key->handle}");
-        }
-
-        $this->general_m->update('content', $data, $id);
-        helper_log('update', "update data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");        
-        $this->session->set_flashdata('message', 'Data has created');
-        redirect("{$settings['action']}/?entries_id={$settings['entries_id']}");
-      }
-    } else {
-      $this->load->view('admin/layout/_default', $settings);
-    }    
+    foreach ($settings['fields_element'] as $key) {
+      $settings['fields_id'][] = $key->fields_id;
+    }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
   public function delete($id='') {

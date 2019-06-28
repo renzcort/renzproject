@@ -196,7 +196,7 @@
         });
 
         // Button Submit
-        $('#buttonHeader').click(function(){
+        $('#buttonHeader[type="submit"]').click(function(){
           if ($(this).data("tabs") == 1) {
             // get fields list value
             getTabsFieldsList();
@@ -260,69 +260,17 @@
         });
 
 
-        $('[data-target="#assetsModal"]').click(function(e) {
-          var assets_id     = $(this).data('assets-id');
-          var assets_fields = $(this).data('assets-fields');
-          $.ajax({
-            type : 'POST',
-            dataType : 'json',
-            data : {id : assets_id},
-            url : '<?php echo base_url("admin/api/jsonAssetsEntriesUpload") ?>',
-          }).done(function(data){
-            $('li.assets-list').text(data.name);
-            $('#assetsModal .right-modal').html(data.table);
-            
-            var table = $('#datatableModal').DataTable();
-            $('#datatableModal tbody').on( 'click', 'tr', function () {
-              $(this).toggleClass('selected');
-            } );
-            $('#button').click( function () {
-              alert( table.rows('.selected').data().length +' row(s) selected' );
-            } );
 
-            // $('tbody tr').click(function() {
-            //   if ($(this).hasClass('selected') ) {
-            //     $(this).removeClass('selected');
-            //   } else {
-            //     $('tr.selected').removeClass('selected');
-            //     $(this).addClass('selected');
-            //   }
-            // });
 
-            $('#select-assets').click(function(e){
-              var assets_content_id = $('tr.selected input').data('id');
-              var id = [];
-              $( "tbody tr.selected" ).each(function() {
-                id.push($('tr.selected input').data('id'));
-                $( this ).toggleClass( "selected" );
-              });
 
-              $.ajax({
-                url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
-                type: 'POST',
-                dataType: 'json',
-                data: {assetsContentId: id, assets_fields : assets_fields},
-              })
-              .done(function(data) {
-                $('.selected').html(data.html);
-                console.log("success");
-              })
-              .fail(function() {
-                console.log("error");
-              })
-              .always(function() {
-                console.log("complete");
-              });
-              
-            });
-
-          }).fail(function(errot){
-          });
-        });
-
-        $("#fields-assets-entries ul.selected li a").click(function (e) {
-          $(this).closest('li').remove();
-        });
+        // getTabsFieldsList();
+        getGroupsById();
+        deleteGroupsById();
+        getDataByIdGroups();
+        deleteFieldsById();
+        getModalAssets();
+        changeEntriesType();
+        uploadWithoutSubmit();
 
         var leftbar = document.getElementById('left-content');
         var leftbarTop = leftbar.offsetTop;
@@ -332,12 +280,6 @@
         window.onscroll = function() {myFunction()};
 
 
-        getGroupsById();
-        deleteGroupsById();
-        getDataByIdGroups();
-        deleteFieldsById();
-        getTabsFieldsList();
-        uploadWithoutSubmit();
       })
 
       
@@ -538,6 +480,95 @@
         });
       }
 
+      function getModalAssets(){
+        $('[data-target="#assetsModal"]').click(function(e) {
+          var assets_id     = $(this).data('assets-id');
+          var assets_fields = $(this).data('assets-fields');
+          $.ajax({
+            type : 'POST',
+            dataType : 'json',
+            data : {id : assets_id},
+            url : '<?php echo base_url("admin/api/jsonAssetsEntriesUpload") ?>',
+          }).done(function(data){
+            $('li.assets-list').text(data.name);
+            $('#assetsModal .right-modal').html(data.table);
+            
+            var table = $('#datatableModal').DataTable();
+            $('#datatableModal tbody').on( 'click', 'tr', function () {
+              $(this).toggleClass('selected');
+            } );
+            $('#button').click( function () {
+              alert( table.rows('.selected').data().length +' row(s) selected' );
+            } );
+
+            // $('tbody tr').click(function() {
+            //   if ($(this).hasClass('selected') ) {
+            //     $(this).removeClass('selected');
+            //   } else {
+            //     $('tr.selected').removeClass('selected');
+            //     $(this).addClass('selected');
+            //   }
+            // });
+
+            $('#select-assets').click(function(e){
+              var assets_content_id = $('tr.selected input').data('id');
+              var id = [];
+              $( "tbody tr.selected" ).each(function() {
+                id.push($('tr.selected input').data('id'));
+                $( this ).toggleClass( "selected" );
+              });
+
+              $.ajax({
+                url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
+                type: 'POST',
+                dataType: 'json',
+                data: {assetsContentId: id, assets_fields : assets_fields},
+              })
+              .done(function(data) {
+                $('.selected').html(data.html);
+                console.log("success");
+              })
+              .fail(function() {
+                console.log("error");
+              })
+              .always(function() {
+                console.log("complete");
+              });
+              
+            });
+
+          }).fail(function(errot){
+          });
+        });
+        $("#fields-assets-entries ul.selected li a").click(function (e) {
+          $(this).closest('li').remove();
+        });
+      }
+
+      function changeEntriesType(){
+        $('#entries').change(function(){
+          var id = $('#entries option:selected').attr('data-id');
+          $.ajax({
+            url: '<?php echo base_url('admin/api/jsonSelectEntriesType') ?>',
+            type: 'POST',
+            dataType: 'json',
+            data: {id: id},
+          })
+          .done(function(data) {
+            console.log("success");
+            $('#entries-fields').empty(); 
+            $('#entries-fields').html(data);
+            getModalAssets();
+          })
+          .fail(function() {
+            console.log("error");
+          })
+          .always(function() {
+            console.log("complete");
+          });
+          
+        });
+      }
 
     </script>
   </body>

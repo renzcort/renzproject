@@ -42,9 +42,8 @@ class Assets extends My_Controller {
 
     /*Assets entries*/
   public function index($handle) {
-    // var_dump($handle);die;
     $params = ($handle == 'default' ? '' : $this->general_m->get_row_by_fields('assets', array('handle' => $handle)));
-    ($handle != '' ? $id = $handle->id : $id = '');
+    ($handle != 'default' ? $id = $params->id : $id = '0');
     $settings = array(
       'title'          =>  'assets',
       'subtitle'       =>  FALSE,

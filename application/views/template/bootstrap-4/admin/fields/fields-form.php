@@ -267,10 +267,11 @@
         <small class="form-text text-muted">Which source do you want to select categories from?</small>
         <select name="categoriesSource" class="form-control costum-select">
           <option value="0">- Select Categories -</option>
-          <?php if ($assets): ?>
-            <?php foreach ($assets as $key): ?>
-            <option value="<?php echo $key->id ?>" <?php echo (($getFieldType->categoriesSource == $key->id) ? 'selected' : '');?>>
-              <?php echo $key->name; ?>
+          <?php if ($categories): ?>
+            <?php foreach ($categories as $key): ?>
+            <option value="<?php echo $key->id ?>" 
+              <?php echo ((!empty($getFieldType->categoriesSource) && $getFieldType->categoriesSource == $key->id) ? 'selected' : '');?>>
+              <?php echo ucfirst($key->name); ?>
             </option>
             <?php endforeach ?>
           <?php endif ?>  
