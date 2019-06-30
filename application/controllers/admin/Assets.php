@@ -45,26 +45,24 @@ class Assets extends My_Controller {
     $params = ($handle == 'default' ? '' : $this->general_m->get_row_by_fields('assets', array('handle' => $handle)));
     ($handle != 'default' ? $id = $params->id : $id = '0');
     $settings = array(
-      'title'          =>  'assets',
-      'subtitle'       =>  FALSE,
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  FALSE,
-      'button'         =>  '+ Upload Files',
-      'button_link'    =>  'Upload',
-      'content'        =>  'template/bootstrap-4/admin/assets/assets-list',
-      'table'          =>  'assets_content',
-      'action'         =>  'admin/settings/assets',
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(4),
-      'assets'         =>  $this->general_m->get_all_results('assets_content'),
-      'assets_count'   =>  $this->general_m->count_all_results('assets_content'),
-      'group_name'     => 'assets',
-      'fields_element' => 'assets_content',
-      'group_name'     =>  'assets',
-      'group'          =>  $this->general_m->get_all_results('assets'),
-      'group_count'    =>  $this->general_m->count_all_results('assets'),
+      'title'                =>  'assets',
+      'subtitle'             =>  FALSE,
+      'breadcrumb'           =>  array('settings'),
+      'subbreadcrumb'        =>  FALSE,
+      'content'              =>  'template/bootstrap-4/admin/assets/assets-list',
+      'table'                =>  'assets_content',
+      'action'               =>  'admin/settings/assets',
+      'session'              =>  $this->data,
+      'no'                   =>  $this->uri->segment(4),
+      'button'               =>  '+ Upload Files',
+      'button_link'          =>  'Upload',
+      'fields_content'       =>  $this->general_m->get_all_results('assets_content'),
+      'fields_content_count' =>  $this->general_m->count_all_results('assets_content'),
+      'content_name'         => 'assets_content',
+      'group_name'           =>  'assets',
+      'assets'               =>  $this->general_m->get_all_results('assets'),
+      'assets_count'         =>  $this->general_m->count_all_results('assets'),
     );
-    
 
     // Pagination
     $config                 = $this->config->item('setting_pagination');
@@ -86,23 +84,22 @@ class Assets extends My_Controller {
   /*Volumens*/
   public function volumes() {
     $settings = array(
-      'title'          =>  'assets',
-      'subtitle'       =>  FALSE,
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  FALSE,
-      'button'         =>  '+ New Assets',
-      'button_link'    =>  'assets/create',
-      'content'        =>  'template/bootstrap-4/admin/assets/assets-group-list',
-      'table'          =>  'assets',
-      'action'         =>  'admin/settings/assets',
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(4),
-      'right_content'  =>  'template/bootstrap-4/admin/assets/assets-volumes-list',
-      'fields_element' =>  'assets_element',
-      'group_name'     =>  'assets_group',
-      'group'          =>  $this->general_m->get_all_results('assets_group'),
-      'group_count'    =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
+      'title'              =>  'assets',
+      'subtitle'           =>  FALSE,
+      'breadcrumb'         =>  array('settings'),
+      'subbreadcrumb'      =>  FALSE,
+      'table'              =>  'assets',
+      'action'             =>  'admin/settings/assets',
+      'session'            =>  $this->data,
+      'no'                 =>  $this->uri->segment(4),
+      'button'             =>  '+ New Assets',
+      'button_link'        =>  'assets/create',
+      'content'            =>  'template/bootstrap-4/admin/assets/assets-group-list',
+      'right_content'      =>  'template/bootstrap-4/admin/assets/assets-volumes-list',
+      'element_name'       =>  'assets_element',
+      'group_name'         =>  'assets_group',
+      'assets_group'       =>  $this->general_m->get_all_results('assets_group'),
+      'assets_group_count' =>  $this->general_m->count_all_results('assets_group'),
     );
 
     // Pagination
@@ -128,15 +125,15 @@ class Assets extends My_Controller {
       'subtitle'       =>  'create',
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  array('create'),
+      'table'          =>  'assets',
+      'action'         =>  'admin/settings/assets',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
       'button'         =>  'Save',
       'button_type'    =>  'submit',
       'button_name'    =>  'create',
       'button_tabs'    =>  TRUE,
       'content'        =>  'template/bootstrap-4/admin/assets/assets-volumes-form',
-      'table'          =>  'assets',
-      'action'         =>  'admin/settings/assets',
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
       'assets_type'    =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
       'group_name'     =>  'assets_group',
       'group'          =>  $this->general_m->get_all_results('assets_group'),
@@ -262,7 +259,7 @@ class Assets extends My_Controller {
           }
           helper_log('add', "add element create has successfully {$element['order']} record");
         }        
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully updated");
         redirect($settings['action']);
       } 
     } else {
@@ -336,9 +333,9 @@ class Assets extends My_Controller {
           }
         }
       }
-      $del = $this->general_m->delete($settings['table'], $id);
+      $delete = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete {$settings['title']} with id = has successfully");
-      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");      
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");      
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
@@ -434,7 +431,7 @@ class Assets extends My_Controller {
         );
         $tableFieldsId = $this->general_m->create($settings['table'], $data);
         helper_log('add', "Create {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
         redirect($settings['action']);
       } 
     } else {
@@ -494,7 +491,7 @@ class Assets extends My_Controller {
         );
         $this->general_m->update($settings['table'], $data, $id);
         helper_log('edit', "Update {$settings['title']} has successfully");
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully updated");
         redirect($settings['action']);
       } 
     } else {
@@ -515,7 +512,7 @@ class Assets extends My_Controller {
     if ($settings['getDataby_id']) {
       $delete        = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete {settings['title']} with id = has successfully");
-      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");      
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");      
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');

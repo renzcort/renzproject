@@ -202,6 +202,10 @@ body {
 	flex:75%;
 }
 
+.custom-switch{
+  width: 20%;
+  max-width: 10px;
+}
 
 /* end Fileds */
 

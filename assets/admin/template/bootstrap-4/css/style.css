@@ -476,7 +476,7 @@ header nav.menu .navbar-nav > li {
   padding-right: .2rem;
 }
 .breadcrumb-item+.breadcrumb-item {
-    padding-left: .2rem;
+    padding-left: 0;
 }
 .breadcrumb li {
   display: inline-block;
@@ -588,6 +588,7 @@ header nav.menu .navbar-nav > li {
 }
 .right-column .header .breadcrumb {
   background: #E4E6E8;
+  font-size: 12px;
 }
 .right-column .header h4 {
   padding:.75rem;
@@ -1160,6 +1161,14 @@ header nav.menu .navbar-nav > li {
 }
 #fields-assets-entries ul.selected li > label {
   padding: 0 1rem 0 0.3rem;
+}
+
+.custom-switch{
+  width: 20%;
+  max-width: 10px;
+}
+.img-thumbnail {
+  margin: .5rem;
 }
 
 /* #uploadModal tbody tr:nth-child(odd) {

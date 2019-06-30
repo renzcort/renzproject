@@ -14,12 +14,12 @@
                   ); 
     echo form_open($action.(isset($id) ? '/edit/'.$id : '/create'), $attributes); 
   ?>
-  <input type="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
-  <input type="hidden" name="section_id" value="<?php echo $section_id; ?>">
-  <input type="hidden" name="parent_table" value="<?php echo $parent_table; ?>">
-  <input type="hidden" name="button" value="<?php echo $button_name; ?>">
-  <input type="hidden" name="table" value="<?php echo $table; ?>">
-  <input type="hidden" name="action" value="<?php echo $action; ?>">
+  <input type ="hidden" name="button" value="<?php echo $button_name; ?>">
+  <input type ="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
+  <input type ="hidden" name="table" value="<?php echo $table; ?>">
+  <input type ="hidden" name="action" value="<?php echo $action; ?>">
+  <input type ="hidden" name="section_id" value="<?php echo $section_id; ?>">
+  <input type ="hidden" name="parent_table" value="<?php echo $parent_table; ?>">
 
   <div class="left-content-entries" id="entries-template">
     <div class="tab-content" id="myTabContent">
@@ -31,8 +31,7 @@
           <div class="form-error"><?php echo form_error('name'); ?></div>
         </div>
         <div id="entries-fields">
-        <?php if ($fields_element) {
-          echo '<input type="hidden" name="parent_id" value="'.$parent_id.'">';
+        <?php if ($element) {
           foreach ($fields as $key) {
             if (in_array($key->id, $fields_id)) {
               $settings   = json_decode($key->settings);
@@ -162,7 +161,7 @@
   <div class="form-group row">
     <label for="staticEmail" class="col-sm-3 col-form-label">Entry Type</label>
     <div class="col-sm-9">
-      <select class="form-control-plaintext costum-select" name="entryTypes" id="entries">
+      <select class="form-control-plaintext costum-select" name="entriestype" id="entries">
         <?php 
           foreach ($section_entries as $key) {
             echo '<option value="'.$key->id.'" data-id="'.$key->id.'" 

@@ -96,7 +96,7 @@
       <div class="modal-body d-flex flex-row flex-wrap justify-content-between p-1">
         <div class="left-modal">
           <ul>
-            <li class="assets-list"></li> 
+            <li class="assets-list list-unstyled"></li> 
           </ul>
         </div>
         <div class="right-modal">
@@ -156,8 +156,7 @@
 
         // change enable switch
         $('.customSwitch').click(function() {
-          var enabled = $('.customSwitch:checked').val();
-          if (enabled == 'on') {
+          if ($(this).is(':checked') == true) {
             $('#base-url').removeClass('d-none');
             $('label.custom-control-label').text('Enabled');
             $(this).val('1');
@@ -166,6 +165,16 @@
             $('label.custom-control-label').text('Disabled');
             $(this).val('0');
           }
+          // var enabled = $('.customSwitch:checked').val();
+          // if (enabled == 'on') {
+          //   $('#base-url').removeClass('d-none');
+          //   $('label.custom-control-label').text('Enabled');
+          //   $(this).val('1');
+          // } else {
+          //   $('#base-url').addClass('d-none');
+          //   $('label.custom-control-label').text('Disabled');
+          //   $(this).val('0');
+          // }
         });
 
         // add tabs layout

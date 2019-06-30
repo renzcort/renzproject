@@ -203,7 +203,7 @@ class fields extends My_Controller {
         );
         $this->fields_m->create($data);        
         helper_log('add', "Create {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
         redirect($this->data['parentLink']);
       }
     } else {

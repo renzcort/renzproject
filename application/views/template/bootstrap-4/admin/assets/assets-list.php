@@ -1,25 +1,23 @@
   <div id="left-content" class="left-content overflow-auto">
     <div class="sidebar-content">
-      <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebarGroups" 
-        data-groups-name="<?php echo ($group_name ? $group_name : ''); ?>" 
+      <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" 
         data-table="<?php echo ($table ? $table : ''); ?>" 
         data-action-name="<?php echo ($action ? $action : '');?>"
-        data-element="<?php echo ($fields_element ? $fields_element : ''); ?>">
+        data-content-name="<?php echo ($content_name ? $content_name : ''); ?>">
        <li class="nav-item">
           <a class="nav-link <?php echo (($this->uri->segment(3) == 'default') ? 'active' : '') ?>" data-id="all" href="default">All Fields</a>
        </li>
         <?php 
-          $i = 1; 
-          foreach ($group as $key): 
-        ?>
-          <li class="nav-item">
-            <a href="<?php echo $key->handle;?>" class="nav-link <?php echo (($this->uri->segment(3) == $key->handle) ? 'active' : '') ?>" 
-              data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?>
-            </a>
-          </li>
-        <?php
-          $i = ++$i; 
-          endforeach 
+        if ($assets) {
+          foreach ($assets as $key) {
+            echo '<li class="nav-item">
+                    <a class="nav-link '.(($this->uri->segment(3) == $key->handle) ? 'active' : '').'" 
+                    href="'.$key->handle.'" 
+                    data-id="'.$key->id.'">
+                    '.ucfirst($key->name).'</a>
+                  </li>';
+          } 
+        }
         ?>
       </ul>
     </div>

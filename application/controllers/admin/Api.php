@@ -115,12 +115,12 @@ class Api extends My_Controller {
         $data['created_by'] = $this->data['userdata']['id'];
         $tableFieldsId      = $this->general_m->create($settings['table'], $data);
         helper_log('add', "Create {$settings['title']} has successfully");        
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Created");
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully created");
       } else {
         $data['updated_by'] = $this->data['userdata']['id'];
         $this->general_m->update($settings['table'], $data, $id);
         helper_log('update', "Update {$settings['title']} has successfully");        
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");  
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully updated");  
       }
 
       /*add contents*/
@@ -191,15 +191,17 @@ class Api extends My_Controller {
         } 
       } else {
         /*Check Delete Column*/
-        foreach ($getFieldsAll as $key) {
-          if (in_array("fields_{$key->handle}", $getContentFields)) {
-            $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
-            $fields = array(
-              'handle' => $key->handle,
-              'type'   => $getFieldsType->type,
-            );
-            // Drop field column in content
-            modifyColumn($fields, 'drop-table', $table_content);
+        if ($getFieldsAll) {
+          foreach ($getFieldsAll as $key) {
+            if (in_array("fields_{$key->handle}", $getContentFields)) {
+              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+              $fields = array(
+                'handle' => $key->handle,
+                'type'   => $getFieldsType->type,
+              );
+              // Drop field column in content
+              modifyColumn($fields, 'drop-table', $table_content);
+            }
           }
         }
       }
@@ -402,7 +404,7 @@ class Api extends My_Controller {
           $getSize    = get_headers($file_thumb, 1); 
           $table_view .= '<tr>
               <td scope="row">'.++$no.'</td>
-              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.$name.'</td>
+              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
               <td>'.($key->file ? $key->file : '').'</td>
               <td>'.$key->size.' kB </td>
               <td>'.($key->created_at ? $key->created_at : '').'</td>
@@ -437,7 +439,7 @@ class Api extends My_Controller {
       $fields_del = $this->fields_m->delete($id);
       $option_del = $this->general_m->delete('fields_option', $getDataby_id->option_id);
       helper_log('delete', "Delete fields with id = {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has deleted {$delete} Records");
+      $this->session->set_flashdata('message', "data has deleted {$delete} Records");
       echo json_encode($getDataby_id);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
@@ -538,7 +540,7 @@ class Api extends My_Controller {
           $getSize = get_headers($file_thumb, 1); 
           $table_view .= '<tr>
               <td scope="row">'.++$no.'</td>
-              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.$name.'</td>
+              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
               <td>'.($key->file ? $key->file : '').'</td>
               <td>'.$getSize['Content-Length'].' kB </td>
               <td>'.($key->created_at ? $key->created_at : '').'</td>
@@ -560,6 +562,7 @@ class Api extends My_Controller {
       'assets'         => $this->general_m->get_row_by_id('assets', $assets_id),
       'assets_content' => $this->general_m->get_result_by_id('assets_content', $assets_id, 'assets_id'),
     );
+
     if ($settings['assets_content']) {
       $table_view = '
       <div id="uploadModal">
@@ -584,7 +587,7 @@ class Api extends My_Controller {
         $table_view .= '<tr>
             <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
             <td style:"width:5%;" scope="row">'.++$no.'</td>
-            <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.$name.'</td>
+            <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
             <td>'.($key->file ? $key->file : '').'</td>
             <td style="width:10%;">'.$key->size.' kB </td>
             <td style="width:25%;">'.($key->created_at ? $key->created_at : '').'</td>
@@ -597,7 +600,7 @@ class Api extends My_Controller {
     $table_view .= '</div>';
 
     $data = array(
-      'name'  =>  (!empty($settings['assets']->name) ? $settings['assets']->name : 'default'),
+      'name'  =>  (!empty($settings['assets']->name) ? $settings['assets']->name : 'Default'),
       'table' =>  $table_view,
     );
     echo json_encode($data);
@@ -641,16 +644,19 @@ class Api extends My_Controller {
       'id'           => $this->input->post('id'),
     ); 
 
-    (($this->input->post('parent_table') == 'section_entries') ? $settings['section_id'] = $this->input->post('section_id') : ''  );
+    if ($this->input->post('parent_table') == 'section_entries') {
+      $settings['section_id']  = $this->input->post('section_id');
+      $settings['entriestype'] = $this->input->post('entriestype');
+    }
 
-
+    $parent_id = (($this->input->post('parent_table') == 'section_entries') ? $settings['entriestype'] : $settings['parent_id']);
     $data = array(
       'title'                          => $this->input->post('title'),
       'handle'                         => lcfirst(str_replace(' ', '', ucwords($this->input->post('title')))),
       'slug'                           => url_title(strtolower($this->input->post('title'))),
       'activated'                      => (empty($this->input->post('activated')) ? '0' : $this->input->post('activated')),
       'created_by'                     => $this->data['userdata']['id'],
-      "{$settings['parent_table']}_id" => $settings['parent_id'],
+      "{$settings['parent_table']}_id" => $parent_id,
     );
     (($this->input->post('parent_table') == 'section_entries') ? $data['section_id'] = $settings['section_id'] : ''  );
 
@@ -667,11 +673,11 @@ class Api extends My_Controller {
     if ($settings['button'] == 'create') {
       $this->general_m->create($settings['table'], $data);
       helper_log('add', "Create {$settings['table']} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Created");
+      $this->session->set_flashdata('message', "data has successfully created");
     } elseif ($settings['button'] == 'update') {
       $this->general_m->update($settings['table'], $data, $settings['id']);
       helper_log('edit', "Update {$settings['table']} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Updated");
+      $this->session->set_flashdata('message', "data has successfully updated");
     } 
     
     $settings['status'] = TRUE;
