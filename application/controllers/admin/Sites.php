@@ -11,7 +11,7 @@ class Sites extends My_Controller {
     $this->load->model('admin/General_m', 'general_m');
     $this->data = array(
       'userdata' =>  $this->first_load(),
-      'parentLink' => 'admin/sites', 
+      'parentLink' => 'admin/settings/sites', 
     );
   }
 
@@ -21,18 +21,17 @@ class Sites extends My_Controller {
       'subtitle'      =>  FALSE,
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
-      'button'        =>  '+ New sites',
-      'button_link'   =>  'sites/create',
-      'content'       =>  'template/bootstrap-4/admin/sites/sites-list',
       'table'         =>  'sites',
       'action'        =>  'admin/settings/sites',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(4),
+      'button'        =>  '+ New sites',
+      'button_link'   =>  'sites/create',
+      'content'       =>  'template/bootstrap-4/admin/sites/sites-list',
       'element_name'  =>  FALSE,
       'group_name'    =>  'sites_group',
       'group'         =>  $this->general_m->get_all_results('sites_group'),
       'group_count'   =>  $this->general_m->count_all_results('sites_group'),
-      'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
     );
 
     // Pagination
@@ -58,14 +57,14 @@ class Sites extends My_Controller {
       'subtitle'      =>  'create',
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('create'),
-      'button'        =>  'Save',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'create',
-      'content'       =>  'template/bootstrap-4/admin/sites/sites-form',
       'table'         =>  'sites',
       'action'        =>  'admin/settings/sites/create',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
+      'button'        =>  'Save',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'create',
+      'content'       =>  'template/bootstrap-4/admin/sites/sites-form',
       'group_name'    =>  'sites_group',
       'group'         =>  $this->general_m->get_all_results('sites_group'),
       'group_count'   =>  $this->general_m->count_all_results('sites_group'),
@@ -80,16 +79,16 @@ class Sites extends My_Controller {
           'group_id'    => $this->input->post('group'),
           'name'        => ucfirst($this->input->post('name')),
           'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'primary'     => $this->input->post('primary'),
-          'url'         => $this->input->post('url'),
+          'primary'     => ($this->input->post('primary') ? $this->input->post('primary') : 0),
+          'url'         => ($this->input->post('url') ? 1 : 0),
           'baseurl'     => $this->input->post('baseurl'),
-          'locale'      => $this->input->post('locale'),
+          'language'    => $this->input->post('language'),
           'description' => $this->input->post('description'),
           'created_by'  => $this->data['userdata']['id'],
         );
         $this->general_m->create($settings['table'], $data);
         helper_log('add', "Create {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
         redirect($this->data['parentLink']);
       } 
     } else {
@@ -104,14 +103,14 @@ class Sites extends My_Controller {
       'subtitle'      =>  'create',
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('edit'),
-      'button'        =>  'Update',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'update',
-      'content'       =>  'template/bootstrap-4/admin/sites/sites-form',
       'table'         =>  'sites',
       'action'        =>  'admin/settings/sites/edit',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
+      'button'        =>  'Update',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'update',
+      'content'       =>  'template/bootstrap-4/admin/sites/sites-form',
       'id'            =>  $id,
       'group_name'    =>  'sites_group',
       'group'         =>  $this->general_m->get_all_results('sites_group'),
@@ -128,10 +127,10 @@ class Sites extends My_Controller {
           'group_id'    => $this->input->post('group'),
           'name'        => ucfirst($this->input->post('name')),
           'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'primary'     => $this->input->post('primary'),
-          'url'         => $this->input->post('url'),
+          'primary'     => ($this->input->post('primary') ? $this->input->post('primary') : 0),
+          'url'         => ($this->input->post('url') ? 1 : 0),
           'baseurl'     => $this->input->post('baseurl'),
-          'locale'      => $this->input->post('locale'),
+          'language'    => $this->input->post('language'),
           'description' => $this->input->post('description'),
           'updated_by'  => $this->data['userdata']['id'],
         );
@@ -148,17 +147,16 @@ class Sites extends My_Controller {
   /*DELETE*/
   public function delete($id='') {
     $settings = array(
-      'title'          => 'sites',
-      'table'          => 'sites',
-      'action'         => 'admin/sites',
-      'fields_element' => 'sites_element',
+      'title'  => 'sites',
+      'table'  => 'sites',
+      'action' => 'admin/settings/sites',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
     if ($settings['getDataby_id']) {
       $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete {settings['title']} with id = has successfully");
-      $this->session->set_flashdata('message', "{settings['title']} has deleted {$delete} Records");   
+      helper_log('delete', "Delete {$settings['title']} with id = has successfully");
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");   
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');

@@ -10,7 +10,7 @@
           <a class="nav-link active" data-id="all">All Fields</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" data-id="default">Default</a>
+          <a class="nav-link" data-id="0">Default</a>
         </li>
         <?php if ($group): ?>
           <?php foreach ($group as $key): ?>
@@ -44,7 +44,7 @@
           <th scope="row">#</th>
           <th scope="col">Name</th>
           <th scope="col">Handle</th>
-          <th scope="col">Languange</th>
+          <th scope="col">Language</th>
           <th scope="col">Primary</th>
           <th scope="col">Base URL</th>
           <th scope="row"></th>
@@ -56,7 +56,7 @@
           <td scope="row"><?php echo ++$no; ?></td>
           <td><a href="<?php echo base_url($action.'/edit/'.$key->id); ?>"><?php echo $key->name; ?></a></td>
           <td><?php echo $key->handle; ?></td>
-          <td><?php echo $key->locale; ?></td>
+          <td><?php echo $key->language; ?></td>
           <td><?php echo (!empty($key->primary) ? 'Yes' : 'No');?></td>
           <td><?php echo (!empty($key->url) ? $key->url : ''); ?></td>
           <td scope="row">

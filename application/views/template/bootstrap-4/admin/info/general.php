@@ -1,4 +1,4 @@
-<div class="middle-content flex-grow-1">
+<div class="middle-content flex-grow-1" id="general">
   <?php
     $attributes = array(
       'class' =>  'form',

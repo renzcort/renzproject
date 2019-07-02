@@ -299,15 +299,20 @@ class Api extends My_Controller {
   // Show Fields By Id Groups
   public function jsonGetDataByIdGroups(){
     header('content-type: application/json');
-    $table = ($this->input->post('table') ? $this->input->post('table') : '');
-    $group_name = ($this->input->post('group_name') ? $this->input->post('group_name') : '');
+    $table       = ($this->input->post('table') ? $this->input->post('table') : '');
+    $group_name  = ($this->input->post('group_name') ? $this->input->post('group_name') : '');
     $action_name = ($this->input->post('action_name') ? $this->input->post('action_name') : '');
+    if ($this->input->post('group_id') == 'all') {
+      $group_id = '';
+    } else {
+      $group_id = (($this->input->post('group_id') == '0') ? '0' : $this->input->post('group_id'));
+    }
+
     $settings = array(
       'table'       =>  $table,
       'action'      =>  $action_name,
       'group'       =>  $this->general_m->get_all_results($group_name),
       'group_count' =>  $this->general_m->count_all_results($group_name),
-      'group_id'    =>  (($this->input->post('group_id') == 'all') ? '' : $this->input->post('group_id')),
     );
     $fields = ((in_array($table, array('fields', 'sites'))) ? 'group_id' : "{$group_name}_id");
     // Pagination
@@ -320,9 +325,14 @@ class Api extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $settings['group_id'], $fields);
-    
-    $settings['links']      = $this->pagination->create_links();
+
+    if ($group_id == '') {
+     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    } else {
+     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, strval($group_id), $fields);
+    }
+
+    $settings['links'] = $this->pagination->create_links();
     if($settings['record_all']) {
       if ($table == 'sites') {
         $table_view = '
@@ -332,7 +342,7 @@ class Api extends My_Controller {
                 <th scope="row">#</th>
                 <th scope="col">Name</th>
                 <th scope="col">Handle</th>
-                <th scope="col">Languange</th>
+                <th scope="col">Language</th>
                 <th scope="col">Primary</th>
                 <th scope="col">Base URL</th>
                 <th scope="row"></th>
@@ -345,7 +355,7 @@ class Api extends My_Controller {
                 <td scope="row">'.++$no.'</td>
                 <td><a href="'.base_url($settings['action'].'/edit/'.$key->id).'">'.($key->name ? $key->name : '').'</a></td>
                 <td>'.($key->handle ? $key->handle : '').'</td>
-                <td>'.($key->locale ? $key->locale : '').'</td>
+                <td>'.$key->language.'</td>
                 <td>'.(!empty($key->primary) ? 'Yes' : 'No').'</td>
                 <td>'.($key->url ? $key->url : '').'</td>
                 <td scope="row">

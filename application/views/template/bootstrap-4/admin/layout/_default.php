@@ -182,14 +182,6 @@
           $('.field-tabs').append('<div class="field-group"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item"> <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable1" class="text-center list-group connectedSortable"> <li class="list-group-item active">Lion</li> <li class="list-group-item">Dog</li> <li class="list-group-item">Cat</li> <li class="list-group-item">Tiger</li> </ul> </div> </div> </div>'); 
         });
 
-        // add row table checkboxes
-        $('#checkboxes button').click(function(){
-          $('#checkboxes table tr:last ').after('<tr> <td><input type="text" name="checkboxesLabel[]" class="form-control"></td> <td><input type="text" name="checkboxesValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="checkboxesDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>') 
-        }); 
-        $(document).on('click', '.remove-row', function() {
-          $(this).closest("tr").remove();
-          $('#checkboxes table').focus();
-        });
 
         // click navbar active
         $('.sidebar .nav-link').click(function(event) {
@@ -214,31 +206,7 @@
           }
         });
 
-        /**
-         * Fields Forms 
-         * @param  {[type]} $('input[name [description]
-         * @return {[type]}               [description]
-         */
-        if ($('input[name=plainLineBreak]').attr('checked')) {
-          $('.plainLineBreak').show();
-        } else {
-          $('.plainLineBreak').hide();
-        }
-        $('input[name=plainLineBreak]').click(function(){
-          $('.plainLineBreak').toggle();
-        })
-
-        $('.assetsRestrictUpload').hide();
-        $('input[name=assetsRestrictUpload]').click(function(){
-          $('.noAssetsRestrictUpload').toggle();
-          $('.assetsRestrictUpload').toggle();
-        })
-
-        $('.assetsRestrictFileType').hide();
-        $('input[name=assetsRestrictFileType]').click(function(){
-          $('.assetsRestrictFileType').toggle();
-        })
-        /*END Fields Forms*/
+        
 
         /**
          * Tabs Fields
@@ -268,7 +236,79 @@
            }
         });
 
+        // SITES;
+        // $('#sites [name="url"]').val('1');
+        if ($('#sites [name="url"]').val() == '1') {
+          $('#sites [name="url"]').prop("checked", true);
+          $('#baseUrl').removeClass('d-none');
+        } else {
+          $('#sites [name="url"]').prop("checked", false);
+          $('#baseUrl').addClass('d-none');
+        }
+        $('#sites [name="url"]').click(function(){
+          if($(this).prop("checked") == true){
+            $(this).val(1);
+            $('#baseUrl').removeClass('d-none');
+          } else {
+            $(this).val(0);
+            $('#baseUrl').addClass('d-none');
+            $('#baseUrl').empty();
+          }
+        });
 
+        /**
+         * Fields Forms 
+         * @param  {[type]} $('input[name [description]
+         * @return {[type]}               [description]
+         */
+        if ($('#fields input[name=plainLineBreak]').attr('checked')) {
+          $('#fields .plainLineBreak').show();
+        } else {
+          $('#fields .plainLineBreak').hide();
+        }
+        $('#fields input[name=plainLineBreak]').click(function(){
+          if ($(this).prop("checked") == false) {
+            $('#fields [name="plainInitialRows"]').val('');
+          }
+          $('#fields .plainLineBreak').toggle();
+        })
+
+        $('#fields .assetsRestrictUpload').hide();
+        $('#fields input[name=assetsRestrictUpload]').click(function(){
+          $('#fields .noAssetsRestrictUpload').toggle();
+          $('#fields .assetsRestrictUpload').toggle();
+        })
+
+        $('#fields .assetsRestrictFileType').hide();
+        $('#fields input[name=assetsRestrictFileType]').click(function(){
+          $('#fields .assetsRestrictFileType').toggle();
+        })
+
+        // add row table checkboxes
+        $('#fields #checkboxes button').click(function(){
+          $('#checkboxes table tr:last ').after('<tr> <td><input type="text" name="checkboxesLabel[]" class="form-control"></td> <td><input type="text" name="checkboxesValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="checkboxesDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>') 
+        }); 
+        $(document).on('click', '.remove-row', function() {
+          $(this).closest("tr").remove();
+          $('#checkboxes table').focus();
+        });
+        // add row table dropdown
+        $('#fields #dropdown button').click(function(){
+          $('#dropdown table tr:last ').after('<tr> <td><input type="text" name="dropdownLabel[]" class="form-control"></td> <td><input type="text" name="dropdownValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="dropdownDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>') 
+        }); 
+        $(document).on('click', '.remove-row', function() {
+          $(this).closest("tr").remove();
+          $('#dropdown table').focus();
+        });
+        // add row table Radio
+        $('#fields #radio button').click(function(){
+          $('#radio table tr:last ').after('<tr> <td><input type="text" name="radioLabel[]" class="form-control"></td> <td><input type="text" name="radioValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="radioDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>') 
+        }); 
+        $(document).on('click', '.remove-row', function() {
+          $(this).closest("tr").remove();
+          $('#radio table').focus();
+        });
+        /*END Fields Forms*/
 
 
 
@@ -299,16 +339,6 @@
           leftbar.classList.remove("fixed-bar");
         }
       }
-      // function update modal success
-      function updateGroupsModal(data){
-        $('#groupsModal .modal-body').append('<input type="hidden" name="id" value="'+data.id+'" class="form-control">');
-        $('#groupsModal input[type="text"]').val(data.name);
-        $('#groupsModal textarea').val(data.description);
-        $('#groupsModal button[type="submit"]').attr('name', 'update');
-        $('#groupsModal button[type="submit"]').text('Update');
-        $('#groupsModal').modal('show');
-      }
-
 
       /**
        * GROUPS API
@@ -333,6 +363,16 @@
           });
           return false;
         });
+      }
+
+      // function update modal success
+      function updateGroupsModal(data){
+        $('#groupsModal .modal-body').append('<input type="hidden" name="id" value="'+data.id+'" class="form-control">');
+        $('#groupsModal input[type="text"]').val(data.name);
+        $('#groupsModal textarea').val(data.description);
+        $('#groupsModal button[type="submit"]').attr('name', 'update');
+        $('#groupsModal button[type="submit"]').text('Update');
+        $('#groupsModal').modal('show');
       }
 
       function deleteGroupsById(){
@@ -362,8 +402,8 @@
         // Show Fields By Groups
         $('#sidebarGroups .nav-item').click(function(){
           var table       = $('#sidebarGroups').data('table');
-          var group_name  = $('#sidebarGroups').data('groups-name');
           var action_name = $('#sidebarGroups').data('action-name');
+          var group_name  = $('#sidebarGroups').data('groups-name');
           var group_id    = $('#sidebarGroups .nav-link.active').data('id');
           $.ajax({
             type : 'POST',

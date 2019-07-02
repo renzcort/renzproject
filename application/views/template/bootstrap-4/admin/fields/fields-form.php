@@ -1,11 +1,11 @@
-<div class="middle-content flex-grow-1">
+<div class="middle-content flex-grow-1" id="fields">
   <?php
     $attributes = array('class' => 'form',
                         'id' => 'MyForm',
                   ); 
     echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
   ?>
-    <input type="hidden" name="button" value="<?php echo $button_name; ?>">
+    <input type ="hidden" name="button" value="<?php echo $button_name; ?>">
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
       <small class="form-text text-muted">Which group should this field be displayed in?</small>
@@ -293,7 +293,7 @@
       <div class="form-group">
         <label class="heading" for="inputSelectionLabel">Selection Label</label>
         <small class="form-text text-muted">Enter the text you want to appear on the assets selection input.</small>
-        <input type="text" name="categoriesSelectionLabel" class="form-control"
+        <input type="text" name="categoriesSelectionLabel" class="form-control" placeholder="add a categories"
         value="<?php echo (!empty($getFieldType->categoriesSelectionLabel) ? $getFieldType->categoriesSelectionLabel : set_value('categoriesSelectionLabel')); ?>">
       </div>
     </div>
@@ -331,7 +331,7 @@
                 <td class="action"><input type="checkbox" name="checkboxesDefault[]"></td>
                 <td scope="row" colspan="2">
                   <a href="#"><i class="fas fa-arrows-alt"></i></a>
-                  <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a>
+                  <a class="remove-row"><i class="fas fa-minus-circle"></i></a>
                 </td>
               </tr>
               <?php endforeach; ?>
@@ -398,12 +398,13 @@
             ?>
               <?php foreach ($dataResult as $key) : ?>
               <tr>
+
                 <td><input type="text" name="dropdownLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
                 <td><input type="text" name="dropdownValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
-                <td class="action"><input type="checkbox" name="dropdownDefault"></td>
+                <td class="action"><input type="checkbox" name="dropdownDefault[]"></td>
                 <td scope="row" colspan="2">
                   <a href="#"><i class="fas fa-arrows-alt"></i></a>
-                  <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a>
+                  <a class="remove-row"><i class="fas fa-minus-circle"></i></a>
                 </td>
               </tr>
               <?php endforeach; ?>
@@ -440,15 +441,16 @@
                 endforeach;
             ?>
               <?php foreach ($dataResult as $key) : ?>
-                <tr>
-                  <td><input type="text" name="radioLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
-                  <td><input type="text" name="radioValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
-                  <td class="action"><input type="checkbox" name="radioDefault"></td>
-                  <td scope="row" colspan="2">
-                    <a href="#"><i class="fas fa-arrows-alt"></i></a>
-                    <a href="#" class="remove-row"><i class="fas fa-minus-circle"></i></a>
-                  </td>
-                </tr>
+              <tr>
+
+                <td><input type="text" name="radioLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
+                <td><input type="text" name="radioValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
+                <td class="action"><input type="checkbox" name="radioDefault[]"></td>
+                <td scope="row" colspan="2">
+                  <a href="#"><i class="fas fa-arrows-alt"></i></a>
+                  <a class="remove-row"><i class="fas fa-minus-circle"></i></a>
+                </td>
+              </tr>
               <?php endforeach; ?>
             <?php endif; ?>
           </tbody>

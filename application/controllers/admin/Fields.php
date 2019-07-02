@@ -24,18 +24,16 @@ class fields extends My_Controller {
       'subtitle'       =>  FALSE,
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
-      'button'         =>  '+ New Fields',
-      'button_link'    =>  'fields/create',
-      'content'        =>  'template/bootstrap-4/admin/fields/fields-list',
       'table'          =>  'fields',
       'action'         =>  'admin/settings/fields',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(4),
-      'fields_element' =>  'element',
+      'button'         =>  '+ New Fields',
+      'button_link'    =>  'fields/create',
+      'content'        =>  'template/bootstrap-4/admin/fields/fields-list',
       'group_name'     =>  'fields_group',
       'group'          =>  $this->general_m->get_all_results('fields_group'),
       'group_count'    =>  $this->general_m->count_all_results('fields_group'),
-      'group_id'       =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
     );
     
     // Pagination
@@ -48,7 +46,7 @@ class fields extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->fields_m->get_all_results($config['per_page'], $start_offset, $settings['group_id']);
+    $settings['record_all'] = $this->fields_m->get_all_results($config['per_page'], $start_offset);
     $settings['links']      = $this->pagination->create_links();
     // end Pagination
     
@@ -62,14 +60,14 @@ class fields extends My_Controller {
       'subtitle'      =>  'create',
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('create'),
-      'button'        =>  'Save',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'create',
-      'content'       =>  'template/bootstrap-4/admin/fields/fields-form',
       'table'         =>  'fields',
       'action'        =>  'admin/settings/fields/create',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
+      'button'        =>  'Save',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'create',
+      'content'       =>  'template/bootstrap-4/admin/fields/fields-form',
       'fields_type'   =>  $this->general_m->get_all_results('fields_type'),
       'group'         =>  $this->general_m->get_all_results('fields_group'),
       'group_count'   =>  $this->general_m->count_all_results('fields_group'),
@@ -218,14 +216,14 @@ class fields extends My_Controller {
       'subtitle'      =>  'edit',
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('edit'),
-      'button'        =>  'Update',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'update',
-      'content'       =>  'template/bootstrap-4/admin/fields/fields-form',
       'table'         =>  'fields',
       'action'        =>  'admin/settings/fields/edit',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
+      'button'        =>  'Update',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'update',
+      'content'       =>  'template/bootstrap-4/admin/fields/fields-form',
       'fields_type'   =>  $this->general_m->get_all_results('fields_type'),
       'group'         =>  $this->general_m->get_all_results('fields_group'),
       'group_count'   =>  $this->general_m->count_all_results('fields_group'),
@@ -366,7 +364,7 @@ class fields extends My_Controller {
         );
         $this->fields_m->update($data, $id); 
         helper_log('edit', "Update {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully Updated");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully updated");
         redirect($this->data['parentLink']);
       }
     } else {
@@ -457,21 +455,17 @@ class fields extends My_Controller {
   /*TYPE fields*/
   public function type() {
     $settings = array(
-      'title'          =>  'fields',
-      'subtitle'       =>  FALSE,
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  FALSE,
-      'content'       =>  'template/bootstrap-4/admin/fields/type/index',
       'title'         =>  'fields',
       'subtitle'      =>  FALSE,
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
-      'button'        =>  '+ New Fields',
-      'button_link'   =>  'fields/create',
       'table'         =>  'fields_type',
-      'action'        => 'admin/fields',
+      'action'        => 'admin/settings/fields/type',
       'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(4), 
+      'no'            =>  $this->uri->segment(5), 
+      'button'        =>  '+ New Fields',
+      'button_link'   =>  'type/create',
+      'content'       =>  'template/bootstrap-4/admin/fields/fields-type-list',
     );
 
     // pagination
@@ -494,28 +488,26 @@ class fields extends My_Controller {
   /*Type Create*/
   public function type_create() {
     $settings = array(
-      'header'      => 'Type',
-      'subheader'   => 'Manage fields',
-      'title'          =>  'fields',
-      'subtitle'       =>  FALSE,
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  FALSE,
-      'content'     =>  'template/bootstrap-4/admin/fields/type/create',
-      'table'       =>  'fields_type',
-      'button'      =>  '+ New Fields',
-      'button_link' =>  'fields/create',
-      'table'       =>  'fields_type',
-      'action'      => 'admin/fields',
-      'session'     =>  $this->data,
-      'no'          =>  $this->uri->segment(4), 
-      'type'        =>  array('VARCHAR', 'INT', 'TEXT', 'DATE', 'DATETIME'),
+      'title'         =>  'Fields',
+      'subtitle'      =>  'create',
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('create'),
+      'table'         =>  'fields_type',
+      'action'        =>  'admin/settings/fields/type',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'button'        =>  'Save',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'create',
+      'content'       =>  'template/bootstrap-4/admin/fields/fields-type-form',
+      'type'          =>  array('VARCHAR', 'INT', 'TEXT', 'DATE', 'DATETIME'),
     );
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     if ($this->form_validation->run() == TRUE ) {
       if ($_POST['button'] == 'create') {
         $data = array(
-          'name'        => $this->input->post('name'),
+          'name'        => ucfirst($this->input->post('name')),
           'type'        => $this->input->post('type'),
           'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'slug'        => url_title(strtolower($this->input->post('name'))),
@@ -523,8 +515,8 @@ class fields extends My_Controller {
           'created_by'  => $this->data['userdata']['id'],
         );
         $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
-        $this->session->set_flashdata('message', 'Data has created');
+        helper_log('add', "Create {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
         redirect($settings['action']);
       }
     } else {
@@ -535,29 +527,27 @@ class fields extends My_Controller {
   /*type Update*/
   public function type_update($id='') {
     $settings = array(
-      'header'      => 'Type',
-      'subheader'   => 'Manage fields',
-      'title'          =>  'fields',
-      'subtitle'       =>  FALSE,
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  FALSE,
-      'content'     =>  'template/bootstrap-4/admin/fields/type/edit',
-      'table'       =>  'fields_type',
-      'button'      =>  '+ New Fields',
-      'button_link' =>  'fields/create',
-      'table'       =>  'fields_type',
-      'action'      => 'admin/fields',
-      'session'     =>  $this->data,
-      'no'          =>  $this->uri->segment(4), 
-      'type'        =>  array('VARCHAR', 'INT', 'TEXT', 'DATE', 'DATETIME'),
+      'title'         =>  'Fields',
+      'subtitle'      =>  'Edit',
+      'breadcrumb'    =>  array('settings'),
+      'subbreadcrumb' =>  array('create'),
+      'table'         =>  'fields_type',
+      'action'        =>  'admin/settings/fields/type',
+      'session'       =>  $this->data,
+      'no'            =>  $this->uri->segment(3),
+      'button'        =>  'Update',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'update',
+      'content'       =>  'template/bootstrap-4/admin/fields/fields-type-form',
+      'type'          =>  array('VARCHAR', 'INT', 'TEXT', 'DATE', 'DATETIME'),
+      'id'            =>  $id,
     );
     $settings['getDataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
     $this->form_validation->set_rules('name', 'Name', 'trim|required');
     if ($this->form_validation->run() == TRUE ) {
-      // var_dump($this->input->post());die;
       if ($_POST['button'] == 'update') {
         $data = array(
-          'name'        => $this->input->post('name'),
+          'name'        => ucfirst($this->input->post('name')),
           'type'        => $this->input->post('type'),
           'handle'      => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'slug'        => url_title(strtolower($this->input->post('name'))),
@@ -565,8 +555,8 @@ class fields extends My_Controller {
           'updated_by'  => $this->data['userdata']['id'],
         );
         $this->general_m->update($settings['table'], $data, $id);
-        helper_log('update', "update ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." has successfully");
-        $this->session->set_flashdata('message', 'Data has Updated');
+        helper_log('edit', "Update {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully updated");
         redirect($settings['action']);
       }
     } else {
@@ -577,18 +567,14 @@ class fields extends My_Controller {
   /*Delete type*/
   public function type_delete($id='') {
     $settings = array(
-      'header'    =>  'Type',
-      'subheader' =>  'Manage fields',
-      'content'   =>  'admin/fields/type/index',
-      'table'     =>  'fields_type',
-      'action'    =>  'admin/fields/type',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(4), 
+      'table'         =>  'fields_type',
+      'action'        =>  'admin/settings/fields/type',
     );
-    if ($this->general_m->get_row_by_id($settings['table'], $id)) {
+    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
+    if ($settings['getDataby_id']) {
       $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
+      helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
+      $this->session->set_flashdata("message", "Data has deleted {$delete} Records");
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');

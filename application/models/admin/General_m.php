@@ -20,7 +20,7 @@ class General_m extends My_Model {
   /*Get All Data Records*/
   public function get_all_results($table, $limit = '', $offset = '', $id='', $key='') {
     ((!empty($key)) ? $key : $key = 'id');
-    ((!empty($id)) ? $this->db->where("{$table}.{$key}", $id) : '');
+    ((!empty($id) || $id == '0') ? $this->db->where("{$table}.{$key}", $id) : '');
     ($limit ? $this->db->limit($limit, $offset) : '' );
     $result = $this->db->get($table);
     if($result->num_rows() > 0) {

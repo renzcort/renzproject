@@ -1,10 +1,9 @@
-  <div id="left-content" class="left-content">
+  <div id="left-content" class="left-content" id="fields-left">
     <div class="sidebar-content">
       <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebarGroups" 
-        data-groups-name="<?php echo ($group_name ? $group_name : ''); ?>" 
         data-table="<?php echo ($table ? $table : ''); ?>" 
         data-action-name="<?php echo ($action ? $action : '');?>"
-        data-element="<?php echo ($fields_element ? $fields_element : ''); ?>">       
+        data-groups-name="<?php echo ($group_name ? $group_name : ''); ?>">       
         <li class="nav-item">
           <a class="nav-link active" data-id="all">All Fields</a>
         </li>
@@ -35,7 +34,7 @@
       </div>
     </div>
   </div>
-  <div id="right-content" class="right-content ml-auto">
+  <div id="right-content" class="right-content ml-auto" id="fields-right">
     <?php if ($record_all) { ?>
     <table class="table table-sm">
       <thead>
