@@ -1,4 +1,4 @@
-<div class="middle-content flex-grow-1">
+<div class="middle-content flex-grow-1" id="sections-form">
   <?php
     $attributes = array('class' => 'form',
                         'id'  =>  'MyForm'
@@ -27,33 +27,35 @@
     <div class="form-group">
       <label class="heading" for="inputSectionType">Section Type</label>
       <small class="form-text text-muted">What type of section is this?</small>
-      <select name="sectionType" class="form-control costum-select">
-      <option value="0">- Select Type -</option>
+      <select name="section-type" class="form-control costum-select">
       <?php foreach ($section_type as $key ): ?>
         <option value="<?php echo $key->id ?>" <?php echo ((!empty($getDataby_id->type_id) && $getDataby_id->type_id == $key->id) ? 'selected' : ''); ?>><?php echo $key->name ?></option>
       <?php endforeach ?>
       </select>
     </div>
     <hr class="break-line"></hr>
-    <div class="form-group">
+    <div class="form-group" id="site-settings">
       <label class="heading" for="inputSiteSettings">Site Settings</label>
       <label class="form-text text-muted">Choose which sites this section should be available in, and configure the site-specific settings.</label>
       <table class="table table-bordered text-center">
         <thead class="thead-dark">
-          <th>Site</th>
+          <th style="width: 10%;">Site</th>
           <th>Entry URI Format</th>
           <th>Template</th>
-          <th>Default Status</th>
+          <th class="status d-none" style="width: 10%;">Default Status</th>
         </thead>
         <tbody>
           <tr class="start">
-            <td class="first py-0">Craftcms</td>
+            <td class="first py-0" style="width: 10%;"><?php echo $sites->name; ?></td>
             <td class="p-0"><input type="text" name="url" class="form-control" value="<?php echo (!empty($getDataby_id->url) ? $getDataby_id->url : set_value('url')); ?>"></td>
             <td class="p-0"><input type="text" name="template" class="form-control" value="<?php echo (!empty($getDataby_id->template) ? $getDataby_id->template : set_value('template')); ?>"></td>
-            <td class="py-0">
+            <td class="py-0 status d-none" style="width: 10%;">
               <div class="custom-control custom-switch">
-                <input type="checkbox" name="activated" class="custom-control-input customSwitch" id="customSwitch1">
-                <label class="custom-control-label" for="customSwitch1">Disabled</label>
+                <input type="checkbox" name="activated" class="custom-control-input customSwitch" id="customSwitch1"
+                <?php echo ((!empty($getDataby_id->activated) && $getDataby_id->activated == 1) ? 'checked' : '') ?>>
+                <label class="custom-control-label" for="customSwitch1"> 
+                  <?php echo ((!empty($getDataby_id->activated) && $getDataby_id->activated == 1) ? 'Enabled' : 'Disabled') ?> 
+                </label>
               </div>
             </td>
           </tr>

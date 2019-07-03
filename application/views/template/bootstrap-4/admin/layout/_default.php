@@ -311,6 +311,18 @@
         /*END Fields Forms*/
 
 
+        /**
+         * Sections
+         */
+        $('#sections-form [name="section-type"]').change(function(){
+          if ($(this).val() == '5') {
+            $('#site-settings .status').addClass('d-none');
+          } else {
+            $('#site-settings .status').removeClass('d-none');
+          }
+        });
+         /*end Section*/
+
 
         // getTabsFieldsList();
         getGroupsById();

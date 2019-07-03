@@ -15,7 +15,7 @@ class Section extends My_Controller {
     $this->load->model('admin/Entries_m', 'entries_m');
 		$this->data = array(
       'userdata'  =>  $this->first_load(),
-      'parentLink' => 'admin/section', 
+      'parentLink' => 'admin/settings/section', 
     );
 	}
 
@@ -25,13 +25,13 @@ class Section extends My_Controller {
       'subtitle'      =>  FALSE,
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
-      'button'        =>  '+ New section',
-      'button_link'   =>  'section/create',
-      'content'       =>  'template/bootstrap-4/admin/section/section-list',
       'table'         =>  'section',
       'action'        =>  'admin/settings/section',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(4),
+      'button'        =>  '+ New section',
+      'button_link'   =>  'section/create',
+      'content'       =>  'template/bootstrap-4/admin/section/section-list',
     );
     // Pagination
     $config                 = $this->config->item('setting_pagination');
@@ -57,30 +57,32 @@ class Section extends My_Controller {
       'subtitle'      =>  'create',
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('create'),
-      'button'        =>  'Save',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'create',
-      'content'       =>  'template/bootstrap-4/admin/section/section-form',
       'table'         =>  'section',
       'action'        =>  'admin/settings/section/create',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
+      'button'        =>  'Save',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'create',
+      'content'       =>  'template/bootstrap-4/admin/section/section-form',
       'section_type'  =>  $this->general_m->get_all_results('section_type'),
+      'sites'         =>  $this->general_m->get_row_by_fields('sites', $data = array('primary' => '1')),
     );
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_section.name]');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_section.handle]');
-		$this->form_validation->set_rules('sectionType', 'Type Section', 'trim|required');
+		$this->form_validation->set_rules('section-type', 'Type Section', 'trim|required');
 		if ($this->form_validation->run() == TRUE) {
 			if ($_POST['button'] == 'create') {
 				$data = array(
 					'name'        =>	ucfirst($this->input->post('name')),
 					'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-					'type_id'     =>	$this->input->post('sectionType'),
+					'type_id'     =>	$this->input->post('section-type'),
+          'sites_id'  =>  $settings['sites']->id,
 					'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'url'         =>  $this->input->post('url'),
           'template'    =>  $this->input->post('template'),
-          'activated'   =>  (($this->input->post('activated') == 'on') ? 1 : 0 ),
+          'activated'   =>  ($this->input->post('activated') ? $this->input->post('activated') : 0),
 					'description' =>	$this->input->post('description'),
 					'order'       =>	$this->input->post('order'),
 					'created_by'  =>	$this->data['userdata']['id'],
@@ -99,7 +101,7 @@ class Section extends My_Controller {
         );
         $this->general_m->create('section_entries', $entries_data);
       	helper_log('add', "Create {$settings['title']} has successfully");				
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Created");
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully created");
 				redirect($this->data['parentLink']);
 			}
 		} else {
@@ -123,31 +125,33 @@ class Section extends My_Controller {
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'section_type'  =>  $this->general_m->get_all_results('section_type'),
+      'sites'         =>  $this->general_m->get_row_by_fields('sites', $data = array('primary' => '1')),
       'id'            =>  $id,
-      'getDataby_id'  =>  $this->section_m->get_row_by_id($id)
+      'getDataby_id'  =>  $this->section_m->get_row_by_id($id),
     );
 
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|callback_name_check');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|callback_handle_check');
-    $this->form_validation->set_rules('sectionType', 'Type Section', 'trim|required');
+    $this->form_validation->set_rules('section-type', 'Type Section', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if ($_POST['button'] == 'update') {
         $data = array(
           'name'        =>  ucfirst($this->input->post('name')),
           'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'type_id'     =>  $this->input->post('sectionType'),
+          'type_id'     =>  $this->input->post('section-type'),
+          'sites_id'  =>  $settings['sites']->id,
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'url'         =>  $this->input->post('url'),
           'template'    =>  $this->input->post('template'),
-          'activated'   =>  $this->input->post('activated'),
+          'activated'   =>  ($this->input->post('activated') ? $this->input->post('activated') : 0),
           'description' =>  $this->input->post('description'),
           'order'       =>  $this->input->post('order'),
           'updated_by'  =>  $this->data['userdata']['id'],
         );
         $this->section_m->update($data, $id);
         helper_log('update', "Update {$settings['title']} has successfully");        
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully updated");
         redirect($this->data['parentLink']);
       }
     } else {
@@ -297,7 +301,7 @@ class Section extends My_Controller {
           }
           helper_log('add', "Create element has successfully {$element['order']} records");
         }
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
         redirect($settings['action']);
       }
     } else {
@@ -372,7 +376,7 @@ class Section extends My_Controller {
           }
           helper_log('edit', "edit element entries id {$id} has successfully {$element['order']} record");
         }
-        $this->session->set_flashdata("message", "Entries has successfully Updated");
+        $this->session->set_flashdata("message", "Entries has successfully updated");
         redirect($settings['action']);
       }
     } else {
@@ -467,7 +471,7 @@ class Section extends My_Controller {
 				);
 				$this->general_m->create($settings['table'], $data);
         helper_log('add', "Create {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
 				redirect($settings['action']);
 			}
 		} else {
@@ -506,7 +510,7 @@ class Section extends My_Controller {
 				);
 				$this->general_m->update($settings['table'], $data, $id);
         helper_log('edit', "Update {$settings['title']} has successfully");
-        $this->session->set_flashdata("message", "Entries has successfully Updated");
+        $this->session->set_flashdata("message", "Entries has successfully updated");
 				redirect($settings['action']);
 			}
 		} else {
