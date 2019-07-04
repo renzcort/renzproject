@@ -116,14 +116,14 @@ class Section extends My_Controller {
       'subtitle'      =>  'edit',
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('edit'),
-      'button'        =>  'Update',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'update',
-      'content'       =>  'template/bootstrap-4/admin/section/section-form',
       'table'         =>  'section',
       'action'        =>  'admin/settings/section/edit',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
+      'button'        =>  'Update',
+      'button_type'   =>  'submit',
+      'button_name'   =>  'update',
+      'content'       =>  'template/bootstrap-4/admin/section/section-form',
       'section_type'  =>  $this->general_m->get_all_results('section_type'),
       'sites'         =>  $this->general_m->get_row_by_fields('sites', $data = array('primary' => '1')),
       'id'            =>  $id,
@@ -172,7 +172,7 @@ class Section extends My_Controller {
       $deleteEntries = $this->general_m->delete('section_entries', $id, 'section_id');
       $delete        = $this->section_m->delete($id);
       helper_log('delete', "Delete {$settings['title']} with id = {$id} has successfully");
-      $this->session->set_flashdata('message', "{settings['title']} has deleted {$delete} Records");      
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");      
       redirect($this->data['parentLink']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
@@ -216,13 +216,13 @@ class Section extends My_Controller {
       'subtitle'      =>  FALSE,
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('entries'),
-      'button'        =>  '+ New entry type',
-      'button_link'   =>  "entrytypes/create",
-      'content'       =>  'template/bootstrap-4/admin/section/section-entries-list',
       'table'         =>  'section_entries',
       'action'        =>  "admin/settings/section/{$section_id}/entrytypes",
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(5),
+      'button'        =>  '+ New entry type',
+      'button_link'   =>  "entrytypes/create",
+      'content'       =>  'template/bootstrap-4/admin/section/section-entries-list',
     );
 
     // pagination
@@ -249,15 +249,15 @@ class Section extends My_Controller {
       'subtitle'       =>  'create',
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  array('create'),
+      'table'          =>  'section_entries',
+      'action'         =>  "admin/settings/section/{$section_id}/entrytypes",
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
       'button'         =>  'Save',
       'button_type'    =>  'submit',
       'button_name'    =>  'create',
       'button_tabs'    =>  TRUE,
       'content'        =>  'template/bootstrap-4/admin/section/section-entries-form',
-      'table'          =>  'section_entries',
-      'action'         =>  "admin/settings/section/{$section_id}/entrytypes",
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
       'section_id'     =>  $section_id,
       'section'        =>  $this->section_m->get_row_by_id($section_id),
       'fields_element' =>  'element',
@@ -390,15 +390,15 @@ class Section extends My_Controller {
       'title'          => 'Entries',
       'section_id'     => $section_id,
       'fields_element' => 'element',
-      'getDataby_id'   => $this->entries_m->get_row_by_id($id),
+      'getDataby_id'   => $this->general_m->get_row_by_id('section_entries', $id),
       'action'         =>  "admin/settings/section/{$section_id}/entrytypes",
     );
 
     if ($settings['getDataby_id']) {
       $deleteElement = $this->general_m->delete('element', $id, 'entries_id');
-      $delete        = $this->entries_m->delete($id);
-      helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
-      $this->session->set_flashdata('message', "{settings['title']} has deleted {$delete} Records");
+      $delete        = $this->general_m->delete('section_entries', $id);
+      helper_log('delete', "Delete {$settings['title']} with id = {$id} has successfully");
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
@@ -529,7 +529,7 @@ class Section extends My_Controller {
     
     if ($settings['getDataby_id']) {
       $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete {settings['title']} with id = has successfully");
+      helper_log('delete', "Delete {$settings['title']} with id = has successfully");
       $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");   
       redirect($settings['action']);
     } else {

@@ -42,14 +42,14 @@
           <th style="width: 10%;">Site</th>
           <th>Entry URI Format</th>
           <th>Template</th>
-          <th class="status d-none" style="width: 10%;">Default Status</th>
+          <th class="status  <?php echo ((!empty($getDataby_id->type_id) && $getDataby_id->type_id == '6') ? '' : 'd-none'); ?>" style="width: 10%;">Default Status</th>
         </thead>
         <tbody>
           <tr class="start">
             <td class="first py-0" style="width: 10%;"><?php echo $sites->name; ?></td>
             <td class="p-0"><input type="text" name="url" class="form-control" value="<?php echo (!empty($getDataby_id->url) ? $getDataby_id->url : set_value('url')); ?>"></td>
             <td class="p-0"><input type="text" name="template" class="form-control" value="<?php echo (!empty($getDataby_id->template) ? $getDataby_id->template : set_value('template')); ?>"></td>
-            <td class="py-0 status d-none" style="width: 10%;">
+            <td class="py-0 status  <?php echo ((!empty($getDataby_id->type_id) && $getDataby_id->type_id == '6') ? '' : 'd-none'); ?>" style="width: 10%;">
               <div class="custom-control custom-switch">
                 <input type="checkbox" name="activated" class="custom-control-input customSwitch" id="customSwitch1"
                 <?php echo ((!empty($getDataby_id->activated) && $getDataby_id->activated == 1) ? 'checked' : '') ?>>
