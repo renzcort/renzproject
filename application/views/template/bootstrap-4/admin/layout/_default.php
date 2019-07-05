@@ -103,7 +103,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <input type="file" name="assets" class="btn btn-primary mr-auto p-2 ">
+        <input type="file" name="assets" id="file" class="btn btn-primary mr-auto p-2 ">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" id="select-assets" data-dismiss="modal">Select</button>
       </div>
@@ -165,16 +165,6 @@
             $('label.custom-control-label').text('Disabled');
             $(this).val('0');
           }
-          // var enabled = $('.customSwitch:checked').val();
-          // if (enabled == 'on') {
-          //   $('#base-url').removeClass('d-none');
-          //   $('label.custom-control-label').text('Enabled');
-          //   $(this).val('1');
-          // } else {
-          //   $('#base-url').addClass('d-none');
-          //   $('label.custom-control-label').text('Disabled');
-          //   $(this).val('0');
-          // }
         });
 
         // add tabs layout
@@ -498,12 +488,13 @@
 
       function uploadWithoutSubmit(){
         $('#file').change(function(){
-          var name = document.getElementById("file").files[0].name;
+          var name      = document.getElementById("file").files[0].name;
           var form_data = new FormData();
-          var ext = name.split('.').pop().toLowerCase();
-          var group_id = $(".sidebar-content .nav-link.active").attr('data-id');
+          var ext       = name.split('.').pop().toLowerCase();
+          var group_id  = $(".sidebar-content .nav-link.active").attr('data-id');
+          var astSource = $('#assets-source').val();
           form_data.append("group_id", group_id);
-          console.log(form_data);
+          form_data.append("assets_Source", astSource);
 
           if(jQuery.inArray(ext, ['gif','png','jpg','jpeg']) == -1) 
           {
@@ -545,10 +536,11 @@
         $('[data-target="#assetsModal"]').click(function(e) {
           var assets_id     = $(this).data('assets-id');
           var assets_fields = $(this).data('assets-fields');
+          var assets_source = $(this).data('assets-source');
           $.ajax({
             type : 'POST',
             dataType : 'json',
-            data : {id : assets_id},
+            data : {id:assets_id, assets_fields:assets_fields, assets_source:assets_source},
             url : '<?php echo base_url("admin/api/jsonAssetsEntriesUpload") ?>',
           }).done(function(data){
             $('li.assets-list').text(data.name);

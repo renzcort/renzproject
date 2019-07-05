@@ -268,7 +268,6 @@ class Section extends My_Controller {
       'order'          =>  $this->general_m->get_max_fields('section_entries', 'order'),
     );
 
-
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_entries.name]');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_entries.handle]');
     $this->form_validation->set_rules('title', 'Title', 'trim|required');

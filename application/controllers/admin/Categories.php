@@ -186,7 +186,7 @@ class Categories extends My_Controller {
     if ($settings['getDataby_id']) {
       $delete = $this->general_m->delete('categories_content', $id); 
       helper_log('delete', "Delete {$params->handle} with id = {$id} has successfully");
-      $this->session->set_flashdata("message", "Data has deleted {$delete} Records");
+      $this->session->set_flashdata("message", "data has deleted {$delete} records");
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Delete Failed, Your data is Not Valid');
@@ -202,13 +202,13 @@ class Categories extends My_Controller {
       'subtitle'      =>  FALSE,
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
-      'button'        =>  '+ New Categories',
-      'button_link'   =>  'categories/create',
-      'content'       =>  'template/bootstrap-4/admin/categories/categories-group-list',
       'table'         =>  'categories',
       'action'        =>  'admin/settings/categories',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
+      'button'        =>  '+ New Categories',
+      'button_link'   =>  'categories/create',
+      'content'       =>  'template/bootstrap-4/admin/categories/categories-group-list',
       'fields_element'  =>  'categories_element',
       'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
       'fields'        =>  $this->fields_m->get_all_results(),
@@ -235,24 +235,25 @@ class Categories extends My_Controller {
   /*CREATE*/
   public function groups_create() {
     $settings = array(
-      'title'         =>  'categories',
-      'subtitle'      =>  'create',
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  array('create'),
-      'button'        =>  'Create',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'create',
-      'button_tabs'   =>  TRUE,
-      'content'       =>  'template/bootstrap-4/admin/categories/categories-group-form',
-      'table'         =>  'categories',
-      'action'        =>  'admin/settings/categories',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
-      'fields_element'=>  'categories_element',
-      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
-      'fields'        =>  $this->fields_m->get_all_results(),
-      'elementFields' =>  [],
-      'order'         =>  $this->general_m->get_max_fields('categories', 'order'),
+      'title'          =>  'categories',
+      'subtitle'       =>  'create',
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  array('create'),
+      'table'          =>  'categories',
+      'action'         =>  'admin/settings/categories',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'button'         =>  'Create',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',
+      'button_tabs'    =>  TRUE,
+      'content'        =>  'template/bootstrap-4/admin/categories/categories-group-form',
+      'fields_element' =>  'categories_element',
+      'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'element'        =>  [],
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );
 
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
@@ -301,27 +302,36 @@ class Categories extends My_Controller {
   /*UPDATE*/
   public function groups_update($id='') {
     $settings = array(
-      'title'         =>  'categories',
-      'subtitle'      =>  'Update',
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  array('edit'),
-      'button'        =>  'Update',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'update',
-      'button_tabs'   =>  TRUE,
-      'content'       =>  'template/bootstrap-4/admin/categories/categories-group-form',
-      'table'         =>  'categories',
-      'action'        =>  'admin/settings/categories',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
-      'fields_element'=>  'categories_element',
-      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
-      'fields'        =>  $this->fields_m->get_all_results(),
-      'elementFields' =>  [],
-      'order'         =>  $this->general_m->get_max_fields('categories', 'order'),
+      'title'          =>  'categories',
+      'subtitle'       =>  'Update',
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  array('edit'),
+      'table'          =>  'categories',
+      'action'         =>  'admin/settings/categories',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'button'         =>  'Update',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'update',
+      'button_tabs'    =>  TRUE,
+      'content'        =>  'template/bootstrap-4/admin/categories/categories-group-form',
+      'fields_element' =>  'categories_element',
+      'element'        =>  $this->general_m->get_result_by_id('categories_element', $id, 'categories_id'),
+      'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );
 
-    $settings['element']      = $this->general_m->get_result_by_id($settings['fields_element'], $id, "{$settings['table']}_id");
+    if ($settings['element']) {
+      foreach ($settings['element'] as $key) {
+        $fieldsId[] = $key->fields_id; 
+      }
+      $settings['elementFields'] = $fieldsId;
+    } else {
+      $settings['elementFields'] = [];
+    }
+
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
     
     if ($settings['element']) {
@@ -368,7 +378,7 @@ class Categories extends My_Controller {
           }
           helper_log('add', "add element create has successfully {$element['order']} record");
         }        
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully updated");
         redirect($settings['action']);
       } 
     } else {
@@ -379,7 +389,7 @@ class Categories extends My_Controller {
   /*DELETE*/
   public function groups_delete($id='') {
     $settings = array(
-      'title'         => 'Categories',
+      'title'         => 'categories',
       'table'         => 'categories',
       'action'        => 'admin/settings/categories',
       'table_element' => 'categories_element',
@@ -431,7 +441,7 @@ class Categories extends My_Controller {
       }
       $delete = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete data {$settings['title']} has successfully");        
-      $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} Record");
+      $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} record");
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');

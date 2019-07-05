@@ -1,4 +1,4 @@
-  <div id="left-content" class="left-content">
+  <div id="left-content" class="left-content" id="assets-group-list">
     <div class="sidebar-content">
       <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="assetsButton"
       data-table="<?php echo ($table ? $table : ''); ?>">

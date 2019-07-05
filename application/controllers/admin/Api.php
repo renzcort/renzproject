@@ -31,16 +31,16 @@ class Api extends My_Controller {
       'subtitle'       =>  ($this->input->post('subtitle') ? $this->input->post('subtitle') : FALSE),
       'breadcrumb'     =>  FALSE,
       'subbreadcrumb'  =>  FALSE,
+      'table'          =>  $this->input->post('table'),
+      'action'         =>  $this->input->post('action'),
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
       'button'         =>  (($button == 'create') ? 'Save' : 'Update'),
       'button_type'    =>  'submit',
       'button_name'    =>  (($button == 'create') ? 'create' : 'Update'),
       'button_tabs'    =>  TRUE,
       'content'        =>  $this->input->post('content'),
-      'table'          =>  $this->input->post('table'),
       'fields_element' =>  $this->input->post('fields_element'),
-      'action'         =>  $this->input->post('action'),
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
       'section_id'     =>  $section_id,
       'section'        =>  $this->section_m->get_row_by_id($section_id),
       'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
@@ -459,9 +459,15 @@ class Api extends My_Controller {
 
   /*Upload Assets*/
   public function uploadWithoutSubmit() {
-    (($this->input->post('group_id') == 'all') ? $id = '0' : $id = $this->input->post('group_id'));
-    (($id == '') ? '' : $assets = $this->general_m->get_row_by_id('assets', $id));
-    (($id == '') ? $folder = 'default' : $folder = lcfirst($assets->handle));
+    $id     = (in_array($this->input->post('group_id'), array('all', 'default')) ? '0' : $this->input->post('group_id'));
+    $assets = (($id == '0') ? '' : $this->general_m->get_row_by_id('assets', $id));
+    
+    if ($this->input->post('assets_Source')) {
+      $folder = lcfirst($this->input->post('assets_Source'));
+    } else {
+      $folder = (($id == '0') ? 'default' : lcfirst($assets->handle));
+    }
+    
     $settings = array(
       'upload_path' => "uploads/admin/assets/{$folder}",
     );
@@ -483,8 +489,7 @@ class Api extends My_Controller {
 
       if ( ! $this->upload->do_upload('file')){
         $error = array('error' => $this->upload->display_errors());
-      }
-      else{
+      } else{
         $result = array('upload_data' => $this->upload->data());
         $path = "{$settings['upload_path']}/thumb";
         $data = array(
@@ -567,15 +572,17 @@ class Api extends My_Controller {
 
   /*Assets Upload*/
   public function jsonAssetsEntriesUpload(){
-    $assets_id = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
+    $assets_id     = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
     $settings = array(
       'assets'         => $this->general_m->get_row_by_id('assets', $assets_id),
       'assets_content' => $this->general_m->get_result_by_id('assets_content', $assets_id, 'assets_id'),
     );
+    $folder = (($this->input->post('assets_source') == '') ? $settings['assets']->handle : lcfirst($this->input->post('assets_source')));
 
     if ($settings['assets_content']) {
       $table_view = '
       <div id="uploadModal">
+        <input type="hidden" class="form-control" id="assets-source" data-folder="'.$folder.'" name="folder" value="'.$folder.'">
         <table class="table table-sm" id="datatableModal">
           <thead>
             <tr>
@@ -664,8 +671,7 @@ class Api extends My_Controller {
       'title'                          => $this->input->post('title'),
       'handle'                         => lcfirst(str_replace(' ', '', ucwords($this->input->post('title')))),
       'slug'                           => url_title(strtolower($this->input->post('title'))),
-      'activated'                      => (empty($this->input->post('activated')) ? '0' : $this->input->post('activated')),
-      'created_by'                     => $this->data['userdata']['id'],
+      'activated'                      => ($this->input->post('activated') ? $this->input->post('activated') : 0),
       "{$settings['parent_table']}_id" => $parent_id,
     );
     (($this->input->post('parent_table') == 'section_entries') ? $data['section_id'] = $settings['section_id'] : ''  );
@@ -681,10 +687,12 @@ class Api extends My_Controller {
       }
     }
     if ($settings['button'] == 'create') {
+      $data['created_by'] = $this->data['userdata']['id'];
       $this->general_m->create($settings['table'], $data);
       helper_log('add', "Create {$settings['table']} has successfully");
       $this->session->set_flashdata('message', "data has successfully created");
     } elseif ($settings['button'] == 'update') {
+      $data['updated_by'] = $this->data['userdata']['id'];
       $this->general_m->update($settings['table'], $data, $settings['id']);
       helper_log('edit', "Update {$settings['table']} has successfully");
       $this->session->set_flashdata('message', "data has successfully updated");

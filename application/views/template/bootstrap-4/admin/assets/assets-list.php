@@ -5,7 +5,8 @@
         data-action-name="<?php echo ($action ? $action : '');?>"
         data-content-name="<?php echo ($content_name ? $content_name : ''); ?>">
        <li class="nav-item">
-          <a class="nav-link <?php echo (($this->uri->segment(3) == 'default') ? 'active' : '') ?>" data-id="all" href="default">All Fields</a>
+          <a class="nav-link <?php echo (($this->uri->segment(3) == 'all') ? 'active' : '') ?>" data-id="all" href="all">All Assets</a>
+          <a class="nav-link <?php echo (($this->uri->segment(3) == 'default') ? 'active' : '') ?>" data-id="default" href="default">Default</a>
        </li>
         <?php 
         if ($assets) {

@@ -18,6 +18,8 @@ class Entries extends My_Controller {
         $handle[] = $key->handle;
       }
     }
+    array_push($handle, 'all', 'default');
+
 
     //Do your magic here
     if ($this->router->method == 'index') {
@@ -108,7 +110,7 @@ class Entries extends My_Controller {
       'button_tabs'     =>  TRUE,      
       'content'         =>  'template/bootstrap-4/admin/entries/entries-form',
       'section_id'      =>  $params->id,
-      'section_entries' =>  $this->general_m->get_all_results('section_entries'),
+      'section_entries' =>  $this->general_m->get_result_by_fields('section_entries', array('section_id' => $params->id)),
       'element'         =>  $this->general_m->get_result_by_fields('element', array('entries_id' => $firstEntries->id)),
       'fields'          =>  $this->fields_m->get_all_results(),
       'fields_type'     =>  $this->general_m->get_all_results('fields_type'),
@@ -117,7 +119,6 @@ class Entries extends My_Controller {
       'assets_content'  =>  $this->general_m->get_all_results('assets_content'),
       'parent_table'    =>  'section_entries',
     );
-    // var_dump($settings['fields']);die;
     foreach ($settings['element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
     }

@@ -157,22 +157,39 @@
 </div>
 <div class="right-content-entries">
   <div class="form-group row">
-      <label for="staticEmail" class="col-sm-2 col-form-label">Slug</label>
-    <div class="col-sm-10">
-      <input type="text" class="form-control-plaintext px-2" id="staticEmail" name="slug" placeholder="Enter Slug"
+    <label for="staticEmail" class="col-sm-3 col-form-label">Slug</label>
+    <div class="col-sm-9">
+      <input type="text" class="form-control-plaintext px-2" name="slug" placeholder="Enter Slug"
       value="<?php echo (!empty($getDataby_id->slug) ? $getDataby_id->slug : set_value('slug')); ?>">
     </div>
   </div>
   <div class="form-group row">
-    <label for="inputPassword" class="col-sm-2 col-form-label">Parent</label>
-    <div class="col-sm-10">
+    <label for="staticEmail" class="col-sm-3 col-form-label">Post Date</label>
+    <div class="col-sm-9">
+      <input type="date" class="form-control-plaintext px-2" name="postdate"
+      value="<?php echo (!empty($getDataby_id->postdate) ? $getDataby_id->postdate : set_value('postdate')); ?>">
     </div>
   </div>
   <div class="form-group row">
-    <div class="col-sm-2">
+    <label for="staticEmail" class="col-sm-3 col-form-label">Expiry Date</label>
+    <div class="col-sm-9">
+      <input type="date" class="form-control-plaintext px-2" name="slug" placeholder="Enter Slug"
+      value="<?php echo (!empty($getDataby_id->slug) ? $getDataby_id->slug : set_value('slug')); ?>">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="inputPassword" class="col-sm-3 col-form-label">Parent</label>
+    <div class="col-sm-9">
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-3">
       <div class="custom-control custom-switch">
-        <input type="checkbox" name="activated" class="custom-control-input customSwitch" id="customSwitch1">
-        <label class="custom-control-label" for="customSwitch1">Disabled</label>
+        <input type="checkbox" name="activated" class="custom-control-input customSwitch" id="customSwitch1"
+        <?php echo ((!empty($getDataby_id->activated) && $getDataby_id->activated == 1) ? 'checked' : '') ?>>
+        <label class="custom-control-label" for="customSwitch1">
+        <?php echo ((!empty($getDataby_id->activated) && $getDataby_id->activated == 1) ? 'Enabled' : 'Disabled') ?>
+        </label>
       </div>
     </div>
   </div>

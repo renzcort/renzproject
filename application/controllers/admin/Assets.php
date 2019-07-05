@@ -21,7 +21,7 @@ class Assets extends My_Controller {
       foreach ($assets as $key) {
         $handle[] = $key->handle;
       }
-      array_push($handle, 'default');
+      array_push($handle, 'all', 'default');
     }
     
     $this->data = array(
@@ -32,7 +32,7 @@ class Assets extends My_Controller {
     if ($this->router->method == 'index') {
       if ($assets) {
         if ((uri_string() == 'admin/assets') || (! in_array($this->uri->segment(3), $handle))) {
-          redirect("admin/assets/default",'refresh');
+          redirect("admin/assets/all",'refresh');
         }
       } else {
         redirect("admin/settings/assets",'refresh');
@@ -42,8 +42,15 @@ class Assets extends My_Controller {
 
     /*Assets entries*/
   public function index($handle) {
-    $params = ($handle == 'default' ? '' : $this->general_m->get_row_by_fields('assets', array('handle' => $handle)));
-    ($handle != 'default' ? $id = $params->id : $id = '0');
+    $params = (($handle == 'default' || $handle == 'all') ? '' : $this->general_m->get_row_by_fields('assets', array('handle' => $handle)));
+    if ($handle == 'default') {
+      $id = '0';
+    } elseif ($handle == 'all') {
+      $id = '';
+    } else {
+      $id = $params->id;
+    }
+
     $settings = array(
       'title'                =>  'assets',
       'subtitle'             =>  FALSE,
@@ -350,13 +357,13 @@ class Assets extends My_Controller {
       'subtitle'        =>  'transforms',
       'breadcrumb'      =>  array('settings'),
       'subbreadcrumb'   =>  FALSE,
+      'table'           =>  'assets_transforms',
+      'action'          =>  'admin/settings/assets/transforms',
+      'session'         =>  $this->data,
+      'no'              =>  $this->uri->segment(5),
       'button'          =>  '+ New Assets',
       'button_link'     =>  'transforms/create',
       'content'         =>  'template/bootstrap-4/admin/assets/assets-group-list',
-      'table'           =>  'assets_transforms',
-      'action'          =>  'admin/settings/assets',
-      'session'         =>  $this->data,
-      'no'              =>  $this->uri->segment(5),
       'right_content'   => 'template/bootstrap-4/admin/assets/assets-transforms-list',
       'fields_element' =>  'assets_element',
       'group_name'      =>  'assets_group',
@@ -388,14 +395,14 @@ class Assets extends My_Controller {
       'subtitle'         =>  'create',
       'breadcrumb'       =>  array('settings'),
       'subbreadcrumb'    =>  array('create'),
-      'button'           =>  'Save',
-      'button_type'      =>  'submit',
-      'button_name'      =>  'create',
-      'content'          =>  'template/bootstrap-4/admin/assets/assets-transforms-form',
       'table'            =>  'assets_transforms',
       'action'           =>  'admin/settings/assets/transforms',
       'session'          =>  $this->data,
       'no'               =>  $this->uri->segment(4),
+      'button'           =>  'Save',
+      'button_type'      =>  'submit',
+      'button_name'      =>  'create',
+      'content'          =>  'template/bootstrap-4/admin/assets/assets-transforms-form',
       'transforms_mode'  =>  array('Crop', 'Fit', 'Strech'),
       'transforms_point' =>  array(
                                   'top-left', 
@@ -446,14 +453,14 @@ class Assets extends My_Controller {
       'subtitle'        =>  'update',
       'breadcrumb'      =>  array('settings'),
       'subbreadcrumb'   =>  array('edit'),
-      'button'          =>  'Update',
-      'button_type'     =>  'submit',
-      'button_name'     =>  'update',
-      'content'         =>  'template/bootstrap-4/admin/assets/assets-transforms-form',
       'table'           =>  'assets_transforms',
       'action'          =>  'admin/settings/assets/transforms',
       'session'         =>  $this->data,
       'no'              =>  $this->uri->segment(3),
+      'button'          =>  'Update',
+      'button_type'     =>  'submit',
+      'button_name'     =>  'update',
+      'content'         =>  'template/bootstrap-4/admin/assets/assets-transforms-form',
       'transforms_mode' =>  array('Crop', 'Fit', 'Strech'),
       'transforms_point' =>  array(
                                   'top-left', 
@@ -502,7 +509,7 @@ class Assets extends My_Controller {
   /*DELETE*/
   public function transforms_delete($id='') {
     $settings = array(
-      'title'           => 'Assets',
+      'title'           => 'Assets Transforms',
       'table'           => 'assets_transforms',
       'action'          => 'admin/settings/assets/transforms',
       'fields_element' => 'assets_element',
@@ -511,7 +518,7 @@ class Assets extends My_Controller {
 
     if ($settings['getDataby_id']) {
       $delete        = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete {settings['title']} with id = has successfully");
+      helper_log('delete', "Delete {$settings['title']} with id = has successfully");
       $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");      
       redirect($settings['action']);
     } else {
