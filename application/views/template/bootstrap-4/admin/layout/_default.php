@@ -96,14 +96,14 @@
       <div class="modal-body d-flex flex-row flex-wrap justify-content-between p-1">
         <div class="left-modal">
           <ul>
-            <li class="assets-list list-unstyled"></li> 
+            <li class="nav-item assets-list list-unstyled"></li> 
           </ul>
         </div>
         <div class="right-modal">
         </div>
       </div>
       <div class="modal-footer">
-        <input type="file" name="assets" id="file" class="btn btn-primary mr-auto p-2 ">
+        <input type="file" name="assets" id="entries-file" class="btn btn-primary mr-auto p-2 ">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         <button type="button" class="btn btn-primary" id="select-assets" data-dismiss="modal">Select</button>
       </div>
@@ -322,6 +322,7 @@
         getModalAssets();
         changeEntriesType();
         uploadWithoutSubmit();
+        uploadAssetsInEntries();
 
         var leftbar = document.getElementById('left-content');
         var leftbarTop = leftbar.offsetTop;
@@ -486,6 +487,7 @@
         return json;
       }
 
+      /*this function for upload file content*/
       function uploadWithoutSubmit(){
         $('#file').change(function(){
           var name      = document.getElementById("file").files[0].name;
@@ -512,7 +514,7 @@
           {
            form_data.append("file", document.getElementById('file').files[0]);
            $.ajax({
-             url: '<?php echo base_url("admin/api/uploadWithoutSubmit") ?>',
+             url: '<?php echo base_url("admin/api/jsonUploadWithoutSubmit") ?>',
              type: "POST",
              data:  form_data,
              contentType: false,
@@ -543,7 +545,7 @@
             data : {id:assets_id, assets_fields:assets_fields, assets_source:assets_source},
             url : '<?php echo base_url("admin/api/jsonAssetsEntriesUpload") ?>',
           }).done(function(data){
-            $('li.assets-list').text(data.name);
+            $('li.assets-list').html(data.name);
             $('#assetsModal .right-modal').html(data.table);
             
             var table = $('#datatableModal').DataTable();
@@ -598,6 +600,7 @@
         });
       }
 
+      /*change option entries in form entries template side right*/
       function changeEntriesType(){
         $('#entries').change(function(){
           var id = $('#entries option:selected').attr('data-id');
@@ -620,6 +623,53 @@
             console.log("complete");
           });
           
+        });
+      }
+
+      /*Function for upload assets in modal in entries template*/
+      function uploadAssetsInEntries(){
+        $('#entries-file').change(function(){
+          var name      = document.getElementById("entries-file").files[0].name;
+          var form_data = new FormData();
+          var ext       = name.split('.').pop().toLowerCase();
+          var group_id  = $(".assets-list .active").attr('data-id');
+          var astSource = $('#assets-source').val();
+          form_data.append("group_id", group_id);
+          form_data.append("assets_Source", astSource);
+
+          if(jQuery.inArray(ext, ['gif','png','jpg','jpeg']) == -1) 
+          {
+           alert("Invalid Image File");
+          }
+          var oFReader = new FileReader();
+          oFReader.readAsDataURL(document.getElementById("entries-file").files[0]);
+          var f = document.getElementById("entries-file").files[0];
+          var fsize = f.size||f.fileSize;
+          if(fsize > 2000000)
+          {
+           alert("Image File Size is very big");
+          }
+          else
+          {
+           form_data.append("entries-file", document.getElementById('entries-file').files[0]);
+           $.ajax({
+             url: '<?php echo base_url("admin/api/jsonUploadAssetsInEntries") ?>',
+             type: "POST",
+             data:  form_data,
+             contentType: false,
+             cache: false,
+             processData:false,
+            // beforeSend:function(){
+            //  $('#table-content').html("<label class='text-success'>Image Uploading...</label>");
+            //  $('#table-content').empty(); 
+            // },   
+            // success:function(data){
+            //   location.reload();
+            //  // $('#table-content').empty(); 
+            //  // $('#table-content').html(data);
+            // }
+           });
+          }
         });
       }
 

@@ -457,8 +457,12 @@ class Api extends My_Controller {
   }
 
 
-  /*Upload Assets*/
-  public function uploadWithoutSubmit() {
+  /**
+   * Upload Assets
+   * This function for upload assets without submit button in assets List
+   * @return [type] [description]
+   */
+  public function jsonUploadWithoutSubmit() {
     $id     = (in_array($this->input->post('group_id'), array('all', 'default')) ? '0' : $this->input->post('group_id'));
     $assets = (($id == '0') ? '' : $this->general_m->get_row_by_id('assets', $id));
     
@@ -570,7 +574,11 @@ class Api extends My_Controller {
     }
   }
 
-  /*Assets Upload*/
+  /**
+   * Assets Upload
+   * this function for get modal in enteies template
+   * @return [type] [description]
+   */
   public function jsonAssetsEntriesUpload(){
     $assets_id     = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
     $settings = array(
@@ -616,8 +624,11 @@ class Api extends My_Controller {
     }
     $table_view .= '</div>';
 
+    $nameAssets = '<a class="active" data-id="'.(!empty($settings['assets']->id) ? $settings['assets']->id : '0').'">
+                  '.(!empty($settings['assets']->name) ? $settings['assets']->name : 'Default').'
+                  </a>';
     $data = array(
-      'name'  =>  (!empty($settings['assets']->name) ? $settings['assets']->name : 'Default'),
+      'name'  =>  $nameAssets,
       'table' =>  $table_view,
     );
     echo json_encode($data);
@@ -870,6 +881,123 @@ class Api extends My_Controller {
       }
     } 
     echo json_encode($html);
+  }
+
+  /**
+   * Function upload assets in entries
+   * This function use to upload assets in entries template and auto reload in modal
+   */
+  public function jsonUploadAssetsInEntries(){
+    var_dump($this->input->post());die;
+    $id     = (in_array($this->input->post('group_id'), array('all', 'default')) ? '0' : $this->input->post('group_id'));
+    $assets = (($id == '0') ? '' : $this->general_m->get_row_by_id('assets', $id));
+    
+    if ($this->input->post('assets_Source')) {
+      $folder = lcfirst($this->input->post('assets_Source'));
+    } else {
+      $folder = (($id == '0') ? 'default' : lcfirst($assets->handle));
+    }
+    
+    $settings = array(
+      'upload_path' => "uploads/admin/assets/{$folder}",
+    );
+
+    // if (file_exists("{$settings['upload_path']}/{$_FILES["file"]["name"]}")) {
+    //   $this->output->set_status_header(401);
+    //   exit;
+    // }
+
+    //upload.php
+    if($_FILES["file"]["name"] != ''){
+      $config = $this->config->item('setting_upload');
+      $config['upload_path'] = $settings['upload_path'];
+      $config['file_name']   = $_FILES["file"]["name"];
+      if (!is_dir($config['upload_path'])) {
+        mkdir($config['upload_path'], 0777, TRUE);
+      } 
+      $this->upload->initialize($config);
+
+      if ( ! $this->upload->do_upload('file')){
+        $error = array('error' => $this->upload->display_errors());
+      } else{
+        $result = array('upload_data' => $this->upload->data());
+        $path = "{$settings['upload_path']}/thumb";
+        $data = array(
+          'assets_id'  => (($id == '') ? 0 : $id),
+          'file'       => $result['upload_data']['file_name'],
+          'ext'        => $result['upload_data']['file_ext'],
+          'size'       => $result['upload_data']['file_size'],
+          'path'       => $path,
+          'created_by' => $this->data['userdata']['id'],
+        );
+        //INSERT Assets content 
+        $this->general_m->create('assets_content', $data);
+        helper_log('add', "Create Assets Content has successfully");
+      }
+
+      // create Thumbs
+      $config = $this->config->item('settings_image');
+      $config['source_image'] = "{$settings['upload_path']}/{$_FILES["file"]["name"]}";
+      $config['create_thumb'] = TRUE;
+      $config['new_image']    = "{$settings['upload_path']}/thumb";
+      if (!is_dir($config['new_image'])) {
+        mkdir($config['new_image'], 0777, TRUE);
+      } 
+      $this->image_lib->initialize($config);
+      if ( ! $this->image_lib->resize()){
+        echo $this->image_lib->display_errors();
+      }
+      // clear //
+      $this->image_lib->clear();
+
+
+     /* $test          = explode('.', $_FILES["file"]["name"]);
+      var_dump(current($test));die;
+      $ext           = end($test);
+      $name          = rand(100, 999) . '.' . $ext;
+      $location_file = base_url("{$settings['upload_path']}/{$_FILES["file"]["name"]}");  
+      $location = './upload/' . $name;  
+      move_uploaded_file($_FILES["file"]["tmp_name"], $location);*/
+
+      $query = (($id == '0') ? $this->general_m->get_all_results('assets_content') : 
+                $this->general_m->get_result_by_id('assets_content', $id, 'assets_id'));
+      $record_all = $query;
+      $no = 0;
+      if ($record_all) {
+        $table_view = '
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th scope="row">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Post Date</th>
+                <th scope="col">File Size</th>
+                <th scope="col">File Modified Date</th>
+              </tr>
+            </thead>
+            <tbody>'; 
+          $no = 0;
+        foreach ($record_all as $key) {
+          $filename = explode('.', $key->file);
+          $name = current($filename);
+          $thumb = current($filename).'_thumb.'.end($filename);
+          $file_thumb = base_url("{$config['new_image']}/{$thumb}");
+          $getSize = get_headers($file_thumb, 1); 
+          $table_view .= '<tr>
+              <td scope="row">'.++$no.'</td>
+              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
+              <td>'.($key->file ? $key->file : '').'</td>
+              <td>'.$getSize['Content-Length'].' kB </td>
+              <td>'.($key->created_at ? $key->created_at : '').'</td>
+              </tr>';
+        }
+        $table_view .= '</tbody></table>';
+      } else {
+        $table_view = '<p class="empty-data">Data is Empty</p>';
+      }
+
+      echo $table_view;
+    }
   }
  
 
