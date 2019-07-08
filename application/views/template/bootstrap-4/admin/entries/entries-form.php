@@ -64,20 +64,22 @@
                             <ul class="list-unstyled selected">';
                               if (!empty($getDataby_id->$fieldsName)) {
                                 $assetsList = explode(', ', $getDataby_id->$fieldsName);
-                                foreach ($assets_content as $astcont) {
-                                  $filename   = explode('.', $astcont->file);
-                                  $name       = current($filename);
-                                  $thumb      = current($filename).'_thumb.'.end($filename);
-                                  $file_thumb = base_url("{$astcont->path}/{$thumb}");
-                                  $getSize    = get_headers($file_thumb, 1);
-                                  if (in_array($astcont->id, $assetsList)) {
-                                    echo '
-                                        <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$astcont->id.'">
-                                          <img src="'.$file_thumb.'" class="img-thumbnail assets-list" 
-                                          data-id="'.$astcont->id.'" heigth="20" width="30"/>
-                                          <label for="input'.$name.'">'.$name.'</label>
-                                          <a><i class="fa fa-times" aria-hidden="true"></i></a
-                                        </li>';
+                                if ($assets_content) {
+                                  foreach ($assets_content as $astcont) {
+                                    $filename   = explode('.', $astcont->file);
+                                    $name       = current($filename);
+                                    $thumb      = current($filename).'_thumb.'.end($filename);
+                                    $file_thumb = base_url("{$astcont->path}/{$thumb}");
+                                    $getSize    = get_headers($file_thumb, 1);
+                                    if (in_array($astcont->id, $assetsList)) {
+                                      echo '
+                                          <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$astcont->id.'">
+                                            <img src="'.$file_thumb.'" class="img-thumbnail assets-list" 
+                                            data-id="'.$astcont->id.'" heigth="20" width="30"/>
+                                            <label for="input'.$name.'">'.$name.'</label>
+                                            <a><i class="fa fa-times" aria-hidden="true"></i></a
+                                          </li>';
+                                    }
                                   }
                                 }
                               }

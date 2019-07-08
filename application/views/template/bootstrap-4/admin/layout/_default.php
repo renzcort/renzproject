@@ -551,10 +551,10 @@
             var table = $('#datatableModal').DataTable();
             $('#datatableModal tbody').on( 'click', 'tr', function () {
               $(this).toggleClass('selected');
-            } );
+            });
             $('#button').click( function () {
               alert( table.rows('.selected').data().length +' row(s) selected' );
-            } );
+            });
 
             // $('tbody tr').click(function() {
             //   if ($(this).hasClass('selected') ) {
@@ -589,9 +589,7 @@
               .always(function() {
                 console.log("complete");
               });
-              
             });
-
           }).fail(function(errot){
           });
         });
@@ -659,15 +657,22 @@
              contentType: false,
              cache: false,
              processData:false,
-            // beforeSend:function(){
-            //  $('#table-content').html("<label class='text-success'>Image Uploading...</label>");
-            //  $('#table-content').empty(); 
-            // },   
-            // success:function(data){
-            //   location.reload();
-            //  // $('#table-content').empty(); 
-            //  // $('#table-content').html(data);
-            // }
+            beforeSend:function(){
+             $('#uploadModal').html("<label class='text-success'>Image Uploading...</label>");
+             $('#uploadModal').empty(); 
+            },   
+            success:function(data){
+              // location.reload();
+              $('#uploadModal').empty(); 
+              $('#uploadModal').html(data);
+              var table = $('#datatableModal').DataTable();
+              $('#datatableModal tbody').on( 'click', 'tr', function () {
+                $(this).toggleClass('selected');
+              });
+              $('#button').click( function () {
+                alert( table.rows('.selected').data().length +' row(s) selected' );
+              });
+            }
            });
           }
         });

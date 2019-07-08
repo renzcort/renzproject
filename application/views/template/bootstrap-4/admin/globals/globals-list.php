@@ -1,8 +1,7 @@
-<div class="middle-content flex-grow-1">
+<div class="middle-content flex-grow-1" id="globals-list">
   <table class="table table-sm">
     <thead>
       <tr>
-        <th scope="col">#</th>
         <th scope="col">Name</th>
         <th scope="col">Handle</th>
         <th scope="col"></th>
@@ -10,7 +9,6 @@
     </thead>
     <tbody>
       <tr>
-        <th scope="row">1</th>
         <td><a href="">About Sinar Sosro</a></td>
         <td>@mdo</td>
         <td scope="row" colspan="2">

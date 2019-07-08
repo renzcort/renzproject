@@ -586,11 +586,12 @@ class Api extends My_Controller {
       'assets_content' => $this->general_m->get_result_by_id('assets_content', $assets_id, 'assets_id'),
     );
     $folder = (($this->input->post('assets_source') == '') ? $settings['assets']->handle : lcfirst($this->input->post('assets_source')));
+    $table_view = '
+      <div id="uploadModal">
+        <input type="hidden" class="form-control" id="assets-source" data-folder="'.$folder.'" name="folder" value="'.$folder.'">';
 
     if ($settings['assets_content']) {
-      $table_view = '
-      <div id="uploadModal">
-        <input type="hidden" class="form-control" id="assets-source" data-folder="'.$folder.'" name="folder" value="'.$folder.'">
+      $table_view .= '
         <table class="table table-sm" id="datatableModal">
           <thead>
             <tr>
@@ -620,7 +621,7 @@ class Api extends My_Controller {
       }
       $table_view .= '</tbody></table>';
     } else {
-      $table_view = '<p class="empty-data">Data is Empty</p>';
+      $table_view .= '<p class="empty-data">Data is Empty</p>';
     }
     $table_view .= '</div>';
 
@@ -713,7 +714,11 @@ class Api extends My_Controller {
     echo json_encode($settings);
   }
 
-  /*Select Entries Type*/
+  /**
+   * Select Entries Type
+   * This function use to change entries type in right tabs
+   * @return [type] [description]
+   */
   public function jsonSelectEntriesType(){
     $id = $this->input->post('id');
     $section_entries = $this->general_m->get_row_by_id('section_entries', $id);
@@ -888,10 +893,8 @@ class Api extends My_Controller {
    * This function use to upload assets in entries template and auto reload in modal
    */
   public function jsonUploadAssetsInEntries(){
-    var_dump($this->input->post());die;
     $id     = (in_array($this->input->post('group_id'), array('all', 'default')) ? '0' : $this->input->post('group_id'));
     $assets = (($id == '0') ? '' : $this->general_m->get_row_by_id('assets', $id));
-    
     if ($this->input->post('assets_Source')) {
       $folder = lcfirst($this->input->post('assets_Source'));
     } else {
@@ -902,22 +905,18 @@ class Api extends My_Controller {
       'upload_path' => "uploads/admin/assets/{$folder}",
     );
 
-    // if (file_exists("{$settings['upload_path']}/{$_FILES["file"]["name"]}")) {
-    //   $this->output->set_status_header(401);
-    //   exit;
-    // }
-
     //upload.php
-    if($_FILES["file"]["name"] != ''){
+    if($_FILES["entries-file"]["name"] != ''){
       $config = $this->config->item('setting_upload');
       $config['upload_path'] = $settings['upload_path'];
-      $config['file_name']   = $_FILES["file"]["name"];
+      $config['file_name']   = $_FILES["entries-file"]["name"];
+
       if (!is_dir($config['upload_path'])) {
         mkdir($config['upload_path'], 0777, TRUE);
       } 
       $this->upload->initialize($config);
 
-      if ( ! $this->upload->do_upload('file')){
+      if ( ! $this->upload->do_upload('entries-file')){
         $error = array('error' => $this->upload->display_errors());
       } else{
         $result = array('upload_data' => $this->upload->data());
@@ -937,7 +936,7 @@ class Api extends My_Controller {
 
       // create Thumbs
       $config = $this->config->item('settings_image');
-      $config['source_image'] = "{$settings['upload_path']}/{$_FILES["file"]["name"]}";
+      $config['source_image'] = "{$settings['upload_path']}/{$_FILES["entries-file"]["name"]}";
       $config['create_thumb'] = TRUE;
       $config['new_image']    = "{$settings['upload_path']}/thumb";
       if (!is_dir($config['new_image'])) {
@@ -950,51 +949,48 @@ class Api extends My_Controller {
       // clear //
       $this->image_lib->clear();
 
-
-     /* $test          = explode('.', $_FILES["file"]["name"]);
-      var_dump(current($test));die;
-      $ext           = end($test);
-      $name          = rand(100, 999) . '.' . $ext;
-      $location_file = base_url("{$settings['upload_path']}/{$_FILES["file"]["name"]}");  
-      $location = './upload/' . $name;  
-      move_uploaded_file($_FILES["file"]["tmp_name"], $location);*/
-
       $query = (($id == '0') ? $this->general_m->get_all_results('assets_content') : 
                 $this->general_m->get_result_by_id('assets_content', $id, 'assets_id'));
       $record_all = $query;
       $no = 0;
+
+      $table_view = '
+      <div id="uploadModal">
+        <input type="hidden" class="form-control" id="assets-source" data-folder="'.$folder.'" name="folder" value="'.$folder.'">';
       if ($record_all) {
-        $table_view = '
-          <table class="table table-sm">
-            <thead>
-              <tr>
-                <th scope="row">#</th>
-                <th scope="col">Title</th>
-                <th scope="col">Post Date</th>
-                <th scope="col">File Size</th>
-                <th scope="col">File Modified Date</th>
-              </tr>
-            </thead>
-            <tbody>'; 
-          $no = 0;
-        foreach ($record_all as $key) {
-          $filename = explode('.', $key->file);
-          $name = current($filename);
-          $thumb = current($filename).'_thumb.'.end($filename);
-          $file_thumb = base_url("{$config['new_image']}/{$thumb}");
-          $getSize = get_headers($file_thumb, 1); 
-          $table_view .= '<tr>
-              <td scope="row">'.++$no.'</td>
-              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
-              <td>'.($key->file ? $key->file : '').'</td>
-              <td>'.$getSize['Content-Length'].' kB </td>
-              <td>'.($key->created_at ? $key->created_at : '').'</td>
-              </tr>';
-        }
-        $table_view .= '</tbody></table>';
-      } else {
-        $table_view = '<p class="empty-data">Data is Empty</p>';
+       $table_view = '
+        <table class="table table-sm" id="datatableModal">
+          <thead>
+            <tr>
+              <th style="width:5%" scope="row">#</th>
+              <th scope="col">Title</th>
+              <th scope="col">Post Date</th>
+              <th style="width:10%" scope="col">File Size</th>
+              <th style="width:25%" scope="col">File Modified Date</th>
+            </tr>
+          </thead>
+          <tbody>'; 
+        $no = 0;
+      foreach ($record_all as $key) {
+        $filename   = explode('.', $key->file);
+        $name       = current($filename);
+        $thumb      = current($filename).'_thumb.'.end($filename);
+        $file_thumb = base_url("{$key->path}/{$thumb}");
+        $getSize    = get_headers($file_thumb, 1); 
+        $table_view .= '<tr>
+            <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
+            <td style:"width:5%;" scope="row">'.++$no.'</td>
+            <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
+            <td>'.($key->file ? $key->file : '').'</td>
+            <td style="width:10%;">'.$key->size.' kB </td>
+            <td style="width:25%;">'.($key->created_at ? $key->created_at : '').'</td>
+            </tr>';
       }
+      $table_view .= '</tbody></table>';
+    } else {
+      $table_view .= '<p class="empty-data">Data is Empty</p>';
+    }
+    $table_view .= '</div>';
 
       echo $table_view;
     }

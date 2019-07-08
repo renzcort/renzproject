@@ -1171,6 +1171,12 @@ header nav.menu .navbar-nav > li {
   margin: .5rem;
 }
 
+li.nav-item.disabled {
+  margin: 1rem 1rem .5rem;
+  font-weight: 100;
+  font-size: 12px;
+}
+
 /* #uploadModal tbody tr:nth-child(odd) {
   background-color: #fafafa;
 }

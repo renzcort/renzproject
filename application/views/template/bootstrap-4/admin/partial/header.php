@@ -32,19 +32,37 @@
   <?php if (isset($button)): ?>
     <div class="d-flex flex-row flex-wrap justify-content-start">
     	<?php if (isset($button_link)): ?>
-        <?php if ($button_link == 'Upload'): ?>
+        <?php if ($button_link == 'Upload'){ ?>
           <div class="header-upload">
             <button class="btn btn-danger btn-sm mx-1"><?php echo ucfirst($button);?></button>
             <input type="file" name="file" id="file" />
           </div>
-        <?php else: ?>
-  	      <a href="<?php echo $button_link; ?>" 
-  	        class="btn btn-danger btn-sm mx-1" 
-  	        type="<?php echo (isset($button_type) ? $button_type : '') ?>"
-  	        name="<?php echo (isset($button_name) ? $button_name : ''); ?>">
-  	        <?php echo ucfirst($button);?>
-  	      </a>
-        <?php endif ?>
+        <?php } elseif ($button_link == 'dropdown') { ?>
+          <a href="<?php echo $button_link; ?>" 
+            class="btn btn-danger btn-sm mx-1" 
+            type="button"
+            id="dropdownMenuButton" 
+            data-toggle="dropdown" 
+            aria-haspopup="true" 
+            aria-expanded="false"
+            name="<?php echo (isset($button_name) ? $button_name : ''); ?>">
+            <?php echo ucfirst($button);?>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <?php if (isset($button_dropdown)) {
+              foreach ($button_dropdown as $key) {
+                echo '<a class="dropdown-item" href="'.$key->handle.'/create">'.ucfirst($key->name).'</a>';
+              }
+            } ?>
+          </div>
+        <?php } else { ?>
+          <a href="<?php echo $button_link; ?>" 
+            class="btn btn-danger btn-sm mx-1" 
+            type="<?php echo (isset($button_type) ? $button_type : '') ?>"
+            name="<?php echo (isset($button_name) ? $button_name : ''); ?>">
+            <?php echo ucfirst($button);?>
+          </a>
+        <?php } ?>
       <?php else : ?>
 	    	<button id="buttonHeader" 
 	        class="btn btn-danger btn-sm mx-1" 

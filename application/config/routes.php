@@ -133,12 +133,18 @@ $route['admin/settings/categories/create']        = 'admin/categories/groups_cre
 $route['admin/settings/categories/edit/(:num)']   = 'admin/categories/groups_update/$1';
 $route['admin/settings/categories/delete/(:num)'] = 'admin/categories/groups_delete/$1';
 
-
-/*Assets*/
+/*Sites*/
 $route['admin/settings/sites']               = 'admin/sites';
 $route['admin/settings/sites/create']        = 'admin/sites/create';
 $route['admin/settings/sites/edit/(:num)']   = 'admin/sites/update/$1';
 $route['admin/settings/sites/delete/(:num)'] = 'admin/sites/delete/$1';
+
+/*Globals*/
+$route['admin/settings/globals']               = 'admin/globals';
+$route['admin/settings/globals/create']        = 'admin/globals/create';
+$route['admin/settings/globals/edit/(:num)']   = 'admin/globals/update/$1';
+$route['admin/settings/globals/delete/(:num)'] = 'admin/globals/delete/$1';
+
 
 // settings 
 $route['admin/settings']         = 'admin/settings';

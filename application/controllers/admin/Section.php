@@ -99,7 +99,20 @@ class Section extends My_Controller {
           'order'       =>  '1',
           'created_by'  =>  $this->data['userdata']['id'],
         );
-        $this->general_m->create('section_entries', $entries_data);
+        $entries_id = $this->general_m->create('section_entries', $entries_data);
+
+        // if single insert to content
+        if ($this->input->post('section-type') == '5') {
+          $content = array(
+            'title'       =>  ucfirst($this->input->post('name')),
+            'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+            'slug'        =>  url_title(strtolower($this->input->post('name'))),
+            'section_id'  =>  $section_id,
+            'entries_id'  =>  $entries_id
+          );
+          $this->general_m->create('content', $content);
+        }
+
       	helper_log('add', "Create {$settings['title']} has successfully");				
         $this->session->set_flashdata("message", "{$settings['title']} has successfully created");
 				redirect($this->data['parentLink']);
@@ -172,7 +185,7 @@ class Section extends My_Controller {
       $deleteEntries = $this->general_m->delete('section_entries', $id, 'section_id');
       $delete        = $this->section_m->delete($id);
       helper_log('delete', "Delete {$settings['title']} with id = {$id} has successfully");
-      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");      
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");      
       redirect($this->data['parentLink']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
@@ -397,7 +410,7 @@ class Section extends My_Controller {
       $deleteElement = $this->general_m->delete('element', $id, 'entries_id');
       $delete        = $this->general_m->delete('section_entries', $id);
       helper_log('delete', "Delete {$settings['title']} with id = {$id} has successfully");
-      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
@@ -529,7 +542,7 @@ class Section extends My_Controller {
     if ($settings['getDataby_id']) {
       $delete = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete {$settings['title']} with id = has successfully");
-      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} Records");   
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");   
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');

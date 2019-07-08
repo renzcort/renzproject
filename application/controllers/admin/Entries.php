@@ -10,6 +10,7 @@ class Entries extends My_Controller {
     $this->load->model('admin/fields_m', 'fields_m');
     $this->load->model('admin/section_m', 'section_m');
     $this->load->model('admin/General_m', 'general_m');
+    $this->load->model('admin/Entries_m', 'entries_m');
 
     $section = $this->section_m->get_all_results();
     $this->firstHandle = ($section ? $section[0]->handle : $handle[] = 'all');
@@ -18,7 +19,7 @@ class Entries extends My_Controller {
         $handle[] = $key->handle;
       }
     }
-    array_push($handle, 'all', 'default');
+    array_push($handle, 'all', 'default', 'singles');
 
 
     //Do your magic here
@@ -38,7 +39,15 @@ class Entries extends My_Controller {
 
   public function index($handle) {
     $params = (($handle == 'all') ? '' : $this->general_m->get_row_by_fields('section', array('handle' => $handle)));
-    if ($params) {
+    if ($handle == 'all') {
+      $params   = '';
+      $dropdown = $this->general_m->get_result_by_fields('section', $data = array('type_id' => '6'));
+    } elseif ($handle == 'singles') {
+      $params   = 'singles';
+      $dropdown = $this->general_m->get_result_by_fields('section', $data = array('type_id' => '6'));
+      $type_id  = 5;
+    } else {
+      $params = $this->general_m->get_row_by_fields('section', array('handle' => $handle));
       $section_entries = $this->general_m->get_result_by_id('section_entries', $params->id, 'section_id');
       foreach ($section_entries as $key) {
         if ($key->order == '1') {
@@ -53,7 +62,8 @@ class Entries extends My_Controller {
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
       'button'         =>  '+ New Entry',
-      'button_link'    =>  "{$handle}/create",
+      'button_link'    =>  (($params && $params != 'singles') ? "{$handle}/create" : "dropdown"),
+      'button_dropdown'=>  (($params && $params != 'singles') ? FALSE : $dropdown),
       'content'        =>  'template/bootstrap-4/admin/entries/entries-list',
       'table'          =>  'content',
       'action'         =>  'admin/entries',
@@ -73,10 +83,12 @@ class Entries extends My_Controller {
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
 
-    if ($params) {
-      $record_all = $this->general_m->get_all_results('content', $config['per_page'], $start_offset, $params->id, 'section_id');
-    } else {
+    if ($params == '') {
       $record_all = $this->general_m->get_all_results('content', $config['per_page'], $start_offset);
+    } elseif ($params == 'singles') {
+      $record_all = $this->entries_m->get_result_data_singles($config['per_page'], $start_offset);
+    } else {
+      $record_all = $this->general_m->get_all_results('content', $config['per_page'], $start_offset, $params->id, 'section_id');
     }
 
     $settings['record_all'] = $record_all;
@@ -146,8 +158,8 @@ class Entries extends My_Controller {
       'button_tabs'     =>  TRUE,      
       'content'         =>  'template/bootstrap-4/admin/entries/entries-form',
       'section_id'      =>  $params->id,
-      'section_entries' =>  $this->general_m->get_all_results('section_entries'),
-      'element'         =>  $this->general_m->get_result_by_fields('element', array('entries_id' => $content->entries_id)),
+      'section_entries' =>  $this->general_m->get_result_by_fields('section_entries', array('section_id' => $params->id)),
+      'element'         =>  $this->general_m->get_result_by_fields('element', array('section_id' => $content->entries_id)),
       'fields'          =>  $this->fields_m->get_all_results(),
       'fields_type'     =>  $this->general_m->get_all_results('fields_type'),
       'fields_option'   =>  $this->general_m->get_all_results('fields_option'),

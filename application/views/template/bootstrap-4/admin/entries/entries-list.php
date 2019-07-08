@@ -1,4 +1,4 @@
-<div id="left-content" class="left-content overflow-auto">
+<div id="left-content" class="left-content overflow-hidden">
   <div class="sidebar-content">
     <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebarGroups" 
       data-table="<?php echo ($table ? $table : ''); ?>" 
@@ -9,13 +9,21 @@
 
       <?php 
         if ($section) {
+          echo '
+            <li class="nav-item disabled">SITE PAGES</li>
+           <li class="nav-item">
+              <a class="nav-link '.(($this->uri->segment(3) == 'all') ? 'active' : '').'" data-id="singles" href="singles">Single</a>
+           </li>';
+          echo '<li class="nav-item disabled">CHANNEL</li>';
           foreach ($section as $key) {
-            echo '<li class="nav-item">
-                    <a class="nav-link '.(($this->uri->segment(3) == $key->handle) ? 'active' : '').'" 
-                    href="'.$key->handle.'" 
-                    data-id="'.$key->id.'">
-                    '.ucfirst($key->name).'</a>
-                  </li>';
+            if ($key->type_id == 6) {
+              echo '<li class="nav-item">
+                      <a class="nav-link '.(($this->uri->segment(3) == $key->handle) ? 'active' : '').'" 
+                      href="'.$key->handle.'" 
+                      data-id="'.$key->id.'">
+                      '.ucfirst($key->name).'</a>
+                    </li>';
+            }
           } 
         } 
       ?>
@@ -57,15 +65,20 @@
       </thead>
       <tbody>
         <?php 
-          $handle = $this->uri->segment(3);
-          foreach ($record_all as $key): 
+          foreach ($record_all as $key):
+            $handle = (($this->uri->segment(3) != 'singles') ? $this->uri->segment(3) : $key->handle ); 
         ?>
         <tr>
           <td scope="row" style="width: 5%;"><?php echo ++$no; ?></td>
           <td><a href="<?php echo base_url("{$action}/{$handle}/edit/{$key->id}"); ?>"><?php echo $key->title; ?></a></td>
-          <td scope="row">
-            <a href="<?php echo base_url("{$action}/{$handle}/delete/{$key->id}"); ?>"><i class="fas fa-minus-circle"></i></a>
-          </td>
+          <?php 
+            if ($this->uri->segment(3) != 'singles') { 
+              echo '
+              <td scope="row">
+                <a href="'.base_url("{$action}/{$handle}/delete/{$key->id}").'"><i class="fas fa-minus-circle"></i></a>
+              </td>';
+            } 
+          ?>
         </tr>
       <?php endforeach ?>
       </tbody>
@@ -74,5 +87,4 @@
   <?php else: ?>
   <p class="empty-data">Data is Empty</p>
   <?php endif ?>
-
 </div>

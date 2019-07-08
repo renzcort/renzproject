@@ -1,36 +1,33 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Sites extends My_Controller {
+class Globals extends My_Controller {
 
- public function __construct() {
+  public function __construct() {
     parent::__construct();
     //Do your magic here
     $this->load->model('admin/Fields_m', 'fields_m');
     $this->load->model('admin/General_m', 'general_m');
     $this->data = array(
       'userdata' =>  $this->first_load(),
-      'parentLink' => 'admin/settings/sites', 
+      'parentLink' => 'admin/settings/globals', 
     );
   }
 
   public function index() {
     $settings = array(
-      'title'         =>  'sites',
+      'title'         =>  'globals',
       'subtitle'      =>  FALSE,
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
-      'table'         =>  'sites',
-      'action'        =>  'admin/settings/sites',
+      'table'         =>  'globals',
+      'action'        =>  'admin/settings/globals',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(4),
-      'button'        =>  '+ New sites',
-      'button_link'   =>  'sites/create',
-      'content'       =>  'template/bootstrap-4/admin/sites/sites-list',
+      'button'        =>  '+ New Globals',
+      'button_link'   =>  'globals/create',
+      'content'       =>  'template/bootstrap-4/admin/globals/globals-list',
       'element_name'  =>  FALSE,
-      'group_name'    =>  'sites_group',
-      'group'         =>  $this->general_m->get_all_results('sites_group'),
-      'group_count'   =>  $this->general_m->count_all_results('sites_group'),
     );
 
     // Pagination
@@ -52,22 +49,27 @@ class Sites extends My_Controller {
   /*CREATE*/
   public function create() {
     $settings = array(
-      'title'         =>  'sites',
-      'subtitle'      =>  'create',
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  array('create'),
-      'table'         =>  'sites',
-      'action'        =>  'admin/settings/sites/create',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
-      'button'        =>  'Save',
-      'button_type'   =>  'submit',
-      'button_name'   =>  'create',
-      'content'       =>  'template/bootstrap-4/admin/sites/sites-form',
-      'group_name'    =>  'sites_group',
-      'group'         =>  $this->general_m->get_all_results('sites_group'),
-      'group_count'   =>  $this->general_m->count_all_results('sites_group'),
-      'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
+      'title'          =>  'globals',
+      'subtitle'       =>  'create',
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  array('create'),
+      'table'          =>  'globals',
+      'action'         =>  'admin/settings/globals/create',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'button'         =>  'Save',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',
+      'content'        =>  'template/bootstrap-4/admin/globals/globals-form',
+      'group_name'     =>  'assets_group',
+      'group'          =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'    =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'       =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'fields_element' =>  'assets_element',
+      'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('assets', 'order'),
     );
 
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
@@ -98,23 +100,19 @@ class Sites extends My_Controller {
   /*UPDATE*/
   public function update($id='') {
     $settings = array(
-      'title'         =>  'sites',
+      'title'         =>  'globals',
       'subtitle'      =>  'create',
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('edit'),
-      'table'         =>  'sites',
-      'action'        =>  'admin/settings/sites/edit',
+      'table'         =>  'globals',
+      'action'        =>  'admin/settings/globals/edit',
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(3),
       'button'        =>  'Update',
       'button_type'   =>  'submit',
       'button_name'   =>  'update',
-      'content'       =>  'template/bootstrap-4/admin/sites/sites-form',
+      'content'       =>  'template/bootstrap-4/admin/globals/globals-form',
       'id'            =>  $id,
-      'group_name'    =>  'sites_group',
-      'group'         =>  $this->general_m->get_all_results('sites_group'),
-      'group_count'   =>  $this->general_m->count_all_results('sites_group'),
-      'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
@@ -146,9 +144,9 @@ class Sites extends My_Controller {
   /*DELETE*/
   public function delete($id='') {
     $settings = array(
-      'title'  => 'sites',
-      'table'  => 'sites',
-      'action' => 'admin/settings/sites',
+      'title'  => 'globals',
+      'table'  => 'globals',
+      'action' => 'admin/settings/globals',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
@@ -162,8 +160,7 @@ class Sites extends My_Controller {
       redirect($settings['action']);
     }
   }
-
 }
 
-/* End of file Sites.php */
-/* Location: ./application/controllers/admin/Sites.php */
+/* End of file Globals.php */
+/* Location: ./application/controllers/admin/Globals.php */
