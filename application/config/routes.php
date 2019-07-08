@@ -140,10 +140,14 @@ $route['admin/settings/sites/edit/(:num)']   = 'admin/sites/update/$1';
 $route['admin/settings/sites/delete/(:num)'] = 'admin/sites/delete/$1';
 
 /*Globals*/
-$route['admin/settings/globals']               = 'admin/globals';
-$route['admin/settings/globals/create']        = 'admin/globals/create';
-$route['admin/settings/globals/edit/(:num)']   = 'admin/globals/update/$1';
-$route['admin/settings/globals/delete/(:num)'] = 'admin/globals/delete/$1';
+$route['admin/globals/(:any)']                 	= 'admin/globals/index/$1';
+$route['admin/globals/create/(:any)']          	= 'admin/globals/create/$1';
+$route['admin/globals/edit/(:any)/(:num)']     	= 'admin/globals/update/$1/$2';
+$route['admin/globals/delete/(:any)/(:num)']   	= 'admin/globals/delete/$1/$2';
+$route['admin/settings/globals']               	= 'admin/globals/groups';
+$route['admin/settings/globals/create']        	= 'admin/globals/groups_create';
+$route['admin/settings/globals/edit/(:num)']   	= 'admin/globals/groups_update/$1';
+$route['admin/settings/globals/delete/(:num)'] 	= 'admin/globals/groups_delete/$1';
 
 
 // settings 

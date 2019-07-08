@@ -9,8 +9,9 @@ class Sites extends My_Controller {
     $this->load->model('admin/Fields_m', 'fields_m');
     $this->load->model('admin/General_m', 'general_m');
     $this->data = array(
-      'userdata' =>  $this->first_load(),
-      'parentLink' => 'admin/settings/sites', 
+      'userdata'          =>  $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
+      'parentLink'        => 'admin/settings/sites', 
     );
   }
 

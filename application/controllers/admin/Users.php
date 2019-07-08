@@ -11,8 +11,9 @@ class Users extends My_Controller {
     $this->load->model('admin/Users_m', 'users_m');
     $this->load->model('admin/General_m', 'general_m');
     $this->data = array(
-      'title'    => 'Users',
-      'userdata' =>  $this->first_load(),
+      'userdata'          =>  $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
+      'title'             => 'Users',
     );
   }
 

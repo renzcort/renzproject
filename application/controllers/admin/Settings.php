@@ -8,12 +8,13 @@ class Settings extends My_Controller {
     parent::__construct();
     //Do your magic here
     $this->data = array(
-      'userdata'  =>  $this->first_load(),
+      'userdata'          => $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
     );
   }
 
-  public function index()
-  {
+  public function index(){
+
     $settings = array(
       'title'         =>  'settings',
       'subtitle'      =>  FALSE,

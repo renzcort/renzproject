@@ -17,6 +17,41 @@
           <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
         </a>
       </li>
+
+        <?php
+          if ($session['sidebar_activated']['section'] != 0) {
+            echo '
+            <li class="nav-item">
+              <a class="nav-link" href="'.base_url('admin/entries').'">
+                <i class="fas fa-cogs"></i><span>Entries</span>
+              </a>
+            </li>';
+          }
+          if ($session['sidebar_activated']['globals'] != 0) {
+            echo '
+            <li class="nav-item">
+              <a class="nav-link" href="'.base_url('admin/globals').'">
+                <i class="fas fa-cogs"></i><span>Globals</span>
+              </a>
+            </li>';
+          }
+          if ($session['sidebar_activated']['categories'] != 0) {
+            echo '
+            <li class="nav-item">
+              <a class="nav-link" href="'.base_url('admin/categories').'">
+                <i class="fas fa-cogs"></i><span>Categories</span>
+              </a>
+            </li>';
+          }
+          if ($session['sidebar_activated']['assets'] != 0) {
+            echo '
+            <li class="nav-item">
+              <a class="nav-link" href="'.base_url('admin/assets').'">
+                <i class="fas fa-cogs"></i><span>Assets</span>
+              </a>
+            </li>';
+          }
+        ?>
       <!-- <li class="nav-item">
         <a class="nav-link" href="#">
           <i class="fab fa-elementor"></i><span>Entries</span>

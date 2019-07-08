@@ -9,12 +9,8 @@ class Assets extends My_Controller {
     //Do your magic here
     $this->load->model('admin/Fields_m', 'fields_m');
     $this->load->model('admin/General_m', 'general_m');
-    $this->load->model('admin/Assets_m', 'assets_m');
-    $this->data = array(
-      'userdata' =>  $this->first_load(),
-      'parentLink' => 'admin/settings/assets', 
-    );
-  
+    $this->load->model('admin/Assets_m', 'assets_m');    
+
     $assets = $this->general_m->get_all_results('assets');
     $this->firstHandle = ($assets ? $assets[0]->handle : '');
     if ($assets) {
@@ -38,11 +34,18 @@ class Assets extends My_Controller {
         redirect("admin/settings/assets",'refresh');
       }
     }
+
+    $this->data = array(
+      'userdata'          =>  $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
+      'parentLink'        => 'admin/settings/assets', 
+    );
+
   }
 
     /*Assets entries*/
   public function index($handle) {
-    $params = (($handle == 'default' || $handle == 'all') ? '' : $this->general_m->get_row_by_fields('assets', array('handle' => $handle)));
+    $params = (in_array($handle, array('all', 'default')) ? '' : $this->general_m->get_row_by_fields('assets', array('handle' => $handle)));
     if ($handle == 'default') {
       $id = '0';
     } elseif ($handle == 'all') {
@@ -153,45 +156,7 @@ class Assets extends My_Controller {
       'order'          =>  $this->general_m->get_max_fields('assets', 'order'),
     );
 
-    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
-    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
-    if ($this->form_validation->run() == TRUE) {
-      if ($_POST['button'] == 'create') {
-        $data = array(
-          'name'       => ucFirst($this->input->post('name')),
-          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'type'       => $this->input->post('type'),
-          'path'       => $this->input->post('path'),
-          'url'        => $this->input->post('url'),
-          'parent'     => $this->input->post('parent'),
-          'order'      => $this->input->post('order'),
-          'description'=> $this->input->post('description'),
-          'created_by' => $this->data['userdata']['id'],
-        );
-        $tableFieldsId = $this->general_m->create($settings['table'], $data);
-        helper_log('add', "Create {$settings['title']} has successfully");
-        //get fields to element 
-        $fieldsId = $this->input->post('fieldsId');
-        (isset($id) ? $id = $tableFieldsId : $id = $id);
-        $this->general_m->delete("{$settings['table']}_element", $id);
-        if (!empty($fieldsId)) {
-          $i = 0;
-          foreach ($fieldsId as $value) {
-            $element = array(
-              'assets_id'   =>  $id,
-              'fields_id'   =>  $value,
-              'order'       =>  ++$i,
-            );
-            $this->general_m->create("{$settings['table']}_element", $element, FALSE);
-          }
-          helper_log('add', "add element create has successfully {$element['order']} record");
-        }        
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
-        redirect($settings['action']);
-      } 
-    } else {
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
   /*UPDATE*/
@@ -223,7 +188,6 @@ class Assets extends My_Controller {
     );
     $settings['element']      = $this->general_m->get_result_by_id($settings['fields_element'], $id, "{$settings['table']}_id");
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
-    
     if ($settings['element']) {
       foreach ($settings['element'] as $key) {
         $fieldsId[] = $key->fields_id; 
@@ -233,45 +197,7 @@ class Assets extends My_Controller {
       $settings['elementFields'] = [];
     }
     
-    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
-    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
-    if ($this->form_validation->run() == TRUE) {
-      if ($_POST['button'] == 'update') {
-        $data = array(
-          'name'       => ucFirst($this->input->post('name')),
-          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'type'       => $this->input->post('type'),
-          'path'       => $this->input->post('path'),
-          'url'        => $this->input->post('url'),
-          'parent'     => $this->input->post('parent'),
-          'order'      => $this->input->post('order'),
-          'description'=> $this->input->post('description'),
-          'updated_by' => $this->data['userdata']['id'],
-        );
-        $this->general_m->update($settings['table'], $data, $id);
-        helper_log('edit', "Update {$settings['title']} has successfully");
-        //get fields to element 
-        $fieldsId = $this->input->post('fieldsId');
-        (isset($id) ? $id = $tableFieldsId : $id = $id);
-        $this->general_m->delete("{$settings['table']}_element", $id);
-        if (!empty($fieldsId)) {
-          $i = 0;
-          foreach ($fieldsId as $value) {
-            $element = array(
-              'assets_id'   =>  $id,
-              'fields_id'   =>  $value,
-              'order'       =>  ++$i,
-            );
-            $this->general_m->create("{$settings['table']}_element", $element, FALSE);
-          }
-          helper_log('add', "add element create has successfully {$element['order']} record");
-        }        
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully updated");
-        redirect($settings['action']);
-      } 
-    } else {
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }  
 
   /*DELETE*/

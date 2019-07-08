@@ -30,8 +30,9 @@ class Categories extends My_Controller {
     }
 
     $this->data = array(
-      'userdata'   =>  $this->first_load(),
-      'parentLink' => 'admin/categories',
+      'userdata'          => $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
+      'parentLink'        => 'admin/categories',
     );
   }
 /*
@@ -100,17 +101,18 @@ class Categories extends My_Controller {
       'subtitle'       =>  FALSE,
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
+      'table'          =>  'categories_content',
+      'action'         =>  "admin/categories/{$handle}",
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
       'button'         =>  'Save',
       'button_type'    =>  'submit',
       'button_name'    =>  'create',
       'button_tabs'    =>  TRUE,      
       'content'        =>  'template/bootstrap-4/admin/categories/categories-form',
-      'table'          =>  'categories_content',
-      'action'         =>  "admin/categories/{$handle}",
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
+      'fields_element' =>  'categories_element',
+      'element'        =>  $this->general_m->get_result_by_fields('categories_element', array('categories_id' => $params->id)),
       'group_name'     =>  'categories',
-      'fields_element' =>  $this->general_m->get_result_by_fields('categories_element', array('categories_id' => $params->id)),
       'group'          =>  $this->general_m->get_all_results('categories'),
       'group_count'    =>  $this->general_m->count_all_results('categories'),
       'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
@@ -125,7 +127,7 @@ class Categories extends My_Controller {
       'parent_id'      =>  $params->id          
     );
     // var_dump($settings['fields']);die;
-    foreach ($settings['fields_element'] as $key) {
+    foreach ($settings['element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
     }
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -138,17 +140,18 @@ class Categories extends My_Controller {
       'subtitle'       =>  FALSE,
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
+      'table'          =>  'categories_content',
+      'action'         =>  "admin/categories/{$handle}",
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
       'button'         =>  'update',
       'button_type'    =>  'submit',
       'button_name'    =>  'update',
       'button_tabs'    =>  TRUE,      
       'content'        =>  'template/bootstrap-4/admin/categories/categories-form',
-      'table'          =>  'categories_content',
-      'action'         =>  "admin/categories/{$handle}",
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
+      'fields_element' =>  'categories_element',
+      'element'        =>  $this->general_m->get_result_by_fields('categories_element', array('categories_id' => $params->id)),
       'group_name'     =>  'categories',
-      'fields_element' =>  $this->general_m->get_result_by_fields('categories_element', array('categories_id' => $params->id)),
       'group'          =>  $this->general_m->get_all_results('categories'),
       'group_count'    =>  $this->general_m->count_all_results('categories'),
       'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
@@ -159,13 +162,13 @@ class Categories extends My_Controller {
       'assets_content' =>  $this->general_m->get_all_results('assets_content'),
       'elementFields'  =>  [],
       'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
+      'id'             =>  $id,
       'parent_table'   =>  'categories',
       'parent_id'      =>  $params->id,
-      'id'             =>  $id,
       'getDataby_id'   =>  $this->general_m->get_row_by_id('categories_content', $id),          
     );
 
-    foreach ($settings['fields_element'] as $key) {
+    foreach ($settings['element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
     }
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -198,22 +201,22 @@ class Categories extends My_Controller {
 
   public function groups() {
     $settings = array(
-      'title'         =>  'categories',
-      'subtitle'      =>  FALSE,
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  FALSE,
-      'table'         =>  'categories',
-      'action'        =>  'admin/settings/categories',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(3),
-      'button'        =>  '+ New Categories',
-      'button_link'   =>  'categories/create',
-      'content'       =>  'template/bootstrap-4/admin/categories/categories-group-list',
-      'fields_element'  =>  'categories_element',
-      'fields_group'  =>  $this->general_m->get_all_results('fields_group'),
-      'fields'        =>  $this->fields_m->get_all_results(),
-      'elementFields' =>  [],
-      'order'         =>  $this->general_m->get_max_fields('categories', 'order'),
+      'title'          =>  'categories',
+      'subtitle'       =>  FALSE,
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'table'          =>  'categories',
+      'action'         =>  'admin/settings/categories',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
+      'button'         =>  '+ New Categories',
+      'button_link'    =>  'categories/create',
+      'content'        =>  'template/bootstrap-4/admin/categories/categories-group-list',
+      'fields_element' =>  'categories_element',
+      'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'elementFields'  =>  [],
+      'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );
     // Pagination
     $config                 = $this->config->item('setting_pagination');
@@ -255,48 +258,8 @@ class Categories extends My_Controller {
       'elementFields'  =>  [],
       'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );
-
-    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
-    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
-    if ($this->form_validation->run() == TRUE) {
-      if ($_POST['button'] == 'create') {
-        (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
-        (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
-        $data = array(
-          'name'       => ucfirst($this->input->post('name')),
-          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'url'        => $this->input->post('url'),
-          'template'   => $this->input->post('template'),
-          'locale'     => $locale,
-          'parent'     => $parent,
-          'maxlevel'   => $this->input->post('maxlevel'),
-          'description'=> $this->input->post('description'),
-          'created_by' => $this->data['userdata']['id'],
-        );
-        $tableFieldsId = $this->general_m->create($settings['table'], $data);
-        helper_log('add', "Create {$settings['title']} has successfully");
-        //get fields to element 
-        $fieldsId = $this->input->post('fieldsId');
-        (isset($id) ? $id = $tableFieldsId : $id = $id);
-        $this->general_m->delete("{$settings['table']}_element", $id);
-        if (!empty($fieldsId)) {
-          $i = 0;
-          foreach ($fieldsId as $value) {
-            $element = array(
-              'categories_id' =>  $id,
-              'fields_id'     =>  $value,
-              'order'         =>  ++$i,
-            );
-            $this->general_m->create("{$settings['table']}_element", $element, FALSE);
-          }
-          helper_log('add', "add element create has successfully {$element['order']} record");
-        }        
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully Created");
-        redirect($settings['action']);
-      } 
-    } else {
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }
+    
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
   /*UPDATE*/
@@ -322,16 +285,6 @@ class Categories extends My_Controller {
       'elementFields'  =>  [],
       'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );
-
-    if ($settings['element']) {
-      foreach ($settings['element'] as $key) {
-        $fieldsId[] = $key->fields_id; 
-      }
-      $settings['elementFields'] = $fieldsId;
-    } else {
-      $settings['elementFields'] = [];
-    }
-
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
     
     if ($settings['element']) {
@@ -342,7 +295,9 @@ class Categories extends My_Controller {
     } else {
       $settings['elementFields'] = [];
     }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
 
+/*
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
     $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
@@ -383,7 +338,7 @@ class Categories extends My_Controller {
       } 
     } else {
       $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }
+    }*/
   }  
 
   /*DELETE*/

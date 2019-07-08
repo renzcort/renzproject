@@ -8,8 +8,9 @@ class General extends My_Controller {
     parent::__construct();
     $this->load->model('admin/General_m', 'general_m');
     $this->data = array(
-      'userdata'   =>  $this->first_load(),
-      'parentLink' => 'admin/settings/general',
+      'userdata'          =>  $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
+      'parentLink'        => 'admin/settings/general',
     );
   }
 

@@ -1,21 +1,21 @@
   <div id="left-content" class="left-content overflow-auto">
     <div class="sidebar-content">
       <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebarGroups" 
-        data-groups-name="<?php echo ($group_name ? $group_name : ''); ?>" 
-        data-table="<?php echo ($table ? $table : ''); ?>" 
-        data-action-name="<?php echo ($action ? $action : '');?>"
-        data-element="<?php echo ($fields_element ? $fields_element : ''); ?>">
-        <?php 
-          $i = 1; 
-          foreach ($group as $key): 
-        ?>
-          <li class="nav-item">
-            <a class="nav-link <?php echo (($this->uri->segment(3) == $key->handle) ? 'active' : '') ?>" 
-              href="<?php echo $key->handle;?>" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
-          </li>
+        data-groups-name ="<?php echo ($group_name ? $group_name : ''); ?>" 
+        data-table       ="<?php echo ($table ? $table : ''); ?>" 
+        data-action-name ="<?php echo ($action ? $action : '');?>"
+        data-element     ="<?php echo ($fields_element ? $fields_element : ''); ?>">
         <?php
-          $i = ++$i; 
-          endforeach 
+          $i = 1;
+          foreach ($group as $key) {
+            echo '
+              <li class="nav-item">
+                <a class="nav-link '.(($this->uri->segment(3) == $key->handle) ? 'active' : '').'"
+                href="'.$key->handle.'" data-id="'.$key->id.'">'.ucfirst($key->name).'</a>
+              </li>';
+
+            $i = ++$i;
+          }
         ?>
 
       </ul>
@@ -32,7 +32,6 @@
         <a class="btn btn-outline-secondary btn-sm dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Dropdown link
         </a>
-
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
           <a class="dropdown-item" href="#">Action</a>
           <a class="dropdown-item" href="#">Another action</a>
@@ -73,5 +72,4 @@
     <?php else: ?>
     <p class="empty-data">Data is Empty</p>
     <?php endif ?>
-
   </div>

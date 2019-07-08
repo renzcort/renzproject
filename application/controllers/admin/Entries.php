@@ -30,8 +30,8 @@ class Entries extends My_Controller {
     }
 
     $this->data = array(
-      'title'    =>  'Entries',
-      'userdata' =>  $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
+      'userdata'          =>  $this->first_load(),
     );
 
 

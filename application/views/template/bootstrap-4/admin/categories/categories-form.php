@@ -1,4 +1,4 @@
-  <div class="tabs flex-grow-1"> 
+<div class="tabs flex-grow-1" id="categories-form"> 
   <ul class="nav nav-tabs d-flex flex-row flex-nowrap" id="myTab" role="tablist">
     <li class="nav-item">
       <a class="nav-link active" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="true">Settings</a>
@@ -14,12 +14,12 @@
                   ); 
     echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
   ?>
-  <input type="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
-  <input type="hidden" name="parent_id" value="<?php echo $parent_id; ?>">
-  <input type="hidden" name="parent_table" value="<?php echo $parent_table; ?>">
-  <input type="hidden" name="button" value="<?php echo $button_name; ?>">
-  <input type="hidden" name="table" value="<?php echo $table; ?>">
-  <input type="hidden" name="action" value="<?php echo $action; ?>">
+  <input type ="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
+  <input type ="hidden" name="parent_id" value="<?php echo $parent_id; ?>">
+  <input type ="hidden" name="parent_table" value="<?php echo $parent_table; ?>">
+  <input type ="hidden" name="button" value="<?php echo $button_name; ?>">
+  <input type ="hidden" name="table" value="<?php echo $table; ?>">
+  <input type ="hidden" name="action" value="<?php echo $action; ?>">
 
   <div class="left-content-entries" id="entries-template">
     <div class="tab-content" id="myTabContent">
@@ -31,7 +31,7 @@
           <div class="form-error"><?php echo form_error('name'); ?></div>
         </div>
         <?php 
-          if ($fields_element) {
+          if ($element) {
             foreach ($fields_id as $id) {
               foreach ($fields as $key) {
                 if ($id == $key->id) {

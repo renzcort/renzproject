@@ -1,11 +1,10 @@
-<div class="middle-content flex-grow-1" id="categories-group-list">
+<div class="middle-content flex-grow-1" id="globals-group-list">
   <?php if ($record_all): ?>
     <table class="table table-sm">
       <thead>
         <tr>
           <th scope="col">Name</th>
           <th scope="col">Handle</th>
-          <th scope="row">#</th>
           <th scope="row"></th>
         </tr>
       </thead>
@@ -14,7 +13,6 @@
           <tr>
             <td><a href="<?php echo base_url($action.'/edit/'.$key->id); ?>"><?php echo $key->name; ?></a></td>
             <td><?php echo $key->handle; ?></td>
-            <td scope="row"><a href="<?php echo base_url($action.'/'.$key->handle); ?>">Manage Categories</a></td>
             <td scope="row">
               <a href="<?php echo base_url($action.'/delete/'.$key->id); ?>"><i class="fas fa-minus-circle"></i></a>
             </td>

@@ -11,8 +11,9 @@ class Groups extends My_Controller {
     $this->load->model('admin/fields_m', 'fields_m');
     //Do your magic here
     $this->data = array(
-      'userdata'  =>  $this->first_load(),
-      'parentLink' => 'admin/fields', 
+      'userdata'          =>  $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
+      'parentLink'        => 'admin/fields', 
     );
   }
 

@@ -12,8 +12,9 @@ class Info extends My_Controller {
     $this->load->model('admin/Info_m', 'info_m');
     $this->load->model('admin/General_m', 'general_m');
     $this->data = array(
-      'title'    => 'Info',
-      'userdata' => $this->first_load(),
+      'title'             => 'Info',
+      'userdata'          => $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
     );
   }
 

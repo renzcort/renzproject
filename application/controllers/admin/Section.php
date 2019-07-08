@@ -14,8 +14,9 @@ class Section extends My_Controller {
     $this->load->model('admin/General_m', 'general_m');
     $this->load->model('admin/Entries_m', 'entries_m');
 		$this->data = array(
-      'userdata'  =>  $this->first_load(),
-      'parentLink' => 'admin/settings/section', 
+      'userdata'          =>  $this->first_load(),
+      'parentLink'        => 'admin/settings/section', 
+      'sidebar_activated' => $this->sidebar_activated(),
     );
 	}
 
@@ -281,44 +282,7 @@ class Section extends My_Controller {
       'order'          =>  $this->general_m->get_max_fields('section_entries', 'order'),
     );
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_entries.name]');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_entries.handle]');
-    $this->form_validation->set_rules('title', 'Title', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if ($_POST['button'] == 'create') {
-        $data = array(
-          'name'        =>  ucfirst($this->input->post('name')),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'section_id'  =>  $section_id,
-          'title'       =>  ucfirst($this->input->post('title')),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'description' =>  $this->input->post('description'),
-          'order'       =>  $this->input->post('order'),
-          'created_by'  =>  $this->data['userdata']['id'],
-        );
-        $entries = $this->general_m->create($settings['table'], $data);
-        helper_log('add', "Create {$settings['title']} has successfully");
-        //get fields to element 
-        $fieldsId = $this->input->post('fieldsId');
-        if (!empty($fieldsId)) {
-          $i = 0;
-          foreach ($fieldsId as $value) {
-            $element = array(
-              'entries_id'  =>  $entries,
-              'section_id'  =>  $id_section,
-              'fields_id'   =>  $value,
-              'order'       =>  ++$i,
-            );
-            $this->general_m->create('element', $element, FALSE);
-          }
-          helper_log('add', "Create element has successfully {$element['order']} records");
-        }
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
-        redirect($settings['action']);
-      }
-    } else {
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }    
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
   /*entries type update*/
@@ -328,15 +292,15 @@ class Section extends My_Controller {
       'subtitle'       =>  'Edit',
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  array('create'),
+      'table'          =>  'section_entries',
+      'action'         =>  "admin/settings/section/{$section_id}/entrytypes",
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(3),
       'button'         =>  'Update',
       'button_type'    =>  'submit',
       'button_name'    =>  'update',
       'button_tabs'    =>  TRUE,
       'content'        =>  'template/bootstrap-4/admin/section/section-entries-form',
-      'table'          =>  'section_entries',
-      'action'         =>  "admin/settings/section/{$section_id}/entrytypes",
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
       'fields_element' =>  'element',
       'section_id'     =>  $section_id,
       'section'        =>  $this->section_m->get_row_by_id($section_id),
@@ -355,45 +319,8 @@ class Section extends My_Controller {
       $settings['elementFields'] = [];
     }
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required|callback_name_check');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|callback_handle_check');
-    $this->form_validation->set_rules('title', 'Title', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if ($_POST['button'] == 'update') {
-        $data = array(
-          'name'        =>  ucfirst($this->input->post('name')),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'section_id'  =>  $section_id,
-          'title'       =>  ucfirst($this->input->post('title')),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'description' =>  $this->input->post('description'),
-          'order'       =>  $this->input->post('order'),
-          'updated_by'  =>  $this->data['userdata']['id'],
-        );
-        $this->entries_m->update($data, $id);
-        helper_log('edit', "Update {$settings['title']} has successfully");
-        //get fields to element 
-        $this->general_m->delete('elemet', $id, 'entries_id');
-        $fieldsId = $this->input->post('fieldsId');
-        if (!empty($fieldsId)) {
-          $i = 0;
-          foreach ($fieldsId as $value) {
-            $element = array(
-              'entries_id'  =>  $id,
-              'section_id'  =>  $section_id,
-              'fields_id'   =>  $value,
-              'order'       =>  ++$i,
-            );
-            $this->general_m->create('element', $element, FALSE);
-          }
-          helper_log('edit', "edit element entries id {$id} has successfully {$element['order']} record");
-        }
-        $this->session->set_flashdata("message", "Entries has successfully updated");
-        redirect($settings['action']);
-      }
-    } else {
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }   
+    
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
   /*Enteie Type Delete*/

@@ -12,8 +12,9 @@ class Api extends My_Controller {
     $this->load->model('admin/General_m', 'general_m');
     $this->load->model('admin/Entries_m', 'entries_m');
     $this->data = array(
-      'userdata'  =>  $this->first_load(),
-      'parentLink' => 'admin/section', 
+      'userdata'          =>  $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
+      'parentLink'        => 'admin/section', 
     );
   }
 
@@ -108,12 +109,25 @@ class Api extends My_Controller {
           'description' => $this->input->post('description'),
           'order'       => $this->input->post('order'),
         );
+      } elseif ($settings['table'] == 'globals') {
+        $data = array(
+          'name'       => ucfirst($this->input->post('name')),
+          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'description'=> $this->input->post('description'),
+          'order'      => $this->input->post('order'),
+        );
       }
 
       
       if ($button == 'create') {
         $data['created_by'] = $this->data['userdata']['id'];
         $tableFieldsId      = $this->general_m->create($settings['table'], $data);
+        if ($settings['table'] == 'globals') {
+          $globals = array(
+            'globals_id'  =>  $tableFieldsId,
+          );
+          $this->general_m->create("{$settings['table']}_content", $globals); 
+        }
         helper_log('add', "Create {$settings['title']} has successfully");        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully created");
       } else {
@@ -127,8 +141,12 @@ class Api extends My_Controller {
       $fieldsId = $this->input->post('fieldsId');
 
       //get fields to element 
-      (empty($id) ? $id = $tableFieldsId : $id = $id);
-      $this->general_m->delete($settings['fields_element'], $id, $table_id);
+      $id = (empty($id) ? $tableFieldsId : $id);
+      // vheck content by id 
+      $checkContent = $this->general_m->get_row_by_id($settings['fields_element'], $id, $table_id);
+      if ($checkContent) {
+        $this->general_m->delete($settings['fields_element'], $id, $table_id);
+      }
       /*add elements*/
       if (!empty($fieldsId)) {
         $i = 0;
@@ -662,7 +680,11 @@ class Api extends My_Controller {
   }
 
 
-  // Manage Entries 
+  /**
+   * Manage Entries Template
+   * This function use to manage form template entries
+   * @return [type] [description]
+   */
   public function jsonEntriesManage() {
     $settings = array(
       'table'        => $this->input->post('table'),
@@ -678,15 +700,20 @@ class Api extends My_Controller {
       $settings['entriestype'] = $this->input->post('entriestype');
     }
 
-    $parent_id = (($this->input->post('parent_table') == 'section_entries') ? $settings['entriestype'] : $settings['parent_id']);
+    $parent_id = (($this->input->post('parent_table') == 'section_entries') ? 
+                  $settings['entriestype'] : $settings['parent_id']);
+
     $data = array(
       'title'                          => $this->input->post('title'),
       'handle'                         => lcfirst(str_replace(' ', '', ucwords($this->input->post('title')))),
       'slug'                           => url_title(strtolower($this->input->post('title'))),
-      'activated'                      => ($this->input->post('activated') ? $this->input->post('activated') : 0),
       "{$settings['parent_table']}_id" => $parent_id,
     );
+
     (($this->input->post('parent_table') == 'section_entries') ? $data['section_id'] = $settings['section_id'] : ''  );
+    if ($this->input->post('parent_table') != 'globals') {
+      $data['activated']  = ($this->input->post('activated') ? $this->input->post('activated') : 0);
+    }
 
     $keys = array_keys($this->input->post());
     foreach ($keys as $key) {

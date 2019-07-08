@@ -7,7 +7,8 @@ class Home extends MY_Controller {
   {
     parent::__construct();
     $this->data = array(
-      'userdata'  =>  $this->first_load(),
+      'userdata'          =>  $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
     );//Do your magic here
   }
 

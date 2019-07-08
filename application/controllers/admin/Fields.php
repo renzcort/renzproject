@@ -12,8 +12,9 @@ class fields extends My_Controller {
     $this->load->model('admin/fields_m', 'fields_m');
     //Do your magic here
     $this->data = array(
-      'userdata'  =>  $this->first_load(),
-      'parentLink' => 'admin/settings/fields', 
+      'userdata'          =>  $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
+      'parentLink'        => 'admin/settings/fields', 
     );
   }
   
