@@ -1177,6 +1177,10 @@ li.nav-item.disabled {
   font-size: 12px;
 }
 
+table .no {
+  width: 5%;
+}
+
 /* #uploadModal tbody tr:nth-child(odd) {
   background-color: #fafafa;
 }

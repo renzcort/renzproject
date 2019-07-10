@@ -2,34 +2,38 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Users extends My_Controller {
-  public $data = [];
 
-  public function __construct()
-  {
-    parent::__construct();
-    //Do your magic here
-    $this->load->model('admin/Users_m', 'users_m');
-    $this->load->model('admin/General_m', 'general_m');
-    $this->data = array(
-      'userdata'          =>  $this->first_load(),
-      'sidebar_activated' => $this->sidebar_activated(),
-      'title'             => 'Users',
-    );
-  }
+	public function __construct()
+	{
+		parent::__construct();
+		//Do your magic here
+		$this->load->model('admin/General_m', 'general_m');
+		$this->load->model('admin/Fields_m', 'fields_m');
 
-  /*Get All Users*/
-  public function index() {
-    $settings = array(
-      'title'     => 'Users',
-      'subheader' => 'Manage Users',
-      'content'   => 'admin/users/index',
-      'table'     => 'users',
-      'action'    => 'admin/users',
-      'session'   => $this->data,
-      'no'        =>  $this->uri->segment(4),
+		$this->data = array(
+			'userdata'          => $this->first_load(),
+			'sidebar_activated' => $this->sidebar_activated(),
+		);
+	}
+
+	public function group(){
+		$settings = array(
+			'title'             =>  'users',
+			'subtitle'          =>  FALSE,
+			'breadcrumb'        =>  array('settings'),
+			'subbreadcrumb'     =>  FALSE,
+			'table'             =>  'usersgroup',
+			'action'            =>  'admin/settings/users/group',
+			'session'           =>  $this->data,
+			'no'                =>  $this->uri->segment(5),
+			'button'            =>  '+ New usersgroup',
+			'button_link'       =>  'group/create',
+			'content'           =>  'template/bootstrap-4/admin/users/users-settings-template',
+			'right_content'     =>  'template/bootstrap-4/admin/users/users-group-list',
     );
-   // pagination
-    $config = $this->config->item('setting_pagination');
+
+    // Pagination
+    $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
     $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
     $config['per_page']     = 10;
@@ -38,466 +42,178 @@ class Users extends My_Controller {
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    // var_dump($settings['table']);die;
-    $settings['record_all'] = $this->users_m->get_all_results($config['per_page'], $start_offset);
-    $settings['links']      = $this->pagination->create_links();
-    //end pagination
-    // var_dump($settings['record_all']);die;
-    $this->load->view('admin/layout/_default', $settings);
-  }
-
-  /*Create Users*/
-  public function create() {
-    $settings = array(
-      'title'       => 'Users',
-      'subheader'   => 'create',
-      'content'     =>  'admin/users/create',
-      'table'       =>  'users',
-      'action'      =>  'admin/users',
-      'role'        =>  $this->general_m->get_all_results('users_role'),
-      'group'       =>  $this->general_m->get_all_results('usersgroup'),
-      'session'     =>  $this->data,
-      'upload_path' => 'uploads/'.$this->data['title'],
-    );
-
-    $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|is_unique[renz_users.username]');
-    $this->form_validation->set_rules('firstname', 'Firstname', 'trim|required');
-    $this->form_validation->set_rules('lastname', 'Lastname', 'trim|required');
-    $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[renz_users.email]');
-    $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]', 
-      array('required' => 'You must provide a %s.')
-    );
-    $this->form_validation->set_rules('passconf', 'Password Confirmation', 'trim|required|matches[password]');
-    $this->form_validation->set_rules('role', 'Role', 'trim|required');
-    $this->form_validation->set_rules('accept_terms', 'Accepts Term', 'required');
-    if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
-        $data = array(
-          'username'   =>  $this->input->post('username'),
-          'firstname'  =>  $this->input->post('firstname'),
-          'lastname'   =>  $this->input->post('lastname'),
-          'email'      =>  $this->input->post('email'),
-          'password'   =>  md5($this->input->post('password')),
-          'role_id'    =>  $this->input->post('role'),
-          'created_by' =>  $this->data['userdata']['id'],
-          'created_at' =>  mdate("%Y-%m-%d %H:%i:%s"), 
-          'updated_at' =>  mdate("%Y-%m-%d %H:%i:%s"), 
-        );
-
-        // uppload photo
-        if (!empty($_FILES['photo'])) {
-          $config = $this->config->item('setting_upload');
-          $config['upload_path'] = $settings['upload_path'];
-          $config['file_name']   = $data['username'];
-          if (!is_dir($config['upload_path'])) {
-            mkdir($config['upload_path'], 0777, TRUE);
-          } 
-          $this->upload->initialize($config);
-          if ( ! $this->upload->do_upload('photo')){
-            $error = array('error' => $this->upload->display_errors());
-          }
-          else{
-            $result = array('upload_data' => $this->upload->data());
-            $data['photo'] =  $config['file_name'].$result['upload_data']['file_ext'];
-            // $data['photo'] =  $result['upload_data']['file_name'];
-          }
-        }
-        // end upload
-
-        $users = $this->users_m->create($data);
-        $usersgroup = $this->input->post('usersgroup');
-        if (!empty($usersgroup)) {
-          $this->general_m->delete('usersgroup_users', $users, 'users_id');
-          foreach ($usersgroup as $key => $value) {
-            $data = array(
-              'users_id'   =>  $users,
-              'group_id'   =>  $value,
-              'created_by' => $this->data['userdata']['id'], 
-            );
-            $this->general_m->create('usersgroup_users', $data, FALSE);
-          }
-        }
-        helper_log('add', 'add '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
-        $this->session->set_flashdata('message', 'Data has created');
-        redirect($settings['action']);
-      } 
-    } else {
-      $this->load->view('admin/layout/_default', $settings);
-    }
-  }
-
-  /*Update Users*/
-  public function update($id = '') {
-    $settings = array(
-      'title'        => 'Users',
-      'subheader'    => 'edit',
-      'content'      => 'admin/users/edit',
-      'table'        => 'users',
-      'action'       => 'admin/users',
-      'role'         => $this->general_m->get_all_results('users_role'),
-      'group'        => $this->general_m->get_all_results('usersgroup'),
-      'usersgroup'   => $this->general_m->get_result_by_id('usersgroup_users', $id, 'users_id'),
-      'getdataby_id' => $this->users_m->get_row_by_id($id),
-      'session'      => $this->data,
-      'upload_path'  => 'uploads/'.$this->data['title'],
-    );
-    if ($settings['usersgroup']) {
-      foreach ($settings['usersgroup'] as $key => $value) {
-        $settings['group_checked'][] = $value->group_id;
-      }
-    } else {
-        $settings['group_checked'][] = '';
-    }
-
-    $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|callback_check_username');
-    $this->form_validation->set_rules('firstname', 'Firstname', 'trim|required');
-    $this->form_validation->set_rules('lastname', 'Lastname', 'trim|required');
-    $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|callback_check_email');
-    $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]', 
-      array('required' => 'You must provide a %s.')
-    );
-    $this->form_validation->set_rules('passconf', 'Password Confirmation', 'trim|required|matches[password]');
-    $this->form_validation->set_rules('role', 'Role', 'trim|required');
-    $this->form_validation->set_rules('accept_terms', 'Accepts Term', 'required');
-    if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['update'])) {
-        $data = array(
-          'username'   =>  $this->input->post('username'),
-          'firstname'  =>  $this->input->post('firstname'),
-          'lastname'   =>  $this->input->post('lastname'),
-          'email'      =>  $this->input->post('email'),
-          'password'   =>  md5($this->input->post('password')),
-          'role_id'    =>  $this->input->post('role'),
-          'created_by' =>  $this->data['userdata']['id'],
-          'created_at' =>  mdate("%Y-%m-%d %H:%i:%s"), 
-          'updated_at' =>  mdate("%Y-%m-%d %H:%i:%s"), 
-        );
-
-        // upload photo
-        if (!empty($_FILES['photo'])) {
-          $config                = $this->config->item('setting_upload');
-          $config['upload_path'] = $settings['upload_path'];
-          $config['file_name']   = $data['username'];
-          if (!is_dir($config['upload_path'])) {
-            mkdir($config['upload_path'], 0777, TRUE);
-          }
-          $this->upload->initialize($config);
-          if ( ! $this->upload->do_upload('photo')){
-            $error = array('error' => $this->upload->display_errors());
-          }
-          else{
-            $result = array('upload_data' => $this->upload->data());
-            $data['photo'] =  $config['file_name'].$result['upload_data']['file_ext'];
-            // $data['photo'] =  $result['upload_data']['file_name'];
-          }
-        }
-
-        $this->users_m->update($data, $id);
-        $usersgroup = $this->input->post('usersgroup');
-        $this->general_m->delete('usersgroup_users', $id, 'users_id');
-        foreach ($usersgroup as $key => $value) {
-          $data = array(
-            'users_id'   =>  $id,
-            'group_id'   =>  $value,
-            'created_by' => $this->data['userdata']['id'], 
-          );
-          $this->general_m->create('usersgroup_users', $data, FALSE);
-        }
-        helper_log('update', 'update '.(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] ).' successfully');
-        $this->session->set_flashdata('message', 'Data has created');
-        redirect($settings['action']);
-      } 
-    } else {
-      $this->load->view('admin/layout/_default', $settings);
-    }
-  }
-
-  /*callback validation*/
-  public function check_username($id = '') {
-    $id           = $this->input->post('id');
-    $username     = $this->input->post('username');
-    $getdataby_id = $this->users_m->get_row_by_id($id);
-    if ($this->users_m->check_username($username)) {
-      if ($username == $getdataby_id->username) {
-        return TRUE;
-      } else {
-        $this->form_validation->set_message('check_username', 'The Username fields must contain a unique value.');
-        return FALSE;
-      }
-    } else {
-      return TRUE;
-    }
-  } 
-
-  public function check_email($id = '') {
-    $id           = $this->input->post('id');
-    $email        = $this->input->post('email');
-    $getdataby_id = $this->users_m->get_row_by_id($id);
-    if ($this->users_m->check_email($email)) {
-      if ($email == $getdataby_id->email) {
-        return TRUE;
-      } else {
-        $this->form_validation->set_message('check_email', 'The Email fields must contain a unique value.');
-        return FALSE;
-      }
-    } else {
-      return TRUE;
-    }
-  }
-
-  /*Delete users*/
-  public function delete($id = '') {
-    $settings = array(
-      'title'        => 'Users',
-      'subheader'    => 'delete',
-      'table'        => 'users',
-      'action'       => 'admin/users',
-      'role'         => $this->general_m->get_all_results('users_role'),
-      'getdataby_id' => $this->users_m->get_row_by_id($id),
-      'session'      => $this->data,
-      'path'         => './uploads/',
-      'checklist'    => $this->input->post('checklist'),
-    );
-
-    var_dump($settings['checklist']);die();
-    
-    if ($settings['getdataby_id']) {
-      if ($settings['getdataby_id']->photo) {
-        unlink($settings['path'].$settings['getdataby_id']->photo);
-      }
-      // delete usersgroup
-      $this->general_m->delete('usersgroup_users', $id, 'users_id');
-      $delete = $this->users_m->delete($id);
-      // delete files upload
-      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
-      redirect($settings['action']);
-    } else {
-      $this->session->set_flashdata('message', 'Your Id Not Valid');
-      redirect($settings['action']);
-    }
-  }
-
-  /**
-   * ======================================
-   * MANAGE ROLE
-   * ======================================
-   */
-  public function role(){
-    $settings = array(
-      'header'    =>  'Role',
-      'subheader' =>  'Manage Users',
-      'content'   =>  'admin/users/role/index',
-      'table'     =>  'users_role',
-      'action'    =>  'admin/users/role',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(4),
-    );
-
-    // pagination
-    $config                 = $this->config->item('setting_pagination');
-    $config['base_url']     = base_url($settings['action']);
-    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']     = 2;
-    $num_pages              = $config["total_rows"] / $config["per_page"];
-    $config['uri_segment']  = 4;
-    $config['num_links']    = round($num_pages);
-    $this->pagination->initialize($config);
-    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
-    $settings['links']      = $this->pagination->create_links();
-    //end pagination
-
-    $this->load->view('admin/layout/_default', $settings);
-  }
-  
-  /*Create Add Users Role*/
-  public function role_create() {
-    $settings = array(
-      'header'    =>  'Role',
-      'subheader' =>  'create',
-      'content'   =>  'admin/users/role/create',
-      'table'     =>  'users_role',
-      'action'    =>  'admin/users/role',
-      'session'   =>  $this->data,
-    );
-
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
-        $data = array(
-          'name'        => $this->input->post('name'),
-          'description' => $this->input->post('description'),
-          'created_by'  => $this->data['userdata']['id'],
-        );  
-        $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
-        $this->session->set_flashdata('message', 'Data has created');
-        redirect($settings['action']);
-      } 
-    } else {
-      $this->load->view('admin/layout/_default', $settings);      
-    }
-  }
-
-  /*Update Users Role*/
-  public function role_update($id = ''){
-    $settings = array(
-      'header'    =>  'Role',
-      'subheader' =>  'edit',
-      'content'   =>  'admin/users/role/edit',
-      'table'     =>  'users_role',
-      'action'    =>  'admin/users/role',
-      'session'   =>  $this->data,
-    );
-    $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['update'])) {
-        $data = array(
-          'name'           =>  $this->input->post('name'),
-          'description'    =>  $this->input->post('description'),
-          'created_by'     =>  $this->data['userdata']['id'],
-        );
-        $this->general_m->update($settings['table'], $data, $id);
-        helper_log('update', "update ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." has successfully");
-        $this->session->set_flashdata('message', 'Data has Updated');
-        redirect($settings['action']);
-      }
-    } else {
-      $this->load->view('admin/layout/_default', $settings);
-    }
-  }
-
-  public function role_delete($id = '') {
-    $settings = array(
-      'header'    =>  'Role',
-      'subheader' =>  'edit',
-      'table'     =>  'users_role',
-      'action'    =>  'admin/users/role',
-      'session'   =>  $this->data,
-    );
-    if ($this->general_m->get_row_by_id($settings['table'], $id)) {
-      $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
-      redirect($settings['action']);
-    } else {
-      $this->session->set_flashdata('message', 'Your Id Not Valid');
-      redirect($settings['action']);
-    }
-  }
-
-  /*GROUP*/
-  public function group() {
-    $settings = array(
-      'header'    =>  'Group',
-      'subheader' =>  'Manage Users',
-      'content'   =>  'admin/users/group/index',
-      'table'     =>  'usersgroup',
-      'action'    =>  'admin/users/group',
-      'session'   =>  $this->data,
-      'no'        =>  $this->uri->segment(4),
-    );
-
-    // pagination
-    $config                 = $this->config->item('setting_pagination');
-    $config['base_url']     = base_url($settings['action']);
-    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']     = 10;
-    $num_pages              = $config['total_rows'] / $config['per_page'];
-    $config['uri_segment']  = 4;
-    $config['num_links']    = round($num_pages);
-    $this->pagination->initialize($config);
-    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
     $settings['links']      = $this->pagination->create_links();
     // end Pagination
-    
-    $this->load->view('admin/layout/_default', $settings);
-  }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+	}
 
-  /*Create Group*/ 
-  public function group_create() {
-    $settings = array(
-      'header'    =>  'Group',
-      'subheader' =>  'create',
-      'content'   =>  'admin/users/group/create',
-      'table'     =>  'usersgroup',
-      'action'    =>  'admin/users/group',
-      'session'   =>  $this->data,
+	public function group_create(){
+		$settings = array(
+			'title'         =>  'users',
+			'subtitle'      =>  FALSE,
+			'breadcrumb'    =>  array('settings'),
+			'subbreadcrumb' =>  FALSE,
+			'table'         =>  'usersgroup',
+			'action'        =>  'admin/settings/users/group',
+			'session'       =>  $this->data,
+			'no'            =>  $this->uri->segment(4),
+			'button'        =>  'Save',
+			'button_type'   =>  'submit',
+			'button_name'   =>  'create',
+			'content'       =>  'template/bootstrap-4/admin/users/users-group-form',
+			'usersgroup'		=>	$this->general_m->get_all_results('usersgroup'),
+			'section'       =>	$this->general_m->get_all_results('section'),
+			'globals'       =>	$this->general_m->get_all_results('globals'),
+			'assets'        =>	$this->general_m->get_all_results('assets'),
     );
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['create'])) {
-        $data = array(
-          'name'        =>  $this->input->post('name'),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'description' =>  $this->input->post('description'),
-          'created_by'  =>  $this->data['userdata']['id'],
+
+    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_usersgroup.name]');
+    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_usersgroup.handle]');
+		if ($this->form_validation->run() == TRUE) {
+			if ($_POST['button'] == 'create') {
+        $opt_settings = array(
+					'generalAccessOff'              => $this->input->post('generalAccessOff'),
+					'generalAccessCP'               => $this->input->post('generalAccessCP'),
+					'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
+					'usersEdit'                     => $this->input->post('usersEdit'),
+					'usersModerate'                 => $this->input->post('usersModerate'),
+					'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
+					'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
+					'usersAssign'                   => $this->input->post('usersAssign'),
+					'usersAdministrate'             => $this->input->post('usersAdministrate'),
+					'sectionEdit'                   => $this->input->post('sectionEdit'),
+					'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
+					'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
+					'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
+					'sectionDelete'                 => $this->input->post('sectionDelete'),
+					'volumeViewVolume'              => $this->input->post('volumeViewVolume'),
+					'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
+					'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
+					'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
+					'volumeEditImages'              => $this->input->post('volumeEditImages'),
+					'utilitiesUpdates'              => $this->input->post('utilitiesUpdates'),
+					'utilitiesSystemReport'         => $this->input->post('utilitiesSystemReport'),
+					'utilitiesPHPInfo'              => $this->input->post('utilitiesPHPInfo'),
+					'utilitiesSystemMessage'        => $this->input->post('utilitiesSystemMessage'),
+					'utilitiesAssetIndexes'         => $this->input->post('utilitiesAssetIndexes'),
+					'utilitiesClearCaches'          => $this->input->post('utilitiesClearCaches'),
+					'utilitiesDeprecationWarnings'  => $this->input->post('utilitiesDeprecationWarnings'),
+					'utilitiesDatabaseBackup'       => $this->input->post('utilitiesDatabaseBackup'),
+					'utilitiesFindAndReplace'       => $this->input->post('utilitiesFindAndReplace'),
+					'utilitiesMigrations'           => $this->input->post('utilitiesMigrations'),
         );
-        $this->general_m->create($settings['table'], $data);
-        helper_log('add', "add ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'])." successfully");
-        $this->session->set_flashdata('message', 'Data has created');
-        redirect($settings['action']);
-      }
-    } else {
-      $this->load->view('admin/layout/_default', $settings);
-    }
-  }
 
-  /*Update Groups*/
-  public function group_update($id = '') {
-    $settings = array(
-      'header'    =>  'Group',
-      'subheader' =>  'edit',
-      'content'   =>  'admin/users/group/edit',
-      'table'     =>  'usersgroup',
-      'action'    =>  'admin/users/group',
-      'session'   =>  $this->data,
-    );
-    $settings['getdataby_id'] =  $this->general_m->get_row_by_id($settings['table'], $id);
-    $this->form_validation->set_rules('name', 'Name', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if (isset($_POST['update'])) {
         $data = array(
-          'name'        =>  $this->input->post('name'),
-          'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'description' =>  $this->input->post('description'),
-          'created_by'  =>  $this->data['userdata']['id'],
+					'name'     => $this->input->post('name'),
+					'handle'   => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+					'settings' => json_encode($opt_settings),
         );
-        $this->general_m->update($settings['table'], $data, $id);
-        helper_log('update', "update ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." has successfully");
-        $this->session->set_flashdata('message', 'Data has Updated');
-        redirect($settings['action']);
-      }
-    } else {
-      $this->load->view('admin/layout/_default', $settings);
-    }
-  }
 
-  /*Delete Group*/
-  public function group_delete($id = '') {
-    $settings = array(
-      'header'    =>  'Role',
-      'subheader' =>  'edit',
-      'table'     =>  'usersgroup',
-      'action'    =>  'admin/users/group',
-      'session'   =>  $this->data,
+        $this->general_m->create('usersgroup', $data);        
+        helper_log('add', "Create {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
+        redirect($settings['action']);
+			}			
+		} else {
+	    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+		}
+	}
+
+	public function group_update($id){
+		$settings = array(
+			'title'         =>  'users',
+			'subtitle'      =>  FALSE,
+			'breadcrumb'    =>  array('settings'),
+			'subbreadcrumb' =>  FALSE,
+			'table'         =>  'usersgroup',
+			'action'        =>  'admin/settings/users/group',
+			'session'       =>  $this->data,
+			'no'            =>  $this->uri->segment(4),
+			'button'        =>  'Save',
+			'button_type'   =>  'submit',
+			'button_name'   =>  'create',
+			'content'       =>  'template/bootstrap-4/admin/users/users-group-form',
+			'usersgroup'		=>	$this->general_m->get_all_results('usersgroup'),
+			'section'       =>	$this->general_m->get_all_results('section'),
+			'globals'       =>	$this->general_m->get_all_results('globals'),
+			'assets'        =>	$this->general_m->get_all_results('assets'),
+			'id'						=>	$id,
+      'getDataby_id'  =>  $this->general_m->get_row_by_id('usersgroup', $id),
     );
-    if ($this->general_m->get_row_by_id($settings['table'], $id)) {
+
+    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_usersgroup.name]');
+    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_usersgroup.handle]');
+		if ($this->form_validation->run() == TRUE) {
+			if ($_POST['button'] == 'create') {
+        $opt_settings = array(
+					'generalAccessOff'              => $this->input->post('generalAccessOff'),
+					'generalAccessCP'               => $this->input->post('generalAccessCP'),
+					'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
+					'usersEdit'                     => $this->input->post('usersEdit'),
+					'usersModerate'                 => $this->input->post('usersModerate'),
+					'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
+					'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
+					'usersAssign'                   => $this->input->post('usersAssign'),
+					'usersAdministrate'             => $this->input->post('usersAdministrate'),
+					'sectionEdit'                   => $this->input->post('sectionEdit'),
+					'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
+					'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
+					'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
+					'sectionDelete'                 => $this->input->post('sectionDelete'),
+					'volumeViewVolume'              => $this->input->post('volumeViewVolume'),
+					'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
+					'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
+					'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
+					'volumeEditImages'              => $this->input->post('volumeEditImages'),
+					'utilitiesUpdates'              => $this->input->post('utilitiesUpdates'),
+					'utilitiesSystemReport'         => $this->input->post('utilitiesSystemReport'),
+					'utilitiesPHPInfo'              => $this->input->post('utilitiesPHPInfo'),
+					'utilitiesSystemMessage'        => $this->input->post('utilitiesSystemMessage'),
+					'utilitiesAssetIndexes'         => $this->input->post('utilitiesAssetIndexes'),
+					'utilitiesClearCaches'          => $this->input->post('utilitiesClearCaches'),
+					'utilitiesDeprecationWarnings'  => $this->input->post('utilitiesDeprecationWarnings'),
+					'utilitiesDatabaseBackup'       => $this->input->post('utilitiesDatabaseBackup'),
+					'utilitiesFindAndReplace'       => $this->input->post('utilitiesFindAndReplace'),
+					'utilitiesMigrations'           => $this->input->post('utilitiesMigrations'),
+        );
+
+        $data = array(
+					'name'     => $this->input->post('name'),
+					'handle'   => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+					'settings' => json_encode($opt_settings),
+        );
+
+        $this->general_m->update('usersgroup', $data, $id);        
+        helper_log('add', "Create {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
+        redirect($settings['action']);
+			}			
+		} else {
+	    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+		}
+	}
+
+	public function group_delete($id) {
+		$settings = array(
+      'title'  => 'usersgroup',
+      'table'  => 'usersgroup',
+      'action' => 'admin/settings/users/group',
+    );
+    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
+
+    if ($settings['getDataby_id']) {
       $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete data ".(isset($settings['title']) ? $settings['title'] : $this->data['title']." ".$settings['header'] )." {$id} has successfully");
-      $this->session->set_flashdata('message', "Data has successfully Deleted {$delete} Records");
+      helper_log('delete', "delete {$settings['title']} with id = has successfully");
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");   
       redirect($settings['action']);
     } else {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
       redirect($settings['action']);
     }
-  }
+	}
+
 }
-
-
 
 /* End of file Users.php */
 /* Location: ./application/controllers/admin/Users.php */

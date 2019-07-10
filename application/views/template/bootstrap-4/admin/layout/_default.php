@@ -323,6 +323,7 @@
         changeEntriesType();
         uploadWithoutSubmit();
         uploadAssetsInEntries();
+        manageUsersSettings();
 
         var leftbar = document.getElementById('left-content');
         var leftbarTop = leftbar.offsetTop;
@@ -677,6 +678,87 @@
           }
         });
       }
+
+      /*Manage Users Settings Form*/
+      function manageUsersSettings(){
+        $('#usersgroup-form [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="generalAccessCPOffline"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="generalAccessCP"]').click(function() {
+          if ($(this).is(':checked') == true) {
+            $('#usersgroup-form [name="generalPerformPluginUpdate"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="generalAccessCPOffline"]').removeAttr("disabled", "disabled");
+          } else {
+            $('#usersgroup-form [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="generalAccessCPOffline"]').attr("disabled", "disabled");
+          }
+        });
+
+        $('#usersgroup-form [name="usersModerate"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersEdit"]').click(function() {
+          if ($(this).is(':checked') == true) {
+            $('#usersgroup-form [name="usersModerate"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssignEdit"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAdministrate"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="usersImpersonate"]').removeAttr("disabled", "disabled");
+          } else {
+            $('#usersgroup-form [name="usersModerate"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
+          }
+        });
+        $('#usersgroup-form [name="usersAssignGroups"]').click(function() {
+          if ($(this).is(':checked') == true) {
+            $('#usersgroup-form [name="usersAssign"]').removeAttr("disabled", "disabled");
+          } else {
+            $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
+          }
+        });
+
+
+        $('#usersgroup-form [name*="man"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
+        $('#usersgroup-form [name="usersEdit"]').click(function() {
+          if ($(this).is(':checked') == true) {
+            $('#usersgroup-form [name="usersModerate"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssignEdit"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAdministrate"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="usersImpersonate"]').removeAttr("disabled", "disabled");
+          } else {
+            $('#usersgroup-form [name="usersModerate"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
+          }
+        });
+        $('#usersgroup-form [name="usersAssignGroups"]').click(function() {
+          if ($(this).is(':checked') == true) {
+            $('#usersgroup-form [name="usersAssign"]').removeAttr("disabled", "disabled");
+          } else {
+            $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
+          }
+        });
+
+        /*sections*/
+        $('[id*="section"]').each(function() {
+        });
+      }
+
 
     </script>
   </body>
