@@ -17,7 +17,7 @@
   <input type="hidden" name="handle" value="<?php echo $handle; ?>">
   <input type="hidden" name="fields_element" value="<?php echo $fields_element; ?>">
   <input type="hidden" name="action" value="<?php echo $action; ?>">
-  <div class="form-group assetsRestrictUpload">
+  <div class="form-group">
     <label class="heading" for="inputUploadLocation">User Photo Location</label>
     <small class="form-text text-muted">Where do you want to store user photos? Note that the subfolder path can contain variables like {username}.</small>
     <div class="d-flex flex-row justify-content-between">
@@ -39,14 +39,18 @@
       value="<?php echo (!empty($getDataby_id->path) ? $getDataby_id->path : set_value('path')); ?>">
     </div>
   </div>
-  <div class="form-check">
-    <input class="form-check-input" type="checkbox" value="1" name="email_verification" checked>
-    <label class="form-check-label" for="defaultCheck1">Verify email addresses?</label>
-    <small class="form-text text-muted">Should new email addresses be verified before getting saved to user accounts? (This also affects new user registration.)</small>
+  <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="1" name="email_verification" checked>
+      <label class="form-check-label" for="defaultCheck1">Verify email addresses?</label>
+      <small class="form-text text-muted">Should new email addresses be verified before getting saved to user accounts? (This also affects new user registration.)</small>
+    </div>
   </div>
-  <div class="form-check">
-    <input class="form-check-input" type="checkbox" value="1" name="allowRegistration">
-    <label class="form-check-label" for="defaultCheck1">Allow public registration?</label>
+  <div class="form-group">
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" value="1" name="allowRegistration">
+      <label class="form-check-label" for="defaultCheck1">Allow public registration?</label>
+    </div>
   </div>
   <div class="form-group default-group d-none">
     <label class="heading" for="inputType">Default User Group</label>
