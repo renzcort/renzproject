@@ -70,6 +70,10 @@ $route['admin/settings/users/role']                =  'admin/users/role';
 $route['admin/settings/users/role/create']         =  'admin/users/role_create';
 $route['admin/settings/users/role/edit/(:num)']    =  'admin/users/role_update/$1';
 $route['admin/settings/users/role/delete/(:num)']  =  'admin/users/role_delete/$1';
+$route['admin/settings/users/(:any)']              =  'admin/users/settings/$1';
+$route['admin/settings/users/(:any)/create']       =  'admin/users/settings_create/$1';
+$route['admin/settings/users/(:any)/edit/(:any)']  =  'admin/users/settings_update/$1/$2';
+
 $route['admin/settings/users/group']               =  'admin/users/group';
 $route['admin/settings/users/group/create']        =  'admin/users/group_create';
 $route['admin/settings/users/group/edit/(:num)']   =  'admin/users/group_update/$1';

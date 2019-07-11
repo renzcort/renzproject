@@ -456,6 +456,9 @@
         if ($("#entries-template").length) {
           var jData = $('#MyForm').serializeJSON();
           var url   = '<?php echo base_url("admin/api/jsonEntriesManage") ?>';
+        } else if ($("#users-settings").length) {
+          var jData = Object.assign(jTable, jFields);
+          var url   = '<?php echo base_url("admin/api/jsonUsersFieldsForm") ?>';
         } else {
           var jData = Object.assign(jTable, jFields);
           var url   = '<?php echo base_url("admin/api/jsonTabsFields") ?>';
@@ -753,10 +756,20 @@
             $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
           }
         });
-
         /*sections*/
         $('[id*="section"]').each(function() {
         });
+
+
+        /*Users Settings List*/
+        $('#users-settings [name="allowRegistration"]').click(function(){
+          if ($(this).is(':checked') == true) {
+            $('#users-settings .default-group').removeClass('d-none');
+          } else {
+            $('#users-settings .default-group').addClass('d-none');
+          }
+        });
+        
       }
 
 

@@ -171,6 +171,7 @@ class Categories extends My_Controller {
     foreach ($settings['element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
     }
+    
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 

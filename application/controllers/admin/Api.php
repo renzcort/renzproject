@@ -20,6 +20,7 @@ class Api extends My_Controller {
 
   /**
    * Section Entries Create
+   * This function use if template tabs and there is Fields
    * @return [type] [description]
    */
   public function jsonTabsFields() {
@@ -1022,7 +1023,52 @@ class Api extends My_Controller {
       echo $table_view;
     }
   }
- 
+
+
+  /**
+   * This function use to update data Fields in Users settkngs
+   */
+  public function jsonUsersFieldsForm(){
+    $settings = array(
+      'title'          =>  $this->input->post('header'),
+      'subtitle'       =>  $this->input->post('subtitle'),
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'table'          =>  $this->input->post('table'),
+      'action'         =>  $this->input->post('action'),
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(5),
+      'button'         =>  (($this->input->post('handle') == 'groups') ? '+ New usersgroup' : 'save'),
+      'button_type'    =>  (($this->input->post('handle') == 'groups') ? FALSE : 'submit'),
+      'button_name'    =>  (($this->input->post('handle') == 'groups') ? FALSE : 'update'),
+      'content'        =>  $this->input->post('content'),
+      'right_content'  =>  $this->input->post('right_content'),
+      'fields_element' =>  $this->input->post('fields_element'),
+      'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'element'        =>  [],
+      'elementFields'  =>  [],
+      'id'             =>  $this->input->post('id'),
+    );
+
+    if ($this->input->post('handle') == 'fields') {
+      $data = array(
+        'fields_id'          => json_encode($this->input->post('fieldsId')),
+        'updated_by'         => $this->data['userdata']['id'],
+      );
+    } else {
+      $data = array(
+        'path'               => $this->input->post('path'),
+        'email_verification' => $this->input->post('email_verification'),
+        'group_default'      =>  $this->input->post('group_default'),
+        'updated_by'         => $this->data['userdata']['id'],
+      );
+    }
+    $this->general_m->update($settings['table'], $data, $settings['id'], 'handle');
+    
+    $settings['status'] = TRUE;
+    echo json_encode($settings);
+  }
 
 
 }
