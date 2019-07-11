@@ -73,11 +73,7 @@ $route['admin/settings/users/role/delete/(:num)']  =  'admin/users/role_delete/$
 $route['admin/settings/users/(:any)']              =  'admin/users/settings/$1';
 $route['admin/settings/users/(:any)/create']       =  'admin/users/settings_create/$1';
 $route['admin/settings/users/(:any)/edit/(:any)']  =  'admin/users/settings_update/$1/$2';
-
-$route['admin/settings/users/group']               =  'admin/users/group';
-$route['admin/settings/users/group/create']        =  'admin/users/group_create';
-$route['admin/settings/users/group/edit/(:num)']   =  'admin/users/group_update/$1';
-$route['admin/settings/users/group/delete/(:num)'] =  'admin/users/group_delete/$1';
+$route['admin/settings/users/(:any)/delete/(:num)']=  'admin/users/settings_delete/$1/$2';
 
 /*Info*/
 $route['admin/info'] =  'admin/info/update';

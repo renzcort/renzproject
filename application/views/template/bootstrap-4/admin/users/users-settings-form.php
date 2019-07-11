@@ -28,7 +28,7 @@
             foreach ($assets as $key) {
               echo '
               <option value="'.$key->id.'" 
-              '.((!empty($getDataby_id->assetsSourcesList) && $getDataby_id->assetsSourcesList == $key->id) ? 'selected' : '').'>
+              '.((!empty($users_settings->assetsSourcesList) && $users_settings->assetsSourcesList == $key->id) ? 'selected' : '').'>
               '.$key->name.'
               </option>';
             }
@@ -36,23 +36,26 @@
         ?>
       </select>
       <input type="text" name="path" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2"
-      value="<?php echo (!empty($getDataby_id->path) ? $getDataby_id->path : set_value('path')); ?>">
+      value="<?php echo (!empty($users_settings->path) ? $users_settings->path : set_value('path')); ?>">
     </div>
   </div>
   <div class="form-group">
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="1" name="email_verification" checked>
+      <input class="form-check-input" type="checkbox" value="1" name="email_verification" 
+      <?php echo (!empty($users_settings->email_verification && $users_settings->email_verification == 1) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Verify email addresses?</label>
       <small class="form-text text-muted">Should new email addresses be verified before getting saved to user accounts? (This also affects new user registration.)</small>
     </div>
   </div>
   <div class="form-group">
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" value="1" name="allowRegistration">
+      <input class="form-check-input" type="checkbox" value="1" name="allowRegistration"
+      <?php echo (!empty($users_settings->allowRegistration && $users_settings->allowRegistration == 1) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Allow public registration?</label>
     </div>
   </div>
-  <div class="form-group default-group d-none">
+  <div class="form-group default-group 
+  <?php echo (!empty($users_settings->allowRegistration && $users_settings->allowRegistration == 1) ? '' : 'd-none');?>">
     <label class="heading" for="inputType">Default User Group</label>
     <small class="form-text text-muted">Choose a user group that publicly-registered members will be added to by default.</small>
     <select name="default_group" class="form-control costum-select">
@@ -60,7 +63,7 @@
       foreach ($usersgroup as $key) {
       echo '
       <option value ="'.$key->id.'"
-        '.((!empty($getDataby_id->id) && $getDataby_id->id == $key->id) ? 'selected' : '' ).'>
+        '.((!empty($users_settings->default_group) && $users_settings->default_group == $key->id) ? 'selected' : '' ).'>
         '.$key->name.'
       </option>';
       }

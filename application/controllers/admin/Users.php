@@ -62,7 +62,8 @@ class Users extends My_Controller {
        'id'             => $id,
        'handle'         => $handle,
     );
-  
+  	
+    $settings['users_settings'] = json_decode($settings['getDataby_id']->settings);
     if ($settings['getDataby_id']) {
       $settings['element'] = ($settings['getDataby_id']->fields_id ? json_decode($settings['getDataby_id']->fields_id) : []);
       $settings['elementFields'] = ($settings['element'] ? $settings['element'] : []);
@@ -147,7 +148,7 @@ class Users extends My_Controller {
         );
 
         $data = array(
-          'name'     => $this->input->post('name'),
+          'name'     => ucfirst($this->input->post('name')),
           'handle'   => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'settings' => json_encode($opt_settings),
         );
@@ -204,6 +205,7 @@ class Users extends My_Controller {
       'assets'        =>  $this->general_m->get_all_results('assets'),
       'getDataby_id'  =>  $this->general_m->get_row_by_id('usersgroup', $id),
     );
+    $settings['permission'] = json_decode($settings['getDataby_id']->settings);
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_usersgroup.name]');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_usersgroup.handle]');
@@ -241,14 +243,14 @@ class Users extends My_Controller {
           'utilitiesMigrations'           => $this->input->post('utilitiesMigrations'),
         );
         $data = array(
-          'name'     => $this->input->post('name'),
+          'name'     => ucfirst($this->input->post('name')),
           'handle'   => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'settings' => json_encode($opt_settings),
         );
 
         $this->general_m->update('usersgroup', $data, $id);        
         helper_log('add', "Create {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully updated");
         redirect($settings['action']);
       }     
     } else {
@@ -256,157 +258,12 @@ class Users extends My_Controller {
     }
   }
 
-	public function group_create(){
+	public function settings_delete($handle, $id) {
+		$table = (($handle == 'groups') ? 'usersgroup' : 'users_settings');
 		$settings = array(
-			'title'         =>  'users',
-			'subtitle'      =>  FALSE,
-			'breadcrumb'    =>  array('settings'),
-			'subbreadcrumb' =>  FALSE,
-			'table'         =>  'usersgroup',
-			'action'        =>  'admin/settings/users/group',
-			'session'       =>  $this->data,
-			'no'            =>  $this->uri->segment(4),
-			'button'        =>  'Save',
-			'button_type'   =>  'submit',
-			'button_name'   =>  'create',
-			'content'       =>  'template/bootstrap-4/admin/users/users-group-form',
-			'usersgroup'		=>	$this->general_m->get_all_results('usersgroup'),
-			'section'       =>	$this->general_m->get_all_results('section'),
-			'globals'       =>	$this->general_m->get_all_results('globals'),
-			'assets'        =>	$this->general_m->get_all_results('assets'),
-    );
-
-    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_usersgroup.name]');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_usersgroup.handle]');
-		if ($this->form_validation->run() == TRUE) {
-			if ($_POST['button'] == 'create') {
-        $opt_settings = array(
-					'generalAccessOff'              => $this->input->post('generalAccessOff'),
-					'generalAccessCP'               => $this->input->post('generalAccessCP'),
-					'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
-					'usersEdit'                     => $this->input->post('usersEdit'),
-					'usersModerate'                 => $this->input->post('usersModerate'),
-					'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
-					'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
-					'usersAssign'                   => $this->input->post('usersAssign'),
-					'usersAdministrate'             => $this->input->post('usersAdministrate'),
-					'sectionEdit'                   => $this->input->post('sectionEdit'),
-					'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
-					'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
-					'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
-					'sectionDelete'                 => $this->input->post('sectionDelete'),
-					'volumeViewVolume'              => $this->input->post('volumeViewVolume'),
-					'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
-					'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
-					'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
-					'volumeEditImages'              => $this->input->post('volumeEditImages'),
-					'utilitiesUpdates'              => $this->input->post('utilitiesUpdates'),
-					'utilitiesSystemReport'         => $this->input->post('utilitiesSystemReport'),
-					'utilitiesPHPInfo'              => $this->input->post('utilitiesPHPInfo'),
-					'utilitiesSystemMessage'        => $this->input->post('utilitiesSystemMessage'),
-					'utilitiesAssetIndexes'         => $this->input->post('utilitiesAssetIndexes'),
-					'utilitiesClearCaches'          => $this->input->post('utilitiesClearCaches'),
-					'utilitiesDeprecationWarnings'  => $this->input->post('utilitiesDeprecationWarnings'),
-					'utilitiesDatabaseBackup'       => $this->input->post('utilitiesDatabaseBackup'),
-					'utilitiesFindAndReplace'       => $this->input->post('utilitiesFindAndReplace'),
-					'utilitiesMigrations'           => $this->input->post('utilitiesMigrations'),
-        );
-
-        $data = array(
-					'name'     => $this->input->post('name'),
-					'handle'   => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-					'settings' => json_encode($opt_settings),
-        );
-
-        $this->general_m->create('usersgroup', $data);        
-        helper_log('add', "Create {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
-        redirect($settings['action']);
-			}			
-		} else {
-	    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-		}
-	}
-
-	public function group_update($id){
-		$settings = array(
-			'title'         =>  'users',
-			'subtitle'      =>  FALSE,
-			'breadcrumb'    =>  array('settings'),
-			'subbreadcrumb' =>  FALSE,
-			'table'         =>  'usersgroup',
-			'action'        =>  'admin/settings/users/group',
-			'session'       =>  $this->data,
-			'no'            =>  $this->uri->segment(4),
-			'button'        =>  'Update',
-			'button_type'   =>  'submit',
-			'button_name'   =>  'update',
-			'content'       =>  'template/bootstrap-4/admin/users/users-group-form',
-			'usersgroup'		=>	$this->general_m->get_all_results('usersgroup'),
-			'section'       =>	$this->general_m->get_all_results('section'),
-			'globals'       =>	$this->general_m->get_all_results('globals'),
-			'assets'        =>	$this->general_m->get_all_results('assets'),
-			'id'						=>	$id,
-      'getDataby_id'  =>  $this->general_m->get_row_by_id('usersgroup', $id),
-    );
-
-    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_usersgroup.name]');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_usersgroup.handle]');
-		if ($this->form_validation->run() == TRUE) {
-			if ($_POST['button'] == 'create') {
-        $opt_settings = array(
-					'generalAccessOff'              => $this->input->post('generalAccessOff'),
-					'generalAccessCP'               => $this->input->post('generalAccessCP'),
-					'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
-					'usersEdit'                     => $this->input->post('usersEdit'),
-					'usersModerate'                 => $this->input->post('usersModerate'),
-					'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
-					'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
-					'usersAssign'                   => $this->input->post('usersAssign'),
-					'usersAdministrate'             => $this->input->post('usersAdministrate'),
-					'sectionEdit'                   => $this->input->post('sectionEdit'),
-					'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
-					'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
-					'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
-					'sectionDelete'                 => $this->input->post('sectionDelete'),
-					'volumeViewVolume'              => $this->input->post('volumeViewVolume'),
-					'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
-					'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
-					'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
-					'volumeEditImages'              => $this->input->post('volumeEditImages'),
-					'utilitiesUpdates'              => $this->input->post('utilitiesUpdates'),
-					'utilitiesSystemReport'         => $this->input->post('utilitiesSystemReport'),
-					'utilitiesPHPInfo'              => $this->input->post('utilitiesPHPInfo'),
-					'utilitiesSystemMessage'        => $this->input->post('utilitiesSystemMessage'),
-					'utilitiesAssetIndexes'         => $this->input->post('utilitiesAssetIndexes'),
-					'utilitiesClearCaches'          => $this->input->post('utilitiesClearCaches'),
-					'utilitiesDeprecationWarnings'  => $this->input->post('utilitiesDeprecationWarnings'),
-					'utilitiesDatabaseBackup'       => $this->input->post('utilitiesDatabaseBackup'),
-					'utilitiesFindAndReplace'       => $this->input->post('utilitiesFindAndReplace'),
-					'utilitiesMigrations'           => $this->input->post('utilitiesMigrations'),
-        );
-
-        $data = array(
-					'name'     => $this->input->post('name'),
-					'handle'   => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-					'settings' => json_encode($opt_settings),
-        );
-
-        $this->general_m->update('usersgroup', $data, $id);        
-        helper_log('add', "Create {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
-        redirect($settings['action']);
-			}			
-		} else {
-	    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-		}
-	}
-
-	public function group_delete($id) {
-		$settings = array(
-      'title'  => 'usersgroup',
-      'table'  => 'usersgroup',
-      'action' => 'admin/settings/users/group',
+			'title'  => "users {$handle}",
+			'table'  => $table,
+			'action' => "admin/settings/users/{$handle}",
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 

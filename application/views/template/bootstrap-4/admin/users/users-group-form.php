@@ -26,48 +26,57 @@
   <div class="form-group">
     <label for="inputGeneral" class="heading">General</label>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="generalAccessOff" value="true">
+      <input class="form-check-input" type="checkbox" name="generalAccessOff" value="true"
+      <?php echo ((!empty($permission->generalAccessOff) && $permission->generalAccessOff == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Access the site when the system is off</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="generalAccessCP" value="true">
+      <input class="form-check-input" type="checkbox" name="generalAccessCP" value="true"
+      <?php echo ((!empty($permission->generalAccessCP) && $permission->generalAccessCP == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Access the CP</label>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="generalAccessCPOffline" value="true">
+        <input class="form-check-input" type="checkbox" name="generalAccessCPOffline" value="true"
+        <?php echo ((!empty($permission->generalAccessCPOffline) && $permission->generalAccessCPOffline == TRUE) ? 'checked' : '');?>>
         <label class="form-check-label" for="defaultCheck1">Access the CP when the system is offline</label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="generalPerformPluginUpdate" value="true">
+        <input class="form-check-input" type="checkbox" name="generalPerformPluginUpdate" value="true"
+        <?php echo ((!empty($permission->generalPerformPluginUpdate) && $permission->generalPerformPluginUpdate == TRUE) ? 'checked' : '');?>>
         <label class="form-check-label" for="defaultCheck1">Perform Craft CMS and plugin updates</label>
       </div>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="generalCustomizeElementSource" value="true">
+      <input class="form-check-input" type="checkbox" name="generalCustomizeElementSource" value="true"
+      <?php echo ((!empty($permission->generalCustomizeElementSource) && $permission->generalCustomizeElementSource == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Customize element sources</label>
     </div>
   </div>
   <div class="form-group">
     <label for="inputUsers" class="heading">Users</label>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="usersEdit" value="true">
+      <input class="form-check-input" type="checkbox" name="usersEdit" value="true"
+      <?php echo ((!empty($permission->usersEdit) && $permission->usersEdit == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Edit users</label>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="usersModerate" value="true">
+        <input class="form-check-input" type="checkbox" name="usersModerate" value="true"
+      <?php echo ((!empty($permission->usersModerate) && $permission->usersModerate == TRUE) ? 'checked' : '');?>>
         <label class="form-check-label" for="defaultCheck1">Moderate users</label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="usersAssignEdit" value="true">
+        <input class="form-check-input" type="checkbox" name="usersAssignEdit" value="true"
+      <?php echo ((!empty($permission->usersAssignEdit) && $permission->usersAssignEdit == TRUE) ? 'checked' : '');?>>
         <label class="form-check-label" for="defaultCheck1">Assign user Edit</label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="usersAssignGroups" value="true">
+        <input class="form-check-input" type="checkbox" name="usersAssignGroups" value="true"
+      <?php echo ((!empty($permission->usersAssignGroups) && $permission->usersAssignGroups == TRUE) ? 'checked' : '');?>>
         <label class="form-check-label" for="defaultCheck1">Assign user groups</label>
         <?php 
           if ($usersgroup) {
             foreach ($usersgroup as $usrgrp) {
               echo '
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="usersAssign'.$usrgrp->handle.'" value="true">
+                <input class="form-check-input" type="checkbox" name="usersAssigns['.$usrgrp->handle.']" value="true">
                 <label class="form-check-label" for="defaultCheck1">Assign users to “'.$usrgrp->name.'”</label>
               </div>';
             }
@@ -75,16 +84,19 @@
         ?>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="usersAdministrate" value="true">
+        <input class="form-check-input" type="checkbox" name="usersAdministrate" value="true"
+      <?php echo ((!empty($permission->usersAdministrate) && $permission->usersAdministrate == TRUE) ? 'checked' : '');?>>
         <label class="form-check-label" for="defaultCheck1">Administrate users</label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="usersImpersonate" value="true">
+        <input class="form-check-input" type="checkbox" name="usersImpersonate" value="true"
+      <?php echo ((!empty($permission->usersImpersonate) && $permission->usersImpersonate == TRUE) ? 'checked' : '');?>>
         <label class="form-check-label" for="defaultCheck1">Impersonate users</label>
       </div>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="usersDelete" value="true">
+      <input class="form-check-input" type="checkbox" name="usersDelete" value="true"
+      <?php echo ((!empty($permission->usersDelete) && $permission->usersDelete == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Delete users</label>
     </div>
   </div>

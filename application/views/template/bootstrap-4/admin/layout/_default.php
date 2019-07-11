@@ -684,24 +684,40 @@
 
       /*Manage Users Settings Form*/
       function manageUsersSettings(){
-        $('#usersgroup-form [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="generalAccessCPOffline"]').attr("disabled", "disabled");
+        if ($('#usersgroup-form [name="generalAccessCP"]').is(':checked') == true) {
+          $('#usersgroup-form [name="generalPerformPluginUpdate"]').removeAttr("disabled", "disabled");
+          $('#usersgroup-form [name="generalAccessCPOffline"]').removeAttr("disabled", "disabled");
+        } else {
+          $('#usersgroup-form [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
+          $('#usersgroup-form [name="generalAccessCPOffline"]').attr("disabled", "disabled");
+        }
         $('#usersgroup-form [name="generalAccessCP"]').click(function() {
           if ($(this).is(':checked') == true) {
             $('#usersgroup-form [name="generalPerformPluginUpdate"]').removeAttr("disabled", "disabled");
             $('#usersgroup-form [name="generalAccessCPOffline"]').removeAttr("disabled", "disabled");
           } else {
             $('#usersgroup-form [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="generalPerformPluginUpdate"]').attr("checked", false);
             $('#usersgroup-form [name="generalAccessCPOffline"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="generalAccessCPOffline"]').attr("checked", false);
           }
         });
 
-        $('#usersgroup-form [name="usersModerate"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
+      if ($('#usersgroup-form [name="usersEdit"]').is(':checked') == true) {
+          $('#usersgroup-form [name="usersModerate"]').removeAttr("disabled", "disabled");
+          $('#usersgroup-form [name="usersAssignEdit"]').removeAttr("disabled", "disabled");
+          $('#usersgroup-form [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
+          $('#usersgroup-form [name="usersAdministrate"]').removeAttr("disabled", "disabled");
+          $('#usersgroup-form [name="usersImpersonate"]').removeAttr("disabled", "disabled");
+          $('#usersgroup-form [name*="usersAssigns"]').removeAttr("disabled", "disabled");
+        } else {
+          $('#usersgroup-form [name="usersModerate"]').attr("disabled", "disabled");
+          $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
+          $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
+          $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
+          $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
+          $('#usersgroup-form [name*="usersAssigns"]').attr("disabled", "disabled");
+        }
         $('#usersgroup-form [name="usersEdit"]').click(function() {
           if ($(this).is(':checked') == true) {
             $('#usersgroup-form [name="usersModerate"]').removeAttr("disabled", "disabled");
@@ -709,57 +725,35 @@
             $('#usersgroup-form [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
             $('#usersgroup-form [name="usersAdministrate"]').removeAttr("disabled", "disabled");
             $('#usersgroup-form [name="usersImpersonate"]').removeAttr("disabled", "disabled");
+            // $('#usersgroup-form [name*="usersAssigns"]').removeAttr("disabled", "disabled");
           } else {
             $('#usersgroup-form [name="usersModerate"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersModerate"]').attr("checked", false);
             $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssignEdit"]').attr("checked", false);
             $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAssignGroups"]').attr("checked", false);
             $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersAdministrate"]').attr("checked", false);
             $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
-          }
-        });
-        $('#usersgroup-form [name="usersAssignGroups"]').click(function() {
-          if ($(this).is(':checked') == true) {
-            $('#usersgroup-form [name="usersAssign"]').removeAttr("disabled", "disabled");
-          } else {
-            $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="usersImpersonate"]').attr("checked", false);
+            $('#usersgroup-form [name*="usersAssigns"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name*="usersAssigns"]').attr("checked", false);
           }
         });
 
-
-        $('#usersgroup-form [name*="man"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
-        $('#usersgroup-form [name="usersEdit"]').click(function() {
-          if ($(this).is(':checked') == true) {
-            $('#usersgroup-form [name="usersModerate"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAssignEdit"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAdministrate"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="usersImpersonate"]').removeAttr("disabled", "disabled");
-          } else {
-            $('#usersgroup-form [name="usersModerate"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
-          }
-        });
         $('#usersgroup-form [name="usersAssignGroups"]').click(function() {
           if ($(this).is(':checked') == true) {
-            $('#usersgroup-form [name="usersAssign"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name*="usersAssigns"]').removeAttr("disabled", "disabled");
           } else {
-            $('#usersgroup-form [name="usersAssign"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name*="usersAssigns"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name*="usersAssigns"]').attr("checked", false);
           }
         });
+
         /*sections*/
         $('[id*="section"]').each(function() {
         });
-
 
         /*Users Settings List*/
         $('#users-settings [name="allowRegistration"]').click(function(){

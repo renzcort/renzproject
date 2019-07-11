@@ -1057,15 +1057,73 @@ class Api extends My_Controller {
         'updated_by'         => $this->data['userdata']['id'],
       );
     } else {
-      $data = array(
+      $users_settings = array(
+        'assetsSourcesList'  => $this->input->post('assetsSourcesList'),
+        'allowRegistration'  => $this->input->post('allowRegistration'),
         'path'               => $this->input->post('path'),
         'email_verification' => $this->input->post('email_verification'),
-        'group_default'      =>  $this->input->post('group_default'),
-        'updated_by'         => $this->data['userdata']['id'],
+        'default_group'      => $this->input->post('default_group'),
+      );
+      $data = array(
+        'settings'   =>  json_encode($users_settings),
+        'updated_by' => $this->data['userdata']['id'],
       );
     }
     $this->general_m->update($settings['table'], $data, $settings['id'], 'handle');
-    
+
+    if ($this->input->post('handle') == 'fields') {
+      $settings['getDataby_id'] = $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings'));
+      $table_content    = 'users_content';
+      $getFieldsAll     = $this->fields_m->get_all_results();
+      $getContentFields = $this->db->list_fields($table_content);
+      if (json_decode($settings['getDataby_id']->fields_id) != NULL) {
+        // check fieldsid in element
+        $listFields = json_decode($settings['getDataby_id']->fields_id);
+        
+        /*Check Delete Column*/
+        foreach ($getFieldsAll as $key) {
+          if (in_array("fields_{$key->handle}", $getContentFields)) {
+            if (!in_array($key->id, array_unique($listFields))) {
+              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+              $fields = array(
+                'handle' => $key->handle,
+                'type'   => $getFieldsType->type,
+              );
+              // Drop field column in content
+              modifyColumn($fields, 'drop-table', $table_content);
+            }
+          }
+        }
+        /*Add Column COntent*/
+        foreach ($getFieldsAll as $key) {
+          if (!in_array("fields_{$key->handle}", $getContentFields)) {
+            if (in_array($key->id, array_unique($listFields))) {
+              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+              $fields = array (
+                'handle' => $key->handle,
+                'type'   => $getFieldsType->type,
+              );
+              modifyColumn($fields, 'add-table', $table_content); 
+            }
+          }
+        } 
+      } else {
+        /*Check Delete Column*/
+        if ($getFieldsAll) {
+          foreach ($getFieldsAll as $key) {
+            if (in_array("fields_{$key->handle}", $getContentFields)) {
+              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+              $fields = array(
+                'handle' => $key->handle,
+                'type'   => $getFieldsType->type,
+              );
+              // Drop field column in content
+              modifyColumn($fields, 'drop-table', $table_content);
+            }
+          }
+        }
+      }
+    }
     $settings['status'] = TRUE;
     echo json_encode($settings);
   }
