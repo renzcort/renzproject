@@ -76,7 +76,8 @@
             foreach ($usersgroup as $usrgrp) {
               echo '
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="usersAssigns['.$usrgrp->handle.']" value="true">
+                <input class="form-check-input" type="checkbox" name="usersAssigns['.$usrgrp->handle.']" value="true"
+                '.((!empty($permission->usersAssigns[$usrgrp->handle]) && $permission->usersAssigns[$usrgrp->handle] == TRUE) ? 'checked' : '').'>
                 <label class="form-check-label" for="defaultCheck1">Assign users to “'.$usrgrp->name.'”</label>
               </div>';
             }
@@ -105,24 +106,24 @@
   if ($section) {
     foreach ($section as $sec) {
       echo '  
-        <div class="form-group" id="section-'.$sec->handle.'">
+        <div class="form-group" id="section" data-handle="'.$sec->handle.'">
           <label for="inputSection" class="heading">Section '.($sec->name ? "- {$sec->name}" : '').'</label>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="sectionEdit['.ucfirst($sec->handle).']" value="true">
+            <input class="form-check-input" type="checkbox" name="sectionEdit['.$sec->handle.']" data-handle="'.$sec->handle.'" value="true">
             <label class="form-check-label" for="defaultCheck1">Edit “'.$sec->name.'”</label>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="sectionPublishLiveChange['.ucfirst($sec->handle).']" value="true">
+              <input class="form-check-input" type="checkbox" name="sectionPublishLiveChange['.$sec->handle.']" value="true">
               <label class="form-check-label" for="defaultCheck1">Publish live changes</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="sectionEditOtherAuthors['.ucfirst($sec->handle).']" value="true">
+              <input class="form-check-input" type="checkbox" name="sectionEditOtherAuthors['.$sec->handle.']" value="true">
               <label class="form-check-label" for="defaultCheck1">Edit other authors’ drafts</label>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="sectionPublishOtherAuthors['.ucfirst($sec->handle).']" value="true">
+                <input class="form-check-input" type="checkbox" name="sectionPublishOtherAuthors['.$sec->handle.']" value="true">
                 <label class="form-check-label" for="defaultCheck1">Publish other authors’ drafts</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="sectionDelete['.ucfirst($sec->handle).']" value="true">
+                <input class="form-check-input" type="checkbox" name="sectionDelete['.$sec->handle.']" value="true">
                 <label class="form-check-label" for="defaultCheck1">Delete other authors’ drafts</label>
               </div>
             </div>
@@ -148,25 +149,25 @@
   <?php 
   if ($assets) {
     foreach ($assets as $ass) {
-      echo '<div class="form-group">
+      echo '<div class="form-group" id="assets" data-handle="'.$ass->handle.'">
       <label for="inputGlobal" class="heading">Volume '.($ass->name ? "- {$sec->name}" : '').'</label>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="volumeViewVolume['.ucfirst($ass->handle).']" value="true">
+        <input class="form-check-input" type="checkbox" name="volumeViewVolume['.$ass->handle.']" value="true">
         <label class="form-check-label" for="defaultCheck1">View volume</label>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="volumeUploadFiles['.ucfirst($ass->handle).']" value="true">
+          <input class="form-check-input" type="checkbox" name="volumeUploadFiles['.$ass->handle.']" value="true">
           <label class="form-check-label" for="defaultCheck1">Upload files</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="volumeCreateSubfolder['.ucfirst($ass->handle).']" value="true">
+          <input class="form-check-input" type="checkbox" name="volumeCreateSubfolder['.$ass->handle.']" value="true">
           <label class="form-check-label" for="defaultCheck1">Create subfolders</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="volumeRemoveFilesAndFolders['.ucfirst($ass->handle).']" value="true">
+          <input class="form-check-input" type="checkbox" name="volumeRemoveFilesAndFolders['.$ass->handle.']" value="true">
           <label class="form-check-label" for="defaultCheck1">Remove files and folders</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="volumeEditImages['.ucfirst($ass->handle).']" value="true">
+          <input class="form-check-input" type="checkbox" name="volumeEditImages['.$ass->handle.']" value="true">
           <label class="form-check-label" for="defaultCheck1">Edit images</label>
         </div>
       </div>

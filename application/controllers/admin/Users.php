@@ -16,11 +16,97 @@ class Users extends My_Controller {
       } 
     }
 
-		$this->data = array(
-			'userdata'          => $this->first_load(),
-			'sidebar_activated' => $this->sidebar_activated(),
-		);
+
+    $this->data = array(
+      'userdata'          => $this->first_load(),
+      'sidebar_activated' => $this->sidebar_activated(),
+    );
+
+    $usersgroup = $this->general_m->get_all_results('usersgroup');
+    if ($usersgroup) {
+      foreach ($usersgroup as $key) {
+        $handle[] = $key->handle;
+      }
+      array_push($handle, 'all', 'create');
+    }
+
+    if ($this->router->method == 'index') {
+      if ($usersgroup) {
+        if (in_array(uri_string(), array('admin/users')) || !in_array($this->uri->segment(3), $handle)) {
+          redirect("admin/users/all",'refresh');
+        } 
+      } else {
+        redirect("admin/settings/users",'refresh');
+      }
+    }
+
 	}
+
+  public function index($handle) {
+    $params = (in_array($handle, array('all')) ? '' : $this->general_m->get_row_by_fields('usersgroup', array('handle' => $handle)));
+    $settings = array(
+      'title'          =>  'users',
+      'subtitle'       =>  FALSE,
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'button'         =>  '+ New Users',
+      'button_link'    =>  "account/create",
+      'content'        =>  'template/bootstrap-4/admin/users/users-list',
+      'table'          =>  'users',
+      'action'         =>  'admin/users',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(4),
+      'fields_element' => 'users_settings',
+      'group_name'    =>  'usersgroup',
+      'group'          =>  $this->general_m->get_all_results('usersgroup'),
+      'group_count'    =>  $this->general_m->count_all_results('usersgroup'),
+    );
+
+    // Pagination
+    $config                 = $this->config->item('setting_pagination');
+    $config['base_url']     = base_url($settings['action']);
+    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']     = 10;
+    $num_pages              = $config["total_rows"] / $config["per_page"];
+    $config['uri_segment']  = 3;
+    $config['num_links']    = round($num_pages);
+    $this->pagination->initialize($config);
+    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
+    if ($params) {
+      $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $params->id, 'group_id');
+    } else {
+      $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    }
+    $settings['links']      = $this->pagination->create_links();
+    // end Pagination
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+  }
+
+  public function create() {
+    $settings = array(
+      'title'          =>  'users',
+      'subtitle'       =>  FALSE,
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'button'         =>  'save',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',
+      'content'        =>  'template/bootstrap-4/admin/users/users-form',
+      'table'          =>  'users',
+      'action'         =>  'admin/users',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(4),
+      'fields_element' => 'users_settings',
+      'users_settings' =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
+      'usersgroup'     =>  $this->general_m->get_all_results('usersgroup'),
+      'permissions'    =>  $this->general_m->get_all_results('users_role'),
+      'section'        =>  $this->general_m->get_all_results('section'),
+      'globals'        =>  $this->general_m->get_all_results('globals'),
+      'assets'         =>  $this->general_m->get_all_results('assets'),
+    );
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+
+  }
 
 	public function settings($handle){
     $table = (($handle == 'groups') ? 'usersgroup' : 'users_settings');
@@ -38,29 +124,29 @@ class Users extends My_Controller {
     }
 
 		$settings = array(
-       'title'          =>  "users {$handle}",
-       'subtitle'       =>  FALSE,
-       'breadcrumb'     =>  array('settings'),
-       'subbreadcrumb'  =>  FALSE,
-       'table'          =>  $table,
-       'action'         =>  "admin/settings/users/{$handle}",
-       'session'        =>  $this->data,
-       'no'             =>  $this->uri->segment(5),
-       'button'         =>  (($handle == 'groups') ? '+ New usersgroup' : 'save'),
-       'button_type'    =>  (($handle == 'groups') ? FALSE : 'submit'),
-       'button_name'    =>  (($handle == 'groups') ? FALSE : 'update'),
-       'content'        =>  'template/bootstrap-4/admin/users/users-settings-template',
-       'right_content'  =>  "template/bootstrap-4/admin/users/{$right_content}",
-       'fields_element' =>  'users_settings',
-       'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
-       'fields'         =>  $this->fields_m->get_all_results(),
-       'assets'         =>  $this->general_m->get_all_results('assets'),
-       'assets_content' =>  $this->general_m->get_all_results('assets_content'),
-       'usersgroup'     =>  $this->general_m->get_all_results('usersgroup'),
-       'getDataby_id'   =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
-       'elementFields'  =>  [],
-       'id'             => $id,
-       'handle'         => $handle,
+     'title'          =>  "users {$handle}",
+     'subtitle'       =>  FALSE,
+     'breadcrumb'     =>  array('settings'),
+     'subbreadcrumb'  =>  FALSE,
+     'table'          =>  $table,
+     'action'         =>  "admin/settings/users/{$handle}",
+     'session'        =>  $this->data,
+     'no'             =>  $this->uri->segment(5),
+     'button'         =>  (($handle == 'groups') ? '+ New usersgroup' : 'save'),
+     'button_type'    =>  (($handle == 'groups') ? FALSE : 'submit'),
+     'button_name'    =>  (($handle == 'groups') ? FALSE : 'update'),
+     'content'        =>  'template/bootstrap-4/admin/users/users-settings-template',
+     'right_content'  =>  "template/bootstrap-4/admin/users/{$right_content}",
+     'fields_element' =>  'users_settings',
+     'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
+     'fields'         =>  $this->fields_m->get_all_results(),
+     'assets'         =>  $this->general_m->get_all_results('assets'),
+     'assets_content' =>  $this->general_m->get_all_results('assets_content'),
+     'usersgroup'     =>  $this->general_m->get_all_results('usersgroup'),
+     'getDataby_id'   =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
+     'elementFields'  =>  [],
+     'id'             => $id,
+     'handle'         => $handle,
     );
   	
     $settings['users_settings'] = json_decode($settings['getDataby_id']->settings);

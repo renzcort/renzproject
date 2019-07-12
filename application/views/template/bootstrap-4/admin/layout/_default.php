@@ -751,8 +751,103 @@
           }
         });
 
-        /*sections*/
-        $('[id*="section"]').each(function() {
+        /**
+         * [section description]
+         * This function use to checked permissions to users 
+         * @type {Array}
+         */
+        var section = [];
+        $('#usersgroup-form [id="section"]').each(function() {
+          // section.push($(this).data('handle'));
+          var section = $(this).data('handle');
+          if ($('#usersgroup-form [name="sectionEdit['+section+']"]').is(':checked') == true) {
+            $('#usersgroup-form [name="sectionPublishLiveChange['+section+']"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').removeAttr("disabled", "disabled");
+          } else {
+            $('#usersgroup-form [name="sectionPublishLiveChange['+section+']"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("disabled", "disabled");
+          }
+
+          if ($('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').is(':checked') == true) {
+            $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="sectionDelete['+section+']"]').removeAttr("disabled", "disabled");
+          } else {
+            $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("disabled", "disabled");
+          }
+          
+          // alert(section);
+          $('#usersgroup-form [name="sectionEdit['+section+']"]').click(function() {
+            if ($(this).is(':checked') == true) {
+              $('#usersgroup-form [name="sectionPublishLiveChange['+section+']"]').removeAttr("disabled", "disabled");
+              $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').removeAttr("disabled", "disabled");
+            } else {
+              $('#usersgroup-form [name="sectionPublishLiveChange['+section+']"]').attr("disabled", "disabled");
+              $('#usersgroup-form [name="sectionPublishLiveChange['+section+']"]').attr("checked", false);
+              $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').attr("disabled", "disabled");
+              $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').attr("checked", false);
+              $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("disabled", "disabled");
+              $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("checked", false);
+              $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("disabled", "disabled");
+              $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("checked", false);
+            }
+          });
+
+          $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').click(function() {
+            if ($(this).is(':checked') == true) {
+              $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').removeAttr("disabled", "disabled");
+              $('#usersgroup-form [name="sectionDelete['+section+']"]').removeAttr("disabled", "disabled");
+            } else {
+              $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("disabled", "disabled");
+              $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("checked", false);
+              $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("disabled", "disabled");
+              $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("checked", false);
+            }
+          });
+        });
+
+
+        /**
+         * [assets description]
+         * This function use to checked permissions to users 
+         * @type {Array}
+         */
+        var assets = [];
+        $('#usersgroup-form [id="assets"]').each(function() {
+          // assets.push($(this).data('handle'));
+          var assets = $(this).data('handle');
+          if ($('#usersgroup-form [name="volumeViewVolume[home]"]').is(':checked') == true) {
+            $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').removeAttr("disabled", "disabled");
+            $('#usersgroup-form [name="volumeEditImages['+assets+']"]').removeAttr("disabled", "disabled");
+          } else {
+            $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').attr("disabled", "disabled");
+            $('#usersgroup-form [name="volumeEditImages['+assets+']"]').attr("disabled", "disabled");
+          }
+          
+          // alert(assets);
+          $('#usersgroup-form [name="volumeViewVolume['+assets+']"]').click(function() {
+            if ($(this).is(':checked') == true) {
+              $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').removeAttr("disabled", "disabled");
+              $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').removeAttr("disabled", "disabled");
+              $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').removeAttr("disabled", "disabled");
+              $('#usersgroup-form [name="volumeEditImages['+assets+']"]').removeAttr("disabled", "disabled");
+            } else {
+              $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').attr("disabled", "disabled");
+              $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').attr("checked", false);
+              $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').attr("disabled", "disabled");
+              $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').attr("checked", false);
+              $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').attr("disabled", "disabled");
+              $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').attr("checked", false);
+              $('#usersgroup-form [name="volumeEditImages['+assets+']"]').attr("disabled", "disabled");
+              $('#usersgroup-form [name="volumeEditImages['+assets+']"]').attr("checked", false);
+            }
+          });
         });
 
         /*Users Settings List*/
