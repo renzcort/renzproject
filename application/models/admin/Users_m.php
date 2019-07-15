@@ -4,15 +4,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 class Users_m extends My_Model {
   protected $_table = 'users';
 
-    /**
-   * [count_all_results description]
-   * @param  [type] $table [description]
-   * @return [type]        [description]
-   * ===================================
-   * Manage Users
-   * ===================================
-   */
-
   /*count All results*/
   public function count_all_results(){
     return $this->db->count_all_results($this->_table);
@@ -21,8 +12,10 @@ class Users_m extends My_Model {
   /*Get All Data Records*/
   public function get_all_results($limit = '', $offset = '') {
     ($limit ? $this->db->limit($limit, $offset) : '' );
-    $this->db->select("{$this->_table}.*, users_role.name");
-    $this->db->join("users_role", "users_role.id = {$this->_table}.role_id");
+    $this->db->select("{$this->_table}.*, a.name as role_name, b.name as group_name, c.*");
+    $this->db->join("users_role as a", "a.id = {$this->_table}.role_id");
+    $this->db->join("usersgroup as b", "b.id = {$this->_table}.group_id");
+    $this->db->join("users_content as c", "c.users_id = {$this->_table}.id");
     $result = $this->db->get($this->_table);
     if ($result->num_rows() > 0) {
       return $result->result();
@@ -33,7 +26,11 @@ class Users_m extends My_Model {
 
   /*Get Data By Id*/
   public function get_row_by_id($id) {
-    return $this->db->get_where($this->_table, array('id' => $id))->row();
+    $this->db->select("{$this->_table}.*, a.name as role_name, b.name as group_name, c.*");
+    $this->db->join("users_role as a", "a.id = {$this->_table}.role_id");
+    $this->db->join("usersgroup as b", "b.id = {$this->_table}.group_id");
+    $this->db->join("users_content as c", "c.users_id = {$this->_table}.id");
+    return $this->db->get_where($this->_table, array("{$this->_table}.id" => $id))->row();
   }
 
   /*Insert All Records*/

@@ -9,6 +9,7 @@ class Users extends My_Controller {
 		//Do your magic here
 		$this->load->model('admin/General_m', 'general_m');
 		$this->load->model('admin/Fields_m', 'fields_m');
+    $this->load->model('admin/Users_m', 'users_m');
 
     if ($this->router->method == 'settings') {
       if ((uri_string() == 'admin/settings/users') || !in_array($this->uri->segment(4), array('groups', 'fields', 'settings'))) {
@@ -53,7 +54,7 @@ class Users extends My_Controller {
       'button_link'    =>  "account/create",
       'content'        =>  'template/bootstrap-4/admin/users/users-list',
       'table'          =>  'users',
-      'action'         =>  'admin/users',
+      'action'         =>  'admin/users/account',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(4),
       'fields_element' => 'users_settings',
@@ -85,7 +86,7 @@ class Users extends My_Controller {
   public function create() {
     $settings = array(
       'title'          =>  'users',
-      'subtitle'       =>  FALSE,
+      'subtitle'       =>  'create',
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
       'button'         =>  'save',
@@ -93,7 +94,7 @@ class Users extends My_Controller {
       'button_name'    =>  'create',
       'content'        =>  'template/bootstrap-4/admin/users/users-form',
       'table'          =>  'users',
-      'action'         =>  'admin/users',
+      'action'         =>  'admin/users/account',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(4),
       'fields_element' => 'users_settings',
@@ -103,9 +104,200 @@ class Users extends My_Controller {
       'section'        =>  $this->general_m->get_all_results('section'),
       'globals'        =>  $this->general_m->get_all_results('globals'),
       'assets'         =>  $this->general_m->get_all_results('assets'),
+      'element'        =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
+      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
+      'assets'         =>  $this->general_m->get_all_results('assets'),
+      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
     );
-    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+    $settings['fields_id']  = json_decode($settings['element']->fields_id);
 
+    $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]');
+    $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[renz_users.email]');
+    $this->form_validation->set_rules('firstname', 'firstname', 'trim|required');
+    $this->form_validation->set_rules('lastname', 'lastname', 'trim|required');
+    if ($this->form_validation->run() == TRUE) {
+      if ($_POST['button'] == 'create') {
+        $opt_settings = array(
+          'generalAccessOff'              => $this->input->post('generalAccessOff'),
+          'generalAccessCP'               => $this->input->post('generalAccessCP'),
+          'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
+          'usersEdit'                     => $this->input->post('usersEdit'),
+          'usersModerate'                 => $this->input->post('usersModerate'),
+          'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
+          'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
+          'usersAssign'                   => $this->input->post('usersAssign'),
+          'usersAdministrate'             => $this->input->post('usersAdministrate'),
+          'sectionEdit'                   => $this->input->post('sectionEdit'),
+          'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
+          'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
+          'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
+          'sectionDelete'                 => $this->input->post('sectionDelete'),
+          'volumeViewVolume'              => $this->input->post('volumeViewVolume'),
+          'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
+          'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
+          'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
+          'volumeEditImages'              => $this->input->post('volumeEditImages'),
+          'utilitiesUpdates'              => $this->input->post('utilitiesUpdates'),
+          'utilitiesSystemReport'         => $this->input->post('utilitiesSystemReport'),
+          'utilitiesPHPInfo'              => $this->input->post('utilitiesPHPInfo'),
+          'utilitiesSystemMessage'        => $this->input->post('utilitiesSystemMessage'),
+          'utilitiesAssetIndexes'         => $this->input->post('utilitiesAssetIndexes'),
+          'utilitiesClearCaches'          => $this->input->post('utilitiesClearCaches'),
+          'utilitiesDeprecationWarnings'  => $this->input->post('utilitiesDeprecationWarnings'),
+          'utilitiesDatabaseBackup'       => $this->input->post('utilitiesDatabaseBackup'),
+          'utilitiesFindAndReplace'       => $this->input->post('utilitiesFindAndReplace'),
+          'utilitiesMigrations'           => $this->input->post('utilitiesMigrations'),
+        );
+
+        $data = array(
+          'username'        =>  $this->input->post('username'),
+          'group_id'        =>  $this->input->post('group'),
+          'role_id'         =>  $this->input->post('role'),
+          'email'           =>  $this->input->post('email'),
+          'firstname'       =>  $this->input->post('firstname'),
+          'lastname'        =>  $this->input->post('lastname'),
+          'token'           =>  random_string('alnum', 30),
+          'activation_code' =>  random_string('numeric', 6),
+          'created_by'      =>  $this->data['userdata']['id'],
+          'settings'        =>  json_encode($opt_settings),
+        );        
+        $users = $this->general_m->create($settings['table'], $data);
+
+        /*Insert to Data COntent*/
+        $data_content = array(
+          'users_id'   =>  $users,
+          'created_by' =>  $this->data['userdata']['id'],
+        ); 
+        $keys = array_keys($this->input->post());
+        foreach ($keys as $key) {
+          if (strpos($key, 'fields') !== false) {
+            if (is_array($this->input->post($key))) {
+              $data_content[$key] = implode(', ', $this->input->post($key));
+            } else {
+              $data_content[$key] = $this->input->post($key);
+            }
+          }
+        }
+        $users_content = $this->general_m->create('users_content', $data_content);
+        helper_log('add', "Create {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
+        redirect($settings['action']);
+      } 
+    } else {
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+    }
+  }
+
+  public function update($id) {
+    $settings = array(
+      'title'          =>  'users',
+      'subtitle'       =>  'create',
+      'breadcrumb'     =>  array('settings'),
+      'subbreadcrumb'  =>  FALSE,
+      'button'         =>  'save',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',
+      'content'        =>  'template/bootstrap-4/admin/users/users-form',
+      'table'          =>  'users',
+      'action'         =>  'admin/users/account',
+      'session'        =>  $this->data,
+      'no'             =>  $this->uri->segment(4),
+      'fields_element' => 'users_settings',
+      'users_settings' =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
+      'usersgroup'     =>  $this->general_m->get_all_results('usersgroup'),
+      'permissions'    =>  $this->general_m->get_all_results('users_role'),
+      'section'        =>  $this->general_m->get_all_results('section'),
+      'globals'        =>  $this->general_m->get_all_results('globals'),
+      'assets'         =>  $this->general_m->get_all_results('assets'),
+      'element'        =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
+      'fields'         =>  $this->fields_m->get_all_results(),
+      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
+      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
+      'assets'         =>  $this->general_m->get_all_results('assets'),
+      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
+      'id'             =>  $id,
+      'getDataby_id'   =>  $this->users_m->get_row_by_id($id),
+    );
+    $settings['fields_id']  = json_decode($settings['element']->fields_id);
+    $settings['permission'] = json_decode($settings['getDataby_id']->settings);
+
+    $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]');
+    $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[renz_users.email]');
+    $this->form_validation->set_rules('firstname', 'firstname', 'trim|required');
+    $this->form_validation->set_rules('lastname', 'lastname', 'trim|required');
+    if ($this->form_validation->run() == TRUE) {
+      if ($_POST['button'] == 'create') {
+        $opt_settings = array(
+          'generalAccessOff'              => $this->input->post('generalAccessOff'),
+          'generalAccessCP'               => $this->input->post('generalAccessCP'),
+          'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
+          'usersEdit'                     => $this->input->post('usersEdit'),
+          'usersModerate'                 => $this->input->post('usersModerate'),
+          'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
+          'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
+          'usersAssign'                   => $this->input->post('usersAssign'),
+          'usersAdministrate'             => $this->input->post('usersAdministrate'),
+          'sectionEdit'                   => $this->input->post('sectionEdit'),
+          'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
+          'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
+          'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
+          'sectionDelete'                 => $this->input->post('sectionDelete'),
+          'volumeViewVolume'              => $this->input->post('volumeViewVolume'),
+          'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
+          'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
+          'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
+          'volumeEditImages'              => $this->input->post('volumeEditImages'),
+          'utilitiesUpdates'              => $this->input->post('utilitiesUpdates'),
+          'utilitiesSystemReport'         => $this->input->post('utilitiesSystemReport'),
+          'utilitiesPHPInfo'              => $this->input->post('utilitiesPHPInfo'),
+          'utilitiesSystemMessage'        => $this->input->post('utilitiesSystemMessage'),
+          'utilitiesAssetIndexes'         => $this->input->post('utilitiesAssetIndexes'),
+          'utilitiesClearCaches'          => $this->input->post('utilitiesClearCaches'),
+          'utilitiesDeprecationWarnings'  => $this->input->post('utilitiesDeprecationWarnings'),
+          'utilitiesDatabaseBackup'       => $this->input->post('utilitiesDatabaseBackup'),
+          'utilitiesFindAndReplace'       => $this->input->post('utilitiesFindAndReplace'),
+          'utilitiesMigrations'           => $this->input->post('utilitiesMigrations'),
+        );
+
+        $data = array(
+          'username'        =>  $this->input->post('username'),
+          'group_id'        =>  $this->input->post('group'),
+          'role_id'         =>  $this->input->post('role'),
+          'email'           =>  $this->input->post('email'),
+          'firstname'       =>  $this->input->post('firstname'),
+          'lastname'        =>  $this->input->post('lastname'),
+          'token'           =>  random_string('alnum', 30),
+          'activation_code' =>  random_string('numeric', 6),
+          'updated_by'      =>  $this->data['userdata']['id'],
+          'settings'        =>  json_encode($opt_settings),
+        );        
+        $this->general_m->update($settings['table'], $data, $id);
+
+        /*Insert to Data COntent*/
+        $data_content = array(
+          'users_id'   =>  $id,
+          'updated_by' =>  $this->data['userdata']['id'],
+        ); 
+        $keys = array_keys($this->input->post());
+        foreach ($keys as $key) {
+          if (strpos($key, 'fields') !== false) {
+            if (is_array($this->input->post($key))) {
+              $data_content[$key] = implode(', ', $this->input->post($key));
+            } else {
+              $data_content[$key] = $this->input->post($key);
+            }
+          }
+        }
+        $users_content = $this->general_m->update('users_content', $data_content, $id, 'users_id');
+        helper_log('add', "updated {$settings['title']} has successfully");
+        $this->session->set_flashdata('message', "{$settings['title']} has successfully updated");
+        redirect($settings['action']);
+      } 
+    } else {
+      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+    }
   }
 
 	public function settings($handle){

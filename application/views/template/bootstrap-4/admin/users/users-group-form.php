@@ -109,21 +109,26 @@
         <div class="form-group" id="section" data-handle="'.$sec->handle.'">
           <label for="inputSection" class="heading">Section '.($sec->name ? "- {$sec->name}" : '').'</label>
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="sectionEdit['.$sec->handle.']" data-handle="'.$sec->handle.'" value="true">
+            <input class="form-check-input" type="checkbox" name="sectionEdit['.$sec->handle.']" data-handle="'.$sec->handle.'" value="true"
+            '.((!empty($permission->sectionEdit) && $permission->sectionEdit == TRUE) ? 'checked' : '').'>
             <label class="form-check-label" for="defaultCheck1">Edit “'.$sec->name.'”</label>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="sectionPublishLiveChange['.$sec->handle.']" value="true">
+              <input class="form-check-input" type="checkbox" name="sectionPublishLiveChange['.$sec->handle.']" value="true"
+            '.((!empty($permission->sectionPublishLiveChange) && $permission->sectionPublishLiveChange == TRUE) ? 'checked' : '').'>
               <label class="form-check-label" for="defaultCheck1">Publish live changes</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="sectionEditOtherAuthors['.$sec->handle.']" value="true">
+              <input class="form-check-input" type="checkbox" name="sectionEditOtherAuthors['.$sec->handle.']" value="true"
+            '.((!empty($permission->sectionEditOtherAuthors) && $permission->sectionEditOtherAuthors == TRUE) ? 'checked' : '').'>
               <label class="form-check-label" for="defaultCheck1">Edit other authors’ drafts</label>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="sectionPublishOtherAuthors['.$sec->handle.']" value="true">
+                <input class="form-check-input" type="checkbox" name="sectionPublishOtherAuthors['.$sec->handle.']" value="true"
+            '.((!empty($permission->sectionPublishOtherAuthors) && $permission->sectionPublishOtherAuthors == TRUE) ? 'checked' : '').'>
                 <label class="form-check-label" for="defaultCheck1">Publish other authors’ drafts</label>
               </div>
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="sectionDelete['.$sec->handle.']" value="true">
+                <input class="form-check-input" type="checkbox" name="sectionDelete['.$sec->handle.']" value="true"
+            '.((!empty($permission->sectionDelete) && $permission->sectionDelete == TRUE) ? 'checked' : '').'>
                 <label class="form-check-label" for="defaultCheck1">Delete other authors’ drafts</label>
               </div>
             </div>

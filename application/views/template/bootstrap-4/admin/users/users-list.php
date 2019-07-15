@@ -60,7 +60,7 @@
       <?php foreach ($record_all as $key) :?>
       <tr>
         <th style="width:5%" scope="row"><?php echo ++$no; ?></th>
-        <td><a href=""><?php echo $key->username; ?></a></td>
+        <td><a href="<?php echo base_url($action."/edit/".$key->id); ?>"><?php echo $key->username; ?></a></td>
         <td><?php echo $key->firstname.' '.$key->lastname; ?></td>
         <td><?php echo $key->email; ?></td>
         <td><?php echo ($key->created_at ? $key->created_at : ''); ?></td>

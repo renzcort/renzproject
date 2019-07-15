@@ -62,19 +62,17 @@ $route['admin/forgot-password']  =  'admin/login/forgot_password';
 $route['admin/reset-password']   =  'admin/login/reset_password';
 
 /*Users*/
-$route['admin/users/(:any)'] =  'admin/users/index/$1';
-$route['admin/users/account/create'] =  'admin/users/create';
-
-$route['admin/settings/users/edit/(:num)']         =  'admin/users/update/$1';
-$route['admin/settings/users/delete/(:num)']       =  'admin/users/delete/$1';
-$route['admin/settings/users/role']                =  'admin/users/role';
-$route['admin/settings/users/role/create']         =  'admin/users/role_create';
-$route['admin/settings/users/role/edit/(:num)']    =  'admin/users/role_update/$1';
-$route['admin/settings/users/role/delete/(:num)']  =  'admin/users/role_delete/$1';
-$route['admin/settings/users/(:any)']              =  'admin/users/settings/$1';
-$route['admin/settings/users/(:any)/create']       =  'admin/users/settings_create/$1';
-$route['admin/settings/users/(:any)/edit/(:any)']  =  'admin/users/settings_update/$1/$2';
-$route['admin/settings/users/(:any)/delete/(:num)']=  'admin/users/settings_delete/$1/$2';
+$route['admin/users/(:any)']                        =  'admin/users/index/$1';
+$route['admin/users/account/create']                =  'admin/users/create';
+$route['admin/users/account/edit/(:any)']           =  'admin/users/update/$1';
+$route['admin/settings/users/role']                 =  'admin/users/role';
+$route['admin/settings/users/role/create']          =  'admin/users/role_create';
+$route['admin/settings/users/role/edit/(:num)']     =  'admin/users/role_update/$1';
+$route['admin/settings/users/role/delete/(:num)']   =  'admin/users/role_delete/$1';
+$route['admin/settings/users/(:any)']               =  'admin/users/settings/$1';
+$route['admin/settings/users/(:any)/create']        =  'admin/users/settings_create/$1';
+$route['admin/settings/users/(:any)/edit/(:any)']   =  'admin/users/settings_update/$1/$2';
+$route['admin/settings/users/(:any)/delete/(:num)'] =  'admin/users/settings_delete/$1/$2';
 
 /*Info*/
 $route['admin/info'] =  'admin/info/update';
