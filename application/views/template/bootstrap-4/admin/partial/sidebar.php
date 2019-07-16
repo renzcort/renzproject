@@ -51,6 +51,14 @@
               </a>
             </li>';
           }
+          if ($session['sidebar_activated']['usersgroup'] != 0) {
+            echo '
+            <li class="nav-item">
+              <a class="nav-link" href="'.base_url('admin/users').'">
+                <i class="fas fa-cogs"></i><span>Users</span>
+              </a>
+            </li>';
+          }
         ?>
       <!-- <li class="nav-item">
         <a class="nav-link" href="#">

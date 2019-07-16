@@ -13,7 +13,7 @@ class Users extends My_Controller {
 
     if ($this->router->method == 'settings') {
       if ((uri_string() == 'admin/settings/users') || !in_array($this->uri->segment(4), array('groups', 'fields', 'settings'))) {
-        redirect("admin/settings/users/groups",'refresh');
+        redirect("admin/settings/users/groups");
       } 
     }
 
@@ -34,13 +34,16 @@ class Users extends My_Controller {
     if ($this->router->method == 'index') {
       if ($usersgroup) {
         if (in_array(uri_string(), array('admin/users')) || !in_array($this->uri->segment(3), $handle)) {
-          redirect("admin/users/all",'refresh');
+          redirect("admin/users/all");
         } 
       } else {
-        redirect("admin/settings/users",'refresh');
+        redirect("admin/settings/users");
+      }
+    } elseif ($this->router->method == 'settings') {
+      if (in_array(uri_string(), array('admin/settings/users')) || !in_array($this->uri->segment(4), array('groups', 'fields', 'settings'))) {
+        redirect("admin/settings/users/groups");
       }
     }
-
 	}
 
   public function index($handle) {
@@ -50,13 +53,13 @@ class Users extends My_Controller {
       'subtitle'       =>  FALSE,
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
-      'button'         =>  '+ New Users',
-      'button_link'    =>  "account/create",
-      'content'        =>  'template/bootstrap-4/admin/users/users-list',
       'table'          =>  'users',
       'action'         =>  'admin/users/account',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(4),
+      'button'         =>  '+ New Users',
+      'button_link'    =>  "account/create",
+      'content'        =>  'template/bootstrap-4/admin/users/users-list',
       'fields_element' => 'users_settings',
       'group_name'    =>  'usersgroup',
       'group'          =>  $this->general_m->get_all_results('usersgroup'),
@@ -89,14 +92,14 @@ class Users extends My_Controller {
       'subtitle'       =>  'create',
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
-      'button'         =>  'save',
-      'button_type'    =>  'submit',
-      'button_name'    =>  'create',
-      'content'        =>  'template/bootstrap-4/admin/users/users-form',
       'table'          =>  'users',
       'action'         =>  'admin/users/account',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(4),
+      'button'         =>  'save',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',
+      'content'        =>  'template/bootstrap-4/admin/users/users-form',
       'fields_element' => 'users_settings',
       'users_settings' =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
       'usersgroup'     =>  $this->general_m->get_all_results('usersgroup'),
@@ -134,7 +137,8 @@ class Users extends My_Controller {
           'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
           'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
           'sectionDelete'                 => $this->input->post('sectionDelete'),
-          'volumeViewVolume'              => $this->input->post('volumeViewVolume'),
+          'editGlobal'                    => $this->input->post('editGlobal'),
+          'volumeView'                    => $this->input->post('volumeView'),
           'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
           'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
           'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
@@ -196,14 +200,14 @@ class Users extends My_Controller {
       'subtitle'       =>  'create',
       'breadcrumb'     =>  array('settings'),
       'subbreadcrumb'  =>  FALSE,
-      'button'         =>  'save',
-      'button_type'    =>  'submit',
-      'button_name'    =>  'create',
-      'content'        =>  'template/bootstrap-4/admin/users/users-form',
       'table'          =>  'users',
       'action'         =>  'admin/users/account',
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(4),
+      'button'         =>  'save',
+      'button_type'    =>  'submit',
+      'button_name'    =>  'create',
+      'content'        =>  'template/bootstrap-4/admin/users/users-form',
       'fields_element' => 'users_settings',
       'users_settings' =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
       'usersgroup'     =>  $this->general_m->get_all_results('usersgroup'),
@@ -222,6 +226,66 @@ class Users extends My_Controller {
     );
     $settings['fields_id']  = json_decode($settings['element']->fields_id);
     $settings['permission'] = json_decode($settings['getDataby_id']->settings);
+
+    // permission section
+    if ($settings['permission']->sectionEdit) {
+      foreach ($settings['permission']->sectionEdit as $key => $value) {
+        $settings['sectionEdit'][] = $key;
+      }
+      if ($settings['permission']->sectionPublishLiveChange) {
+        foreach ($settings['permission']->sectionPublishLiveChange as $key => $value) {
+          $settings['sectionPublishLiveChange'][] = $key;
+        }
+      }
+      if ($settings['permission']->sectionEditOtherAuthors) {
+        foreach ($settings['permission']->sectionEditOtherAuthors as $key => $value) {
+          $settings['sectionEditOtherAuthors'][] = $key;
+        }
+      }
+      if ($settings['permission']->sectionPublishOtherAuthors) {
+        foreach ($settings['permission']->sectionPublishOtherAuthors as $key => $value) {
+          $settings['sectionPublishOtherAuthors'][] = $key;
+        }
+      }
+      if ($settings['permission']->sectionDelete) {
+        foreach ($settings['permission']->sectionDelete as $key => $value) {
+          $settings['sectionDelete'][] = $key;
+        }
+      }
+    }
+    // permission globals
+    if ($settings['permission']->editGlobal) {
+      foreach ($settings['permission']->editGlobal as $key => $value) {
+        $settings['editGlobal'][] = $key;
+      }
+    }
+    
+    // permission volume assets
+    if ($settings['permission']->volumeView) {
+      foreach ($settings['permission']->volumeView as $key => $value) {
+        $settings['volumeView'][] = $key;
+      }
+      if ($settings['permission']->volumeUploadFiles) {
+        foreach ($settings['permission']->volumeUploadFiles as $key => $value) {
+          $settings['volumeUploadFiles'][] = $key;
+        }
+      }
+      if ($settings['permission']->volumeCreateSubfolder) {
+        foreach ($settings['permission']->volumeCreateSubfolder as $key => $value) {
+          $settings['volumeCreateSubfolder'][] = $key;
+        }
+      }
+      if ($settings['permission']->volumeRemoveFilesAndFolders) {
+        foreach ($settings['permission']->volumeRemoveFilesAndFolders as $key => $value) {
+          $settings['volumeRemoveFilesAndFolders'][] = $key;
+        }
+      }
+      if ($settings['permission']->volumeEditImages) {
+        foreach ($settings['permission']->volumeEditImages as $key => $value) {
+          $settings['volumeEditImages'][] = $key;
+        }
+      }
+    }
 
     $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]');
     $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[renz_users.email]');
@@ -244,7 +308,8 @@ class Users extends My_Controller {
           'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
           'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
           'sectionDelete'                 => $this->input->post('sectionDelete'),
-          'volumeViewVolume'              => $this->input->post('volumeViewVolume'),
+          'editGlobal'                    => $this->input->post('editGlobal'),
+          'volumeView'                    => $this->input->post('volumeView'),
           'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
           'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
           'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
@@ -260,7 +325,6 @@ class Users extends My_Controller {
           'utilitiesFindAndReplace'       => $this->input->post('utilitiesFindAndReplace'),
           'utilitiesMigrations'           => $this->input->post('utilitiesMigrations'),
         );
-
         $data = array(
           'username'        =>  $this->input->post('username'),
           'group_id'        =>  $this->input->post('group'),
@@ -300,6 +364,27 @@ class Users extends My_Controller {
     }
   }
 
+  public function delete($id) {
+    $settings = array(
+      'title'  => "users",
+      'table'  => 'users',
+      'action' => 'admin/users/account',
+    );
+    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
+
+    if ($settings['getDataby_id']) {
+      $delete_content = $this->general_m->delete('users_content', $id, 'users_id');
+      $delete = $this->general_m->delete($settings['table'], $id);
+      helper_log('delete', "delete {$settings['title']} with id = has successfully");
+      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");   
+      redirect($settings['action']);
+    } else {
+      $this->session->set_flashdata('message', 'Your Id Not Valid');
+      redirect($settings['action']);
+    }
+  }
+
+
 	public function settings($handle){
     $table = (($handle == 'groups') ? 'usersgroup' : 'users_settings');
     if ($handle == 'groups') {
@@ -324,7 +409,7 @@ class Users extends My_Controller {
      'action'         =>  "admin/settings/users/{$handle}",
      'session'        =>  $this->data,
      'no'             =>  $this->uri->segment(5),
-     'button'         =>  (($handle == 'groups') ? '+ New usersgroup' : 'save'),
+     'button'         =>  (($handle == 'groups') ? "+ New Users{$handle}" : 'save'),
      'button_type'    =>  (($handle == 'groups') ? FALSE : 'submit'),
      'button_name'    =>  (($handle == 'groups') ? FALSE : 'update'),
      'content'        =>  'template/bootstrap-4/admin/users/users-settings-template',
@@ -408,7 +493,8 @@ class Users extends My_Controller {
           'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
           'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
           'sectionDelete'                 => $this->input->post('sectionDelete'),
-          'volumeViewVolume'              => $this->input->post('volumeViewVolume'),
+          'editGlobal'                    => $this->input->post('editGlobal'),
+          'volumeView'              => $this->input->post('volumeView'),
           'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
           'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
           'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
@@ -485,6 +571,66 @@ class Users extends My_Controller {
     );
     $settings['permission'] = json_decode($settings['getDataby_id']->settings);
 
+    // permission section
+    if ($settings['permission']->sectionEdit) {
+      foreach ($settings['permission']->sectionEdit as $key => $value) {
+        $settings['sectionEdit'][] = $key;
+      }
+      if ($settings['permission']->sectionPublishLiveChange) {
+        foreach ($settings['permission']->sectionPublishLiveChange as $key => $value) {
+          $settings['sectionPublishLiveChange'][] = $key;
+        }
+      }
+      if ($settings['permission']->sectionEditOtherAuthors) {
+        foreach ($settings['permission']->sectionEditOtherAuthors as $key => $value) {
+          $settings['sectionEditOtherAuthors'][] = $key;
+        }
+      }
+      if ($settings['permission']->sectionPublishOtherAuthors) {
+        foreach ($settings['permission']->sectionPublishOtherAuthors as $key => $value) {
+          $settings['sectionPublishOtherAuthors'][] = $key;
+        }
+      }
+      if ($settings['permission']->sectionDelete) {
+        foreach ($settings['permission']->sectionDelete as $key => $value) {
+          $settings['sectionDelete'][] = $key;
+        }
+      }
+    }
+    // permission globals
+    if ($settings['permission']->editGlobal) {
+      foreach ($settings['permission']->editGlobal as $key => $value) {
+        $settings['editGlobal'][] = $key;
+      }
+    }
+
+    // permission volume assets
+    if ($settings['permission']->volumeView) {
+      foreach ($settings['permission']->volumeView as $key => $value) {
+        $settings['volumeView'][] = $key;
+      }
+      if ($settings['permission']->volumeUploadFiles) {
+        foreach ($settings['permission']->volumeUploadFiles as $key => $value) {
+          $settings['volumeUploadFiles'][] = $key;
+        }
+      }
+      if ($settings['permission']->volumeCreateSubfolder) {
+        foreach ($settings['permission']->volumeCreateSubfolder as $key => $value) {
+          $settings['volumeCreateSubfolder'][] = $key;
+        }
+      }
+      if ($settings['permission']->volumeRemoveFilesAndFolders) {
+        foreach ($settings['permission']->volumeRemoveFilesAndFolders as $key => $value) {
+          $settings['volumeRemoveFilesAndFolders'][] = $key;
+        }
+      }
+      if ($settings['permission']->volumeEditImages) {
+        foreach ($settings['permission']->volumeEditImages as $key => $value) {
+          $settings['volumeEditImages'][] = $key;
+        }
+      }
+    }
+
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_usersgroup.name]');
     $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_usersgroup.handle]');
     if ($this->form_validation->run() == TRUE) {
@@ -504,7 +650,8 @@ class Users extends My_Controller {
           'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
           'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
           'sectionDelete'                 => $this->input->post('sectionDelete'),
-          'volumeViewVolume'              => $this->input->post('volumeViewVolume'),
+          'editGlobal'                    => $this->input->post('editGlobal'),
+          'volumeView'                    => $this->input->post('volumeView'),
           'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
           'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
           'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
@@ -546,6 +693,11 @@ class Users extends My_Controller {
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
     if ($settings['getDataby_id']) {
+      $users = $this->general_m->get_all_results('users', $id, 'group_id');
+      foreach ($users as $key) {
+        $delete_content = $this->general_m->delete('users_content', $key->id, 'users_id');
+      }
+      $delete_users = $this->general_m->delete('users', $id, 'group_id');
       $delete = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "delete {$settings['title']} with id = has successfully");
       $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");   

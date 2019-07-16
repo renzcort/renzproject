@@ -20,10 +20,10 @@ class Globals extends My_Controller {
     if ($this->router->method == 'index') {
       if ($globals) {
         if ((uri_string() == 'admin/globals') || !in_array($this->uri->segment(3), $handle)) {
-          redirect("admin/globals/{$this->firstHandle}",'refresh');
+          redirect("admin/globals/{$this->firstHandle}");
         } 
       } else {
-        redirect("admin/settings/globals",'refresh');
+        redirect("admin/settings/globals");
       }
     }
 

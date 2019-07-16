@@ -19,19 +19,14 @@ class Assets extends My_Controller {
       }
       array_push($handle, 'all', 'default');
     }
-    
-    $this->data = array(
-      'userdata'   =>  $this->first_load(),
-      'parentLink' => 'admin/categories',
-    );
 
     if ($this->router->method == 'index') {
       if ($assets) {
         if ((uri_string() == 'admin/assets') || (! in_array($this->uri->segment(3), $handle))) {
-          redirect("admin/assets/all",'refresh');
+          redirect("admin/assets/all");
         }
       } else {
-        redirect("admin/settings/assets",'refresh');
+        redirect("admin/settings/assets");
       }
     }
 

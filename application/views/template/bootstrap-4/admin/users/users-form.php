@@ -178,21 +178,26 @@
                   <div class="form-group" id="section" data-handle="'.$sec->handle.'">
                     <label for="inputSection" class="heading">Section '.($sec->name ? "- {$sec->name}" : '').'</label>
                     <div class="form-check">
-                      <input class="form-check-input" type="checkbox" name="sectionEdit['.$sec->handle.']" data-handle="'.$sec->handle.'" value="true">
+                      <input class="form-check-input" type="checkbox" name="sectionEdit['.$sec->handle.']" data-handle="'.$sec->handle.'" value="true"
+                      '.((!empty($permission->sectionEdit) && in_array($sec->handle, $sectionEdit)) ? 'checked' : '').'>
                       <label class="form-check-label" for="defaultCheck1">Edit “'.$sec->name.'”</label>
                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="sectionPublishLiveChange['.$sec->handle.']" value="true">
+                        <input class="form-check-input" type="checkbox" name="sectionPublishLiveChange['.$sec->handle.']" value="true"
+                        '.((!empty($permission->sectionPublishLiveChange) && in_array($sec->handle, $sectionPublishLiveChange)) ? 'checked' : '').'>
                         <label class="form-check-label" for="defaultCheck1">Publish live changes</label>
                       </div>
                       <div class="form-check">
-                        <input class="form-check-input" type="checkbox" name="sectionEditOtherAuthors['.$sec->handle.']" value="true">
+                        <input class="form-check-input" type="checkbox" name="sectionEditOtherAuthors['.$sec->handle.']" value="true"
+                        '.((!empty($permission->sectionEditOtherAuthors) && in_array($sec->handle, $sectionEditOtherAuthors)) ? 'checked' : '').'>
                         <label class="form-check-label" for="defaultCheck1">Edit other authors’ drafts</label>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" name="sectionPublishOtherAuthors['.$sec->handle.']" value="true">
+                          <input class="form-check-input" type="checkbox" name="sectionPublishOtherAuthors['.$sec->handle.']" value="true"
+                          '.((!empty($permission->sectionPublishOtherAuthors) && in_array($sec->handle, $sectionPublishOtherAuthors)) ? 'checked' : '').'>
                           <label class="form-check-label" for="defaultCheck1">Publish other authors’ drafts</label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" name="sectionDelete['.$sec->handle.']" value="true">
+                          <input class="form-check-input" type="checkbox" name="sectionDelete['.$sec->handle.']" value="true"
+                          '.((!empty($permission->sectionDelete) && in_array($sec->handle, $sectionDelete)) ? 'checked' : '').'>
                           <label class="form-check-label" for="defaultCheck1">Delete other authors’ drafts</label>
                         </div>
                       </div>
@@ -200,88 +205,105 @@
                   </div>'; 
               } 
             }
-          ?>
-          <?php if ($globals) { ?>
-            <div class="form-group">
-              <label for="inputGlobal" class="heading">Global Sets</label>
-              <?php foreach ($globals as $glo) {
+
+            if ($globals) {
+              echo 
+                '<div class="form-group">
+                  <label for="inputGlobal" class="heading">Global Sets</label>';
+              foreach ($globals as $glo) {
                 echo '
               <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="global'.$glo->handle.'Edit" value="true">
+                <input class="form-check-input" type="checkbox" name="editGlobal['.$glo->handle.']" value="true"
+                '.((!empty($permission->editGlobal) && in_array($sec->handle, $editGlobal)) ? 'checked' : '').'>
                 <label class="form-check-label" for="defaultCheck1">Edit “'.$ass->name.'”</label>
               </div>';
-              } ?>
-            </div>
-          <?php } ?>
-          <?php 
-          if ($assets) {
-            foreach ($assets as $ass) {
-              echo '<div class="form-group" id="assets" data-handle="'.$ass->handle.'">
-              <label for="inputGlobal" class="heading">Volume '.($ass->name ? "- {$sec->name}" : '').'</label>
-              <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="volumeViewVolume['.$ass->handle.']" value="true">
-                <label class="form-check-label" for="defaultCheck1">View volume</label>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="volumeUploadFiles['.$ass->handle.']" value="true">
-                  <label class="form-check-label" for="defaultCheck1">Upload files</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="volumeCreateSubfolder['.$ass->handle.']" value="true">
-                  <label class="form-check-label" for="defaultCheck1">Create subfolders</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="volumeRemoveFilesAndFolders['.$ass->handle.']" value="true">
-                  <label class="form-check-label" for="defaultCheck1">Remove files and folders</label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" name="volumeEditImages['.$ass->handle.']" value="true">
-                  <label class="form-check-label" for="defaultCheck1">Edit images</label>
-                </div>
-              </div>
-            </div>';
+              }
+              echo '</div>';
             } 
-          }
+
+            if ($assets) {
+              foreach ($assets as $ass) {
+                echo '<div class="form-group" id="assets" data-handle="'.$ass->handle.'">
+                <label for="inputGlobal" class="heading">Volume '.($ass->name ? "- {$sec->name}" : '').'</label>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="volumeView['.$ass->handle.']" value="true"
+                  '.((!empty($permission->volumeView) && in_array($ass->handle, $volumeView)) ? 'checked' : '').'>
+                  <label class="form-check-label" for="defaultCheck1">View volume</label>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="volumeUploadFiles['.$ass->handle.']" value="true"
+                    '.((!empty($permission->volumeUploadFiles) && in_array($ass->handle, $volumeUploadFiles)) ? 'checked' : '').'>
+                    <label class="form-check-label" for="defaultCheck1">Upload files</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="volumeCreateSubfolder['.$ass->handle.']" value="true"
+                    '.((!empty($permission->volumeCreateSubfolder) && in_array($ass->handle, $volumeCreateSubfolder)) ? 'checked' : '').'>
+                    <label class="form-check-label" for="defaultCheck1">Create subfolders</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="volumeRemoveFilesAndFolders['.$ass->handle.']" value="true"
+                    '.((!empty($permission->volumeRemoveFilesAndFolders) && in_array($ass->handle, $volumeRemoveFilesAndFolders)) ? 'checked' : '').'>
+                    <label class="form-check-label" for="defaultCheck1">Remove files and folders</label>
+                  </div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="volumeEditImages['.$ass->handle.']" value="true"
+                    '.((!empty($permission->volumeEditImages) && in_array($ass->handle, $volumeEditImages)) ? 'checked' : '').'>
+                    <label class="form-check-label" for="defaultCheck1">Edit images</label>
+                  </div>
+                </div>
+              </div>';
+              } 
+            }
           ?>
           <div class="form-group">
             <label for="inputGlobal" class="heading">Utilities</label>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="utilitiesUpdates" value="true">
+              <input class="form-check-input" type="checkbox" name="utilitiesUpdates" value="true"
+              <?php echo ((!empty($permission->utilitiesUpdates) && $permission->utilitiesUpdates == TRUE) ? 'checked' : '');?>>
               <label class="form-check-label" for="defaultCheck1">Updates</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="utilitiesSystemReport" value="true">
+              <input class="form-check-input" type="checkbox" name="utilitiesSystemReport" value="true"
+              <?php echo ((!empty($permission->utilitiesSystemReport) && $permission->utilitiesSystemReport == TRUE) ? 'checked' : '');?>>
               <label class="form-check-label" for="defaultCheck1">System Report</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="utilitiesPHPInfo" value="true">
+              <input class="form-check-input" type="checkbox" name="utilitiesPHPInfo" value="true"
+              <?php echo ((!empty($permission->utilitiesPHPInfo) && $permission->utilitiesPHPInfo == TRUE) ? 'checked' : '');?>>
               <label class="form-check-label" for="defaultCheck1">PHP Info</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="utilitiesSystemMessage" value="true">
+              <input class="form-check-input" type="checkbox" name="utilitiesSystemMessage" value="true"
+              <?php echo ((!empty($permission->utilitiesSystemMessage) && $permission->utilitiesSystemMessage == TRUE) ? 'checked' : '');?>>
               <label class="form-check-label" for="defaultCheck1">System Messages</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="utilitiesAssetIndexes" value="true">
+              <input class="form-check-input" type="checkbox" name="utilitiesAssetIndexes" value="true"
+              <?php echo ((!empty($permission->utilitiesAssetIndexes) && $permission->utilitiesAssetIndexes == TRUE) ? 'checked' : '');?>>
               <label class="form-check-label" for="defaultCheck1">Asset Indexes</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="utilitiesClearCaches" value="true">
+              <input class="form-check-input" type="checkbox" name="utilitiesClearCaches" value="true"
+              <?php echo ((!empty($permission->utilitiesClearCaches) && $permission->utilitiesClearCaches == TRUE) ? 'checked' : '');?>>
               <label class="form-check-label" for="defaultCheck1">Clear Caches</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="utilitiesDeprecationWarnings" value="true">
+              <input class="form-check-input" type="checkbox" name="utilitiesDeprecationWarnings" value="true"
+              <?php echo ((!empty($permission->utilitiesDeprecationWarnings) && $permission->utilitiesDeprecationWarnings == TRUE) ? 'checked' : '');?>>
               <label class="form-check-label" for="defaultCheck1">Deprecation Warnings</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="utilitiesDatabaseBackup" value="true">
+              <input class="form-check-input" type="checkbox" name="utilitiesDatabaseBackup" value="true"
+              <?php echo ((!empty($permission->utilitiesDatabaseBackup) && $permission->utilitiesDatabaseBackup == TRUE) ? 'checked' : '');?>>
               <label class="form-check-label" for="defaultCheck1">Database Backup</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="utilitiesFindAndReplace" value="true">
+              <input class="form-check-input" type="checkbox" name="utilitiesFindAndReplace" value="true"
+              <?php echo ((!empty($permission->utilitiesFindAndReplace) && $permission->utilitiesFindAndReplace == TRUE) ? 'checked' : '');?>>
               <label class="form-check-label" for="defaultCheck1">Find and Replace</label>
             </div>
             <div class="form-check">
-              <input class="form-check-input" type="checkbox" name="utilitiesMigrations" value="true">
+              <input class="form-check-input" type="checkbox" name="utilitiesMigrations" value="true"
+              <?php echo ((!empty($permission->utilitiesMigrations) && $permission->utilitiesMigrations == TRUE) ? 'checked' : '');?>>
               <label class="form-check-label" for="defaultCheck1">Migrations</label>
             </div>
           </div>

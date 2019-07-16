@@ -23,10 +23,11 @@ class My_Controller extends CI_Controller {
 
   public function sidebar_activated(){
     $activated = array(
-      'assets'     => $this->general_m->count_all_results('assets'),
       'section'    => $this->general_m->count_all_results('section'),
-      'categories' => $this->general_m->count_all_results('categories'),
       'globals'    => $this->general_m->count_all_results('globals'),
+      'categories' => $this->general_m->count_all_results('categories'),
+      'assets'     => $this->general_m->count_all_results('assets'),
+      'usersgroup' => $this->general_m->count_all_results('usersgroup'),
     );
     return $activated;
   }

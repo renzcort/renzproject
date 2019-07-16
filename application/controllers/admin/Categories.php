@@ -22,10 +22,10 @@ class Categories extends My_Controller {
     if ($this->router->method == 'index') {
       if ($cat) {
         if ((uri_string() == 'admin/categories') || !in_array($this->uri->segment(3), $handle)) {
-          redirect("admin/categories/{$this->firstHandle}",'refresh');
+          redirect("admin/categories/{$this->firstHandle}");
         } 
       } else {
-        redirect("admin/settings/categories",'refresh');
+        redirect("admin/settings/categories");
       }
     }
 

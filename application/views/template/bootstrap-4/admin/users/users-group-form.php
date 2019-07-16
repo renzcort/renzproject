@@ -110,25 +110,25 @@
           <label for="inputSection" class="heading">Section '.($sec->name ? "- {$sec->name}" : '').'</label>
           <div class="form-check">
             <input class="form-check-input" type="checkbox" name="sectionEdit['.$sec->handle.']" data-handle="'.$sec->handle.'" value="true"
-            '.((!empty($permission->sectionEdit) && $permission->sectionEdit == TRUE) ? 'checked' : '').'>
+            '.((!empty($permission->sectionEdit) && in_array($sec->handle, $sectionEdit)) ? 'checked' : '').'>
             <label class="form-check-label" for="defaultCheck1">Edit “'.$sec->name.'”</label>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" name="sectionPublishLiveChange['.$sec->handle.']" value="true"
-            '.((!empty($permission->sectionPublishLiveChange) && $permission->sectionPublishLiveChange == TRUE) ? 'checked' : '').'>
+              '.((!empty($permission->sectionPublishLiveChange) && in_array($sec->handle, $sectionPublishLiveChange)) ? 'checked' : '').'>
               <label class="form-check-label" for="defaultCheck1">Publish live changes</label>
             </div>
             <div class="form-check">
               <input class="form-check-input" type="checkbox" name="sectionEditOtherAuthors['.$sec->handle.']" value="true"
-            '.((!empty($permission->sectionEditOtherAuthors) && $permission->sectionEditOtherAuthors == TRUE) ? 'checked' : '').'>
+              '.((!empty($permission->sectionEditOtherAuthors) && in_array($sec->handle, $sectionEditOtherAuthors)) ? 'checked' : '').'>
               <label class="form-check-label" for="defaultCheck1">Edit other authors’ drafts</label>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="sectionPublishOtherAuthors['.$sec->handle.']" value="true"
-            '.((!empty($permission->sectionPublishOtherAuthors) && $permission->sectionPublishOtherAuthors == TRUE) ? 'checked' : '').'>
+                '.((!empty($permission->sectionPublishOtherAuthors) && in_array($sec->handle, $sectionPublishOtherAuthors)) ? 'checked' : '').'>
                 <label class="form-check-label" for="defaultCheck1">Publish other authors’ drafts</label>
               </div>
               <div class="form-check">
                 <input class="form-check-input" type="checkbox" name="sectionDelete['.$sec->handle.']" value="true"
-            '.((!empty($permission->sectionDelete) && $permission->sectionDelete == TRUE) ? 'checked' : '').'>
+                '.((!empty($permission->sectionDelete) && in_array($sec->handle, $sectionDelete)) ? 'checked' : '').'>
                 <label class="form-check-label" for="defaultCheck1">Delete other authors’ drafts</label>
               </div>
             </div>
@@ -144,7 +144,8 @@
     <?php foreach ($globals as $glo) {
       echo '
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="global'.$glo->handle.'Edit" value="true">
+      <input class="form-check-input" type="checkbox" name="editGlobal['.$glo->handle.']" value="true"
+      '.((!empty($permission->editGlobal) && in_array($sec->handle, $editGlobal)) ? 'checked' : '').'>
       <label class="form-check-label" for="defaultCheck1">Edit “'.$ass->name.'”</label>
     </div>';
     } ?>
@@ -157,22 +158,27 @@
       echo '<div class="form-group" id="assets" data-handle="'.$ass->handle.'">
       <label for="inputGlobal" class="heading">Volume '.($ass->name ? "- {$sec->name}" : '').'</label>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" name="volumeViewVolume['.$ass->handle.']" value="true">
+        <input class="form-check-input" type="checkbox" name="volumeView['.$ass->handle.']" value="true"
+        '.((!empty($permission->volumeView) && in_array($ass->handle, $volumeView)) ? 'checked' : '').'>
         <label class="form-check-label" for="defaultCheck1">View volume</label>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="volumeUploadFiles['.$ass->handle.']" value="true">
+          <input class="form-check-input" type="checkbox" name="volumeUploadFiles['.$ass->handle.']" value="true"
+          '.((!empty($permission->volumeUploadFiles) && in_array($ass->handle, $volumeUploadFiles)) ? 'checked' : '').'>
           <label class="form-check-label" for="defaultCheck1">Upload files</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="volumeCreateSubfolder['.$ass->handle.']" value="true">
+          <input class="form-check-input" type="checkbox" name="volumeCreateSubfolder['.$ass->handle.']" value="true"
+          '.((!empty($permission->volumeCreateSubfolder) && in_array($ass->handle, $volumeCreateSubfolder)) ? 'checked' : '').'>
           <label class="form-check-label" for="defaultCheck1">Create subfolders</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="volumeRemoveFilesAndFolders['.$ass->handle.']" value="true">
+          <input class="form-check-input" type="checkbox" name="volumeRemoveFilesAndFolders['.$ass->handle.']" value="true"
+          '.((!empty($permission->volumeRemoveFilesAndFolders) && in_array($ass->handle, $volumeRemoveFilesAndFolders)) ? 'checked' : '').'>
           <label class="form-check-label" for="defaultCheck1">Remove files and folders</label>
         </div>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="volumeEditImages['.$ass->handle.']" value="true">
+          <input class="form-check-input" type="checkbox" name="volumeEditImages['.$ass->handle.']" value="true"
+          '.((!empty($permission->volumeEditImages) && in_array($ass->handle, $volumeEditImages)) ? 'checked' : '').'>
           <label class="form-check-label" for="defaultCheck1">Edit images</label>
         </div>
       </div>

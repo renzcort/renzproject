@@ -128,6 +128,9 @@
 
     <script type="text/javascript">
       $(document).ready(function(){
+        // datepicker
+        $( ".datepicker" ).datepicker();
+
         // collapse 
         $('[data-target="#sidebar"]').on('click', function () {
           $('#sidebarCollapse').toggleClass('active');
@@ -818,7 +821,7 @@
         $('#usersgroup-form [id="assets"]').each(function() {
           // assets.push($(this).data('handle'));
           var assets = $(this).data('handle');
-          if ($('#usersgroup-form [name="volumeViewVolume[home]"]').is(':checked') == true) {
+          if ($('#usersgroup-form [name="volumeView['+assets+']"]').is(':checked') == true) {
             $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').removeAttr("disabled", "disabled");
             $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').removeAttr("disabled", "disabled");
             $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').removeAttr("disabled", "disabled");
@@ -831,7 +834,7 @@
           }
           
           // alert(assets);
-          $('#usersgroup-form [name="volumeViewVolume['+assets+']"]').click(function() {
+          $('#usersgroup-form [name="volumeView['+assets+']"]').click(function() {
             if ($(this).is(':checked') == true) {
               $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').removeAttr("disabled", "disabled");
               $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').removeAttr("disabled", "disabled");

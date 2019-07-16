@@ -25,7 +25,7 @@ class Entries extends My_Controller {
     //Do your magic here
     if ($this->router->method == 'index') {
       if ((uri_string() == 'admin/entries') || !in_array($this->uri->segment(3), $handle)) {
-        redirect("admin/entries/{$this->firstHandle}",'refresh');
+        redirect("admin/entries/{$this->firstHandle}");
       } 
     }
 

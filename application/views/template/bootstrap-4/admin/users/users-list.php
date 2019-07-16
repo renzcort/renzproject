@@ -54,6 +54,7 @@
           <th scope="col">Email</th>
           <th scope="col">Date Created</th>
           <th scope="col">Last Login</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -63,8 +64,11 @@
         <td><a href="<?php echo base_url($action."/edit/".$key->id); ?>"><?php echo $key->username; ?></a></td>
         <td><?php echo $key->firstname.' '.$key->lastname; ?></td>
         <td><?php echo $key->email; ?></td>
-        <td><?php echo ($key->created_at ? $key->created_at : ''); ?></td>
-        <td><?php echo $key->last_login; ?></td>
+        <td><?php echo ($key->created_at ? date("d/m/Y", strtotime($key->created_at)): ''); ?></td>
+        <td><?php echo ($key->last_login ? date("d/m/Y h:i A", strtotime($key->last_login)) : 'Not Yet'); ?></td>
+        <td><a href="<?php echo base_url($action."/delete/".$key->id); ?>" data-id="<?php echo $key->id; ?>">
+          <i class="fas fa-minus-circle"></i></a>
+        </td>
       </tr>
       <?php endforeach ?>
     </tbody>
