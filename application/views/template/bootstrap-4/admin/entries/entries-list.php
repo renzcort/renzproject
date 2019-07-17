@@ -12,7 +12,7 @@
           echo '
             <li class="nav-item disabled">SITE PAGES</li>
            <li class="nav-item">
-              <a class="nav-link '.(($this->uri->segment(3) == 'all') ? 'active' : '').'" data-id="singles" href="singles">Single</a>
+              <a class="nav-link '.(($this->uri->segment(3) == 'singles') ? 'active' : '').'" data-id="singles" href="singles">Singles</a>
            </li>';
           echo '<li class="nav-item disabled">CHANNEL</li>';
           foreach ($section as $key) {

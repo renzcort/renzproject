@@ -1,29 +1,43 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
     <div class="container">
-    <?php if ($title == 'Home'): ?>
-      <li class="breadcrumb-item"><a href="<?php echo base_url('admin/home'); ?>">Home</a></li>
-    <?php else :?>
-      <?php if ($breadcrumb): ?>
-        <li class="breadcrumb-item"><a href="<?php echo base_url('admin/home'); ?>">Home</a></li>
-        <?php foreach ($breadcrumb as $key): ?>
-        <li class="breadcrumb-item"><a href="<?php echo base_url("admin/{$key}"); ?>"><?php echo ucfirst($key); ?></a></li>
-        <?php endforeach ?>
-        <li <?php echo ($subbreadcrumb ? 'class="breadcrumb-item"' : 'class="breadcrumb-item active" aria-current="page" ');?>>
-          <?php echo ($subbreadcrumb ? '<a href="'.base_url("admin/{$title}").'">'.ucfirst($title).'</a>' : ucfirst($title)); ?>
-        </li>
-        <?php if ($subbreadcrumb): ?>
-          <?php foreach ($subbreadcrumb as $key): ?>
-          <li class="breadcrumb-item <?php echo ((end($subbreadcrumb) == $key) ? 'active aria-current="page"' : ''); ?>">
-            <?php echo ((end($subbreadcrumb) == $key) ? ucfirst($key) : '<a href="">'.ucfirst($key).'</a>');?>
-          </li>  
-        <?php endforeach ?>
-        <?php endif ?>
-      <?php else : ?>
-        <li class="breadcrumb-item"><a href="<?php echo base_url('admin/home'); ?>">Home</a></li>
-        <li class="breadcrumb-item active" aria-current="page"><?php echo ($title ? ucfirst($title) : ''); ?></li>
-      <?php endif ?>
-    <?php endif ?>
+    <?php 
+    	if ($title == 'Home') {
+	      echo '<li class="breadcrumb-item"><a href="'.base_url('admin/home').'">Home</a></li>';
+    	} else {
+    		if ($breadcrumb) {
+	        echo '<li class="breadcrumb-item"><a href="'.base_url('admin/home').'">Home</a></li>';
+	        $link = [];
+        	foreach ($breadcrumb as $key) {
+        		foreach ($breadcrumb as $value) {
+        			if ($key == $value) {
+        				if ($link) {
+        					$linkurl = implode('/', array_reverse($link));
+		      				echo '<li class="breadcrumb-item"><a href="'.base_url("admin/{$linkurl}").'">'.lcfirst($value).'</a></li>';
+        				} else {
+		      				echo '<li class="breadcrumb-item"><a href="'.base_url("admin/{$value}").'">'.lcfirst($value).'</a></li>';
+        				}
+        			} else {
+        				$link[] = $value; 
+        			}
+        		}
+      		}
+        	echo '<li '.($subbreadcrumb ? 'class="breadcrumb-item"' : 'class="breadcrumb-item active" aria-current="page" ').'>';
+        	echo ($subbreadcrumb ? '<a href="'.base_url("admin/{$key}/{$title}").'">'.lcfirst($title).'</a>' : lcfirst($title));
+        	echo '</li>';
+        	if ($subbreadcrumb) {
+        		foreach ($subbreadcrumb as $key) {
+          		echo '<li class="breadcrumb-item '.((end($subbreadcrumb) == $key) ? 'active aria-current="page"' : '').'">';
+          		echo ((end($subbreadcrumb) == $key) ? lcfirst($key) : '<a href="">'.lcfirst($key).'</a>');
+          		echo '</li>';
+          	}
+          }
+        } else {
+        	echo '<li class="breadcrumb-item"><a href="'.base_url('admin/home').'">Home</a></li>';
+        	echo '<li class="breadcrumb-item active" aria-current="page">'.($title ? lcfirst($title) : '').'</li>';
+        }
+     	}
+    ?>
     </div>
   </ol>
 </nav>

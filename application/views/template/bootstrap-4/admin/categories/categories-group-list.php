@@ -14,7 +14,7 @@
           <tr>
             <td><a href="<?php echo base_url($action.'/edit/'.$key->id); ?>"><?php echo $key->name; ?></a></td>
             <td><?php echo $key->handle; ?></td>
-            <td scope="row"><a href="<?php echo base_url($action.'/'.$key->handle); ?>">Manage Categories</a></td>
+            <td scope="row"><a href="<?php echo base_url('admin/categories/'.$key->handle); ?>">Manage Categories</a></td>
             <td scope="row">
               <a href="<?php echo base_url($action.'/delete/'.$key->id); ?>"><i class="fas fa-minus-circle"></i></a>
             </td>

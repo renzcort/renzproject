@@ -89,7 +89,7 @@
                             data-assets-id = "'.$settings->assetsSourcesList.'" 
                             data-assets-fields="fields_'.$key->handle.'"
                             data-assets-source="'.$settings->assetsSourcesInput.'">
-                          + New Assets</button></div>';
+                            + '.($settings->assetsSelectionLabel ? $settings->assetsSelectionLabel : 'New Assets').'</button></div>';
                     echo '</div>';
                   } elseif ($key->type_name == 'richText') {
                   } elseif ($key->type_name == 'categories') {

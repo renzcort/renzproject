@@ -22,17 +22,18 @@ class Section extends My_Controller {
 
 	public function index() {
     $settings = array(
-      'title'         =>  'section',
-      'subtitle'      =>  FALSE,
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  FALSE,
-      'table'         =>  'section',
-      'action'        =>  'admin/settings/section',
-      'session'       =>  $this->data,
-      'no'            =>  $this->uri->segment(4),
-      'button'        =>  '+ New section',
-      'button_link'   =>  'section/create',
-      'content'       =>  'template/bootstrap-4/admin/section/section-list',
+      'title'           =>  'section',
+      'subtitle'        =>  FALSE,
+      'breadcrumb'      =>  array('settings'),
+      'subbreadcrumb'   =>  FALSE,
+      'table'           =>  'section',
+      'action'          =>  'admin/settings/section',
+      'session'         =>  $this->data,
+      'no'              =>  $this->uri->segment(4),
+      'button'          =>  '+ New section',
+      'button_link'     =>  'section/create',
+      'content'         =>  'template/bootstrap-4/admin/section/section-list',
+      'section_entries' => $this->general_m->get_all_results('section_entries'),
     );
     // Pagination
     $config                 = $this->config->item('setting_pagination');
@@ -182,6 +183,7 @@ class Section extends My_Controller {
     );
 
 		if ($settings['getDataby_id']) {
+      $deleteContent = $this->general_m->delete('content', $id, 'section_id');
       $deleteElement = $this->general_m->delete('element', $id, 'section_id');
       $deleteEntries = $this->general_m->delete('section_entries', $id, 'section_id');
       $delete        = $this->section_m->delete($id);
@@ -226,10 +228,10 @@ class Section extends My_Controller {
   public function entrytypes($section_id='') {
     $section = $this->section_m->get_row_by_id($section_id);
     $settings = array(
-      'title'         =>  "{$section->name} Entry Type",
-      'subtitle'      =>  FALSE,
-      'breadcrumb'    =>  array('settings'),
-      'subbreadcrumb' =>  array('entries'),
+      'title'         =>  "{$section->name}",
+      'subtitle'      =>  'Entrytypes',
+      'breadcrumb'    =>  array('settings', 'section'),
+      'subbreadcrumb' =>  FALSE,
       'table'         =>  'section_entries',
       'action'        =>  "admin/settings/section/{$section_id}/entrytypes",
       'session'       =>  $this->data,
