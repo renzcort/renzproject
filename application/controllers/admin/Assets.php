@@ -9,7 +9,6 @@ class Assets extends My_Controller {
     //Do your magic here
     $this->load->model('admin/Fields_m', 'fields_m');
     $this->load->model('admin/General_m', 'general_m');
-    $this->load->model('admin/Assets_m', 'assets_m');    
 
     $assets = $this->general_m->get_all_results('assets');
     $this->firstHandle = ($assets ? $assets[0]->handle : '');
@@ -27,6 +26,10 @@ class Assets extends My_Controller {
         }
       } else {
         redirect("admin/settings/assets");
+      }
+    } elseif ($this->router->method == 'settings') {
+      if ((uri_string() == 'admin/settings/assets') || (!in_array($this->uri->segment(4), array('volumes', 'transforms')))) {
+        redirect("admin/settings/assets/volumes");
       }
     }
 
@@ -87,24 +90,25 @@ class Assets extends My_Controller {
 
 
   /*Volumens*/
-  public function volumes() {
+  public function settings($handle) {
     $settings = array(
       'title'              =>  'assets',
       'subtitle'           =>  FALSE,
       'breadcrumb'         =>  array('settings'),
       'subbreadcrumb'      =>  FALSE,
-      'table'              =>  'assets',
-      'action'             =>  'admin/settings/assets',
+      'table'              =>  (($handle == 'volumes') ? 'assets' : 'assets_transforms'),
+      'action'             =>  "admin/settings/assets/{$handle}",
       'session'            =>  $this->data,
-      'no'                 =>  $this->uri->segment(4),
-      'button'             =>  '+ New Assets',
-      'button_link'        =>  'assets/create',
+      'no'                 =>  $this->uri->segment(5),
+      'button'             =>  (($handle == 'volumes') ? '+ New Assets' : '+ New Transforms'),
+      'button_link'        =>  "{$handle}/create",
       'content'            =>  'template/bootstrap-4/admin/assets/assets-settings-template',
-      'right_content'      =>  'template/bootstrap-4/admin/assets/assets-volumes-list',
+      'right_content'      =>  "template/bootstrap-4/admin/assets/assets-{$handle}-list",
       'element_name'       =>  'assets_element',
       'group_name'         =>  'assets_group',
       'assets_group'       =>  $this->general_m->get_all_results('assets_group'),
       'assets_group_count' =>  $this->general_m->count_all_results('assets_group'),
+      'handle'             =>  $handle,
     );
 
     // Pagination
@@ -124,206 +128,32 @@ class Assets extends My_Controller {
   }
 
   /*CREATE*/
-  public function volumes_create() {
+  public function settings_create($handle) {
     $settings = array(
-      'title'          =>  'assets',
-      'subtitle'       =>  'create',
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  array('create'),
-      'table'          =>  'assets',
-      'action'         =>  'admin/settings/assets',
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
-      'button'         =>  'Save',
-      'button_type'    =>  'submit',
-      'button_name'    =>  'create',
-      'button_tabs'    =>  TRUE,
-      'content'        =>  'template/bootstrap-4/admin/assets/assets-volumes-form',
-      'assets_type'    =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
-      'group_name'     =>  'assets_group',
-      'group'          =>  $this->general_m->get_all_results('assets_group'),
-      'group_count'    =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'       =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
-      'fields_element' =>  'assets_element',
-      'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
-      'fields'         =>  $this->fields_m->get_all_results(),
-      'elementFields'  =>  [],
-      'order'          =>  $this->general_m->get_max_fields('assets', 'order'),
-    );
-
-    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-  }
-
-  /*UPDATE*/
-  public function volumes_update($id='') {
-    $settings = array(
-      'title'          =>  'assets',
-      'subtitle'       =>  'update',
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  array('edit'),
-      'button'         =>  'Update',
-      'button_type'    =>  'submit',
-      'button_name'    =>  'update',
-      'button_tabs'    =>  TRUE,
-      'content'        =>  'template/bootstrap-4/admin/assets/assets-volumes-form',
-      'table'          =>  'assets',
-      'action'         =>  'admin/settings/assets',
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
-      'assets_type'    =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
-      'group_name'     =>  'assets_group',
-      'group'          =>  $this->general_m->get_all_results('assets_group'),
-      'group_count'    =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'       =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
-      'fields_element' =>  'assets_element',
-      'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
-      'fields'         =>  $this->fields_m->get_all_results(),
-      'elementFields'  =>  [],
-      'order'          =>  $this->general_m->get_max_fields('assets', 'order'),
-    );
-    $settings['element']      = $this->general_m->get_result_by_id($settings['fields_element'], $id, "{$settings['table']}_id");
-    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
-    if ($settings['element']) {
-      foreach ($settings['element'] as $key) {
-        $fieldsId[] = $key->fields_id; 
-      }
-      $settings['elementFields'] = $fieldsId;
-    } else {
-      $settings['elementFields'] = [];
-    }
-    
-    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-  }  
-
-  /*DELETE*/
-  public function volumes_delete($id='') {
-    $settings = array(
-      'title'         => 'Assets',
-      'table'         => 'assets',
-      'action'        => 'admin/settings/assets',
-      'table_element' => 'assets_element',
-      'table_content' => 'assets_content',
-    );
-    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
-
-    if ($settings['getDataby_id']) {
-      (($settings['table'] == 'entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
-
-      $delElement = $this->general_m->delete($settings['table_element'], $id, "{$settings['table']}_id");
-
-      // delete content with assets
-      $contentList = $this->general_m->get_result_by_id($table_content, $id, "{$settings['table']}_id");
-      if ($contentList) {
-        foreach ($contentList as $key) {  
-          unlink("uploads/admin/assets/{$settings['getDataby_id']->path}/{$key->file}");
-          $filename   = explode('.', $key->file);
-          $name       = current($filename);
-          $thumb      = current($filename).'_thumb.'.end($filename);
-          unlink("{$key->path}/{$thumb}");
-          $delContent = $this->general_m->delete($table_content, $key->id, "{$settings['table']}_id");
-        }
-      }
-      
-      // delte content
-      $getFieldsAll     = $this->fields_m->get_all_results();
-      $getContentFields = $this->db->list_fields($table_content);
-      $getElement       = $this->general_m->get_all_results($settings['table_element']);
-      if ($getElement) {
-        // check fieldsid in element
-        foreach ($getElement as $elm) {
-          $listFields[] = $elm->fields_id;
-        }
-        /*Check Delete Column*/
-        foreach ($getFieldsAll as $key) {
-          if (in_array("fields_{$key->handle}", $getContentFields)) {
-            if (!in_array($key->id, array_unique($listFields))) {
-              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
-              $fields = array(
-                'handle' => $key->handle,
-                'type'   => $getFieldsType->type,
-              );
-              // Drop field column in content
-              modifyColumn($fields, 'drop-table', $table_content);
-            }
-          }
-        }
-      } else {
-        /*Check Delete Column*/
-        foreach ($getFieldsAll as $key) {
-          if (in_array("fields_{$key->handle}", $getContentFields)) {
-            $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
-            $fields = array(
-              'handle' => $key->handle,
-              'type'   => $getFieldsType->type,
-            );
-            // Drop field column in content
-            modifyColumn($fields, 'drop-table', $table_content);
-          }
-        }
-      }
-      $delete = $this->general_m->delete($settings['table'], $id);
-      helper_log('delete', "Delete {$settings['title']} with id = has successfully");
-      $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");      
-      redirect($settings['action']);
-    } else {
-      $this->session->set_flashdata('message', 'Your Id Not Valid');
-      redirect($settings['action']);
-    }
-  }
-
-
-  public function transforms() {
-    $settings = array(
-      'title'           =>  'assets',
-      'subtitle'        =>  'transforms',
-      'breadcrumb'      =>  array('settings'),
-      'subbreadcrumb'   =>  FALSE,
-      'table'           =>  'assets_transforms',
-      'action'          =>  'admin/settings/assets/transforms',
-      'session'         =>  $this->data,
-      'no'              =>  $this->uri->segment(5),
-      'button'          =>  '+ New Assets',
-      'button_link'     =>  'transforms/create',
-      'content'         =>  'template/bootstrap-4/admin/assets/assets-settings-template',
-      'right_content'   => 'template/bootstrap-4/admin/assets/assets-transforms-list',
-      'fields_element' =>  'assets_element',
-      'group_name'      =>  'assets_group',
-      'group'           =>  $this->general_m->get_all_results('assets_group'),
-      'group_count'     =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'        =>  ($this->input->post('group') ? $this->input->post('group') : ''),
-    );
-
-    // Pagination
-    $config                 = $this->config->item('setting_pagination');
-    $config['base_url']     = base_url($settings['action']);
-    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']     = 10;
-    $num_pages              = $config["total_rows"] / $config["per_page"];
-    $config['uri_segment']  = 3;
-    $config['num_links']    = round($num_pages);
-    $this->pagination->initialize($config);
-    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
-    $settings['links']      = $this->pagination->create_links();
-    // end Pagination
-    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-  }
-
-  /*CREATE*/
-  public function transforms_create() {
-    $settings = array(
-      'title'            =>  'assets Transforms',
+      'title'            =>  (($handle == 'volumes') ? 'assets' : 'assets Transforms'),
       'subtitle'         =>  'create',
       'breadcrumb'       =>  array('settings'),
       'subbreadcrumb'    =>  array('create'),
-      'table'            =>  'assets_transforms',
-      'action'           =>  'admin/settings/assets/transforms',
+      'table'            =>  (($handle == 'volumes') ? 'assets' : 'assets_transforms'),
+      'action'           =>  "admin/settings/assets/{$handle}",
       'session'          =>  $this->data,
-      'no'               =>  $this->uri->segment(4),
+      'no'               =>  $this->uri->segment(3),
       'button'           =>  'Save',
       'button_type'      =>  'submit',
       'button_name'      =>  'create',
-      'content'          =>  'template/bootstrap-4/admin/assets/assets-transforms-form',
+      'button_tabs'      =>  (($handle == 'volumes') ? TRUE : FALSE),
+      'content'          =>  "template/bootstrap-4/admin/assets/assets-{$handle}-form",
+      'assets_type'      =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'group_name'       =>  'assets_group',
+      'group'            =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'      =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'         =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'fields_element'   =>  'assets_element',
+      'element'          =>  [],
+      'fields_group'     =>  $this->general_m->get_all_results('fields_group'),
+      'fields'           =>  $this->fields_m->get_all_results(),
+      'elementFields'    =>  [],
+      'order'            =>  $this->general_m->get_max_fields('assets', 'order'),
       'transforms_mode'  =>  array('Crop', 'Fit', 'Strech'),
       'transforms_point' =>  array(
                                   'top-left', 
@@ -368,21 +198,33 @@ class Assets extends My_Controller {
   }
 
   /*UPDATE*/
-  public function transforms_update($id='') {
+  public function settings_update($handle, $id='') {
     $settings = array(
-      'title'           =>  'assets Transforms',
-      'subtitle'        =>  'update',
-      'breadcrumb'      =>  array('settings'),
-      'subbreadcrumb'   =>  array('edit'),
-      'table'           =>  'assets_transforms',
-      'action'          =>  'admin/settings/assets/transforms',
-      'session'         =>  $this->data,
-      'no'              =>  $this->uri->segment(3),
-      'button'          =>  'Update',
-      'button_type'     =>  'submit',
-      'button_name'     =>  'update',
-      'content'         =>  'template/bootstrap-4/admin/assets/assets-transforms-form',
-      'transforms_mode' =>  array('Crop', 'Fit', 'Strech'),
+      'title'            =>  (($handle == 'volumes') ? 'assets' : 'assets Transforms'),
+      'subtitle'         =>  'update',
+      'breadcrumb'       =>  array('settings'),
+      'subbreadcrumb'    =>  array('edit'),
+      'table'            =>  (($handle == 'volumes') ? 'assets' : 'assets_transforms'),
+      'action'           =>  "admin/settings/assets/{$handle}",
+      'session'          =>  $this->data,
+      'no'               =>  $this->uri->segment(3),
+      'button'           =>  'Update',
+      'button_type'      =>  'submit',
+      'button_name'      =>  'update',
+      'button_tabs'      =>  (($handle == 'volumes') ? TRUE : FALSE),
+      'content'          =>  "template/bootstrap-4/admin/assets/assets-{$handle}-form",
+      'assets_type'      =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
+      'group_name'       =>  'assets_group',
+      'group'            =>  $this->general_m->get_all_results('assets_group'),
+      'group_count'      =>  $this->general_m->count_all_results('assets_group'),
+      'group_id'         =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
+      'fields_element'   =>  'assets_element',
+      'element'          =>  $this->general_m->get_result_by_id('assets_element', $id, "assets_id"),
+      'fields_group'     =>  $this->general_m->get_all_results('fields_group'),
+      'fields'           =>  $this->fields_m->get_all_results(),
+      'elementFields'    =>  [],
+      'order'            =>  $this->general_m->get_max_fields('assets', 'order'),
+      'transforms_mode'  =>  array('Crop', 'Fit', 'Strech'),
       'transforms_point' =>  array(
                                   'top-left', 
                                   'top-center', 
@@ -399,7 +241,15 @@ class Assets extends My_Controller {
       'id'                     => $id
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
-    
+    if ($settings['element']) {
+      foreach ($settings['element'] as $key) {
+        $fieldsId[] = $key->fields_id; 
+      }
+      $settings['elementFields'] = $fieldsId;
+    } else {
+      $settings['elementFields'] = [];
+    }
+
     $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
     $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
     if ($this->form_validation->run() == TRUE) {
@@ -428,17 +278,73 @@ class Assets extends My_Controller {
   }  
 
   /*DELETE*/
-  public function transforms_delete($id='') {
+  public function settings_delete($handle, $id='') {
     $settings = array(
-      'title'           => 'Assets Transforms',
-      'table'           => 'assets_transforms',
-      'action'          => 'admin/settings/assets/transforms',
-      'fields_element' => 'assets_element',
+      'title'         => (($handle == 'volumes') ? 'assets' : 'assets Transforms'),
+      'table'         => (($handle == 'volumes') ? 'assets' : 'assets_transforms'),
+      'action'        => "admin/settings/assets/{$handle}",
+      'table_element' => 'assets_element',
+      'table_content' => 'assets_content',
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
 
     if ($settings['getDataby_id']) {
-      $delete        = $this->general_m->delete($settings['table'], $id);
+      if ($handle == 'volumes') {
+        (($settings['table'] == 'entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
+        $delElement = $this->general_m->delete($settings['table_element'], $id, "{$settings['table']}_id");
+
+        // delete content with assets
+        $contentList = $this->general_m->get_result_by_id($table_content, $id, "{$settings['table']}_id");
+        if ($contentList) {
+          foreach ($contentList as $key) {  
+            unlink("uploads/admin/assets/{$settings['getDataby_id']->path}/{$key->file}");
+            $filename   = explode('.', $key->file);
+            $name       = current($filename);
+            $thumb      = current($filename).'_thumb.'.end($filename);
+            unlink("{$key->path}/{$thumb}");
+            $delContent = $this->general_m->delete($table_content, $key->id, "{$settings['table']}_id");
+          }
+        }
+        
+        // delte content
+        $getFieldsAll     = $this->fields_m->get_all_results();
+        $getContentFields = $this->db->list_fields($table_content);
+        $getElement       = $this->general_m->get_all_results($settings['table_element']);
+        if ($getElement) {
+          // check fieldsid in element
+          foreach ($getElement as $elm) {
+            $listFields[] = $elm->fields_id;
+          }
+          /*Check Delete Column*/
+          foreach ($getFieldsAll as $key) {
+            if (in_array("fields_{$key->handle}", $getContentFields)) {
+              if (!in_array($key->id, array_unique($listFields))) {
+                $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+                $fields = array(
+                  'handle' => $key->handle,
+                  'type'   => $getFieldsType->type,
+                );
+                // Drop field column in content
+                modifyColumn($fields, 'drop-table', $table_content);
+              }
+            }
+          }
+        } else {
+          /*Check Delete Column*/
+          foreach ($getFieldsAll as $key) {
+            if (in_array("fields_{$key->handle}", $getContentFields)) {
+              $getFieldsType = $this->general_m->get_row_by_id('fields_type', $key->type_id);
+              $fields = array(
+                'handle' => $key->handle,
+                'type'   => $getFieldsType->type,
+              );
+              // Drop field column in content
+              modifyColumn($fields, 'drop-table', $table_content);
+            }
+          }
+        }
+      }
+      $delete = $this->general_m->delete($settings['table'], $id);
       helper_log('delete', "Delete {$settings['title']} with id = has successfully");
       $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");      
       redirect($settings['action']);
@@ -447,8 +353,6 @@ class Assets extends My_Controller {
       redirect($settings['action']);
     }
   }
-
-
 }
 
 /* End of file Assets.php */

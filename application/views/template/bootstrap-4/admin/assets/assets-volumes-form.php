@@ -85,6 +85,7 @@
                 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
                   <ul id="sortable1" class="text-center list-group connectedSortable">
                     <?php 
+                    if ($element) {
                       foreach ($element as $elm) {
                         foreach ($fields as $key) {
                           if ($elm->fields_id == $key->id) {
@@ -92,6 +93,7 @@
                           }
                         }
                       }
+                    }
                     ?> 
                   </ul>
                 </div>
