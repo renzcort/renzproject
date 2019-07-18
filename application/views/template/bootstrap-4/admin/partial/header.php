@@ -12,18 +12,30 @@
         		foreach ($breadcrumb as $value) {
         			if ($key == $value) {
         				if ($link) {
-        					$linkurl = implode('/', array_reverse($link));
+        					$linkurl = implode('/', array_unique($link));
 		      				echo '<li class="breadcrumb-item"><a href="'.base_url("admin/{$linkurl}").'">'.lcfirst($value).'</a></li>';
         				} else {
+                  $link[] = $value; 
 		      				echo '<li class="breadcrumb-item"><a href="'.base_url("admin/{$value}").'">'.lcfirst($value).'</a></li>';
         				}
         			} else {
         				$link[] = $value; 
         			}
         		}
-      		}
+      		};
+
+          $uri = explode('/', uri_string());
+          foreach ($uri as $key => $value) {
+            if ($value == 'create') {
+              continue;
+            } elseif ($value == 'edit') {
+              break;
+            }
+            $string[] = $value;
+          }
+          $uri_string = implode('/', $string);
         	echo '<li '.($subbreadcrumb ? 'class="breadcrumb-item"' : 'class="breadcrumb-item active" aria-current="page" ').'>';
-        	echo ($subbreadcrumb ? '<a href="'.base_url("admin/{$key}/{$title}").'">'.lcfirst($title).'</a>' : lcfirst($title));
+        	echo ($subbreadcrumb ? '<a href="'.base_url($uri_string).'">'.lcfirst($title).'</a>' : lcfirst($title));
         	echo '</li>';
         	if ($subbreadcrumb) {
         		foreach ($subbreadcrumb as $key) {
@@ -41,6 +53,7 @@
     </div>
   </ol>
 </nav>
+
 <div class="container title d-flex flex-row flex-wrap justify-content-between align-items-center">
   <h4><?php echo ($subtitle ? ucfirst($title).'&nbsp;'.ucfirst($subtitle) : ucfirst($title)) ;?></h4>
   <?php if (isset($button)): ?>

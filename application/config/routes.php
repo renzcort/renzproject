@@ -102,6 +102,7 @@ $route['admin/settings/section/(:num)/entrytypes']               = 'admin/sectio
 $route['admin/settings/section/(:num)/entrytypes/create']        = 'admin/section/entrytypes_create/$1';
 $route['admin/settings/section/(:num)/entrytypes/edit/(:num)']   = 'admin/section/entrytypes_update/$1/$2';
 $route['admin/settings/section/(:num)/entrytypes/delete/(:num)'] = 'admin/section/entrytypes_delete/$1/$2';
+$route['admin/settings/section/entrytypes/(:any)']               = 'admin/section/entrytypes/$1';
 
 
 /*Content*/

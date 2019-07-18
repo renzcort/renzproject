@@ -167,8 +167,6 @@ class fields extends My_Controller {
           $opt_settings = NULL;
         }
 
-        // var_dump($opt_settings);die;
-
         // Alter Add Column Table Content 
         $handle           = lcfirst(str_replace(' ', '', ucwords($this->input->post('name'))));
         $getFieldsType    = $this->general_m->get_row_by_id('fields_type', $this->input->post('fieldsTypeId'));
@@ -271,7 +269,6 @@ class fields extends My_Controller {
     $this->form_validation->set_rules('fieldsGroupId', 'fields Group', 'trim|required');
     $this->form_validation->set_rules('fieldsTypeId', 'fields Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
-    // var_dump($this->input->post());die;
       if ($_POST['button'] == 'update') {
         if ($this->input->post('fieldsType')  == 'plainText') {
           $opt_settings = array(
@@ -327,10 +324,10 @@ class fields extends My_Controller {
           );
         } else {
           $opt_settings = NULL;
-        }   
+        }
 
         $handle           = lcfirst(str_replace(' ', '', ucwords($this->input->post('name'))));
-        $getFields_type   = $this->general_m->get_row_by_id('fields_type', $this->input->post('fieldsType'));
+        $getFields_type   = $this->general_m->get_row_by_id('fields_type', $this->input->post('fieldsTypeId'));
         $getContentFields = $this->db->list_fields('content');
         if ($handle != $settings['getDataby_id']->handle) {
           if (!in_array("fields_{$handle}", $getContentFields)) {
@@ -353,15 +350,15 @@ class fields extends My_Controller {
         $fieldsType = $this->general_m->get_row_by_fields('fields_type', array('handle' => $this->input->post('fieldsType')));
         $data = array(
           'group_id'    =>  $this->input->post('fieldsGroupId'),
-          'type_id'     =>  $fieldsType->id,
+          'type_id'     =>  $this->input->post('fieldsTypeId'),
           'option_id'   =>  $option_id,
           'name'        =>  $this->input->post('name'),
-          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'handle'      =>  $handle,
           'label'       =>  ucfirst($this->input->post('name')),
           'description' =>  $this->input->post('description'),
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'status'      =>  $this->input->post('status'),
-          'created_by'  =>  $this->data['userdata']['id'],
+          'updated_by'  =>  $this->data['userdata']['id'],
         );
         $this->fields_m->update($data, $id); 
         helper_log('edit', "Update {$settings['title']} has successfully");
@@ -426,17 +423,7 @@ class fields extends My_Controller {
   }
 
   public function name_check($str) {
-    $id    = $this->uri->segment(5);
-    $field = $this->fields_m->get_row_by_id($id);
-    $data  = array('name' => $str);
-    $check = $this->general_m->get_row_by_fields('fields', $data);
-    if(empty($check)) {
-      return TRUE;
-    }elseif ($field->id == $check->id) {
-      return TRUE;
-    } else {
-      return FALSE;
-    }
+    return check_name($this->input->post('table'), $this->input->post('id'), $str);
   }
 
   public function handle_check($str) {

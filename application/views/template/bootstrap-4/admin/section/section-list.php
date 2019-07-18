@@ -35,9 +35,13 @@
           <span class="sr-only">Toggle Dropdown</span>
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
+            <?php 
+              foreach ($section_entries as $key2) {
+                if ($key2->section_id == $key->id) {  
+                  echo '<a class="dropdown-item" href="'.base_url($action.'/'.$key->id.'/entrytypes/edit/'.$key2->id).'">'.$key2->name.'</a>';
+                }
+              }
+            ?>
           </div>
         </td>
       <?php } else {

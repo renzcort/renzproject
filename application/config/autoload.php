@@ -108,6 +108,7 @@ $autoload['helper'] = array(
                         'file',
                         'array',
                         'modifycolumn',
+                        'checkvalidation',
 											);
 
 /*

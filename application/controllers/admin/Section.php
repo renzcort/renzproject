@@ -127,7 +127,7 @@ class Section extends My_Controller {
 	/*Update Section*/
 	public function update($id=''){
     $settings = array(
-      'title'         =>  ucfirst('section'),
+      'title'         =>  'section',
       'subtitle'      =>  'edit',
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('edit'),
@@ -229,7 +229,7 @@ class Section extends My_Controller {
     $section = $this->section_m->get_row_by_id($section_id);
     $settings = array(
       'title'         =>  "{$section->name}",
-      'subtitle'      =>  'Entrytypes',
+      'subtitle'      =>  'entrytypes',
       'breadcrumb'    =>  array('settings', 'section'),
       'subbreadcrumb' =>  FALSE,
       'table'         =>  'section_entries',
@@ -261,9 +261,9 @@ class Section extends My_Controller {
   /*entrues type create*/
   public function entrytypes_create($section_id='') {
     $settings = array(
-      'title'          =>  "Entry Type",
+      'title'          =>  "entrytype",
       'subtitle'       =>  'create',
-      'breadcrumb'     =>  array('settings'),
+      'breadcrumb'     =>  array('settings', 'section'),
       'subbreadcrumb'  =>  array('create'),
       'table'          =>  'section_entries',
       'action'         =>  "admin/settings/section/{$section_id}/entrytypes",
@@ -290,10 +290,10 @@ class Section extends My_Controller {
   /*entries type update*/
   public function entrytypes_update($section_id='', $id) {
     $settings = array(
-      'title'          =>  "Entry Type",
+      'title'          =>  "entrytype",
       'subtitle'       =>  'Edit',
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  array('create'),
+      'breadcrumb'     =>  array('settings', 'section'),
+      'subbreadcrumb'  =>  array('edit'),
       'table'          =>  'section_entries',
       'action'         =>  "admin/settings/section/{$section_id}/entrytypes",
       'session'        =>  $this->data,

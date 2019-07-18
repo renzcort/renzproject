@@ -55,7 +55,7 @@ class Assets extends My_Controller {
     $settings = array(
       'title'                =>  'assets',
       'subtitle'             =>  FALSE,
-      'breadcrumb'           =>  array('settings'),
+      'breadcrumb'           =>  FALSE,
       'subbreadcrumb'        =>  FALSE,
       'content'              =>  'template/bootstrap-4/admin/assets/assets-list',
       'table'                =>  'assets_content',

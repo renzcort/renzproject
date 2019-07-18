@@ -58,7 +58,7 @@ class Categories extends My_Controller {
     $settings = array(
       'title'          =>  'categories',
       'subtitle'       =>  FALSE,
-      'breadcrumb'     =>  array('settings'),
+      'breadcrumb'     =>  FALSE,
       'subbreadcrumb'  =>  FALSE,
       'button'         =>  '+ New Categories',
       'button_link'    =>  "create/{$handle}",
@@ -97,10 +97,10 @@ class Categories extends My_Controller {
   public function create($handle) {
     $params = (($handle != '') ? $this->general_m->get_row_by_fields('categories', array('handle' => $handle)) : '');
     $settings = array(
-      'title'          =>  'categories',
-      'subtitle'       =>  FALSE,
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  FALSE,
+      'title'          =>  "{$handle}",
+      'subtitle'       =>  'create',
+      'breadcrumb'     =>  array('categories'),
+      'subbreadcrumb'  =>  array('create'),
       'table'          =>  'categories_content',
       'action'         =>  "admin/categories/{$handle}",
       'session'        =>  $this->data,

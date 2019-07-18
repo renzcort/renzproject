@@ -59,7 +59,7 @@ class Entries extends My_Controller {
     $settings = array(
       'title'          =>  'entries',
       'subtitle'       =>  FALSE,
-      'breadcrumb'     =>  array('settings'),
+      'breadcrumb'     =>  FALSE,
       'subbreadcrumb'  =>  FALSE,
       'button'         =>  '+ New Entry',
       'button_link'    =>  (($params && $params != 'singles') ? "{$handle}/create" : "dropdown"),
@@ -108,9 +108,9 @@ class Entries extends My_Controller {
     }
 
     $settings = array(
-      'title'           =>  'entries',
+      'title'           =>  "$handle",
       'subtitle'        =>  'create',
-      'breadcrumb'      =>  array('settings'),
+      'breadcrumb'      =>  array('entries'),
       'subbreadcrumb'   =>  array('create'),
       'table'           =>  'content',
       'action'          =>  "admin/entries/{$handle}",
@@ -144,10 +144,10 @@ class Entries extends My_Controller {
     $content         = $this->general_m->get_row_by_id('content', $id);
     
     $settings = array(
-      'title'           =>  'entries',
-      'subtitle'        =>  'create',
-      'breadcrumb'      =>  array('settings'),
-      'subbreadcrumb'   =>  array('create'),
+      'title'           =>  "{$handle}",
+      'subtitle'        =>  'edit',
+      'breadcrumb'      =>  array('entries'),
+      'subbreadcrumb'   =>  array('edit'),
       'table'           =>  'content',
       'action'          =>  "admin/entries/{$handle}",
       'session'         =>  $this->data,
