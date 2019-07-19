@@ -262,10 +262,21 @@ class fields extends My_Controller {
     );
     $settings['getFieldType'] = json_decode($settings['getDataby_id']->settings);
     $settings['typeFields'] = $this->general_m->get_row_by_id('fields_type', $settings['getDataby_id']->type_id);
-    // var_dump($settings['type_name']);die;
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required|callback_name_check');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|callback_handle_check');
+    $this->form_validation->set_rules('name', 'Name', 
+      array('required','trim', 
+        function($str){
+          return check_name($this->input->post('table'), $this->input->post('id'), $str);
+        }
+      )
+    );
+    $this->form_validation->set_rules('handle', 'Handle',      
+      array('required','trim', 
+        function($str){
+          return check_handle($this->input->post('table'), $this->input->post('id'), $str);
+        }
+      )
+    );
     $this->form_validation->set_rules('fieldsGroupId', 'fields Group', 'trim|required');
     $this->form_validation->set_rules('fieldsTypeId', 'fields Type', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
@@ -419,24 +430,6 @@ class fields extends My_Controller {
     } else {
       $this->session->set_flashdata('message', 'Delete Failed, Your data is Not Valid');
       redirect($this->data['parentLink']);
-    }
-  }
-
-  public function name_check($str) {
-    return check_name($this->input->post('table'), $this->input->post('id'), $str);
-  }
-
-  public function handle_check($str) {
-    $id    = $this->uri->segment(5);
-    $field = $this->fields_m->get_row_by_id($id);
-    $data  = array('handle' => $str); 
-    $check = $this->general_m->get_row_by_fields('fields', $data);
-    if (empty($check)) {
-      return TRUE;
-    } elseif ($field->id == $check->id) {
-      return TRUE;
-    } else {
-      return TRUE;
     }
   }
 

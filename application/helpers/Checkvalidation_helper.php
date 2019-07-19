@@ -14,6 +14,20 @@
         return FALSE;
       }
     }
+
+    // check handle
+    function check_handle($table, $id, $handle) {
+      // get main object ci
+      $CI =& get_instance();
+      $check_handle   = $CI->general_m->get_row_by_fields($table, array('handle' => $handle));
+      if (empty($check_handle)) {
+        return TRUE;
+      } elseif ($check_handle->id == $id) {
+        return TRUE;
+      } else {
+        return FALSE;
+      }
+    }
   }
 
 ?>

@@ -7,6 +7,8 @@
       echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
     ?>
     <input type="hidden" name="button" value="<?php echo $button_name; ?>">
+    <input type ="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
+    <input type ="hidden" name="table" value="<?php echo $table; ?>">
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
       <small class="form-text text-muted">Which group should this site belong to?</small>

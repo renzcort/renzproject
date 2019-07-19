@@ -1,133 +1,5 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-
-
-    <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/admin/template/bootstrap-4/') ?>css/style.css">
-    <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
-    <title><?php echo ($title ? ucfirst($title) : ''); ?></title>
-
-  </head>
-  <body>
-
-    <?php $this->load->view('template/bootstrap-4/admin/partial/nav'); ?>
-    <div class="wraper">
-      <div class="">
-        <div class="d-flex flex-row flex-wrap justify-content-start align-items-start">
-          <div class="left-column" id="sidebarCollapse">
-            <?php $this->load->view('template/bootstrap-4/admin/partial/sidebar'); ?>
-          </div>
-          <div class="right-column ml-auto flex-fill flex-grow-1" id="contentCollapse">
-           <main role="main" class="container">
-            <div class="main d-flex flex-column">
-              <div class="header">
-                <?php $this->load->view('template/bootstrap-4/admin/partial/header'); ?>
-              </div>
-              <?php if ($this->session->userdata('message')) { ?>
-                <div class="message alert alert-danger alert-dismissible text-center mx-auto" role="alert">
-                  <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                  <?php echo $this->session->userdata('message'); ?>
-                </div>
-              <?php } ?>
-              <div class="content container-fluid">
-                <div class="content-body d-flex flex-row flex-wrap justify-content-start">
-                  <?php $this->load->view($content); ?>
-                </div>
-              </div>
-              <div class="footer text-center">
-                <?php $this->load->view('template/bootstrap-4/admin/partial/footer'); ?>
-              </div>
-            </div>  
-           </main>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-<!-- Modal -->
-<div class="modal fade" id="groupsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Group <?php echo (isset($title) ? ucfirst($title) : ''); ?></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <?php echo form_open('admin/groups', ''); ?>
-      <div class="modal-body">
-          <input type="hidden" name="group_name" value="<?php echo (isset($group_name) ? $group_name : ''); ?>">
-          <input type="hidden" name="table" value="<?php echo (isset($table) ? $table : ''); ?>">
-          <div class="form-group">
-            <label class="heading" for="inputNameGroup">What do you want to name the group?</label>
-            <input type="text" name="name" class="form-control form-control-sm">
-          </div>
-          <div class="form-group">
-            <label class="heading" for="inputDescGroup">Desctription</label>
-            <textarea class="form-control form-control-sm" name="description"></textarea>
-          </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="submit" class="btn btn-primary" name="create">Save</button>
-      </div>
-    <? echo form_close(); ?>
-    </div>
-  </div>
-</div>
-
-<div class="modal fade" id="assetsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body d-flex flex-row flex-wrap justify-content-between p-1">
-        <div class="left-modal">
-          <ul>
-            <li class="nav-item assets-list list-unstyled"></li> 
-          </ul>
-        </div>
-        <div class="right-modal">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <input type="file" name="assets" id="entries-file" class="btn btn-primary mr-auto p-2 ">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="select-assets" data-dismiss="modal">Select</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
-    <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"></script> -->
-    <script type="text/javascript" src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.9.0/jquery.serializejson.min.js"></script>
-    <!-- <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/main.js"></script> -->
-
-    <script type="text/javascript">
       $(document).ready(function(){
+        var base_url = "http://renzproject.localhost/";
         // datepicker
         $( ".datepicker" ).datepicker();
 
@@ -220,7 +92,8 @@
               type : 'POST',
               dataType : 'json',
               data : {id : id, order : order},
-              url : '<?php echo base_url("admin/api/jsonUpdateOrderEntrytypes") ?>',
+              // url : '<?php echo base_url("admin/Api/jsonUpdateOrderEntrytypes") ?>',
+              url : base_url+"admin/Api/jsonUpdateOrderEntrytypes",
             }).done(function(data){
 
             }).fail(function(error){
@@ -361,7 +234,8 @@
               type: 'POST',
               datatype: 'json',
               data: {group_name: group_name, group_id : group_id, table : table},
-              url: '<?php echo base_url("admin/api/jsonGetGroupsById") ?>',
+              // url: '<?php echo base_url("admin/Api/jsonGetGroupsById") ?>',
+              url: base_url+"admin/Api/jsonGetGroupsById",
           })
           .done(function (data) {
               updateGroupsModal(data); 
@@ -395,7 +269,8 @@
               type: 'POST',
               dataType: 'json',
               data: {table: table, group_name: group_name, element_name : element_name, group_id : group_id},
-              url: '<?php echo base_url("admin/api/jsonDeleteGroupsById") ?>',
+              // url: '<?php echo base_url("admin/Api/jsonDeleteGroupsById") ?>',
+              url: base_url+"admin/Api/jsonDeleteGroupsById",
             }).done(function(data) {
               window.location.reload();
             }).fail(function(error) {
@@ -416,7 +291,8 @@
             type : 'POST',
             dataType : 'json',
             data : {table: table, group_name: group_name, action_name : action_name, group_id : group_id},
-            url : '<?php echo base_url("admin/api/jsonGetDataByIdGroups") ?>',
+            // url : '<?php echo base_url("admin/Api/jsonGetDataByIdGroups") ?>',
+            url : base_url+"admin/Api/jsonGetDataByIdGroups",
           }).done(function(data){
             $('#right-content table').remove();
             $('#right-content .empty-data').remove();
@@ -437,7 +313,8 @@
               type : 'POST',
               dataType : 'json',
               data : {id : id},
-              url : '<?php echo base_url("admin/api/jsonDeleteFieldsById") ?>'
+              // url : '<?php echo base_url("admin/Api/jsonDeleteFieldsById") ?>'
+              url : base_url+"admin/Api/jsonDeleteFieldsById",
             }).done(function(data) {
               window.location.reload();
             }).fail(function(error) {
@@ -458,13 +335,16 @@
         // assets FIELD
         if ($("#entries-template").length) {
           var jData = $('#MyForm').serializeJSON();
-          var url   = '<?php echo base_url("admin/api/jsonEntriesManage") ?>';
+          // var url   = '<?php echo base_url("admin/Api/jsonEntriesManage") ?>';
+          var url   = base_url+"admin/Api/jsonEntriesManage";
         } else if ($("#users-settings").length) {
           var jData = Object.assign(jTable, jFields);
-          var url   = '<?php echo base_url("admin/api/jsonUsersFieldsForm") ?>';
+          // var url   = '<?php echo base_url("admin/Api/jsonUsersFieldsForm") ?>';
+          var url   = base_url+"admin/Api/jsonUsersFieldsForm";
         } else {
           var jData = Object.assign(jTable, jFields);
-          var url   = '<?php echo base_url("admin/api/jsonTabsFields") ?>';
+          // var url   = '<?php echo base_url("admin/Api/jsonTabsFields") ?>';
+          var url   = base_url+"admin/Api/jsonTabsFields";
         }
 
         $.ajax({
@@ -474,7 +354,8 @@
           url : url,
         }).done(function(data){
           if (data.status == true) {
-            window.location.href = '<?php echo base_url() ?>'+data.action;
+            // window.location.href = '<?php echo base_url() ?>'+data.action;
+            window.location.href = base_url+data.action;
           } else {
            $.each(data.errors, function(key, val){
             $('input[name="'+key+'"]').next().html(val).addClass('form-error');
@@ -521,7 +402,8 @@
           {
            form_data.append("file", document.getElementById('file').files[0]);
            $.ajax({
-             url: '<?php echo base_url("admin/api/jsonUploadWithoutSubmit") ?>',
+             // url: '<?php echo base_url("admin/Api/jsonUploadWithoutSubmit") ?>',
+             url: base_url+"admin/Api/jsonUploadWithoutSubmit",
              type: "POST",
              data:  form_data,
              contentType: false,
@@ -550,7 +432,8 @@
             type : 'POST',
             dataType : 'json',
             data : {id:assets_id, assets_fields:assets_fields, assets_source:assets_source},
-            url : '<?php echo base_url("admin/api/jsonAssetsEntriesUpload") ?>',
+            // url : '<?php echo base_url("admin/Api/jsonAssetsEntriesUpload") ?>',
+            url : base_url+"admin/Api/jsonAssetsEntriesUpload",
           }).done(function(data){
             $('li.assets-list').html(data.name);
             $('#assetsModal .right-modal').html(data.table);
@@ -581,7 +464,8 @@
               });
 
               $.ajax({
-                url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
+                // url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
+                url: base_url+"admin/Api/jsonAssetsSelectSubmit",
                 type: 'POST',
                 dataType: 'json',
                 data: {assetsContentId: id, assets_fields : assets_fields},
@@ -610,7 +494,8 @@
         $('#entries').change(function(){
           var id = $('#entries option:selected').attr('data-id');
           $.ajax({
-            url: '<?php echo base_url('admin/api/jsonSelectEntriesType') ?>',
+            // url: '<?php echo base_url('admin/api/jsonSelectEntriesType') ?>',
+            url: base_url+"admin/Api/jsonSelectEntriesType",
             type: 'POST',
             dataType: 'json',
             data: {id: id},
@@ -658,7 +543,8 @@
           {
            form_data.append("entries-file", document.getElementById('entries-file').files[0]);
            $.ajax({
-             url: '<?php echo base_url("admin/api/jsonUploadAssetsInEntries") ?>',
+             // url: '<?php echo base_url("admin/Api/jsonUploadAssetsInEntries") ?>',
+             url: base_url+"admin/Api/jsonUploadAssetsInEntries",
              type: "POST",
              data:  form_data,
              contentType: false,
@@ -864,7 +750,3 @@
         
       }
 
-
-    </script>
-  </body>
-</html>

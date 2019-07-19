@@ -3,8 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Users extends My_Controller {
 
-	public function __construct()
-	{
+	public function __construct(){
 		parent::__construct();
 		//Do your magic here
 		$this->load->model('admin/General_m', 'general_m');
@@ -631,8 +630,20 @@ class Users extends My_Controller {
       }
     }
 
-    $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_usersgroup.name]');
-    $this->form_validation->set_rules('handle', 'Handle', 'trim|required|is_unique[renz_usersgroup.handle]');
+    $this->form_validation->set_rules('name', 'Name', 
+      array('required','trim', 
+        function($str){
+          return check_name($this->input->post('table'), $this->input->post('id'), $str);
+        }
+      )
+    );
+    $this->form_validation->set_rules('handle', 'Handle',      
+      array('required','trim', 
+        function($str){
+          return check_handle($this->input->post('table'), $this->input->post('id'), $str);
+        }
+      )
+    );
     if ($this->form_validation->run() == TRUE) {
       if ($_POST['button'] == 'update') {
         $opt_settings = array(

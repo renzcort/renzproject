@@ -63,8 +63,26 @@ class Api extends My_Controller {
       }
     }        
 
-    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
-    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
+    if ($button == 'create') {
+      $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
+      $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
+    } else {
+      $this->form_validation->set_rules('name', 'Name', 
+        array('required','trim', 
+          function($str){
+            return check_name($this->input->post('table'), $this->input->post('id'), $str);
+          }
+        )
+      );
+      $this->form_validation->set_rules('handle', 'Handle',      
+        array('required','trim', 
+          function($str){
+            return check_handle($this->input->post('table'), $this->input->post('id'), $str);
+          }
+        )
+      );
+    }
+    
     if (isset($_POST['title'])) {
       $this->form_validation->set_rules('title', 'Title', 'trim|required');
     }

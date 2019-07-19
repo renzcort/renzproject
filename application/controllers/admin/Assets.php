@@ -57,13 +57,13 @@ class Assets extends My_Controller {
       'subtitle'             =>  FALSE,
       'breadcrumb'           =>  FALSE,
       'subbreadcrumb'        =>  FALSE,
-      'content'              =>  'template/bootstrap-4/admin/assets/assets-list',
       'table'                =>  'assets_content',
       'action'               =>  'admin/settings/assets',
       'session'              =>  $this->data,
       'no'                   =>  $this->uri->segment(4),
       'button'               =>  '+ Upload Files',
       'button_link'          =>  'Upload',
+      'content'              =>  'template/bootstrap-4/admin/assets/assets-list',
       'fields_content'       =>  $this->general_m->get_all_results('assets_content'),
       'fields_content_count' =>  $this->general_m->count_all_results('assets_content'),
       'content_name'         => 'assets_content',
@@ -250,8 +250,20 @@ class Assets extends My_Controller {
       $settings['elementFields'] = [];
     }
 
-    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
-    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
+    $this->form_validation->set_rules('name', 'Name', 
+      array('required','trim', 
+        function($str){
+          return check_name($this->input->post('table'), $this->input->post('id'), $str);
+        }
+      )
+    );
+    $this->form_validation->set_rules('handle', 'Handle',      
+      array('required','trim', 
+        function($str){
+          return check_handle($this->input->post('table'), $this->input->post('id'), $str);
+        }
+      )
+    );
     if ($this->form_validation->run() == TRUE) {
       if ($_POST['button'] == 'update') {
         $data = array(

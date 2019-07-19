@@ -118,9 +118,20 @@ class Sites extends My_Controller {
       'group_id'      =>  ($this->input->post('group') ? $this->input->post('group') : ''),
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
-
-    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
-    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
+    $this->form_validation->set_rules('name', 'Name', 
+      array('required','trim', 
+        function($str){
+          return check_name($this->input->post('table'), $this->input->post('id'), $str);
+        }
+      )
+    );
+    $this->form_validation->set_rules('handle', 'Handle',      
+      array('required','trim', 
+        function($str){
+          return check_handle($this->input->post('table'), $this->input->post('id'), $str);
+        }
+      )
+    );
     if ($this->form_validation->run() == TRUE) {
       if ($_POST['button'] == 'update') {
         $data = array(
@@ -136,7 +147,7 @@ class Sites extends My_Controller {
         );
         $this->general_m->update($settings['table'], $data, $id);
         helper_log('edit', "Update {$settings['title']} has successfully");
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully Updated");
+        $this->session->set_flashdata("message", "{$settings['title']} has successfully updated");
         redirect($this->data['parentLink']);
       } 
     } else {
