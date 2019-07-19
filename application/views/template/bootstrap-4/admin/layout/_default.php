@@ -124,7 +124,7 @@
     <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"></script> -->
     <script type="text/javascript" src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.9.0/jquery.serializejson.min.js"></script>
-    <!-- <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/main.js"></script> -->
+    <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/main.js"></script>
 
     <script type="text/javascript">
       $(document).ready(function(){
