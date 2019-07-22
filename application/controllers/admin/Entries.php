@@ -130,6 +130,7 @@ class Entries extends My_Controller {
       'assets'          =>  $this->general_m->get_all_results('assets'),
       'assets_content'  =>  $this->general_m->get_all_results('assets_content'),
       'parent_table'    =>  'section_entries',
+      'categories'      =>  $this->general_m->get_all_results('categories'),
     );
     foreach ($settings['element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;

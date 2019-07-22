@@ -137,7 +137,7 @@ class fields extends My_Controller {
           $opt_settings = array(
             'categoriesSource'         => $this->input->post('categoriesSource'),
             'categoriesTargetLocale'   => $this->input->post('categoriesTargetLocale'),
-            'categorieslimit'          => $this->input->post('categorieslimit'),
+            'categoriesLimit'          => $this->input->post('categoriesLimit'),
             'categoriesSelectionLabel' => $this->input->post('categoriesSelectionLabel'),
           );
         } elseif ($this->input->post('fieldsType') == 'checkboxes') {

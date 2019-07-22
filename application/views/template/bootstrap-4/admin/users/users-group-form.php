@@ -6,7 +6,7 @@
     );
     echo form_open($action.(isset($id) ? '/edit/'.$id : '/create'), $attributes); 
   ?>
-  <input type="hidden" name="button" value="<?php echo $button_name; ?>">
+  <input type ="hidden" name="button" value="<?php echo $button_name; ?>">
   <input type ="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
   <input type ="hidden" name="table" value="<?php echo $table; ?>">
   <div class="form-group">
@@ -147,8 +147,8 @@
       echo '
     <div class="form-check">
       <input class="form-check-input" type="checkbox" name="editGlobal['.$glo->handle.']" value="true"
-      '.((!empty($permission->editGlobal) && in_array($sec->handle, $editGlobal)) ? 'checked' : '').'>
-      <label class="form-check-label" for="defaultCheck1">Edit “'.$ass->name.'”</label>
+      '.((!empty($permission->editGlobal) && in_array($glo->handle, $editGlobal)) ? 'checked' : '').'>
+      <label class="form-check-label" for="defaultCheck1">Edit “'.$glo->name.'”</label>
     </div>';
     } ?>
   </div>
@@ -192,43 +192,53 @@
   <div class="form-group">
     <label for="inputGlobal" class="heading">Utilities</label>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="utilitiesUpdates" value="true">
+      <input class="form-check-input" type="checkbox" name="utilitiesUpdates" value="true"
+      <?php echo ((!empty($permission->utilitiesUpdates) && $permission->utilitiesUpdates == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Updates</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="utilitiesSystemReport" value="true">
+      <input class="form-check-input" type="checkbox" name="utilitiesSystemReport" value="true"
+      <?php echo ((!empty($permission->utilitiesSystemReport) && $permission->utilitiesSystemReport == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">System Report</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="utilitiesPHPInfo" value="true">
+      <input class="form-check-input" type="checkbox" name="utilitiesPHPInfo" value="true"
+      <?php echo ((!empty($permission->utilitiesPHPInfo) && $permission->utilitiesPHPInfo == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">PHP Info</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="utilitiesSystemMessage" value="true">
+      <input class="form-check-input" type="checkbox" name="utilitiesSystemMessage" value="true"
+      <?php echo ((!empty($permission->utilitiesSystemMessage) && $permission->utilitiesSystemMessage == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">System Messages</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="utilitiesAssetIndexes" value="true">
+      <input class="form-check-input" type="checkbox" name="utilitiesAssetIndexes" value="true"
+      <?php echo ((!empty($permission->utilitiesAssetIndexes) && $permission->utilitiesAssetIndexes == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Asset Indexes</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="utilitiesClearCaches" value="true">
+      <input class="form-check-input" type="checkbox" name="utilitiesClearCaches" value="true"
+      <?php echo ((!empty($permission->utilitiesClearCaches) && $permission->utilitiesClearCaches == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Clear Caches</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="utilitiesDeprecationWarnings" value="true">
+      <input class="form-check-input" type="checkbox" name="utilitiesDeprecationWarnings" value="true"
+      <?php echo ((!empty($permission->utilitiesDeprecationWarnings) && $permission->utilitiesDeprecationWarnings == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Deprecation Warnings</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="utilitiesDatabaseBackup" value="true">
+      <input class="form-check-input" type="checkbox" name="utilitiesDatabaseBackup" value="true"
+      <?php echo ((!empty($permission->utilitiesDatabaseBackup) && $permission->utilitiesDatabaseBackup == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Database Backup</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="utilitiesFindAndReplace" value="true">
+      <input class="form-check-input" type="checkbox" name="utilitiesFindAndReplace" value="true"
+      <?php echo ((!empty($permission->utilitiesFindAndReplace) && $permission->utilitiesFindAndReplace == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Find and Replace</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="checkbox" name="utilitiesMigrations" value="true">
+      <input class="form-check-input" type="checkbox" name="utilitiesMigrations" value="true"
+      <?php echo ((!empty($permission->utilitiesMigrations) && $permission->utilitiesMigrations == TRUE) ? 'checked' : '');?>>
       <label class="form-check-label" for="defaultCheck1">Migrations</label>
     </div>
   </div>

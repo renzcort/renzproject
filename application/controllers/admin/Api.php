@@ -373,7 +373,7 @@ class Api extends My_Controller {
     if($settings['record_all']) {
       if ($table == 'sites') {
         $table_view = '
-          <table class="table table-sm">
+          <table class="table table-sm text-left">
             <thead>
               <tr>
                 <th scope="row">#</th>
@@ -404,7 +404,7 @@ class Api extends My_Controller {
           $table_view .= '</tbody></table>';
       } elseif ($table == 'fields') {
         $table_view = '
-          <table class="table table-sm">
+          <table class="table table-sm text-left">
             <thead>
               <tr>
                 <th scope="col">#</th>
@@ -431,7 +431,7 @@ class Api extends My_Controller {
           $table_view .= '</tbody></table>';
       } elseif ($table = 'assets_content') {
         $table_view = '
-          <table class="table table-sm">
+          <table class="table table-sm text-left">
             <thead>
               <tr>
                 <th scope="row">#</th>
@@ -454,7 +454,7 @@ class Api extends My_Controller {
               <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
               <td>'.($key->file ? $key->file : '').'</td>
               <td>'.$key->size.' kB </td>
-              <td>'.($key->created_at ? $key->created_at : '').'</td>
+              <td>'.date("d/m/Y", strtotime($key->created_at)).'</td>
               </tr>';
         }
         $table_view .= '</tbody></table>';
@@ -576,7 +576,7 @@ class Api extends My_Controller {
       $no = 0;
       if ($record_all) {
         $table_view = '
-          <table class="table table-sm">
+          <table class="table table-sm text-left">
             <thead>
               <tr>
                 <th scope="row">#</th>
@@ -599,7 +599,7 @@ class Api extends My_Controller {
               <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
               <td>'.($key->file ? $key->file : '').'</td>
               <td>'.$getSize['Content-Length'].' kB </td>
-              <td>'.($key->created_at ? $key->created_at : '').'</td>
+              <td>'.date("d/m/Y", strtotime($key->created_at)).'</td>
               </tr>';
         }
         $table_view .= '</tbody></table>';
@@ -629,13 +629,13 @@ class Api extends My_Controller {
 
     if ($settings['assets_content']) {
       $table_view .= '
-        <table class="table table-sm" id="datatableModal">
+        <table class="table table-sm text-left" id="datatableModal">
           <thead>
             <tr>
               <th style="width:5%" scope="row">#</th>
               <th scope="col">Title</th>
-              <th scope="col">Post Date</th>
-              <th style="width:10%" scope="col">File Size</th>
+              <th scope="col">Filename</th>
+              <th style="width:15%" scope="col">File Size</th>
               <th style="width:25%" scope="col">File Modified Date</th>
             </tr>
           </thead>
@@ -652,8 +652,8 @@ class Api extends My_Controller {
             <td style:"width:5%;" scope="row">'.++$no.'</td>
             <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
             <td>'.($key->file ? $key->file : '').'</td>
-            <td style="width:10%;">'.$key->size.' kB </td>
-            <td style="width:25%;">'.($key->created_at ? $key->created_at : '').'</td>
+            <td style="width:15%;">'.$key->size.' kB </td>
+            <td style="width:25%;">'.date("d/m/Y", strtotime($key->created_at)).'</td>
             </tr>';
       }
       $table_view .= '</tbody></table>';
@@ -672,6 +672,11 @@ class Api extends My_Controller {
     echo json_encode($data);
   }
 
+ 
+  /**
+   * This function use when choice data in upload assets entries 
+   * @return [type] [description]
+   */
   public function jsonAssetsSelectSubmit(){
     $assetsContentId = $this->input->post('assetsContentId');
     $assetsFields    = $this->input->post('assets_fields');
@@ -687,7 +692,7 @@ class Api extends My_Controller {
           <li><input type="hidden" name="'.$assetsFields.'[]" value="'.$value.'">
             <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>
             <label for="input'.$name.'">'.$name.'</label>
-            <a href=""><i class="fa fa-times" aria-hidden="true"></i></a
+            <a><i class="fa fa-times" aria-hidden="true"></i></a
           </li>
         ';
     }
@@ -1005,13 +1010,13 @@ class Api extends My_Controller {
         <input type="hidden" class="form-control" id="assets-source" data-folder="'.$folder.'" name="folder" value="'.$folder.'">';
       if ($record_all) {
        $table_view = '
-        <table class="table table-sm" id="datatableModal">
+        <table class="table table-sm text-left" id="datatableModal">
           <thead>
             <tr>
               <th style="width:5%" scope="row">#</th>
               <th scope="col">Title</th>
-              <th scope="col">Post Date</th>
-              <th style="width:10%" scope="col">File Size</th>
+              <th scope="col">Filename</th>
+              <th style="width:15%" scope="col">File Size</th>
               <th style="width:25%" scope="col">File Modified Date</th>
             </tr>
           </thead>
@@ -1028,8 +1033,8 @@ class Api extends My_Controller {
             <td style:"width:5%;" scope="row">'.++$no.'</td>
             <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
             <td>'.($key->file ? $key->file : '').'</td>
-            <td style="width:10%;">'.$key->size.' kB </td>
-            <td style="width:25%;">'.($key->created_at ? $key->created_at : '').'</td>
+            <td style="width:15%;">'.$key->size.' kB </td>
+            <td style="width:25%;">'.date("d/m/Y", strtotime($key->created_at)).'</td>
             </tr>';
       }
       $table_view .= '</tbody></table>';
@@ -1145,6 +1150,73 @@ class Api extends My_Controller {
     $settings['status'] = TRUE;
     echo json_encode($settings);
   }
+
+
+  /**
+   * tHIS FUNCTION USE TO SHOW MODAL WHEN CLICK BUTTON CATEGORIES IN ENTRIES FORM
+   */
+  public function jsonCategoriesEntriesUpload(){
+    $categories_id = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
+    $settings = array(
+      'categories'         => $this->general_m->get_row_by_id('categories', $categories_id),
+      'categories_content' => $this->general_m->get_result_by_id('categories_content', $categories_id, 'categories_id'),
+    );
+    $table_view = '
+      <div id="uploadModal">';
+    if ($settings['categories_content']) {
+      $table_view .= '
+        <table class="table table-sm text-left" id="datatableModal">
+          <thead>
+            <tr>
+              <th style="width:5%" scope="row">#</th>
+              <th scope="col">Title</th>
+            </tr>
+          </thead>
+          <tbody>'; 
+        $no = 0;
+      foreach ($settings['categories_content'] as $key) {
+        $table_view .= '<tr>
+            <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
+            <td style:"width:5%;" scope="row">'.++$no.'</td>
+            <td>'.ucfirst($key->title).'</td>
+            </tr>';
+      }
+      $table_view .= '</tbody></table>';
+    } else {
+      $table_view .= '<p class="empty-data">Data is Empty</p>';
+    }
+    $table_view .= '</div>';
+
+    $data = array(
+      'table' =>  $table_view,
+    );
+    echo json_encode($data);
+  }
+
+   /**
+   * This function use when choice data in upload assets entries 
+   * @return [type] [description]
+   */
+  public function jsonCategoriesSelectSubmit(){
+    $categoriesContentId = $this->input->post('categoriesContentId');
+    $categoriesFields    = $this->input->post('categories_fields');
+    $view = '';
+    foreach ($categoriesContentId as $key => $value) {
+      $categoriesContent  = $this->general_m->get_row_by_id('categories_content', $value);
+      $view .= '
+          <li><input type="hidden" name="'.$categoriesFields.'[]" value="'.$value.'">
+            <label for="input'.$categoriesContent->title.'">'.$categoriesContent->title.'</label>
+            <a><i class="fa fa-times" aria-hidden="true"></i></a
+          </li>
+        ';
+    }
+
+    $data = array(
+      'html' =>  $view,
+    );
+    echo json_encode($data);
+  }
+
 
 
 }

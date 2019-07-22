@@ -1182,6 +1182,18 @@ table .no {
   width: 5%;
 }
 
+#categoriesModal .modal-dialog {
+    max-width: 906px !important;
+}
+#categoriesModal .modal-content {
+  height: auto;
+  min-width: 50rem;
+  max-width: 57rem;
+}
+#categoriesModal .modal-footer {
+  background: #EBECEE
+}
+
 /* #uploadModal tbody tr:nth-child(odd) {
   background-color: #fafafa;
 }

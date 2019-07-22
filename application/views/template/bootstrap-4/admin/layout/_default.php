@@ -12,6 +12,8 @@
 
     <link rel="stylesheet" type="text/css" href="<?php echo base_url('assets/admin/template/bootstrap-4/') ?>css/style.css">
     <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+  
     <title><?php echo ($title ? ucfirst($title) : ''); ?></title>
 
   </head>
@@ -88,7 +90,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+        <h5 class="modal-title" id="exampleModalLabel">New Assets</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -111,6 +113,26 @@
   </div>
 </div>
 
+<div class="modal fade" id="categoriesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Categories</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+       <div class="middle-modal"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="select-categories" data-dismiss="modal">Select</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
     <!-- Optional JavaScript -->
@@ -118,10 +140,12 @@
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script>
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script> -->
+    <!-- <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.18/jquery-ui.min.js" type="text/javascript"></script> -->
     <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"></script> -->
+
     <script type="text/javascript" src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.9.0/jquery.serializejson.min.js"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/main.js"></script>
@@ -199,7 +223,6 @@
           }
         });
 
-        
 
         /**
          * Tabs Fields
@@ -323,6 +346,7 @@
         getDataByIdGroups();
         deleteFieldsById();
         getModalAssets();
+        getModalCategories();
         changeEntriesType();
         uploadWithoutSubmit();
         uploadAssetsInEntries();
@@ -334,537 +358,7 @@
         var rightbar = document.getElementById('right-content');
         var rightbarTop = rightbar.offsetHeight;
         window.onscroll = function() {myFunction()};
-
-
       })
-
-      
-      function myFunction() {
-        if (window.pageYOffset >= leftbarTop && window.pageYOffset <= leftbarButton) {
-          leftbar.classList.add("fixed-bar")
-        } else {
-          leftbar.classList.remove("fixed-bar");
-        }
-      }
-
-      /**
-       * GROUPS API
-       * @return {[type]} [description]
-       */
-      function getGroupsById() {
-        // Rename Groups 
-        $('#groupsRename').click(function(){
-          var group_name = $('#sidebarGroups').data('groups-name');
-          var table = $('#sidebarGroups').data('table');
-          var group_id = $(".sidebar-content .nav-link.active").attr('data-id');
-          $.ajax({
-              type: 'POST',
-              datatype: 'json',
-              data: {group_name: group_name, group_id : group_id, table : table},
-              url: '<?php echo base_url("admin/api/jsonGetGroupsById") ?>',
-          })
-          .done(function (data) {
-              updateGroupsModal(data); 
-          })
-          .fail(function (jqXHR, textStatus, errorThrown) { 
-          });
-          return false;
-        });
-      }
-
-      // function update modal success
-      function updateGroupsModal(data){
-        $('#groupsModal .modal-body').append('<input type="hidden" name="id" value="'+data.id+'" class="form-control">');
-        $('#groupsModal input[type="text"]').val(data.name);
-        $('#groupsModal textarea').val(data.description);
-        $('#groupsModal button[type="submit"]').attr('name', 'update');
-        $('#groupsModal button[type="submit"]').text('Update');
-        $('#groupsModal').modal('show');
-      }
-
-      function deleteGroupsById(){
-        // Delete Groups
-        $('#groupsDelete').click(function(){
-          var table        = $('#sidebarGroups').data('table');
-          var group_name   = $('#sidebarGroups').data('groups-name');
-          var element_name = $('#sidebarGroups').data('element');
-          var group_id     = $(".sidebar-content .nav-link.active").attr('data-id');
-
-          if (confirm("Are you sure?")) {
-            $.ajax({
-              type: 'POST',
-              dataType: 'json',
-              data: {table: table, group_name: group_name, element_name : element_name, group_id : group_id},
-              url: '<?php echo base_url("admin/api/jsonDeleteGroupsById") ?>',
-            }).done(function(data) {
-              window.location.reload();
-            }).fail(function(error) {
-            });
-          }
-          return false;
-        });
-      }
-
-      function getDataByIdGroups(){
-        // Show Fields By Groups
-        $('#sidebarGroups .nav-item').click(function(){
-          var table       = $('#sidebarGroups').data('table');
-          var action_name = $('#sidebarGroups').data('action-name');
-          var group_name  = $('#sidebarGroups').data('groups-name');
-          var group_id    = $('#sidebarGroups .nav-link.active').data('id');
-          $.ajax({
-            type : 'POST',
-            dataType : 'json',
-            data : {table: table, group_name: group_name, action_name : action_name, group_id : group_id},
-            url : '<?php echo base_url("admin/api/jsonGetDataByIdGroups") ?>',
-          }).done(function(data){
-            $('#right-content table').remove();
-            $('#right-content .empty-data').remove();
-            $('#right-content').append(data);
-          }).fail(function(error){
-
-          });
-        });
-      }
-      /*END Groups*/
-
-      function deleteFieldsById(){
-        // Delete Fields List
-        $('#deleteFields').click(function(){
-          var id = $('#deleteFields').data('id');
-          if (confirm("are you sure?")) {
-            $.ajax({
-              type : 'POST',
-              dataType : 'json',
-              data : {id : id},
-              url : '<?php echo base_url("admin/api/jsonDeleteFieldsById") ?>'
-            }).done(function(data) {
-              window.location.reload();
-            }).fail(function(error) {
-
-            });
-          } 
-          return false;
-        })
-      }
-
-      function getTabsFieldsList() {
-        var fieldsId = $('#sortable1 .fields-list').map(function(){
-          return $(this).data('fieldsid');
-        }).get();
-        var jTable = ConvertFormToJSON();
-        var jFields = {fieldsId : fieldsId};
-        
-        // assets FIELD
-        if ($("#entries-template").length) {
-          var jData = $('#MyForm').serializeJSON();
-          var url   = '<?php echo base_url("admin/api/jsonEntriesManage") ?>';
-        } else if ($("#users-settings").length) {
-          var jData = Object.assign(jTable, jFields);
-          var url   = '<?php echo base_url("admin/api/jsonUsersFieldsForm") ?>';
-        } else {
-          var jData = Object.assign(jTable, jFields);
-          var url   = '<?php echo base_url("admin/api/jsonTabsFields") ?>';
-        }
-
-        $.ajax({
-          type : 'POST',
-          dataType : 'json',
-          data : jData,
-          url : url,
-        }).done(function(data){
-          if (data.status == true) {
-            window.location.href = '<?php echo base_url() ?>'+data.action;
-          } else {
-           $.each(data.errors, function(key, val){
-            $('input[name="'+key+'"]').next().html(val).addClass('form-error');
-           }); 
-          }
-        }).fail(function(errot){
-
-        });
-      }
-
-      function ConvertFormToJSON(){
-        var array = jQuery($('#MyForm')).serializeArray();
-        var json = {};
-        jQuery.each(array, function() {
-            json[this.name] = this.value || '';
-        });
-        return json;
-      }
-
-      /*this function for upload file content*/
-      function uploadWithoutSubmit(){
-        $('#file').change(function(){
-          var name      = document.getElementById("file").files[0].name;
-          var form_data = new FormData();
-          var ext       = name.split('.').pop().toLowerCase();
-          var group_id  = $(".sidebar-content .nav-link.active").attr('data-id');
-          var astSource = $('#assets-source').val();
-          form_data.append("group_id", group_id);
-          form_data.append("assets_Source", astSource);
-
-          if(jQuery.inArray(ext, ['gif','png','jpg','jpeg']) == -1) 
-          {
-           alert("Invalid Image File");
-          }
-          var oFReader = new FileReader();
-          oFReader.readAsDataURL(document.getElementById("file").files[0]);
-          var f = document.getElementById("file").files[0];
-          var fsize = f.size||f.fileSize;
-          if(fsize > 2000000)
-          {
-           alert("Image File Size is very big");
-          }
-          else
-          {
-           form_data.append("file", document.getElementById('file').files[0]);
-           $.ajax({
-             url: '<?php echo base_url("admin/api/jsonUploadWithoutSubmit") ?>',
-             type: "POST",
-             data:  form_data,
-             contentType: false,
-             cache: false,
-             processData:false,
-            beforeSend:function(){
-             $('#table-content').html("<label class='text-success'>Image Uploading...</label>");
-             $('#table-content').empty(); 
-            },   
-            success:function(data){
-              location.reload();
-             // $('#table-content').empty(); 
-             // $('#table-content').html(data);
-            }
-           });
-          }
-        });
-      }
-
-      function getModalAssets(){
-        $('[data-target="#assetsModal"]').click(function(e) {
-          var assets_id     = $(this).data('assets-id');
-          var assets_fields = $(this).data('assets-fields');
-          var assets_source = $(this).data('assets-source');
-          $.ajax({
-            type : 'POST',
-            dataType : 'json',
-            data : {id:assets_id, assets_fields:assets_fields, assets_source:assets_source},
-            url : '<?php echo base_url("admin/api/jsonAssetsEntriesUpload") ?>',
-          }).done(function(data){
-            $('li.assets-list').html(data.name);
-            $('#assetsModal .right-modal').html(data.table);
-            
-            var table = $('#datatableModal').DataTable();
-            $('#datatableModal tbody').on( 'click', 'tr', function () {
-              $(this).toggleClass('selected');
-            });
-            $('#button').click( function () {
-              alert( table.rows('.selected').data().length +' row(s) selected' );
-            });
-
-            // $('tbody tr').click(function() {
-            //   if ($(this).hasClass('selected') ) {
-            //     $(this).removeClass('selected');
-            //   } else {
-            //     $('tr.selected').removeClass('selected');
-            //     $(this).addClass('selected');
-            //   }
-            // });
-
-            $('#select-assets').click(function(e){
-              var assets_content_id = $('tr.selected input').data('id');
-              var id = [];
-              $( "tbody tr.selected" ).each(function() {
-                id.push($('tr.selected input').data('id'));
-                $( this ).toggleClass( "selected" );
-              });
-
-              $.ajax({
-                url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
-                type: 'POST',
-                dataType: 'json',
-                data: {assetsContentId: id, assets_fields : assets_fields},
-              })
-              .done(function(data) {
-                $('.selected').html(data.html);
-                console.log("success");
-              })
-              .fail(function() {
-                console.log("error");
-              })
-              .always(function() {
-                console.log("complete");
-              });
-            });
-          }).fail(function(errot){
-          });
-        });
-        $("#fields-assets-entries ul.selected li a").click(function (e) {
-          $(this).closest('li').remove();
-        });
-      }
-
-      /*change option entries in form entries template side right*/
-      function changeEntriesType(){
-        $('#entries').change(function(){
-          var id = $('#entries option:selected').attr('data-id');
-          $.ajax({
-            url: '<?php echo base_url('admin/api/jsonSelectEntriesType') ?>',
-            type: 'POST',
-            dataType: 'json',
-            data: {id: id},
-          })
-          .done(function(data) {
-            console.log("success");
-            $('#entries-fields').empty(); 
-            $('#entries-fields').html(data);
-            getModalAssets();
-          })
-          .fail(function() {
-            console.log("error");
-          })
-          .always(function() {
-            console.log("complete");
-          });
-          
-        });
-      }
-
-      /*Function for upload assets in modal in entries template*/
-      function uploadAssetsInEntries(){
-        $('#entries-file').change(function(){
-          var name      = document.getElementById("entries-file").files[0].name;
-          var form_data = new FormData();
-          var ext       = name.split('.').pop().toLowerCase();
-          var group_id  = $(".assets-list .active").attr('data-id');
-          var astSource = $('#assets-source').val();
-          form_data.append("group_id", group_id);
-          form_data.append("assets_Source", astSource);
-
-          if(jQuery.inArray(ext, ['gif','png','jpg','jpeg']) == -1) 
-          {
-           alert("Invalid Image File");
-          }
-          var oFReader = new FileReader();
-          oFReader.readAsDataURL(document.getElementById("entries-file").files[0]);
-          var f = document.getElementById("entries-file").files[0];
-          var fsize = f.size||f.fileSize;
-          if(fsize > 2000000)
-          {
-           alert("Image File Size is very big");
-          }
-          else
-          {
-           form_data.append("entries-file", document.getElementById('entries-file').files[0]);
-           $.ajax({
-             url: '<?php echo base_url("admin/api/jsonUploadAssetsInEntries") ?>',
-             type: "POST",
-             data:  form_data,
-             contentType: false,
-             cache: false,
-             processData:false,
-            beforeSend:function(){
-             $('#uploadModal').html("<label class='text-success'>Image Uploading...</label>");
-             $('#uploadModal').empty(); 
-            },   
-            success:function(data){
-              // location.reload();
-              $('#uploadModal').empty(); 
-              $('#uploadModal').html(data);
-              var table = $('#datatableModal').DataTable();
-              $('#datatableModal tbody').on( 'click', 'tr', function () {
-                $(this).toggleClass('selected');
-              });
-              $('#button').click( function () {
-                alert( table.rows('.selected').data().length +' row(s) selected' );
-              });
-            }
-           });
-          }
-        });
-      }
-
-      /*Manage Users Settings Form*/
-      function manageUsersSettings(){
-        if ($('#usersgroup-form [name="generalAccessCP"]').is(':checked') == true) {
-          $('#usersgroup-form [name="generalPerformPluginUpdate"]').removeAttr("disabled", "disabled");
-          $('#usersgroup-form [name="generalAccessCPOffline"]').removeAttr("disabled", "disabled");
-        } else {
-          $('#usersgroup-form [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
-          $('#usersgroup-form [name="generalAccessCPOffline"]').attr("disabled", "disabled");
-        }
-        $('#usersgroup-form [name="generalAccessCP"]').click(function() {
-          if ($(this).is(':checked') == true) {
-            $('#usersgroup-form [name="generalPerformPluginUpdate"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="generalAccessCPOffline"]').removeAttr("disabled", "disabled");
-          } else {
-            $('#usersgroup-form [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="generalPerformPluginUpdate"]').attr("checked", false);
-            $('#usersgroup-form [name="generalAccessCPOffline"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="generalAccessCPOffline"]').attr("checked", false);
-          }
-        });
-
-      if ($('#usersgroup-form [name="usersEdit"]').is(':checked') == true) {
-          $('#usersgroup-form [name="usersModerate"]').removeAttr("disabled", "disabled");
-          $('#usersgroup-form [name="usersAssignEdit"]').removeAttr("disabled", "disabled");
-          $('#usersgroup-form [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
-          $('#usersgroup-form [name="usersAdministrate"]').removeAttr("disabled", "disabled");
-          $('#usersgroup-form [name="usersImpersonate"]').removeAttr("disabled", "disabled");
-          $('#usersgroup-form [name*="usersAssigns"]').removeAttr("disabled", "disabled");
-        } else {
-          $('#usersgroup-form [name="usersModerate"]').attr("disabled", "disabled");
-          $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
-          $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
-          $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
-          $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
-          $('#usersgroup-form [name*="usersAssigns"]').attr("disabled", "disabled");
-        }
-        $('#usersgroup-form [name="usersEdit"]').click(function() {
-          if ($(this).is(':checked') == true) {
-            $('#usersgroup-form [name="usersModerate"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAssignEdit"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAdministrate"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="usersImpersonate"]').removeAttr("disabled", "disabled");
-            // $('#usersgroup-form [name*="usersAssigns"]').removeAttr("disabled", "disabled");
-          } else {
-            $('#usersgroup-form [name="usersModerate"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersModerate"]').attr("checked", false);
-            $('#usersgroup-form [name="usersAssignEdit"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAssignEdit"]').attr("checked", false);
-            $('#usersgroup-form [name="usersAssignGroups"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAssignGroups"]').attr("checked", false);
-            $('#usersgroup-form [name="usersAdministrate"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersAdministrate"]').attr("checked", false);
-            $('#usersgroup-form [name="usersImpersonate"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="usersImpersonate"]').attr("checked", false);
-            $('#usersgroup-form [name*="usersAssigns"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name*="usersAssigns"]').attr("checked", false);
-          }
-        });
-
-        $('#usersgroup-form [name="usersAssignGroups"]').click(function() {
-          if ($(this).is(':checked') == true) {
-            $('#usersgroup-form [name*="usersAssigns"]').removeAttr("disabled", "disabled");
-          } else {
-            $('#usersgroup-form [name*="usersAssigns"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name*="usersAssigns"]').attr("checked", false);
-          }
-        });
-
-        /**
-         * [section description]
-         * This function use to checked permissions to users 
-         * @type {Array}
-         */
-        var section = [];
-        $('#usersgroup-form [id="section"]').each(function() {
-          // section.push($(this).data('handle'));
-          var section = $(this).data('handle');
-          if ($('#usersgroup-form [name="sectionEdit['+section+']"]').is(':checked') == true) {
-            $('#usersgroup-form [name="sectionPublishLiveChange['+section+']"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').removeAttr("disabled", "disabled");
-          } else {
-            $('#usersgroup-form [name="sectionPublishLiveChange['+section+']"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("disabled", "disabled");
-          }
-
-          if ($('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').is(':checked') == true) {
-            $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="sectionDelete['+section+']"]').removeAttr("disabled", "disabled");
-          } else {
-            $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("disabled", "disabled");
-          }
-          
-          // alert(section);
-          $('#usersgroup-form [name="sectionEdit['+section+']"]').click(function() {
-            if ($(this).is(':checked') == true) {
-              $('#usersgroup-form [name="sectionPublishLiveChange['+section+']"]').removeAttr("disabled", "disabled");
-              $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').removeAttr("disabled", "disabled");
-            } else {
-              $('#usersgroup-form [name="sectionPublishLiveChange['+section+']"]').attr("disabled", "disabled");
-              $('#usersgroup-form [name="sectionPublishLiveChange['+section+']"]').attr("checked", false);
-              $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').attr("disabled", "disabled");
-              $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').attr("checked", false);
-              $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("disabled", "disabled");
-              $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("checked", false);
-              $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("disabled", "disabled");
-              $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("checked", false);
-            }
-          });
-
-          $('#usersgroup-form [name="sectionEditOtherAuthors['+section+']"]').click(function() {
-            if ($(this).is(':checked') == true) {
-              $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').removeAttr("disabled", "disabled");
-              $('#usersgroup-form [name="sectionDelete['+section+']"]').removeAttr("disabled", "disabled");
-            } else {
-              $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("disabled", "disabled");
-              $('#usersgroup-form [name="sectionPublishOtherAuthors['+section+']"]').attr("checked", false);
-              $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("disabled", "disabled");
-              $('#usersgroup-form [name="sectionDelete['+section+']"]').attr("checked", false);
-            }
-          });
-        });
-
-
-        /**
-         * [assets description]
-         * This function use to checked permissions to users 
-         * @type {Array}
-         */
-        var assets = [];
-        $('#usersgroup-form [id="assets"]').each(function() {
-          // assets.push($(this).data('handle'));
-          var assets = $(this).data('handle');
-          if ($('#usersgroup-form [name="volumeView['+assets+']"]').is(':checked') == true) {
-            $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').removeAttr("disabled", "disabled");
-            $('#usersgroup-form [name="volumeEditImages['+assets+']"]').removeAttr("disabled", "disabled");
-          } else {
-            $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').attr("disabled", "disabled");
-            $('#usersgroup-form [name="volumeEditImages['+assets+']"]').attr("disabled", "disabled");
-          }
-          
-          // alert(assets);
-          $('#usersgroup-form [name="volumeView['+assets+']"]').click(function() {
-            if ($(this).is(':checked') == true) {
-              $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').removeAttr("disabled", "disabled");
-              $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').removeAttr("disabled", "disabled");
-              $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').removeAttr("disabled", "disabled");
-              $('#usersgroup-form [name="volumeEditImages['+assets+']"]').removeAttr("disabled", "disabled");
-            } else {
-              $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').attr("disabled", "disabled");
-              $('#usersgroup-form [name="volumeUploadFiles['+assets+']"]').attr("checked", false);
-              $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').attr("disabled", "disabled");
-              $('#usersgroup-form [name="volumeCreateSubfolder['+assets+']"]').attr("checked", false);
-              $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').attr("disabled", "disabled");
-              $('#usersgroup-form [name="volumeRemoveFilesAndFolders['+assets+']"]').attr("checked", false);
-              $('#usersgroup-form [name="volumeEditImages['+assets+']"]').attr("disabled", "disabled");
-              $('#usersgroup-form [name="volumeEditImages['+assets+']"]').attr("checked", false);
-            }
-          });
-        });
-
-        /*Users Settings List*/
-        $('#users-settings [name="allowRegistration"]').click(function(){
-          if ($(this).is(':checked') == true) {
-            $('#users-settings .default-group').removeClass('d-none');
-          } else {
-            $('#users-settings .default-group').addClass('d-none');
-          }
-        });
-        
-      }
-
-
     </script>
   </body>
 </html>

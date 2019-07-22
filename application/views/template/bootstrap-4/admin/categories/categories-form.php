@@ -89,10 +89,39 @@
                               data-assets-id = "'.$settings->assetsSourcesList.'" 
                               data-assets-fields="fields_'.$key->handle.'"
                               data-assets-source="'.$settings->assetsSourcesInput.'">
-                            + New Assets</button></div>';
+                              + '.($settings->assetsSelectionLabel ? $settings->assetsSelectionLabel : 'New Assets').'</button></div>';
                       echo '</div>';
                     } elseif ($key->type_name == 'richText') {
                     } elseif ($key->type_name == 'categories') {
+                      foreach ($categories as $cat) {
+                        if ($cat->id == $settings->categoriesSource) {
+                          $data['name'] = $cat->name;
+                        }
+                      }
+
+                      echo '<div id="fields-categories-entries">
+                              <ul class="list-unstyled selected">';
+                                if (!empty($getDataby_id->$fieldsName)) {
+                                  $catList = explode(', ', $getDataby_id->$fieldsName);
+                                  if ($categories_content) {
+                                    foreach ($categories_content as $catCont) {
+                                      if (in_array($catCont->id, $catList)) {
+                                        echo '
+                                            <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$catCont->id.'">
+                                              <label for="input'.$name.'">'.$name.'</label>
+                                              <a><i class="fa fa-times" aria-hidden="true"></i></a
+                                            </li>';
+                                      }
+                                    }
+                                  }
+                                }
+                      echo '</ul>';
+                      echo '<div>
+                              <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#categoriesModal"
+                              data-categories-id = "'.$settings->categoriesSource.'" 
+                              data-categories-fields="fields_'.$key->handle.'">
+                              + '.($settings->categoriesSelectionLabel ? $settings->categoriesSelectionLabel : 'New Categories').'</button></div>';
+                      echo '</div>';
                     } elseif ($key->type_name == 'checkboxes') {
                       $val = $settings->checkboxesValue; 
                       $i = 0;

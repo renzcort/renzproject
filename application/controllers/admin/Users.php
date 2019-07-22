@@ -569,7 +569,6 @@ class Users extends My_Controller {
       'getDataby_id'  =>  $this->general_m->get_row_by_id('usersgroup', $id),
     );
     $settings['permission'] = json_decode($settings['getDataby_id']->settings);
-
     // permission section
     if ($settings['permission']->sectionEdit) {
       foreach ($settings['permission']->sectionEdit as $key => $value) {
@@ -597,14 +596,14 @@ class Users extends My_Controller {
       }
     }
     // permission globals
-    if ($settings['permission']->editGlobal) {
+    if (isset($settings['permission']->editGlobal)) {
       foreach ($settings['permission']->editGlobal as $key => $value) {
         $settings['editGlobal'][] = $key;
       }
     }
 
     // permission volume assets
-    if ($settings['permission']->volumeView) {
+    if (isset($settings['permission']->volumeView)) {
       foreach ($settings['permission']->volumeView as $key => $value) {
         $settings['volumeView'][] = $key;
       }
@@ -637,6 +636,7 @@ class Users extends My_Controller {
         }
       )
     );
+
     $this->form_validation->set_rules('handle', 'Handle',      
       array('required','trim', 
         function($str){
@@ -683,7 +683,6 @@ class Users extends My_Controller {
           'handle'   => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'settings' => json_encode($opt_settings),
         );
-
         $this->general_m->update('usersgroup', $data, $id);        
         helper_log('add', "Create {$settings['title']} has successfully");
         $this->session->set_flashdata('message', "{$settings['title']} has successfully updated");

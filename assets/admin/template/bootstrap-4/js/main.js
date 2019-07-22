@@ -1,221 +1,4 @@
-  $(document).ready(function() {
-    var base_url = "http://renzproject.localhost/";
-    // datepicker
-    $(".datepicker").datepicker();
-
-    // collapse 
-    $('[data-target="#sidebar"]').on('click', function() {
-      $('#sidebarCollapse').toggleClass('active');
-      $('#contentCollapse').toggleClass('active');
-    });
-
-    // Field Type Change
-    $('select[name=fieldsGroup]').change(function() {
-      var field_group = $('select[name=fieldsGroup]').val();
-      $('select[name=fieldsGroup] option:selected').each(function() {
-        var field_id = $('select[name=fieldsGroup] option:selected').attr('data-id');
-        $('input[name=fieldsGroupId]').val(field_id);
-      });
-    });
-
-    $('select[name=fieldsType]').change(function() {
-      var field_type = $('select[name=fieldsType]').val();
-      $('.fields').addClass('d-none');
-      $('select[name=fieldsType] option:selected').each(function() {
-        var field_id = $('select[name=fieldsType] option:selected').attr('data-id');
-        $('input[name=fieldsTypeId]').val(field_id);
-        $('#' + field_type).removeClass('d-none');
-      });
-    });
-
-
-    // change enable switch
-    $('.customSwitch').click(function() {
-      if ($(this).is(':checked') == true) {
-        $('#base-url').removeClass('d-none');
-        $('label.custom-control-label').text('Enabled');
-        $(this).val('1');
-      } else {
-        $('#base-url').addClass('d-none');
-        $('label.custom-control-label').text('Disabled');
-        $(this).val('0');
-      }
-    });
-
-    // add tabs layout
-    $('.new-tabs button').click(function() {
-      $('.field-tabs').append('<div class="field-group"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item"> <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable1" class="text-center list-group connectedSortable"> <li class="list-group-item active">Lion</li> <li class="list-group-item">Dog</li> <li class="list-group-item">Cat</li> <li class="list-group-item">Tiger</li> </ul> </div> </div> </div>');
-    });
-
-
-    // click navbar active
-    $('.sidebar .nav-link').click(function(event) {
-      console.log($(this));
-      $('.sidebar .nav-item').find('.active').removeClass('active');
-      $(this).addClass('active');
-    });
-
-    $('.sidebar-content .nav-link').click(function(event) {
-      console.log($(this));
-      $('.sidebar-content .nav-item').find('.active').removeClass('active');
-      $(this).addClass('active');
-    });
-
-    // Button Submit
-    $('#buttonHeader[type="submit"]').click(function() {
-      if ($(this).data("tabs") == 1) {
-        // get fields list value
-        getTabsFieldsList();
-      } else {
-        $('#MyForm').submit();
-      }
-    });
-
-
-
-    /**
-     * Tabs Fields
-     */
-    $("#sortable1, #sortable2").sortable({
-      connectWith: ".connectedSortable"
-    }).disableSelection();
-    /*End Tabs Fields*/
-
-    $('#section-entries-list tbody').sortable({
-      update: function(event, ui) {
-        var order = $(this).sortable('toArray');
-        var id = $("#section-entries-list tbody tr").map(function() {
-          return $(this).data("id");
-        }).get();
-        var section_id = $("input[name=section_id]").val();
-        $.ajax({
-          type: 'POST',
-          dataType: 'json',
-          data: {
-            id: id,
-            order: order
-          },
-          // url : '<?php echo base_url("admin/Api/jsonUpdateOrderEntrytypes") ?>',
-          url: base_url + "admin/Api/jsonUpdateOrderEntrytypes",
-        }).done(function(data) {
-
-        }).fail(function(error) {
-
-        });
-      }
-    });
-
-    // SITES;
-    // $('#sites [name="url"]').val('1');
-    if ($('#sites [name="url"]').val() == '1') {
-      $('#sites [name="url"]').prop("checked", true);
-      $('#baseUrl').removeClass('d-none');
-    } else {
-      $('#sites [name="url"]').prop("checked", false);
-      $('#baseUrl').addClass('d-none');
-    }
-    $('#sites [name="url"]').click(function() {
-      if ($(this).prop("checked") == true) {
-        $(this).val(1);
-        $('#baseUrl').removeClass('d-none');
-      } else {
-        $(this).val(0);
-        $('#baseUrl').addClass('d-none');
-        $('#baseUrl').empty();
-      }
-    });
-
-    /**
-     * Fields Forms 
-     * @param  {[type]} $('input[name [description]
-     * @return {[type]}               [description]
-     */
-    if ($('#fields input[name=plainLineBreak]').attr('checked')) {
-      $('#fields .plainLineBreak').show();
-    } else {
-      $('#fields .plainLineBreak').hide();
-    }
-    $('#fields input[name=plainLineBreak]').click(function() {
-      if ($(this).prop("checked") == false) {
-        $('#fields [name="plainInitialRows"]').val('');
-      }
-      $('#fields .plainLineBreak').toggle();
-    })
-
-    $('#fields .assetsRestrictUpload').hide();
-    $('#fields input[name=assetsRestrictUpload]').click(function() {
-      $('#fields .noAssetsRestrictUpload').toggle();
-      $('#fields .assetsRestrictUpload').toggle();
-    })
-
-    $('#fields .assetsRestrictFileType').hide();
-    $('#fields input[name=assetsRestrictFileType]').click(function() {
-      $('#fields .assetsRestrictFileType').toggle();
-    })
-
-    // add row table checkboxes
-    $('#fields #checkboxes button').click(function() {
-      $('#checkboxes table tr:last ').after('<tr> <td><input type="text" name="checkboxesLabel[]" class="form-control"></td> <td><input type="text" name="checkboxesValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="checkboxesDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>')
-    });
-    $(document).on('click', '.remove-row', function() {
-      $(this).closest("tr").remove();
-      $('#checkboxes table').focus();
-    });
-    // add row table dropdown
-    $('#fields #dropdown button').click(function() {
-      $('#dropdown table tr:last ').after('<tr> <td><input type="text" name="dropdownLabel[]" class="form-control"></td> <td><input type="text" name="dropdownValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="dropdownDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>')
-    });
-    $(document).on('click', '.remove-row', function() {
-      $(this).closest("tr").remove();
-      $('#dropdown table').focus();
-    });
-    // add row table Radio
-    $('#fields #radio button').click(function() {
-      $('#radio table tr:last ').after('<tr> <td><input type="text" name="radioLabel[]" class="form-control"></td> <td><input type="text" name="radioValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="radioDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>')
-    });
-    $(document).on('click', '.remove-row', function() {
-      $(this).closest("tr").remove();
-      $('#radio table').focus();
-    });
-    /*END Fields Forms*/
-
-
-    /**
-     * Sections
-     */
-    $('#sections-form [name="section-type"]').change(function() {
-      if ($(this).val() == '5') {
-        $('#site-settings .status').addClass('d-none');
-      } else {
-        $('#site-settings .status').removeClass('d-none');
-      }
-    });
-    /*end Section*/
-
-
-    // getTabsFieldsList();
-    getGroupsById();
-    deleteGroupsById();
-    getDataByIdGroups();
-    deleteFieldsById();
-    getModalAssets();
-    changeEntriesType();
-    uploadWithoutSubmit();
-    uploadAssetsInEntries();
-    manageUsersSettings();
-
-    var leftbar = document.getElementById('left-content');
-    var leftbarTop = leftbar.offsetTop;
-    var leftbarButton = leftbar.offsetHeight;
-    var rightbar = document.getElementById('right-content');
-    var rightbarTop = rightbar.offsetHeight;
-    window.onscroll = function() {
-      myFunction()
-    };
-
-
-  })
-
+ var base_url = "http://renzproject.localhost/";
 
   function myFunction() {
     if (window.pageYOffset >= leftbarTop && window.pageYOffset <= leftbarButton) {
@@ -440,6 +223,10 @@
     });
   }
 
+  /**
+   * tHIS FUNCTION USE TO SHOW DATA IN MODAL WHEN ASSETS BUTTON CLICK
+   * @return {[type]} [description]
+   */
   function getModalAssets() {
     $('[data-target="#assetsModal"]').click(function(e) {
       var assets_id = $(this).data('assets-id');
@@ -495,8 +282,11 @@
               },
             })
             .done(function(data) {
-              $('.selected').html(data.html);
+              $('#fields-assets-entries .selected').html(data.html);
               console.log("success");
+              $("#fields-assets-entries ul.selected li a").click(function(e) {
+                $(this).closest('li').remove();
+              });
             })
             .fail(function() {
               console.log("error");
@@ -506,9 +296,6 @@
             });
         });
       }).fail(function(errot) {});
-    });
-    $("#fields-assets-entries ul.selected li a").click(function(e) {
-      $(this).closest('li').remove();
     });
   }
 
@@ -768,5 +555,68 @@
         $('#users-settings .default-group').addClass('d-none');
       }
     });
+  }
 
+  /**
+   * tHIS FUNCTION USE TO SHOW MODAL WHEN CLICK BUTTON CATEGORIES IN ENTRIES FORM
+   */
+  function getModalCategories() {
+    $('[data-target="#categoriesModal"]').click(function(e) {
+      var categories_id     = $(this).data('categories-id');
+      var categories_fields = $(this).data('categories-fields');
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          id: categories_id,
+          categories_fields: categories_fields,
+        },
+        // url : '<?php echo base_url("admin/Api/jsonAssetsEntriesUpload") ?>',
+        url: base_url + "admin/Api/jsonCategoriesEntriesUpload",
+      }).done(function(data) {
+        $('#categoriesModal .middle-modal').html(data.table);
+
+        var table = $('#datatableModal').DataTable();
+        $('#datatableModal tbody').on('click', 'tr', function() {
+          $(this).toggleClass('selected');
+        });
+        $('#button').click(function() {
+          alert(table.rows('.selected').data().length + ' row(s) selected');
+        });
+
+        $('#select-categories').click(function(e) {
+          var categories_content_id = $('tr.selected input').data('id');
+          var id = [];
+          $("tbody tr.selected").each(function() {
+            id.push($('tr.selected input').data('id'));
+            $(this).toggleClass("selected");
+          });
+
+          $.ajax({
+              // url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
+              url: base_url + "admin/Api/jsonCategoriesSelectSubmit",
+              type: 'POST',
+              dataType: 'json',
+              data: {
+                categoriesContentId: id,
+                categories_fields: categories_fields
+              },
+            })
+            .done(function(data) {
+              $('#fields-categories-entries .selected').html(data.html);
+              console.log("success");
+              
+              $("#fields-categories-entries ul.selected li a").click(function(e) {
+                $(this).closest('li').remove();
+              });
+            })
+            .fail(function() {
+              console.log("error");
+            })
+            .always(function() {
+              console.log("complete");
+            });
+        });
+      }).fail(function(errot) {});
+    });
   }

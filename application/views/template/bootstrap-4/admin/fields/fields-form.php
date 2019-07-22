@@ -47,7 +47,7 @@
     <div class="form-group">
       <label class="heading" for="inputType">Field Type</label>
       <small class="form-text text-muted">What type of field is this?</small>
-      <input type="hidden" name="fieldsTypeId" value="2">
+      <input type="hidden" name="fieldsTypeId" value="<?php echo (!empty($getDataby_id->type_id) ? $getDataby_id->type_id : ''); ?>">
       <select name="fieldsType" class="form-control costum-select">
         <?php foreach ($fields_type as $key): ?>
           <option value ="<?php echo $key->handle; ?>" data-id="<?php echo $key->id; ?>"
