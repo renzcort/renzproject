@@ -108,7 +108,7 @@
                                       if (in_array($catCont->id, $catList)) {
                                         echo '
                                             <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$catCont->id.'">
-                                              <label for="input'.$name.'">'.$name.'</label>
+                                              <label for="input'.$catCont->title.'">'.$catCont->title.'</label>
                                               <a><i class="fa fa-times" aria-hidden="true"></i></a
                                             </li>';
                                       }
@@ -213,14 +213,14 @@
     <label for="staticEmail" class="col-sm-3 col-form-label">Post Date</label>
     <div class="col-sm-9">
       <input type="text" class="form-control-plaintext px-2 datepicker" name="postdate"
-      value="<?php echo (!empty($getDataby_id->postdate) ? $getDataby_id->postdate : set_value('postdate')); ?>">
+      value="<?php echo (!empty($getDataby_id->postdate_at) ? date('d/m/Y', strtotime($getDataby_id->postdate_at)) : set_value('postdate')); ?>">
     </div>
   </div>
   <div class="form-group row">
     <label for="staticEmail" class="col-sm-3 col-form-label">Expiry Date</label>
     <div class="col-sm-9">
       <input type="text" class="form-control-plaintext px-2 datepicker" name="expirydate"
-      value="<?php echo (!empty($getDataby_id->slug) ? $getDataby_id->slug : set_value('slug')); ?>">
+      value="<?php echo (!empty($getDataby_id->expirydate_at) ? date('d/m/Y', strtotime($getDataby_id->expirydate_at)) : set_value('expirydate')); ?>">
     </div>
   </div>
   <div class="form-group row">

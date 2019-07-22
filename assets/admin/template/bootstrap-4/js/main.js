@@ -246,8 +246,8 @@
         $('li.assets-list').html(data.name);
         $('#assetsModal .right-modal').html(data.table);
 
-        var table = $('#datatableModal').DataTable();
-        $('#datatableModal tbody').on('click', 'tr', function() {
+        var table = $('table.datatableModal').DataTable();
+        $('.datatableModal tbody').on('click', 'tr', function() {
           $(this).toggleClass('selected');
         });
         $('#button').click(function() {
@@ -576,8 +576,8 @@
       }).done(function(data) {
         $('#categoriesModal .middle-modal').html(data.table);
 
-        var table = $('#datatableModal').DataTable();
-        $('#datatableModal tbody').on('click', 'tr', function() {
+        var table = $('table.datatableModal').DataTable();
+        $('.datatableModal tbody').on('click', 'tr', function() {
           $(this).toggleClass('selected');
         });
         $('#button').click(function() {
@@ -585,6 +585,7 @@
         });
 
         $('#select-categories').click(function(e) {
+          var parent_id = $('#uploadModal [name="parent-id"]').val();
           var categories_content_id = $('tr.selected input').data('id');
           var id = [];
           $("tbody tr.selected").each(function() {
@@ -598,6 +599,7 @@
               type: 'POST',
               dataType: 'json',
               data: {
+                parent_id : parent_id,
                 categoriesContentId: id,
                 categories_fields: categories_fields
               },

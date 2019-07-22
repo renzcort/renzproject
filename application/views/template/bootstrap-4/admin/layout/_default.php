@@ -153,7 +153,9 @@
     <script type="text/javascript">
       $(document).ready(function(){
         // datepicker
-        $( ".datepicker" ).datepicker();
+        $( ".datepicker" ).datepicker({
+          dateFormat : 'dd/mm/yy'
+        });
 
         // collapse 
         $('[data-target="#sidebar"]').on('click', function () {
@@ -338,6 +340,15 @@
           }
         });
          /*end Section*/
+
+        /*Delete row assets and categories*/
+        $("#fields-assets-entries ul.selected li a").click(function(e) {
+          $(this).closest('li').remove();
+        });  
+        $("#fields-categories-entries ul.selected li a").click(function(e) {
+          $(this).closest('li').remove();
+        });
+        /*end Delete*/
 
 
         // getTabsFieldsList();

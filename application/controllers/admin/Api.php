@@ -629,7 +629,7 @@ class Api extends My_Controller {
 
     if ($settings['assets_content']) {
       $table_view .= '
-        <table class="table table-sm text-left" id="datatableModal">
+        <table class="table table-sm text-left datatableModal">
           <thead>
             <tr>
               <th style="width:5%" scope="row">#</th>
@@ -732,6 +732,8 @@ class Api extends My_Controller {
       'handle'                         => lcfirst(str_replace(' ', '', ucwords($this->input->post('title')))),
       'slug'                           => url_title(strtolower($this->input->post('title'))),
       "{$settings['parent_table']}_id" => $parent_id,
+      'postdate_at'                    => mdate("%Y-%m-%d %H:%i:%s", strtotime($this->input->post('postdate'))),
+      'expirydate_at'                  => mdate("%Y-%m-%d %H:%i:%s", strtotime($this->input->post('expirydate'))),
     );
 
     (($this->input->post('parent_table') == 'section_entries') ? $data['section_id'] = $settings['section_id'] : ''  );
@@ -1162,10 +1164,11 @@ class Api extends My_Controller {
       'categories_content' => $this->general_m->get_result_by_id('categories_content', $categories_id, 'categories_id'),
     );
     $table_view = '
-      <div id="uploadModal">';
+      <div id="uploadModal">
+        <input type="hidden" class="form-control" name="parent-id" value="'.$categories_id.'">';
     if ($settings['categories_content']) {
       $table_view .= '
-        <table class="table table-sm text-left" id="datatableModal">
+        <table class="table table-sm text-left datatableModal">
           <thead>
             <tr>
               <th style="width:5%" scope="row">#</th>
@@ -1198,13 +1201,19 @@ class Api extends My_Controller {
    * @return [type] [description]
    */
   public function jsonCategoriesSelectSubmit(){
+    $parent_id           = $this->input->post('parent_id');
     $categoriesContentId = $this->input->post('categoriesContentId');
-    $categoriesFields    = $this->input->post('categories_fields');
+    $column_fields       = $this->input->post('categories_fields');
+    $getParent           = $this->general_m->get_row_by_id('categories', $parent_id);
+
+    $checkCat = $getParent->fields_fields5;
+    var_dump($getParent);die;
+    
     $view = '';
     foreach ($categoriesContentId as $key => $value) {
       $categoriesContent  = $this->general_m->get_row_by_id('categories_content', $value);
       $view .= '
-          <li><input type="hidden" name="'.$categoriesFields.'[]" value="'.$value.'">
+          <li><input type="hidden" name="'.$column_fields.'[]" value="'.$value.'">
             <label for="input'.$categoriesContent->title.'">'.$categoriesContent->title.'</label>
             <a><i class="fa fa-times" aria-hidden="true"></i></a
           </li>
