@@ -28,7 +28,7 @@
           <label for="inputTitle" class="heading">Title</label>
           <input type="text" name="title" placeholder="Title" class="form-control" 
           value="<?php echo (!empty($getDataby_id->title) ? $getDataby_id->title : set_value('title')); ?>">
-          <div class="form-error"><?php echo form_error('name'); ?></div>
+          <div class="form-error"><?php echo form_error('title'); ?></div>
         </div>
         <?php 
           if ($element) {
@@ -89,7 +89,7 @@
                               data-assets-id = "'.$settings->assetsSourcesList.'" 
                               data-assets-fields="fields_'.$key->handle.'"
                               data-assets-source="'.$settings->assetsSourcesInput.'">
-                              + '.($settings->assetsSelectionLabel ? $settings->assetsSelectionLabel : 'New Assets').'</button></div>';
+                              + '.($settings->assetsSelectionLabel ? ucwords($settings->assetsSelectionLabel) : 'New Assets').'</button></div>';
                       echo '</div>';
                     } elseif ($key->type_name == 'richText') {
                     } elseif ($key->type_name == 'categories') {
@@ -120,7 +120,7 @@
                               <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#categoriesModal"
                               data-categories-id = "'.$settings->categoriesSource.'" 
                               data-categories-fields="fields_'.$key->handle.'">
-                              + '.($settings->categoriesSelectionLabel ? $settings->categoriesSelectionLabel : 'New Categories').'</button></div>';
+                              + '.($settings->categoriesSelectionLabel ? ucwords($settings->categoriesSelectionLabel) : 'New Categories').'</button></div>';
                       echo '</div>';
                     } elseif ($key->type_name == 'checkboxes') {
                       $val = $settings->checkboxesValue; 
@@ -194,7 +194,7 @@
                       echo '<div id="fields-entries-entries">
                               <ul class="list-unstyled selected">';
                                 if (!empty($getDataby_id->$fieldsName)) {
-                                  $catList = explode(', ', $getDataby_id->$fieldsName);
+                                  $entList = explode(', ', $getDataby_id->$fieldsName);
                                   if ($entries_content) {
                                     foreach ($entries_content as $entCont) {
                                       if (in_array($entCont->id, $entList)) {
@@ -212,7 +212,7 @@
                               <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#entriesModal"
                               data-entries-id = "'.$settings->entriesSource.'" 
                               data-entries-fields="fields_'.$key->handle.'">
-                              + '.($settings->entriesSelectionLabel ? ucfirst($settings->entriesSelectionLabel) : 'New Categories').'</button></div>';
+                              + '.($settings->entriesSelectionLabel ? ucwords($settings->entriesSelectionLabel) : 'New Categories').'</button></div>';
                       echo '</div>';
                     }
                   echo '</div>';
@@ -238,6 +238,7 @@
     <div class="col-sm-9">
       <input type="text" class="form-control-plaintext px-2 datepicker" name="postdate"
       value="<?php echo (!empty($getDataby_id->postdate_at) ? date('d/m/Y', strtotime($getDataby_id->postdate_at)) : set_value('postdate')); ?>">
+      <div class="form-error"><?php echo form_error('postdate'); ?></div>
     </div>
   </div>
   <div class="form-group row">
@@ -245,6 +246,7 @@
     <div class="col-sm-9">
       <input type="text" class="form-control-plaintext px-2 datepicker" name="expirydate"
       value="<?php echo (!empty($getDataby_id->expirydate_at) ? date('d/m/Y', strtotime($getDataby_id->expirydate_at)) : set_value('expirydate')); ?>">
+      <div class="form-error"><?php echo form_error('expirydate'); ?></div>
     </div>
   </div>
   <div class="form-group row">

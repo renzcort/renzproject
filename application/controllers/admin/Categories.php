@@ -123,6 +123,7 @@ class Categories extends My_Controller {
       'assets_content'     =>  $this->general_m->get_all_results('assets_content'),
       'categories'         =>  $this->general_m->get_all_results('categories'),
       'categories_content' =>  $this->general_m->get_all_results('categories_content'),
+      'entries_content'    =>  $this->general_m->get_all_results('content'),
       'elementFields'      =>  [],
       'order'              =>  $this->general_m->get_max_fields('categories', 'order'),
       'parent_table'       =>  'categories',

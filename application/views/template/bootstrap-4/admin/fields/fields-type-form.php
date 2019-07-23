@@ -9,7 +9,7 @@
   <input type ="hidden" name="button" value="<?php echo $button_name; ?>">
   <div class="form-group">
     <label class="heading" for="inputName">Name</label>
-    <input type="text" name="name" class="form-control" placeholder="System Name"
+    <input type="text" name="name" class="form-control" placeholder="Name"
     value="<?php echo (!empty($getDataby_id->name) ? $getDataby_id->name : set_value('name')) ?>">
   </div>
   <div class="form-group">

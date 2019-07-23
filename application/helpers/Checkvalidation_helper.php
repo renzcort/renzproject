@@ -29,6 +29,20 @@
         return FALSE;
       }
     }
+
+    // check title
+    function check_title($table, $id, $title) {
+      // get main object ci
+      $CI =& get_instance();
+      $check_title   = $CI->general_m->get_row_by_fields($table, array('title' => $title));
+      if (empty($check_title)) {
+        return TRUE;
+      } elseif ($check_title->id == $id) {
+        return TRUE;
+      } else {
+        return FALSE;
+      }
+    }
   }
 
 ?>

@@ -55,7 +55,7 @@
 </nav>
 
 <div class="container title d-flex flex-row flex-wrap justify-content-between align-items-center">
-  <h4><?php echo ($subtitle ? $title.'&nbsp;'.$subtitle : $title) ;?></h4>
+  <h4><?php echo ($subtitle ? ucwords($title).'&nbsp;'.ucfirst($subtitle) : ucwords($title)) ;?></h4>
   <?php if (isset($button)): ?>
     <div class="d-flex flex-row flex-wrap justify-content-start">
     	<?php if (isset($button_link)): ?>

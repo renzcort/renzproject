@@ -452,7 +452,7 @@ class fields extends My_Controller {
   /*TYPE fields*/
   public function type() {
     $settings = array(
-      'title'         =>  'fields',
+      'title'         =>  'fields type',
       'subtitle'      =>  FALSE,
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  FALSE,
@@ -485,7 +485,7 @@ class fields extends My_Controller {
   /*Type Create*/
   public function type_create() {
     $settings = array(
-      'title'         =>  'Fields',
+      'title'         =>  'fields type',
       'subtitle'      =>  'create',
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('create'),
@@ -524,8 +524,8 @@ class fields extends My_Controller {
   /*type Update*/
   public function type_update($id='') {
     $settings = array(
-      'title'         =>  'Fields',
-      'subtitle'      =>  'Edit',
+      'title'         =>  'fields type',
+      'subtitle'      =>  'edit',
       'breadcrumb'    =>  array('settings'),
       'subbreadcrumb' =>  array('create'),
       'table'         =>  'fields_type',

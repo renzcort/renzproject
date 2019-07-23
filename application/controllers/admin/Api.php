@@ -3,8 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Api extends My_Controller {
 
-  public function __construct()
-  {
+  public function __construct(){
     parent::__construct();
     //Do your magic here
     $this->load->model('admin/Fields_m', 'fields_m');
@@ -281,7 +280,10 @@ class Api extends My_Controller {
     echo json_encode($groups);
   }
 
-    // JSON Delete
+
+  /**
+   * This function use to delete Groups By Id
+   */
   public function jsonDeleteGroupsById() {
     header('Content-type: application/json');
     $group_id     = $this->input->post('group_id');
@@ -333,7 +335,10 @@ class Api extends My_Controller {
     echo json_encode($data);
   }
   
-  // Show Fields By Id Groups
+  /**
+   * This function use to Show Fields By Id Groups
+   * @return [type] [description]
+   */
   public function jsonGetDataByIdGroups(){
     header('content-type: application/json');
     $table       = ($this->input->post('table') ? $this->input->post('table') : '');
@@ -469,9 +474,8 @@ class Api extends My_Controller {
   
 
   /**
-   * Fields API Start
+   * This function use to Delete Fields By ID
    */
-  // delete by json
   public function jsonDeleteFieldsById() {
     header('Content-type: application/json');
     $id = $this->input->post('id');
@@ -495,9 +499,7 @@ class Api extends My_Controller {
 
 
   /**
-   * Upload Assets
    * This function for upload assets without submit button in assets List
-   * @return [type] [description]
    */
   public function jsonUploadWithoutSubmit() {
     $id     = (in_array($this->input->post('group_id'), array('all', 'default')) ? '0' : $this->input->post('group_id'));
@@ -615,7 +617,6 @@ class Api extends My_Controller {
   /**
    * Manage Entries Template
    * This function use to manage form template entries
-   * @return [type] [description]
    */
   public function jsonEntriesManage() {
     $settings = array(
@@ -635,50 +636,100 @@ class Api extends My_Controller {
     $parent_id = (($this->input->post('parent_table') == 'section_entries') ? 
                   $settings['entriestype'] : $settings['parent_id']);
 
-    $data = array(
-      'title'                          => $this->input->post('title'),
-      'handle'                         => lcfirst(str_replace(' ', '', ucwords($this->input->post('title')))),
-      'slug'                           => url_title(strtolower($this->input->post('title'))),
-      "{$settings['parent_table']}_id" => $parent_id,
-      'postdate_at'                    => mdate("%Y-%m-%d %H:%i:%s", strtotime($this->input->post('postdate'))),
-      'expirydate_at'                  => mdate("%Y-%m-%d %H:%i:%s", strtotime($this->input->post('expirydate'))),
-    );
+    // check Datetime
+    $today         = now();
+    $postdate      = strtotime(str_replace('/', '-', $this->input->post('postdate')));
+    $expirydate    = strtotime(str_replace('/', '-', $this->input->post('expirydate')));
 
-    (($this->input->post('parent_table') == 'section_entries') ? $data['section_id'] = $settings['section_id'] : ''  );
-    if ($this->input->post('parent_table') != 'globals') {
-      $data['activated']  = ($this->input->post('activated') ? $this->input->post('activated') : 0);
+    if ($settings['button'] == 'create') {
+      $this->form_validation->set_rules('title', 'Title', "trim|required|is_unique[renz_{$settings['table']}.title]");
+      $this->form_validation->set_rules('postdate', 'Postdate',       
+        array('required', 
+          function($str){
+            if (!empty($str)) {
+              $today    = now();
+              $postdate = strtotime(str_replace('/', '-', $this->input->post('postdate')));
+              return (($today > $postdate) ? FALSE : TRUE);
+            }
+          }
+        )
+      );
+      $this->form_validation->set_rules('expirydate', 'Expirydate',       
+        array('required', 
+          function($str){
+            if (!empty($str)) {
+              $postdate   = strtotime(str_replace('/', '-', $this->input->post('postdate')));
+              $expirydate = strtotime(str_replace('/', '-', $this->input->post('expirydate')));
+              return (($postdate > $expirydate ? FALSE : TRUE));
+            }
+          }
+        )
+      );
+
+    } else {
+      $this->form_validation->set_rules('title', 'Title',      
+        array('required','trim', 
+          function($str){
+            return check_title($this->input->post('table'), $this->input->post('id'), $str);
+          }
+        )
+      );
+      $this->form_validation->set_rules('postdate', 'Postdate', "trim|required");
+      $this->form_validation->set_rules('expirydate', 'Expirydate', "trim|required");
     }
 
-    $keys = array_keys($this->input->post());
-    foreach ($keys as $key) {
-      if (strpos($key, 'fields') !== false) {
-        if (is_array($this->input->post($key))) {
-          $data[$key] = implode(', ', $this->input->post($key));
-        } else {
-          $data[$key] = $this->input->post($key);
+    if ($this->form_validation->run() == TRUE) {
+      $data = array(
+        'title'                          => $this->input->post('title'),
+        'handle'                         => lcfirst(str_replace(' ', '', ucwords($this->input->post('title')))),
+        'slug'                           => url_title(strtolower($this->input->post('title'))),
+        "{$settings['parent_table']}_id" => $parent_id,
+        'postdate_at'                    => date("Y-m-d H:i:s", $postdate),
+        'expirydate_at'                  => date("Y-m-d H:i:s", $expirydate),
+      );
+
+      (($this->input->post('parent_table') == 'section_entries') ? $data['section_id'] = $settings['section_id'] : ''  );
+      if ($this->input->post('parent_table') != 'globals') {
+        $data['activated']  = ($this->input->post('activated') ? $this->input->post('activated') : 0);
+      }
+
+      $keys = array_keys($this->input->post());
+      foreach ($keys as $key) {
+        if (strpos($key, 'fields') !== false) {
+          if (is_array($this->input->post($key))) {
+            $data[$key] = implode(', ', $this->input->post($key));
+          } else {
+            $data[$key] = $this->input->post($key);
+          }
         }
       }
-    }
-    if ($settings['button'] == 'create') {
-      $data['created_by'] = $this->data['userdata']['id'];
-      $this->general_m->create($settings['table'], $data);
-      helper_log('add', "Create {$settings['table']} has successfully");
-      $this->session->set_flashdata('message', "data has successfully created");
-    } elseif ($settings['button'] == 'update') {
-      $data['updated_by'] = $this->data['userdata']['id'];
-      $this->general_m->update($settings['table'], $data, $settings['id']);
-      helper_log('edit', "Update {$settings['table']} has successfully");
-      $this->session->set_flashdata('message', "data has successfully updated");
-    } 
-    
-    $settings['status'] = TRUE;
-    echo json_encode($settings);
+      if ($settings['button'] == 'create') {
+        $data['created_by'] = $this->data['userdata']['id'];
+        $this->general_m->create($settings['table'], $data);
+        helper_log('add', "Create {$settings['table']} has successfully");
+        $this->session->set_flashdata('message', "data has successfully created");
+      } elseif ($settings['button'] == 'update') {
+        $data['updated_by'] = $this->data['userdata']['id'];
+        $this->general_m->update($settings['table'], $data, $settings['id']);
+        helper_log('edit', "Update {$settings['table']} has successfully");
+        $this->session->set_flashdata('message', "data has successfully updated");
+      } 
+      $settings['status'] = TRUE;
+      echo json_encode($settings);
+    } else {
+      $settings['errors'] = array(
+        'title'      => (isset($_POST['title']) ? form_error('title') : ''),
+        'postdate'   => form_error('postdate'),
+        'expirydate' => form_error('expirydate')
+      );
+      $settings['status'] = FALSE;
+      echo json_encode($settings);
+    }   
   }
 
   /**
    * Select Entries Type
    * This function use to change entries type in right tabs
-   * @return [type] [description]
    */
   public function jsonSelectEntriesType(){
     $id = $this->input->post('id');
@@ -1064,8 +1115,7 @@ class Api extends My_Controller {
 
   /**
    * Assets Upload
-   * this function for get modal in enteies template
-   * @return [type] [description]
+   * This Function Use TO Show Modal Assets By ID
    */
   public function jsonAssetsEntriesUpload(){
     $table_content = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
@@ -1073,12 +1123,12 @@ class Api extends My_Controller {
     $parent_id     = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
     $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
     $assets_id     = (empty($this->input->post('assets_id')) ? '0' : $this->input->post('assets_id'));
-
+    $assets_source = (empty($this->input->post('assets_source')) ? '' : $this->input->post('assets_source'));
     $settings = array(
       'assets'         => $this->general_m->get_row_by_id('assets', $assets_id),
       'assets_content' => $this->general_m->get_result_by_id('assets_content', $assets_id, 'assets_id'),
     );
-    $folder = (($this->input->post('assets_source') == '') ? $settings['assets']->handle : lcfirst($this->input->post('assets_source')));
+    $folder = (($assets_source == '') ? $settings['assets']->handle : lcfirst($assets_source));
     $table_view = '
       <div id="uploadModal">
         <input type="hidden" class="form-control" id="assets-source" data-folder="'.$folder.'" name="folder" value="'.$folder.'">';
@@ -1130,8 +1180,7 @@ class Api extends My_Controller {
 
  
   /**
-   * This function use when choice data in upload assets entries 
-   * @return [type] [description]
+   * This Function Use To Choice Assets In Modal Show 
    */
   public function jsonAssetsSelectSubmit(){
     $table_content      = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
@@ -1177,7 +1226,7 @@ class Api extends My_Controller {
 
 
   /**
-   * tHIS FUNCTION USE TO SHOW MODAL WHEN CLICK BUTTON CATEGORIES IN ENTRIES FORM
+   * This Function Use TO Show Modal Categories By ID
    */
   public function jsonCategoriesEntriesUpload(){
     $table_content = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
@@ -1192,7 +1241,7 @@ class Api extends My_Controller {
 
     $table_view = '
       <div id="uploadModal">
-        <input type="hidden" class="form-control" name="table" value="'.$table.'">
+        <input type="hidden" class="form-control" name="table" value="'.$table_content.'">
         <input type="hidden" class="form-control" name="id" value="'.$id.'">
         <input type="hidden" class="form-control" name="parent_id" value="'.$parent_id.'">
         <input type="hidden" class="form-control" name="cat_id" value="'.$cat_id.'">';
@@ -1227,8 +1276,7 @@ class Api extends My_Controller {
   }
 
    /**
-   * This function use when choice data in upload assets entries 
-   * @return [type] [description]
+   * This Function Use To Choice Categories In Modal Show 
    */
   public function jsonCategoriesSelectSubmit(){
     $table_content   = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
@@ -1237,7 +1285,6 @@ class Api extends My_Controller {
     $list_selected   = $this->input->post('list_selected');
     $cat_content_Id  = $this->input->post('cat_content_Id');
     $cat_fields      = $this->input->post('cat_fields');
-    $catContentby_id = $this->general_m->get_row_by_id($table_content, $id);
 
     if ($cat_content_Id && $list_selected) {
       $catList = array_unique( array_merge($list_selected, $cat_content_Id));
@@ -1251,7 +1298,7 @@ class Api extends My_Controller {
   
     $view = '';
     foreach ($catList as $key => $value) {
-      $catContentby_id = $this->general_m->get_row_by_id($table_content, $value);
+      $catContentby_id = $this->general_m->get_row_by_id('categories_content', $value);
       $view .= '
           <li><input type="hidden" name="'.$cat_fields.'[]" value="'.$value.'" class="cat-list">
             <label for="input'.$catContentby_id->title.'">'.$catContentby_id->title.'</label>
@@ -1266,6 +1313,98 @@ class Api extends My_Controller {
     echo json_encode($data);
   }
 
+  /**
+   * This Function Use TO Show Modal Entries By ID
+   */
+  public function jsonEntEntriesUpload(){
+    $table_content = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
+    $id            = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
+    $parent_id     = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
+    $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
+    $ent_id        = (empty($this->input->post('ent_id')) ? '0' : $this->input->post('ent_id'));
+    $settings = array(
+      'section'         => $this->general_m->get_row_by_id('section', $ent_id),
+      'section_entries' => $this->general_m->get_row_by_id('section_entries', $ent_id, 'section_id'),
+      'content'         => $this->general_m->get_result_by_id('content', $ent_id, 'section_id'),
+    );
+
+    $table_view = '
+      <div id="uploadModal">
+        <input type="hidden" class="form-control" name="table" value="'.$table_content.'">
+        <input type="hidden" class="form-control" name="id" value="'.$id.'">
+        <input type="hidden" class="form-control" name="parent_id" value="'.$parent_id.'">
+        <input type="hidden" class="form-control" name="ent_id" value="'.$ent_id.'">';
+    if ($settings['content']) {
+      $table_view .= '
+        <table class="table table-sm text-left datatableModal">
+          <thead>
+            <tr>
+              <th style="width:5%" scope="row">#</th>
+              <th scope="col">Title</th>
+            </tr>
+          </thead>
+          <tbody>'; 
+        $no = 0;
+      foreach ($settings['content'] as $key) {
+        $table_view .= '<tr>
+            <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
+            <td style:"width:5%;" scope="row">'.++$no.'</td>
+            <td>'.ucfirst($key->title).'</td>
+            </tr>';
+      }
+      $table_view .= '</tbody></table>';
+    } else {
+      $table_view .= '<p class="empty-data">Data is Empty</p>';
+    }
+    $table_view .= '</div>';
+
+    $entries_name = '<a class="active" data-id="'.(!empty($settings['section']->id) ? $settings['section']->id : '0').'">
+                  '.(!empty($settings['section']->name) ? $settings['section']->name : 'Default').'
+                  </a>';
+    $data = array(
+      'name'  =>  $entries_name,
+      'table' =>  $table_view,
+    );
+    echo json_encode($data);
+  }
+
+   /**
+   * This Function Use To Choice Entries In Modal Show 
+   */
+  public function jsonEntSelectSubmit(){
+    $table_content   = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
+    $id              = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
+    $parent_id       = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
+    $list_selected   = $this->input->post('list_selected');
+    $ent_content_Id  = $this->input->post('ent_content_Id');
+    $ent_fields      = $this->input->post('ent_fields');
+
+    if ($ent_content_Id && $list_selected) {
+      $entList = array_unique( array_merge($list_selected, $ent_content_Id));
+    } elseif ($ent_content_Id && empty($list_selected)) {
+      $entList = $ent_content_Id;
+    } elseif (empty($ent_content_Id) && $list_selected) {
+      $entList = $list_selected;
+    } else {
+      $entList = [];
+    }
+
+    $view = '';
+    foreach ($entList as $key => $value) {
+      $entContentby_id = $this->general_m->get_row_by_id('content', $value);
+      $view .= '
+          <li><input type="hidden" name="'.$ent_fields.'[]" value="'.$value.'" class="ent-list">
+            <label for="input'.$entContentby_id->title.'">'.$entContentby_id->title.'</label>
+            <a><i class="fa fa-times" aria-hidden="true"></i></a
+          </li>
+        ';
+    }
+
+    $data = array(
+      'html' =>  $view,
+    );
+    echo json_encode($data);
+  }
 
 
 }

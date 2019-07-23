@@ -133,6 +133,32 @@
   </div>
 </div>
 
+<div class="modal fade" id="entriesModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New Categories</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body d-flex flex-row flex-wrap justify-content-between p-1">
+        <div class="left-modal">
+          <ul>
+            <li class="nav-item entries-groups list-unstyled"></li> 
+          </ul>
+        </div>
+        <div class="right-modal">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="select-entries" data-dismiss="modal">Select</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
     <!-- Optional JavaScript -->
@@ -151,34 +177,35 @@
     <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/main.js"></script>
 
     <script type="text/javascript">
-      $(document).ready(function(){
+      
+      $(document).ready(function() {
         // datepicker
-        $( ".datepicker" ).datepicker({
-          dateFormat : 'dd/mm/yy'
+        $(".datepicker").datepicker({
+          dateFormat: 'dd/mm/yy'
         });
 
         // collapse 
-        $('[data-target="#sidebar"]').on('click', function () {
+        $('[data-target="#sidebar"]').on('click', function() {
           $('#sidebarCollapse').toggleClass('active');
           $('#contentCollapse').toggleClass('active');
         });
 
         // Field Type Change
-        $('select[name=fieldsGroup]').change(function(){
+        $('select[name=fieldsGroup]').change(function() {
           var field_group = $('select[name=fieldsGroup]').val();
-          $('select[name=fieldsGroup] option:selected').each(function(){
+          $('select[name=fieldsGroup] option:selected').each(function() {
             var field_id = $('select[name=fieldsGroup] option:selected').attr('data-id');
             $('input[name=fieldsGroupId]').val(field_id);
           });
         });
 
-        $('select[name=fieldsType]').change(function(){
+        $('select[name=fieldsType]').change(function() {
           var field_type = $('select[name=fieldsType]').val();
           $('.fields').addClass('d-none');
-          $('select[name=fieldsType] option:selected').each(function(){
+          $('select[name=fieldsType] option:selected').each(function() {
             var field_id = $('select[name=fieldsType] option:selected').attr('data-id');
             $('input[name=fieldsTypeId]').val(field_id);
-            $('#'+field_type).removeClass('d-none');
+            $('#' + field_type).removeClass('d-none');
           });
         });
 
@@ -197,8 +224,8 @@
         });
 
         // add tabs layout
-        $('.new-tabs button').click(function(){
-          $('.field-tabs').append('<div class="field-group"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item"> <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable1" class="text-center list-group connectedSortable"> <li class="list-group-item active">Lion</li> <li class="list-group-item">Dog</li> <li class="list-group-item">Cat</li> <li class="list-group-item">Tiger</li> </ul> </div> </div> </div>'); 
+        $('.new-tabs button').click(function() {
+          $('.field-tabs').append('<div class="field-group"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item"> <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable1" class="text-center list-group connectedSortable"> <li class="list-group-item active">Lion</li> <li class="list-group-item">Dog</li> <li class="list-group-item">Cat</li> <li class="list-group-item">Tiger</li> </ul> </div> </div> </div>');
         });
 
 
@@ -216,12 +243,12 @@
         });
 
         // Button Submit
-        $('#buttonHeader[type="submit"]').click(function(){
+        $('#buttonHeader[type="submit"]').click(function() {
           if ($(this).data("tabs") == 1) {
             // get fields list value
             getTabsFieldsList();
           } else {
-           $('#MyForm').submit();
+            $('#MyForm').submit();
           }
         });
 
@@ -229,29 +256,32 @@
         /**
          * Tabs Fields
          */
-        $( "#sortable1, #sortable2" ).sortable({
+        $("#sortable1, #sortable2").sortable({
           connectWith: ".connectedSortable"
-        }).disableSelection();   
+        }).disableSelection();
         /*End Tabs Fields*/
 
         $('#section-entries-list tbody').sortable({
           update: function(event, ui) {
             var order = $(this).sortable('toArray');
             var id = $("#section-entries-list tbody tr").map(function() {
-                return $(this).data("id");
+              return $(this).data("id");
             }).get();
             var section_id = $("input[name=section_id]").val();
             $.ajax({
-              type : 'POST',
-              dataType : 'json',
-              data : {id : id, order : order},
-              url : '<?php echo base_url("admin/api/jsonUpdateOrderEntrytypes") ?>',
-            }).done(function(data){
+              type: 'POST',
+              dataType: 'json',
+              data: {
+                id: id,
+                order: order
+              },
+              url: '<?php echo base_url("admin/api/jsonUpdateOrderEntrytypes") ?>',
+            }).done(function(data) {
 
-            }).fail(function(error){
+            }).fail(function(error) {
 
             });
-           }
+          }
         });
 
         // SITES;
@@ -263,8 +293,8 @@
           $('#sites [name="url"]').prop("checked", false);
           $('#baseUrl').addClass('d-none');
         }
-        $('#sites [name="url"]').click(function(){
-          if($(this).prop("checked") == true){
+        $('#sites [name="url"]').click(function() {
+          if ($(this).prop("checked") == true) {
             $(this).val(1);
             $('#baseUrl').removeClass('d-none');
           } else {
@@ -284,7 +314,7 @@
         } else {
           $('#fields .plainLineBreak').hide();
         }
-        $('#fields input[name=plainLineBreak]').click(function(){
+        $('#fields input[name=plainLineBreak]').click(function() {
           if ($(this).prop("checked") == false) {
             $('#fields [name="plainInitialRows"]').val('');
           }
@@ -292,36 +322,36 @@
         })
 
         $('#fields .assetsRestrictUpload').hide();
-        $('#fields input[name=assetsRestrictUpload]').click(function(){
+        $('#fields input[name=assetsRestrictUpload]').click(function() {
           $('#fields .noAssetsRestrictUpload').toggle();
           $('#fields .assetsRestrictUpload').toggle();
         })
 
         $('#fields .assetsRestrictFileType').hide();
-        $('#fields input[name=assetsRestrictFileType]').click(function(){
+        $('#fields input[name=assetsRestrictFileType]').click(function() {
           $('#fields .assetsRestrictFileType').toggle();
         })
 
         // add row table checkboxes
-        $('#fields #checkboxes button').click(function(){
-          $('#checkboxes table tr:last ').after('<tr> <td><input type="text" name="checkboxesLabel[]" class="form-control"></td> <td><input type="text" name="checkboxesValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="checkboxesDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>') 
-        }); 
+        $('#fields #checkboxes button').click(function() {
+          $('#checkboxes table tr:last ').after('<tr> <td><input type="text" name="checkboxesLabel[]" class="form-control"></td> <td><input type="text" name="checkboxesValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="checkboxesDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>')
+        });
         $(document).on('click', '.remove-row', function() {
           $(this).closest("tr").remove();
           $('#checkboxes table').focus();
         });
         // add row table dropdown
-        $('#fields #dropdown button').click(function(){
-          $('#dropdown table tr:last ').after('<tr> <td><input type="text" name="dropdownLabel[]" class="form-control"></td> <td><input type="text" name="dropdownValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="dropdownDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>') 
-        }); 
+        $('#fields #dropdown button').click(function() {
+          $('#dropdown table tr:last ').after('<tr> <td><input type="text" name="dropdownLabel[]" class="form-control"></td> <td><input type="text" name="dropdownValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="dropdownDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>')
+        });
         $(document).on('click', '.remove-row', function() {
           $(this).closest("tr").remove();
           $('#dropdown table').focus();
         });
         // add row table Radio
-        $('#fields #radio button').click(function(){
-          $('#radio table tr:last ').after('<tr> <td><input type="text" name="radioLabel[]" class="form-control"></td> <td><input type="text" name="radioValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="radioDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>') 
-        }); 
+        $('#fields #radio button').click(function() {
+          $('#radio table tr:last ').after('<tr> <td><input type="text" name="radioLabel[]" class="form-control"></td> <td><input type="text" name="radioValue[]" class="form-control"></td> <td class="action"><input type="checkbox" name="radioDefault"></td> <td scope="row" colspan="2"> <a href="#"><i class="fas fa-arrows-alt"></i></a> <a class="remove-row"><i class="fas fa-minus-circle"></i></a> </td> </tr>')
+        });
         $(document).on('click', '.remove-row', function() {
           $(this).closest("tr").remove();
           $('#radio table').focus();
@@ -338,7 +368,7 @@
             if ($('#fields .entriesSource').is(":checked")) {
               var val = $('#fields .entriesSource').val();
               if ($(this).val() == val) {
-                $('#fields .entriesSource[value="'+val+'"]').attr('checked', true);
+                $('#fields .entriesSource[value="' + val + '"]').attr('checked', true);
               } else {
                 $('#fields .entriesSource').removeAttr("disabled", "disabled");
               }
@@ -348,8 +378,8 @@
             }
           }
         } else {
-          $('#fields .entriesSource').removeAttr("disabled", "disabled");
-          $('#fields .entriesSource').attr("checked", false);
+          $('#fields .entriesSource').attr("disabled", "disabled");
+          $('#fields .entriesSource').attr("checked", true);
         }
 
         $('#fields .entriesSourceAll').click(function() {
@@ -367,39 +397,29 @@
         /**
          * Sections
          */
-        $('#sections-form [name="section-type"]').change(function(){
+        $('#sections-form [name="section-type"]').change(function() {
           if ($(this).val() == '5') {
             $('#site-settings .status').addClass('d-none');
           } else {
             $('#site-settings .status').removeClass('d-none');
           }
         });
-         /*end Section*/
-
-        /*Delete row assets and categories*/
-        $("#fields-assets-entries ul.selected li a").click(function(e) {
-          $(this).closest('li').remove();
-        });  
-        $("#fields-categories-entries ul.selected li a").click(function(e) {
-          $(this).closest('li').remove();
-        });
-        /*end Delete*/
+        /*end Section*/
 
 
         // getTabsFieldsList();
-        layout();
         getGroupsById();
         deleteGroupsById();
         getDataByIdGroups();
         deleteFieldsById();
         getModalAssets();
         getModalCategories();
+        getModalEntries();
         changeEntriesType();
         uploadWithoutSubmit();
         uploadAssetsInEntries();
         manageUsersSettings();
-
-
+        layout();
       })
     </script>
   </body>

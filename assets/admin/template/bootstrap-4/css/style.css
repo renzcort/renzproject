@@ -1145,15 +1145,18 @@ header nav.menu .navbar-nav > li {
   max-width: 70%;
   padding: .5rem;
 }
-#assetsModal .modal-dialog {
+#assetsModal .modal-dialog,
+#entriesModal .modal-dialog {
     max-width: 1000px !important;
 }
-#assetsModal .modal-content {
+#assetsModal .modal-content,
+#entriesModal .modal-content {
   height: auto;
   min-height: 350px;
   max-height: 400px;
 }
-#assetsModal .modal-footer {
+#assetsModal .modal-footer,
+#entriesModal .modal-footer {
   background: #EBECEE
 }
 

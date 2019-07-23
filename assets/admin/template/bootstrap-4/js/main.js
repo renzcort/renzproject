@@ -504,8 +504,7 @@
     var parent_id     = $('input[name="parent_id"]').val();
     var assets_id     = $('[data-target="#assetsModal"]').data('assets-id');
     var assets_fields = $('[data-target="#assetsModal"]').data('assets-fields');
-    var assets_source = $('[data-target="#assetsModal"]').data('ssets-source');
-
+    var assets_source = $('[data-target="#assetsModal"]').data('assets-source');
     $('[data-target="#assetsModal"]').click(function(e) {
       e.preventDefault();
       var list_selected = $('.ass-list').map(function() {
@@ -578,6 +577,10 @@
         console.log("complete");
       });
     });
+
+    $("#fields-assets-entries ul.selected li a").click(function(e) {
+      $(this).closest('li').remove();
+    });
   }
 
   /**
@@ -593,7 +596,7 @@
     $('[data-target="#categoriesModal"]').click(function(e) {
       e.preventDefault();
       var list_selected = $('.cat-list').map(function() {
-          return this.value;
+        return this.value;
       }).get();
       console.log(list_selected);
 
@@ -601,9 +604,9 @@
         type: 'POST',
         dataType: 'json',
         data: {
-          table : table_content,
-          id : id,
-          parent_id : parent_id,
+          table: table_content,
+          id: id,
+          parent_id: parent_id,
           cat_id: cat_id,
           cat_fields: cat_fields
         },
@@ -626,7 +629,7 @@
     $('#select-categories').click(function(e) {
       e.preventDefault();
       var list_selected = $('.cat-list').map(function() {
-          return this.value;
+        return this.value;
       }).get();
 
       var id_content = [];
@@ -641,19 +644,18 @@
           type: 'POST',
           dataType: 'json',
           data: {
-            table : table_content,
-            id : id,
-            parent_id : parent_id,
+            table: table_content,
+            id: id,
+            parent_id: parent_id,
             cat_id: cat_id,
             cat_fields: cat_fields,
             cat_content_Id: id_content,
-            list_selected : list_selected
+            list_selected: list_selected
           },
         })
         .done(function(data) {
           $('#fields-categories-entries .selected').html(data.html);
           console.log("success");
-          
           $("#fields-categories-entries ul.selected li a").click(function(e) {
             $(this).closest('li').remove();
           });
@@ -664,6 +666,10 @@
         .always(function() {
           console.log("complete");
         });
+    });
+
+    $("#fields-categories-entries ul.selected li a").click(function(e) {
+      $(this).closest('li').remove();
     });
   }
 
@@ -680,7 +686,7 @@
     $('[data-target="#entriesModal"]').click(function(e) {
       e.preventDefault();
       var list_selected = $('.ent-list').map(function() {
-          return this.value;
+        return this.value;
       }).get();
       console.log(list_selected);
 
@@ -688,17 +694,17 @@
         type: 'POST',
         dataType: 'json',
         data: {
-          table : table_content,
-          id : id,
-          parent_id : parent_id,
+          table: table_content,
+          id: id,
+          parent_id: parent_id,
           ent_id: ent_id,
           ent_fields: ent_fields
         },
         // url : '<?php echo base_url("admin/Api/jsonAssetsEntriesUpload") ?>',
-        url: base_url + "admin/Api/jsonEntriesEntriesUpload",
+        url: base_url + "admin/Api/jsonEntEntriesUpload",
       }).done(function(data) {
-        $('#entriesModal .middle-modal').empty();
-        $('#entriesModal .middle-modal').html(data.table);
+        $('li.entries-groups').html(data.name);
+        $('#entriesModal .right-modal').html(data.table);
 
         var table = $('table.datatableModal').DataTable();
         $('.datatableModal tbody').on('click', 'tr', function() {
@@ -713,7 +719,7 @@
     $('#select-entries').click(function(e) {
       e.preventDefault();
       var list_selected = $('.ent-list').map(function() {
-          return this.value;
+        return this.value;
       }).get();
 
       var id_content = [];
@@ -724,23 +730,22 @@
 
       $.ajax({
           // url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
-          url: base_url + "admin/Api/jsonEntriesSelectSubmit",
+          url: base_url + "admin/Api/jsonEntSelectSubmit",
           type: 'POST',
           dataType: 'json',
           data: {
-            table : table_content,
-            id : id,
-            parent_id : parent_id,
+            table: table_content,
+            id: id,
+            parent_id: parent_id,
             ent_id: ent_id,
             ent_fields: ent_fields,
             ent_content_Id: id_content,
-            list_selected : list_selected
+            list_selected: list_selected
           },
         })
         .done(function(data) {
           $('#fields-entries-entries .selected').html(data.html);
           console.log("success");
-          
           $("#fields-entries-entries ul.selected li a").click(function(e) {
             $(this).closest('li').remove();
           });
@@ -752,4 +757,9 @@
           console.log("complete");
         });
     });
+
+    $("#fields-entries-entries ul.selected li a").click(function(e) {
+      $(this).closest('li').remove();
+    });
   }
+
