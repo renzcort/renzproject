@@ -460,5 +460,37 @@
         <button type="button" class="btn btn btn-outline-secondary btn-block">+ Add an option</button>
       </div>
     </div>
+    <div id="entries" class="fields <?php echo ((!empty($getDataby_id->type_id) && $typeFields->handle == 'entries') ? '' : 'd-none');?>">
+      <div class="form-group">
+        <label class="heading" for="inputSource">Sources</label>
+        <small class="form-text text-muted">Which sources do you want to select entries from?</small>
+        <div class="form-check">
+          <input class="form-check-input entriesSourceAll" type="checkbox" value="0" name="entriesSource[]" 
+          <?php echo ((!empty($getFieldType->entriesSource) && in_array('0', $getFieldType->entriesSource)) ? 'checked' : '')?>>
+          <label class="form-check-label" for="defaultCheck1"><strong>All</strong></label>
+        </div>
+        <?php if ($section): ?>
+          <?php foreach ($section as $key): ?>
+          <div class="form-check">
+            <input class="form-check-input entriesSource" type="checkbox" name="entriesSource[]" value="<?php echo $key->id; ?>"
+            <?php echo ((!empty($getFieldType->entriesSource) && in_array($key->id, $getFieldType->entriesSource)) ? 'checked' : 'disabled')?>>
+            <label class="form-check-label" for="defaultCheck1"><?php echo $key->name; ?></label>
+          </div>
+          <?php endforeach ?>
+        <?php endif ?>
+      </div>
+      <div class="form-group">
+        <label class="heading" for="inputLimit">Limit</label>
+        <small class="form-text text-muted">Limit the number of selectable entries.</small>
+        <input type="text" name="entriesLimit" class="form-control form-number" 
+        value="<?php echo (!empty($getFieldType->entriesLimit) ? $getFieldType->entriesLimit : set_value('entriesLimit')); ?>">
+      </div>
+      <div class="form-group">
+        <label class="heading" for="inputSelectionLabel">Selection Label</label>
+        <small class="form-text text-muted">Enter the text you want to appear on the assets selection input.</small>
+        <input type="text" name="entriesSelectionLabel" class="form-control" placeholder="add a entries"
+        value="<?php echo (!empty($getFieldType->entriesSelectionLabel) ? $getFieldType->entriesSelectionLabel : set_value('categoriesSelectionLabel')); ?>">
+      </div>
+    </div>
   <?php echo form_close(); ?>
 </div>

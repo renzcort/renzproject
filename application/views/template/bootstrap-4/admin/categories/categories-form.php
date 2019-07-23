@@ -73,7 +73,7 @@
                                       $getSize    = get_headers($file_thumb, 1);
                                       if (in_array($astcont->id, $assetsList)) {
                                         echo '
-                                            <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$astcont->id.'">
+                                            <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$astcont->id.'" class="ass-list">
                                               <img src="'.$file_thumb.'" class="img-thumbnail assets-list" 
                                               data-id="'.$astcont->id.'" heigth="20" width="30"/>
                                               <label for="input'.$name.'">'.$name.'</label>
@@ -107,7 +107,7 @@
                                     foreach ($categories_content as $catCont) {
                                       if (in_array($catCont->id, $catList)) {
                                         echo '
-                                            <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$catCont->id.'">
+                                            <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$catCont->id.'" class="cat-list">
                                               <label for="input'.$catCont->title.'">'.$catCont->title.'</label>
                                               <a><i class="fa fa-times" aria-hidden="true"></i></a
                                             </li>';
@@ -190,6 +190,30 @@
                                 <label class="form-check-label" for="defaultCheck1">'.$radResult['label'].'</label>
                               </div>';
                       }
+                    } elseif ($key->type_name == 'entries') {
+                      echo '<div id="fields-entries-entries">
+                              <ul class="list-unstyled selected">';
+                                if (!empty($getDataby_id->$fieldsName)) {
+                                  $catList = explode(', ', $getDataby_id->$fieldsName);
+                                  if ($entries_content) {
+                                    foreach ($entries_content as $entCont) {
+                                      if (in_array($entCont->id, $entList)) {
+                                        echo '
+                                            <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$entCont->id.'" class="ent-list">
+                                              <label for="input'.$entCont->title.'">'.$entCont->title.'</label>
+                                              <a><i class="fa fa-times" aria-hidden="true"></i></a
+                                            </li>';
+                                      }
+                                    }
+                                  }
+                                }
+                      echo '</ul>';
+                      echo '<div>
+                              <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#entriesModal"
+                              data-entries-id = "'.$settings->entriesSource.'" 
+                              data-entries-fields="fields_'.$key->handle.'">
+                              + '.($settings->entriesSelectionLabel ? ucfirst($settings->entriesSelectionLabel) : 'New Categories').'</button></div>';
+                      echo '</div>';
                     }
                   echo '</div>';
                 }

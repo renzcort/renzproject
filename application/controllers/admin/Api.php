@@ -611,98 +611,6 @@ class Api extends My_Controller {
     }
   }
 
-  /**
-   * Assets Upload
-   * this function for get modal in enteies template
-   * @return [type] [description]
-   */
-  public function jsonAssetsEntriesUpload(){
-    $assets_id     = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
-    $settings = array(
-      'assets'         => $this->general_m->get_row_by_id('assets', $assets_id),
-      'assets_content' => $this->general_m->get_result_by_id('assets_content', $assets_id, 'assets_id'),
-    );
-    $folder = (($this->input->post('assets_source') == '') ? $settings['assets']->handle : lcfirst($this->input->post('assets_source')));
-    $table_view = '
-      <div id="uploadModal">
-        <input type="hidden" class="form-control" id="assets-source" data-folder="'.$folder.'" name="folder" value="'.$folder.'">';
-
-    if ($settings['assets_content']) {
-      $table_view .= '
-        <table class="table table-sm text-left datatableModal">
-          <thead>
-            <tr>
-              <th style="width:5%" scope="row">#</th>
-              <th scope="col">Title</th>
-              <th scope="col">Filename</th>
-              <th style="width:15%" scope="col">File Size</th>
-              <th style="width:25%" scope="col">File Modified Date</th>
-            </tr>
-          </thead>
-          <tbody>'; 
-        $no = 0;
-      foreach ($settings['assets_content'] as $key) {
-        $filename   = explode('.', $key->file);
-        $name       = current($filename);
-        $thumb      = current($filename).'_thumb.'.end($filename);
-        $file_thumb = base_url("{$key->path}/{$thumb}");
-        $getSize    = get_headers($file_thumb, 1); 
-        $table_view .= '<tr>
-            <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
-            <td style:"width:5%;" scope="row">'.++$no.'</td>
-            <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
-            <td>'.($key->file ? $key->file : '').'</td>
-            <td style="width:15%;">'.$key->size.' kB </td>
-            <td style="width:25%;">'.date("d/m/Y", strtotime($key->created_at)).'</td>
-            </tr>';
-      }
-      $table_view .= '</tbody></table>';
-    } else {
-      $table_view .= '<p class="empty-data">Data is Empty</p>';
-    }
-    $table_view .= '</div>';
-
-    $nameAssets = '<a class="active" data-id="'.(!empty($settings['assets']->id) ? $settings['assets']->id : '0').'">
-                  '.(!empty($settings['assets']->name) ? $settings['assets']->name : 'Default').'
-                  </a>';
-    $data = array(
-      'name'  =>  $nameAssets,
-      'table' =>  $table_view,
-    );
-    echo json_encode($data);
-  }
-
- 
-  /**
-   * This function use when choice data in upload assets entries 
-   * @return [type] [description]
-   */
-  public function jsonAssetsSelectSubmit(){
-    $assetsContentId = $this->input->post('assetsContentId');
-    $assetsFields    = $this->input->post('assets_fields');
-    $view = '';
-    foreach ($assetsContentId as $key => $value) {
-      $assetsContent  = $this->general_m->get_row_by_id('assets_content', $value);
-      $filename   = explode('.', $assetsContent->file);
-      $name       = current($filename);
-      $thumb      = current($filename).'_thumb.'.end($filename);
-      $file_thumb = base_url("{$assetsContent->path}/{$thumb}");
-      $getSize    = get_headers($file_thumb, 1); 
-      $view .= '
-          <li><input type="hidden" name="'.$assetsFields.'[]" value="'.$value.'">
-            <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>
-            <label for="input'.$name.'">'.$name.'</label>
-            <a><i class="fa fa-times" aria-hidden="true"></i></a
-          </li>
-        ';
-    }
-
-    $data = array(
-      'html' =>  $view,
-    );
-    echo json_encode($data);
-  }
-
 
   /**
    * Manage Entries Template
@@ -1155,17 +1063,139 @@ class Api extends My_Controller {
 
 
   /**
+   * Assets Upload
+   * this function for get modal in enteies template
+   * @return [type] [description]
+   */
+  public function jsonAssetsEntriesUpload(){
+    $table_content = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
+    $id            = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
+    $parent_id     = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
+    $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
+    $assets_id     = (empty($this->input->post('assets_id')) ? '0' : $this->input->post('assets_id'));
+
+    $settings = array(
+      'assets'         => $this->general_m->get_row_by_id('assets', $assets_id),
+      'assets_content' => $this->general_m->get_result_by_id('assets_content', $assets_id, 'assets_id'),
+    );
+    $folder = (($this->input->post('assets_source') == '') ? $settings['assets']->handle : lcfirst($this->input->post('assets_source')));
+    $table_view = '
+      <div id="uploadModal">
+        <input type="hidden" class="form-control" id="assets-source" data-folder="'.$folder.'" name="folder" value="'.$folder.'">';
+
+    if ($settings['assets_content']) {
+      $table_view .= '
+        <table class="table table-sm text-left datatableModal">
+          <thead>
+            <tr>
+              <th style="width:5%" scope="row">#</th>
+              <th scope="col">Title</th>
+              <th scope="col">Filename</th>
+              <th style="width:15%" scope="col">File Size</th>
+              <th style="width:25%" scope="col">File Modified Date</th>
+            </tr>
+          </thead>
+          <tbody>'; 
+        $no = 0;
+      foreach ($settings['assets_content'] as $key) {
+        $filename   = explode('.', $key->file);
+        $name       = current($filename);
+        $thumb      = current($filename).'_thumb.'.end($filename);
+        $file_thumb = base_url("{$key->path}/{$thumb}");
+        $getSize    = get_headers($file_thumb, 1); 
+        $table_view .= '<tr>
+            <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
+            <td style:"width:5%;" scope="row">'.++$no.'</td>
+            <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
+            <td>'.($key->file ? $key->file : '').'</td>
+            <td style="width:15%;">'.$key->size.' kB </td>
+            <td style="width:25%;">'.date("d/m/Y", strtotime($key->created_at)).'</td>
+            </tr>';
+      }
+      $table_view .= '</tbody></table>';
+    } else {
+      $table_view .= '<p class="empty-data">Data is Empty</p>';
+    }
+    $table_view .= '</div>';
+
+    $nameAssets = '<a class="active" data-id="'.(!empty($settings['assets']->id) ? $settings['assets']->id : '0').'">
+                  '.(!empty($settings['assets']->name) ? $settings['assets']->name : 'Default').'
+                  </a>';
+    $data = array(
+      'name'  =>  $nameAssets,
+      'table' =>  $table_view,
+    );
+    echo json_encode($data);
+  }
+
+ 
+  /**
+   * This function use when choice data in upload assets entries 
+   * @return [type] [description]
+   */
+  public function jsonAssetsSelectSubmit(){
+    $table_content      = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
+    $id                 = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
+    $parent_id          = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
+    $list_selected      = $this->input->post('list_selected');
+    $assets_content_Id  = $this->input->post('assets_content_Id');
+    $assets_fields      = $this->input->post('assets_fields');
+    $assetsContentby_id = $this->general_m->get_row_by_id($table_content, $id);
+
+    if ($assets_content_Id && $list_selected) {
+      $assetsList = array_unique( array_merge($list_selected, $assets_content_Id));
+    } elseif ($assets_content_Id && empty($list_selected)) {
+      $assetsList = $assets_content_Id;
+    } elseif (empty($assets_content_Id) && $list_selected) {
+      $assetsList = $list_selected;
+    } else {
+      $assetsList = [];
+    }
+
+    $view = '';
+    foreach ($assetsList as $key => $value) {
+      $assetsContentby_id = $this->general_m->get_row_by_id('assets_content', $value);
+      $filename   = explode('.', $assetsContentby_id->file);
+      $name       = current($filename);
+      $thumb      = current($filename).'_thumb.'.end($filename);
+      $file_thumb = base_url("{$assetsContentby_id->path}/{$thumb}");
+      $getSize    = get_headers($file_thumb, 1); 
+      $view .= '
+          <li><input type="hidden" name="'.$assets_fields.'[]" value="'.$value.'" class="ass-list">
+            <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>
+            <label for="input'.$name.'">'.$name.'</label>
+            <a><i class="fa fa-times" aria-hidden="true"></i></a
+          </li>
+        ';
+    }
+
+    $data = array(
+      'html' =>  $view,
+    );
+    echo json_encode($data);
+  }
+
+
+  /**
    * tHIS FUNCTION USE TO SHOW MODAL WHEN CLICK BUTTON CATEGORIES IN ENTRIES FORM
    */
   public function jsonCategoriesEntriesUpload(){
-    $categories_id = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
+    $table_content = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
+    $id            = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
+    $parent_id     = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
+    $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
+    $cat_id        = (empty($this->input->post('cat_id')) ? '0' : $this->input->post('cat_id'));
     $settings = array(
-      'categories'         => $this->general_m->get_row_by_id('categories', $categories_id),
-      'categories_content' => $this->general_m->get_result_by_id('categories_content', $categories_id, 'categories_id'),
+      'categories'         => $this->general_m->get_row_by_id('categories', $cat_id),
+      'categories_content' => $this->general_m->get_result_by_id('categories_content', $cat_id, 'categories_id'),
     );
+
     $table_view = '
       <div id="uploadModal">
-        <input type="hidden" class="form-control" name="parent-id" value="'.$categories_id.'">';
+        <input type="hidden" class="form-control" name="table" value="'.$table.'">
+        <input type="hidden" class="form-control" name="id" value="'.$id.'">
+        <input type="hidden" class="form-control" name="parent_id" value="'.$parent_id.'">
+        <input type="hidden" class="form-control" name="cat_id" value="'.$cat_id.'">';
     if ($settings['categories_content']) {
       $table_view .= '
         <table class="table table-sm text-left datatableModal">
@@ -1201,20 +1231,30 @@ class Api extends My_Controller {
    * @return [type] [description]
    */
   public function jsonCategoriesSelectSubmit(){
-    $parent_id           = $this->input->post('parent_id');
-    $categoriesContentId = $this->input->post('categoriesContentId');
-    $column_fields       = $this->input->post('categories_fields');
-    $getParent           = $this->general_m->get_row_by_id('categories', $parent_id);
+    $table_content   = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
+    $id              = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
+    $parent_id       = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
+    $list_selected   = $this->input->post('list_selected');
+    $cat_content_Id  = $this->input->post('cat_content_Id');
+    $cat_fields      = $this->input->post('cat_fields');
+    $catContentby_id = $this->general_m->get_row_by_id($table_content, $id);
 
-    $checkCat = $getParent->fields_fields5;
-    var_dump($getParent);die;
-    
+    if ($cat_content_Id && $list_selected) {
+      $catList = array_unique( array_merge($list_selected, $cat_content_Id));
+    } elseif ($cat_content_Id && empty($list_selected)) {
+      $catList = $cat_content_Id;
+    } elseif (empty($cat_content_Id) && $list_selected) {
+      $catList = $list_selected;
+    } else {
+      $catList = [];
+    }
+  
     $view = '';
-    foreach ($categoriesContentId as $key => $value) {
-      $categoriesContent  = $this->general_m->get_row_by_id('categories_content', $value);
+    foreach ($catList as $key => $value) {
+      $catContentby_id = $this->general_m->get_row_by_id($table_content, $value);
       $view .= '
-          <li><input type="hidden" name="'.$column_fields.'[]" value="'.$value.'">
-            <label for="input'.$categoriesContent->title.'">'.$categoriesContent->title.'</label>
+          <li><input type="hidden" name="'.$cat_fields.'[]" value="'.$value.'" class="cat-list">
+            <label for="input'.$catContentby_id->title.'">'.$catContentby_id->title.'</label>
             <a><i class="fa fa-times" aria-hidden="true"></i></a
           </li>
         ';

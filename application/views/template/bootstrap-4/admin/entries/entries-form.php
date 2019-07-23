@@ -214,7 +214,7 @@
   <div class="form-group row">
     <label for="staticEmail" class="col-sm-3 col-form-label">Entry Type</label>
     <div class="col-sm-9">
-      <select class="form-control-plaintext costum-select" name="entriestype" id="entries">
+      <select class="form-control-plaintext costum-select" name="entriestype" id="entries-form">
         <?php 
           foreach ($section_entries as $key) {
             echo '<option value="'.$key->id.'" data-id="'.$key->id.'" 

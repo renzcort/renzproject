@@ -9,7 +9,8 @@ class fields extends My_Controller {
   {
     parent::__construct();
     $this->load->model('admin/General_m', 'general_m');
-    $this->load->model('admin/fields_m', 'fields_m');
+    $this->load->model('admin/Fields_m', 'fields_m');
+    $this->load->model('admin/Section_m', 'section_m');
     //Do your magic here
     $this->data = array(
       'userdata'          =>  $this->first_load(),
@@ -103,6 +104,7 @@ class fields extends My_Controller {
                                     ),
                                     'action' => array('required', 'autocomplete', 'autofocus', 'disabled', 'readonly')
                           ),
+      'section'      => $this->section_m->get_all_results(),
     );
 
     $this->form_validation->set_rules('name', 'Name', 'trim|required|is_unique[renz_fields.name]');
@@ -139,6 +141,12 @@ class fields extends My_Controller {
             'categoriesTargetLocale'   => $this->input->post('categoriesTargetLocale'),
             'categoriesLimit'          => $this->input->post('categoriesLimit'),
             'categoriesSelectionLabel' => $this->input->post('categoriesSelectionLabel'),
+          );
+        } elseif ($this->input->post('fieldsType') == 'entries') {
+          $opt_settings = array(
+            'entriesSource'         => $this->input->post('entriesSource'),
+            'entriesLimit'          => $this->input->post('entriesLimit'),
+            'entriesSelectionLabel' => $this->input->post('entriesSelectionLabel'),
           );
         } elseif ($this->input->post('fieldsType') == 'checkboxes') {
           $opt_settings = array(
@@ -259,6 +267,8 @@ class fields extends My_Controller {
                                     ),
                                     'action' => array('required', 'autocomplete', 'autofocus', 'disabled', 'readonly')
                           ),
+
+      'section'      => $this->section_m->get_all_results(),
     );
     $settings['getFieldType'] = json_decode($settings['getDataby_id']->settings);
     $settings['typeFields'] = $this->general_m->get_row_by_id('fields_type', $settings['getDataby_id']->type_id);
@@ -309,6 +319,12 @@ class fields extends My_Controller {
             'categoriesTargetLocale'   => $this->input->post('categoriesTargetLocale'),
             'categorieslimit'          => $this->input->post('categorieslimit'),
             'categoriesSelectionLabel' => $this->input->post('categoriesSelectionLabel'),
+          );
+        } elseif ($this->input->post('fieldsType') == 'entries') {
+          $opt_settings = array(
+            'entriesSource'         => $this->input->post('entriesSource'),
+            'entriesLimit'          => $this->input->post('entriesLimit'),
+            'entriesSelectionLabel' => $this->input->post('entriesSelectionLabel'),
           );
         } elseif ($this->input->post('fieldsType') == 'checkboxes') {
           $opt_settings = array(

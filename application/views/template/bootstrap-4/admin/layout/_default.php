@@ -98,7 +98,7 @@
       <div class="modal-body d-flex flex-row flex-wrap justify-content-between p-1">
         <div class="left-modal">
           <ul>
-            <li class="nav-item assets-list list-unstyled"></li> 
+            <li class="nav-item assets-groups list-unstyled"></li> 
           </ul>
         </div>
         <div class="right-modal">
@@ -326,6 +326,41 @@
           $(this).closest("tr").remove();
           $('#radio table').focus();
         });
+
+        /*Fields type entries*/
+        $('#fields .entriesSourceAll').attr("checked", true);
+        if ($('#fields .entriesSource').is(":checked")) {
+          $('#fields .entriesSourceAll').attr("checked", false);
+          if ($('#fields .entriesSourceAll').is(':checked') == true) {
+            $('#fields .entriesSource').attr("disabled", "disabled");
+            $('#fields .entriesSource').attr("checked", true);
+          } else {
+            if ($('#fields .entriesSource').is(":checked")) {
+              var val = $('#fields .entriesSource').val();
+              if ($(this).val() == val) {
+                $('#fields .entriesSource[value="'+val+'"]').attr('checked', true);
+              } else {
+                $('#fields .entriesSource').removeAttr("disabled", "disabled");
+              }
+            } else {
+              $(this).attr("disabled", "disabled");
+              $(this).attr("checked", false);
+            }
+          }
+        } else {
+          $('#fields .entriesSource').removeAttr("disabled", "disabled");
+          $('#fields .entriesSource').attr("checked", false);
+        }
+
+        $('#fields .entriesSourceAll').click(function() {
+          if ($(this).is(':checked') == true) {
+            $('#fields .entriesSource').attr("disabled", "disabled");
+            $('#fields .entriesSource').attr("checked", true);
+          } else {
+            $('#fields .entriesSource').removeAttr("disabled", "disabled");
+            $('#fields .entriesSource').attr("checked", false);
+          }
+        });
         /*END Fields Forms*/
 
 
@@ -352,6 +387,7 @@
 
 
         // getTabsFieldsList();
+        layout();
         getGroupsById();
         deleteGroupsById();
         getDataByIdGroups();
@@ -363,12 +399,7 @@
         uploadAssetsInEntries();
         manageUsersSettings();
 
-        var leftbar = document.getElementById('left-content');
-        var leftbarTop = leftbar.offsetTop;
-        var leftbarButton = leftbar.offsetHeight;
-        var rightbar = document.getElementById('right-content');
-        var rightbarTop = rightbar.offsetHeight;
-        window.onscroll = function() {myFunction()};
+
       })
     </script>
   </body>

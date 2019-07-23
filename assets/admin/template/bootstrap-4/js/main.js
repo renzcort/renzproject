@@ -1,5 +1,16 @@
  var base_url = "http://renzproject.localhost/";
 
+  function layout(){
+    var leftbar = document.getElementById('left-content');
+    var leftbarTop = leftbar.offsetTop;
+    var leftbarButton = leftbar.offsetHeight;
+    var rightbar = document.getElementById('right-content');
+    var rightbarTop = rightbar.offsetHeight;
+    window.onscroll = function() { 
+      myFunction()
+    };
+  }
+
   function myFunction() {
     if (window.pageYOffset >= leftbarTop && window.pageYOffset <= leftbarButton) {
       leftbar.classList.add("fixed-bar")
@@ -223,86 +234,11 @@
     });
   }
 
-  /**
-   * tHIS FUNCTION USE TO SHOW DATA IN MODAL WHEN ASSETS BUTTON CLICK
-   * @return {[type]} [description]
-   */
-  function getModalAssets() {
-    $('[data-target="#assetsModal"]').click(function(e) {
-      var assets_id = $(this).data('assets-id');
-      var assets_fields = $(this).data('assets-fields');
-      var assets_source = $(this).data('assets-source');
-      $.ajax({
-        type: 'POST',
-        dataType: 'json',
-        data: {
-          id: assets_id,
-          assets_fields: assets_fields,
-          assets_source: assets_source
-        },
-        // url : '<?php echo base_url("admin/Api/jsonAssetsEntriesUpload") ?>',
-        url: base_url + "admin/Api/jsonAssetsEntriesUpload",
-      }).done(function(data) {
-        $('li.assets-list').html(data.name);
-        $('#assetsModal .right-modal').html(data.table);
-
-        var table = $('table.datatableModal').DataTable();
-        $('.datatableModal tbody').on('click', 'tr', function() {
-          $(this).toggleClass('selected');
-        });
-        $('#button').click(function() {
-          alert(table.rows('.selected').data().length + ' row(s) selected');
-        });
-
-        // $('tbody tr').click(function() {
-        //   if ($(this).hasClass('selected') ) {
-        //     $(this).removeClass('selected');
-        //   } else {
-        //     $('tr.selected').removeClass('selected');
-        //     $(this).addClass('selected');
-        //   }
-        // });
-
-        $('#select-assets').click(function(e) {
-          var assets_content_id = $('tr.selected input').data('id');
-          var id = [];
-          $("tbody tr.selected").each(function() {
-            id.push($('tr.selected input').data('id'));
-            $(this).toggleClass("selected");
-          });
-
-          $.ajax({
-              // url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
-              url: base_url + "admin/Api/jsonAssetsSelectSubmit",
-              type: 'POST',
-              dataType: 'json',
-              data: {
-                assetsContentId: id,
-                assets_fields: assets_fields
-              },
-            })
-            .done(function(data) {
-              $('#fields-assets-entries .selected').html(data.html);
-              console.log("success");
-              $("#fields-assets-entries ul.selected li a").click(function(e) {
-                $(this).closest('li').remove();
-              });
-            })
-            .fail(function() {
-              console.log("error");
-            })
-            .always(function() {
-              console.log("complete");
-            });
-        });
-      }).fail(function(errot) {});
-    });
-  }
 
   /*change option entries in form entries template side right*/
   function changeEntriesType() {
-    $('#entries').change(function() {
-      var id = $('#entries option:selected').attr('data-id');
+    $('#entries-form').change(function() {
+      var id = $('#entries-form option:selected').attr('data-id');
       $.ajax({
           // url: '<?php echo base_url('admin/api/jsonSelectEntriesType') ?>',
           url: base_url + "admin/Api/jsonSelectEntriesType",
@@ -557,23 +493,124 @@
     });
   }
 
+
   /**
-   * tHIS FUNCTION USE TO SHOW MODAL WHEN CLICK BUTTON CATEGORIES IN ENTRIES FORM
+   * tHIS FUNCTION USE TO SHOW DATA IN MODAL WHEN ASSETS BUTTON CLICK
+   * @return {[type]} [description]
    */
-  function getModalCategories() {
-    $('[data-target="#categoriesModal"]').click(function(e) {
-      var categories_id     = $(this).data('categories-id');
-      var categories_fields = $(this).data('categories-fields');
+  function getModalAssets() {
+    var table_content = $('input[name="table"]').val();
+    var id            = $('input[name="id"]').val();
+    var parent_id     = $('input[name="parent_id"]').val();
+    var assets_id     = $('[data-target="#assetsModal"]').data('assets-id');
+    var assets_fields = $('[data-target="#assetsModal"]').data('assets-fields');
+    var assets_source = $('[data-target="#assetsModal"]').data('ssets-source');
+
+    $('[data-target="#assetsModal"]').click(function(e) {
+      e.preventDefault();
+      var list_selected = $('.ass-list').map(function() {
+          return this.value;
+      }).get();
+      console.log(list_selected);
       $.ajax({
         type: 'POST',
         dataType: 'json',
         data: {
-          id: categories_id,
-          categories_fields: categories_fields,
+          table : table_content,
+          id : id,
+          parent_id : parent_id,
+          assets_id: assets_id,
+          assets_fields: assets_fields,
+          assets_source: assets_source,
+          list_selected : list_selected,
+        },
+        // url : '<?php echo base_url("admin/Api/jsonAssetsEntriesUpload") ?>',
+        url: base_url + "admin/Api/jsonAssetsEntriesUpload",
+      }).done(function(data) {
+        $('li.assets-groups').html(data.name);
+        $('#assetsModal .right-modal').html(data.table);
+
+        var table = $('table.datatableModal').DataTable();
+        $('.datatableModal tbody').on('click', 'tr', function() {
+          $(this).toggleClass('selected');
+        });
+        $('#button').click(function() {
+          alert(table.rows('.selected').data().length + ' row(s) selected');
+        });
+      }).fail(function(errot) {});
+    });
+
+    $('#select-assets').click(function(e) {
+      e.preventDefault();
+      var list_selected = $('.ass-list').map(function() {
+          return this.value;
+      }).get();
+
+      var id_content = [];
+      $("tbody tr.selected").each(function() {
+        id_content.push($('tr.selected input').data('id'));
+        $(this).toggleClass("selected");
+      });
+
+      $.ajax({
+          // url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
+          url: base_url + "admin/Api/jsonAssetsSelectSubmit",
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            table : table_content,
+            id : id,
+            parent_id : parent_id,
+            assets_id: assets_id,
+            assets_fields: assets_fields,
+            assets_content_Id: id_content,
+            list_selected : list_selected
+          },
+      }).done(function(data) {
+        $('#fields-assets-entries .selected').html(data.html);
+        console.log("success");
+        $("#fields-assets-entries ul.selected li a").click(function(e) {
+          $(this).closest('li').remove();
+        });
+      }).fail(function() {
+        console.log("error");
+      }).always(function() {
+        console.log("complete");
+      });
+    });
+  }
+
+  /**
+   * tHIS FUNCTION USE TO SHOW MODAL WHEN CLICK BUTTON CATEGORIES IN ENTRIES FORM
+   */
+  function getModalCategories() {
+    var table_content = $('input[name="table"]').val();
+    var id            = $('input[name="id"]').val();
+    var parent_id     = $('input[name="parent_id"]').val();
+    var cat_id        = $('[data-target="#categoriesModal"]').data('categories-id');
+    var cat_fields    = $('[data-target="#categoriesModal"]').data('categories-fields');
+
+    $('[data-target="#categoriesModal"]').click(function(e) {
+      e.preventDefault();
+      var list_selected = $('.cat-list').map(function() {
+          return this.value;
+      }).get();
+      console.log(list_selected);
+
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          table : table_content,
+          id : id,
+          parent_id : parent_id,
+          cat_id: cat_id,
+          cat_fields: cat_fields
         },
         // url : '<?php echo base_url("admin/Api/jsonAssetsEntriesUpload") ?>',
         url: base_url + "admin/Api/jsonCategoriesEntriesUpload",
       }).done(function(data) {
+        $('#categoriesModal .middle-modal').empty();
         $('#categoriesModal .middle-modal').html(data.table);
 
         var table = $('table.datatableModal').DataTable();
@@ -583,42 +620,136 @@
         $('#button').click(function() {
           alert(table.rows('.selected').data().length + ' row(s) selected');
         });
+      }).fail(function(errot) {});
+    });
 
-        $('#select-categories').click(function(e) {
-          var parent_id = $('#uploadModal [name="parent-id"]').val();
-          var categories_content_id = $('tr.selected input').data('id');
-          var id = [];
-          $("tbody tr.selected").each(function() {
-            id.push($('tr.selected input').data('id'));
-            $(this).toggleClass("selected");
+    $('#select-categories').click(function(e) {
+      e.preventDefault();
+      var list_selected = $('.cat-list').map(function() {
+          return this.value;
+      }).get();
+
+      var id_content = [];
+      $("tbody tr.selected").each(function() {
+        id_content.push($('tr.selected input').data('id'));
+        $(this).toggleClass("selected");
+      });
+
+      $.ajax({
+          // url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
+          url: base_url + "admin/Api/jsonCategoriesSelectSubmit",
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            table : table_content,
+            id : id,
+            parent_id : parent_id,
+            cat_id: cat_id,
+            cat_fields: cat_fields,
+            cat_content_Id: id_content,
+            list_selected : list_selected
+          },
+        })
+        .done(function(data) {
+          $('#fields-categories-entries .selected').html(data.html);
+          console.log("success");
+          
+          $("#fields-categories-entries ul.selected li a").click(function(e) {
+            $(this).closest('li').remove();
           });
+        })
+        .fail(function() {
+          console.log("error");
+        })
+        .always(function() {
+          console.log("complete");
+        });
+    });
+  }
 
-          $.ajax({
-              // url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
-              url: base_url + "admin/Api/jsonCategoriesSelectSubmit",
-              type: 'POST',
-              dataType: 'json',
-              data: {
-                parent_id : parent_id,
-                categoriesContentId: id,
-                categories_fields: categories_fields
-              },
-            })
-            .done(function(data) {
-              $('#fields-categories-entries .selected').html(data.html);
-              console.log("success");
-              
-              $("#fields-categories-entries ul.selected li a").click(function(e) {
-                $(this).closest('li').remove();
-              });
-            })
-            .fail(function() {
-              console.log("error");
-            })
-            .always(function() {
-              console.log("complete");
-            });
+  /**
+   * tHIS FUNCTION USE TO SHOW MODAL WHEN CLICK BUTTON CATEGORIES IN ENTRIES FORM
+   */
+  function getModalEntries() {
+    var table_content = $('input[name="table"]').val();
+    var id            = $('input[name="id"]').val();
+    var parent_id     = $('input[name="parent_id"]').val();
+    var ent_id        = $('[data-target="#entriesModal"]').data('entries-id');
+    var ent_fields    = $('[data-target="#entriesModal"]').data('entries-fields');
+
+    $('[data-target="#entriesModal"]').click(function(e) {
+      e.preventDefault();
+      var list_selected = $('.ent-list').map(function() {
+          return this.value;
+      }).get();
+      console.log(list_selected);
+
+      $.ajax({
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          table : table_content,
+          id : id,
+          parent_id : parent_id,
+          ent_id: ent_id,
+          ent_fields: ent_fields
+        },
+        // url : '<?php echo base_url("admin/Api/jsonAssetsEntriesUpload") ?>',
+        url: base_url + "admin/Api/jsonEntriesEntriesUpload",
+      }).done(function(data) {
+        $('#entriesModal .middle-modal').empty();
+        $('#entriesModal .middle-modal').html(data.table);
+
+        var table = $('table.datatableModal').DataTable();
+        $('.datatableModal tbody').on('click', 'tr', function() {
+          $(this).toggleClass('selected');
+        });
+        $('#button').click(function() {
+          alert(table.rows('.selected').data().length + ' row(s) selected');
         });
       }).fail(function(errot) {});
+    });
+
+    $('#select-entries').click(function(e) {
+      e.preventDefault();
+      var list_selected = $('.ent-list').map(function() {
+          return this.value;
+      }).get();
+
+      var id_content = [];
+      $("tbody tr.selected").each(function() {
+        id_content.push($('tr.selected input').data('id'));
+        $(this).toggleClass("selected");
+      });
+
+      $.ajax({
+          // url: '<?php echo base_url('admin/api/jsonAssetsSelectSubmit') ?>',
+          url: base_url + "admin/Api/jsonEntriesSelectSubmit",
+          type: 'POST',
+          dataType: 'json',
+          data: {
+            table : table_content,
+            id : id,
+            parent_id : parent_id,
+            ent_id: ent_id,
+            ent_fields: ent_fields,
+            ent_content_Id: id_content,
+            list_selected : list_selected
+          },
+        })
+        .done(function(data) {
+          $('#fields-entries-entries .selected').html(data.html);
+          console.log("success");
+          
+          $("#fields-entries-entries ul.selected li a").click(function(e) {
+            $(this).closest('li').remove();
+          });
+        })
+        .fail(function() {
+          console.log("error");
+        })
+        .always(function() {
+          console.log("complete");
+        });
     });
   }
