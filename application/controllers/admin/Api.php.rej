@@ -1,0 +1,11 @@
+diff a/application/controllers/admin/Api.php b/application/controllers/admin/Api.php	(rejected hunks)
+@@ -3,8 +3,7 @@
+ 
+ class Api extends My_Controller {
+ 
+-  public function __construct()
+-  {
++  public function __construct(){
+     parent::__construct();
+     //Do your magic here
+     $this->load->model('admin/Fields_m', 'fields_m');

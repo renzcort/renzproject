@@ -119,6 +119,7 @@
                       echo '<div>
                               <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#categoriesModal"
                               data-categories-id = "'.$settings->categoriesSource.'" 
+                              data-categories-limit ="'.$settings->categoriesLimit.'" 
                               data-categories-fields="fields_'.$key->handle.'">
                               + '.($settings->categoriesSelectionLabel ? ucwords($settings->categoriesSelectionLabel) : 'New Categories').'</button></div>';
                       echo '</div>';

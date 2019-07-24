@@ -592,6 +592,7 @@
     var parent_id     = $('input[name="parent_id"]').val();
     var cat_id        = $('[data-target="#categoriesModal"]').data('categories-id');
     var cat_fields    = $('[data-target="#categoriesModal"]').data('categories-fields');
+    var cat_limit     = $('[data-target="#categoriesModal"]').data('categories-limit');
 
     $('[data-target="#categoriesModal"]').click(function(e) {
       e.preventDefault();
@@ -608,7 +609,8 @@
           id: id,
           parent_id: parent_id,
           cat_id: cat_id,
-          cat_fields: cat_fields
+          cat_fields: cat_fields,
+          cat_limit: cat_limit
         },
         // url : '<?php echo base_url("admin/Api/jsonAssetsEntriesUpload") ?>',
         url: base_url + "admin/Api/jsonCategoriesEntriesUpload",
@@ -650,14 +652,29 @@
             cat_id: cat_id,
             cat_fields: cat_fields,
             cat_content_Id: id_content,
-            list_selected: list_selected
+            list_selected: list_selected,
+            cat_limit: cat_limit
           },
         })
         .done(function(data) {
           $('#fields-categories-entries .selected').html(data.html);
-          console.log("success");
+
+          if (data.counter >= cat_limit) {
+            $('#fields-categories-entries button').attr('disabled', 'disabled');
+          } else {
+            $('#fields-categories-entries button').removeAttr("disabled", "disabled");
+          }
+
           $("#fields-categories-entries ul.selected li a").click(function(e) {
             $(this).closest('li').remove();
+            var list_selected = $('.ent-list').map(function() {
+              return this.value;
+            }).get();
+            if (list_selected.length < cat_limit) {
+              $('#fields-categories-entries button').removeAttr("disabled", "disabled");
+            } else {
+              $('#fields-categories-entries button').attr('disabled', 'disabled');
+            }
           });
         })
         .fail(function() {

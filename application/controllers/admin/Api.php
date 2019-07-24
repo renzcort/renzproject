@@ -1219,6 +1219,8 @@ class Api extends My_Controller {
     $parent_id     = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
     $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
     $cat_id        = (empty($this->input->post('cat_id')) ? '0' : $this->input->post('cat_id'));
+    $cat_limit     = (empty($this->input->post('cat_limit')) ? '' : $this->input->post('cat_limit'));
+
     $settings = array(
       'categories'         => $this->general_m->get_row_by_id('categories', $cat_id),
       'categories_content' => $this->general_m->get_result_by_id('categories_content', $cat_id, 'categories_id'),
@@ -1229,7 +1231,8 @@ class Api extends My_Controller {
         <input type="hidden" class="form-control" name="table" value="'.$table_content.'">
         <input type="hidden" class="form-control" name="id" value="'.$id.'">
         <input type="hidden" class="form-control" name="parent_id" value="'.$parent_id.'">
-        <input type="hidden" class="form-control" name="cat_id" value="'.$cat_id.'">';
+        <input type="hidden" class="form-control" name="cat_id" value="'.$cat_id.'">
+        <input type="hidden" class="form-control" name="cat_id" value="'.$cat_limit.'">';
     if ($settings['categories_content']) {
       $table_view .= '
         <table class="table table-sm text-left datatableModal">
@@ -1270,6 +1273,7 @@ class Api extends My_Controller {
     $list_selected   = $this->input->post('list_selected');
     $cat_content_Id  = $this->input->post('cat_content_Id');
     $cat_fields      = $this->input->post('cat_fields');
+    $cat_limit       = (empty($this->input->post('cat_limit')) ? '' : $this->input->post('cat_limit'));
 
     if ($cat_content_Id && $list_selected) {
       $catList = array_unique( array_merge($list_selected, $cat_content_Id));
@@ -1282,18 +1286,25 @@ class Api extends My_Controller {
     }
   
     $view = '';
+    $i = 0;
     foreach ($catList as $key => $value) {
-      $catContentby_id = $this->general_m->get_row_by_id('categories_content', $value);
-      $view .= '
-          <li><input type="hidden" name="'.$cat_fields.'[]" value="'.$value.'" class="cat-list">
-            <label for="input'.$catContentby_id->title.'">'.$catContentby_id->title.'</label>
-            <a><i class="fa fa-times" aria-hidden="true"></i></a
-          </li>
-        ';
+      if ($cat_limit) {
+        ++$i;
+        if ($i <= $cat_limit) {
+          $catContentby_id = $this->general_m->get_row_by_id('categories_content', $value);
+          $view .= '
+              <li><input type="hidden" name="'.$cat_fields.'[]" value="'.$value.'" class="cat-list">
+                <label for="input'.$catContentby_id->title.'">'.$catContentby_id->title.'</label>
+                <a><i class="fa fa-times" aria-hidden="true"></i></a
+              </li>
+            ';
+        }
+      }
     }
 
     $data = array(
       'html' =>  $view,
+      'counter' => $i
     );
     echo json_encode($data);
   }
