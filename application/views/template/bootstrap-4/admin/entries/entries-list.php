@@ -70,7 +70,7 @@
         ?>
         <tr>
           <td scope="row" style="width: 5%;"><?php echo ++$no; ?></td>
-          <td><a href="<?php echo base_url("{$action}/{$handle}/edit/{$key->id}"); ?>"><?php echo $key->title; ?></a></td>
+          <td><a href="<?php echo base_url("{$action}/{$handle}/edit/{$key->id}"); ?>"><?php echo ucwords($key->title); ?></a></td>
           <?php 
             if ($this->uri->segment(3) != 'singles') { 
               echo '

@@ -108,7 +108,7 @@ class Api extends My_Controller {
           'name'       => ucfirst($this->input->post('name')),
           'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'type'       => $this->input->post('type'),
-          'path'       => $this->input->post('path'),
+          'path'       => str_replace(' ', '-', strtolower($this->input->post('path'))),
           'url'        => $this->input->post('url'),
           'description'=> $this->input->post('description'),
           'order'      => $this->input->post('order'),
@@ -504,13 +504,12 @@ class Api extends My_Controller {
   public function jsonUploadWithoutSubmit() {
     $id     = (in_array($this->input->post('group_id'), array('all', 'default')) ? '0' : $this->input->post('group_id'));
     $assets = (($id == '0') ? '' : $this->general_m->get_row_by_id('assets', $id));
-    
     if ($this->input->post('assets_Source')) {
-      $folder = lcfirst($this->input->post('assets_Source'));
+      $folder = lcfirst($this->input->post('assets_source'));
     } else {
-      $folder = (($id == '0') ? 'default' : lcfirst($assets->handle));
+      $folder = (($id == '0') ? 'default' : lcfirst($assets->path));
     }
-    
+
     $settings = array(
       'upload_path' => "uploads/admin/assets/{$folder}",
     );
@@ -533,14 +532,18 @@ class Api extends My_Controller {
       if ( ! $this->upload->do_upload('file')){
         $error = array('error' => $this->upload->display_errors());
       } else{
-        $result = array('upload_data' => $this->upload->data());
-        $path = "{$settings['upload_path']}/thumb";
+        $result     = array('upload_data' => $this->upload->data());
+        $path_thumb = "{$settings['upload_path']}/thumb";
+        $filename   = explode('.', $result['upload_data']['file_name']);
+        $file_thumb = current($filename).'_thumb.'.end($filename);
         $data = array(
           'assets_id'  => (($id == '') ? 0 : $id),
           'file'       => $result['upload_data']['file_name'],
+          'file_thumb' => $file_thumb,
           'ext'        => $result['upload_data']['file_ext'],
           'size'       => $result['upload_data']['file_size'],
-          'path'       => $path,
+          'path'       => $settings['upload_path'],
+          'path_thumb' => $path_thumb,
           'created_by' => $this->data['userdata']['id'],
         );
         //INSERT Assets content 
@@ -739,7 +742,6 @@ class Api extends My_Controller {
       'fields_element' =>  $this->general_m->get_result_by_fields('element', array('entries_id' => $id)),
       'fields'         =>  $this->fields_m->get_all_results(),
       'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
-      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
       'assets'         =>  $this->general_m->get_all_results('assets'),
       'assets_content' =>  $this->general_m->get_all_results('assets_content'),
       'elementFields'  =>  [],
@@ -1109,6 +1111,8 @@ class Api extends My_Controller {
     $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
     $assets_id     = (empty($this->input->post('assets_id')) ? '0' : $this->input->post('assets_id'));
     $assets_source = (empty($this->input->post('assets_source')) ? '' : $this->input->post('assets_source'));
+    $ass_limit     = (empty($this->input->post('ass_limit')) ? '' : $this->input->post('ass_limit'));
+
     $settings = array(
       'assets'         => $this->general_m->get_row_by_id('assets', $assets_id),
       'assets_content' => $this->general_m->get_result_by_id('assets_content', $assets_id, 'assets_id'),
@@ -1175,6 +1179,7 @@ class Api extends My_Controller {
     $assets_content_Id  = $this->input->post('assets_content_Id');
     $assets_fields      = $this->input->post('assets_fields');
     $assetsContentby_id = $this->general_m->get_row_by_id($table_content, $id);
+    $ass_limit          = (empty($this->input->post('ass_limit')) ? '' : $this->input->post('ass_limit'));
 
     if ($assets_content_Id && $list_selected) {
       $assetsList = array_unique( array_merge($list_selected, $assets_content_Id));
@@ -1187,24 +1192,45 @@ class Api extends My_Controller {
     }
 
     $view = '';
+    $i = 0;
     foreach ($assetsList as $key => $value) {
-      $assetsContentby_id = $this->general_m->get_row_by_id('assets_content', $value);
-      $filename   = explode('.', $assetsContentby_id->file);
-      $name       = current($filename);
-      $thumb      = current($filename).'_thumb.'.end($filename);
-      $file_thumb = base_url("{$assetsContentby_id->path}/{$thumb}");
-      $getSize    = get_headers($file_thumb, 1); 
-      $view .= '
-          <li><input type="hidden" name="'.$assets_fields.'[]" value="'.$value.'" class="ass-list">
-            <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>
-            <label for="input'.$name.'">'.$name.'</label>
-            <a><i class="fa fa-times" aria-hidden="true"></i></a
-          </li>
-        ';
+      if ($ass_limit) {
+        ++$i;
+        if ($i <= $ass_limit) {
+          $assetsContentby_id = $this->general_m->get_row_by_id('assets_content', $value);
+          $filename   = explode('.', $assetsContentby_id->file);
+          $name       = current($filename);
+          $thumb      = current($filename).'_thumb.'.end($filename);
+          $file_thumb = base_url("{$assetsContentby_id->path}/{$thumb}");
+          $getSize    = get_headers($file_thumb, 1); 
+          $view .= '
+              <li><input type="hidden" name="'.$assets_fields.'[]" value="'.$value.'" class="ass-list">
+                <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>
+                <label for="input'.$name.'">'.$name.'</label>
+                <a><i class="fa fa-times" aria-hidden="true"></i></a
+              </li>
+            ';
+        }
+      } else {
+        $assetsContentby_id = $this->general_m->get_row_by_id('assets_content', $value);
+        $filename   = explode('.', $assetsContentby_id->file);
+        $name       = current($filename);
+        $thumb      = current($filename).'_thumb.'.end($filename);
+        $file_thumb = base_url("{$assetsContentby_id->path}/{$thumb}");
+        $getSize    = get_headers($file_thumb, 1); 
+        $view .= '
+            <li><input type="hidden" name="'.$assets_fields.'[]" value="'.$value.'" class="ass-list">
+              <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>
+              <label for="input'.$name.'">'.$name.'</label>
+              <a><i class="fa fa-times" aria-hidden="true"></i></a
+            </li>
+          ';
+      }
     }
 
     $data = array(
       'html' =>  $view,
+      'counter' => $i
     );
     echo json_encode($data);
   }
@@ -1299,6 +1325,14 @@ class Api extends My_Controller {
               </li>
             ';
         }
+      } else {
+        $catContentby_id = $this->general_m->get_row_by_id('categories_content', $value);
+        $view .= '
+            <li><input type="hidden" name="'.$cat_fields.'[]" value="'.$value.'" class="cat-list">
+              <label for="input'.$catContentby_id->title.'">'.$catContentby_id->title.'</label>
+              <a><i class="fa fa-times" aria-hidden="true"></i></a
+            </li>
+          ';
       }
     }
 
@@ -1318,7 +1352,7 @@ class Api extends My_Controller {
     $parent_id     = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
     $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
     $ent_id        = (empty($this->input->post('ent_id')) ? '0' : $this->input->post('ent_id'));
-    $ent_limit         = (empty($this->input->post('ent_limit')) ? '' : $this->input->post('ent_limit'));
+    $ent_limit     = (empty($this->input->post('ent_limit')) ? '' : $this->input->post('ent_limit'));
 
     $settings = array(
       'section'         => $this->general_m->get_row_by_id('section', $ent_id),
@@ -1403,6 +1437,14 @@ class Api extends My_Controller {
               </li>
             ';
         }
+      } else {
+        $entContentby_id = $this->general_m->get_row_by_id('content', $value);
+          $view .= '
+              <li><input type="hidden" name="'.$ent_fields.'[]" value="'.$value.'" class="ent-list">
+                <label for="input'.$entContentby_id->title.'">'.$entContentby_id->title.'</label>
+                <a><i class="fa fa-times" aria-hidden="true"></i></a
+              </li>
+            ';
       }
     }
 

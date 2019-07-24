@@ -203,7 +203,8 @@ class fields extends My_Controller {
           'label'       =>  ucfirst($this->input->post('name')),
           'description' =>  $this->input->post('description'),
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'status'      =>  $this->input->post('status'),
+          'activated'   =>  $this->input->post('activated'),
+          'settings'    =>  json_encode($opt_settings),
           'created_by'  =>  $this->data['userdata']['id'],
         );
         $this->fields_m->create($data);        
@@ -384,7 +385,8 @@ class fields extends My_Controller {
           'label'       =>  ucfirst($this->input->post('name')),
           'description' =>  $this->input->post('description'),
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
-          'status'      =>  $this->input->post('status'),
+          'activated'   =>  $this->input->post('activated'),
+          'settings'    =>  json_encode($opt_settings),
           'updated_by'  =>  $this->data['userdata']['id'],
         );
         $this->fields_m->update($data, $id); 

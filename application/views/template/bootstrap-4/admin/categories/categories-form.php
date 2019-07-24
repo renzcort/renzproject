@@ -87,6 +87,7 @@
                       echo '<div>
                               <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#assetsModal"
                               data-assets-id = "'.$settings->assetsSourcesList.'" 
+                              data-assets-limit ="'.$settings->assetsLimit.'" 
                               data-assets-fields="fields_'.$key->handle.'"
                               data-assets-source="'.$settings->assetsSourcesInput.'">
                               + '.($settings->assetsSelectionLabel ? ucwords($settings->assetsSelectionLabel) : 'New Assets').'</button></div>';
@@ -146,7 +147,7 @@
                                   value="'.$chkResult['value'].'"
                                   '.((!empty($getDataby_id->$fieldsName) && in_array($chkResult['value'], $checkList)) ? 'checked' : '').'>
                                 <label class="form-check-label" 
-                                  for="defaultCheck1">'.$chkResult['label'].'
+                                  for="defaultCheck1">'.ucfirst($chkResult['label']).'
                                 </label>
                               </div>';
                       }
@@ -168,7 +169,7 @@
                       foreach ($dropResult as $drpResult) {
                         echo '<option value="'.$drpResult['value'].'"
                         '.((!empty($getDataby_id->$fieldsName) && in_array($drpResult['value'], $checkList)) ? 'selected' : '').'>
-                        '.$drpResult['label'].'</option>';
+                        '.ucfirst($drpResult['label']).'</option>';
                       }
                       echo '</select>';
                     } elseif ($key->type_name == 'radio') {
@@ -188,7 +189,7 @@
                         echo '<div class="form-check">
                                 <input class="form-check-input" type="radio" name="fields_'.$key->handle.'[]"  value="'.$radResult['value'].'"
                                 '.((!empty($getDataby_id->$fieldsName) && in_array($radResult['value'], $checkList)) ? 'checked' : '').'>
-                                <label class="form-check-label" for="defaultCheck1">'.$radResult['label'].'</label>
+                                <label class="form-check-label" for="defaultCheck1">'.ucfirst($radResult['label']).'</label>
                               </div>';
                       }
                     } elseif ($key->type_name == 'entries') {

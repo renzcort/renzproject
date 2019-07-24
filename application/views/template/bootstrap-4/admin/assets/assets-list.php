@@ -55,14 +55,16 @@
             <th scope="col">Post Date</th>
             <th style="width:10%" scope="col">File Size</th>
             <th style="width:20%" scope="col">File Modified Date</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
         <?php foreach ($record_all as $key): 
+          $handle     = $this->uri->segment(3);
           $filename   = explode('.', $key->file);
           $name       = current($filename);
           $thumb      = current($filename).'_thumb.'.end($filename);
-          $file_thumb = base_url("{$key->path}/{$thumb}");
+          $file_thumb = base_url("{$key->path_thumb}/{$thumb}");
           $getSize    = get_headers($file_thumb, 1); 
         ?>
         <tr>
@@ -71,6 +73,9 @@
           <td><?php echo ($key->file ? $key->file : ''); ?></td>
           <td style="width:10% "><?php echo $key->size; ?> kB</td>
           <td style="width:20% "><?php echo ($key->created_at ? $key->created_at : ''); ?></td>
+          <td scope="row">
+            <a href="<?php echo base_url("{$action}/{$handle}/delete/{$key->id}"); ?>"><i class="fas fa-minus-circle"></i></a>
+          </td>
         </tr>
         <?php endforeach ?>
       </tbody>

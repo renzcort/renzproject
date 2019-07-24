@@ -53,12 +53,12 @@ class Assets extends My_Controller {
     }
 
     $settings = array(
-      'title'                =>  'assets',
+      'title'                =>  'assets list',
       'subtitle'             =>  FALSE,
       'breadcrumb'           =>  FALSE,
       'subbreadcrumb'        =>  FALSE,
       'table'                =>  'assets_content',
-      'action'               =>  'admin/settings/assets',
+      'action'               =>  'admin/assets',
       'session'              =>  $this->data,
       'no'                   =>  $this->uri->segment(4),
       'button'               =>  '+ Upload Files',
@@ -85,6 +85,31 @@ class Assets extends My_Controller {
     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $id, 'assets_id');
     $settings['links']      = $this->pagination->create_links();
     // end Pagination
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+  }
+
+  /*Delete Assets */
+  public function delete($handle, $id){
+    $settings = array(
+      'title'        => 'assets list',
+      'table'        => 'assets_content',
+      'action'       => "admin/assets/{$handle}",
+      'getDataby_id' =>  $this->general_m->get_row_by_id('assets_content', $id),          
+    );
+
+    if ($settings['getDataby_id']) {
+      $path = "{$settings['getDataby_id']->path}/{$settings['getDataby_id']->file}";
+      unlink($_SERVER['DOCUMENT_ROOT'].'/'.$path);
+      $path_thumb = "{$settings['getDataby_id']->path_thumb}/{$settings['getDataby_id']->file_thumb}";
+      unlink($_SERVER['DOCUMENT_ROOT'].'/'.$path_thumb);
+      $delete = $this->general_m->delete('assets_content', $id); 
+      helper_log('delete', "Delete {settings['table']} with handle {$handle} with id = {$id} has successfully");
+      $this->session->set_flashdata("message", "data has deleted {$delete} records");
+      redirect($settings['action']);
+    } else {
+      $this->session->set_flashdata('message', 'Delete Failed, Your data is Not Valid');
+      redirect($settings['action']);
+    }
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
@@ -308,16 +333,17 @@ class Assets extends My_Controller {
         // delete content with assets
         $contentList = $this->general_m->get_result_by_id($table_content, $id, "{$settings['table']}_id");
         if ($contentList) {
-          foreach ($contentList as $key) {  
-            unlink("uploads/admin/assets/{$settings['getDataby_id']->path}/{$key->file}");
-            $filename   = explode('.', $key->file);
-            $name       = current($filename);
-            $thumb      = current($filename).'_thumb.'.end($filename);
-            unlink("{$key->path}/{$thumb}");
-            $delContent = $this->general_m->delete($table_content, $key->id, "{$settings['table']}_id");
+          foreach ($contentList as $key) { 
+            $path = "{$key->path}/{$key->file}";
+            unlink($_SERVER['DOCUMENT_ROOT'].'/'.$path);
+            $path_thumb = "{$key->path_thumb}/{$key->file_thumb}";
+            unlink($_SERVER['DOCUMENT_ROOT'].'/'.$path_thumb);
+            $delContent = $this->general_m->delete($settings['table_content'], $key->id, "{$settings['table']}_id");
           }
         }
-        
+        /*delete folder*/
+        delete_files("{$_SERVER['DOCUMENT_ROOT']}/uploads/admin/assets/{$settings['getDataby_id']->path}", true);
+
         // delte content
         $getFieldsAll     = $this->fields_m->get_all_results();
         $getContentFields = $this->db->list_fields($table_content);

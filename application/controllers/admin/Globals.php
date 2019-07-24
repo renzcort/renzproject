@@ -58,7 +58,6 @@ class Globals extends My_Controller {
       'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
       'fields'         =>  $this->fields_m->get_all_results(),
       'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
-      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
       'assets'         =>  $this->general_m->get_all_results('assets'),
       'assets_content' =>  $this->general_m->get_all_results('assets_content'),
       'elementFields'  =>  [],

@@ -109,7 +109,6 @@ class Users extends My_Controller {
       'element'        =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
       'fields'         =>  $this->fields_m->get_all_results(),
       'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
-      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
       'assets'         =>  $this->general_m->get_all_results('assets'),
       'assets_content' =>  $this->general_m->get_all_results('assets_content'),
     );
@@ -217,7 +216,6 @@ class Users extends My_Controller {
       'element'        =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
       'fields'         =>  $this->fields_m->get_all_results(),
       'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
-      'fields_option'  =>  $this->general_m->get_all_results('fields_option'),
       'assets'         =>  $this->general_m->get_all_results('assets'),
       'assets_content' =>  $this->general_m->get_all_results('assets_content'),
       'id'             =>  $id,

@@ -177,7 +177,6 @@
     <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/main.js"></script>
 
     <script type="text/javascript">
-      
       $(document).ready(function() {
         // datepicker
         $(".datepicker").datepicker({

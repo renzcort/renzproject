@@ -117,10 +117,8 @@ $route['admin/settings/assets/(:any)']               = 'admin/assets/settings/$1
 $route['admin/settings/assets/(:any)/create']        = 'admin/assets/settings_create/$1';
 $route['admin/settings/assets/(:any)/edit/(:num)']   = 'admin/assets/settings_update/$1/$2';
 $route['admin/settings/assets/(:any)/delete/(:num)'] = 'admin/assets/settings_delete/$1/$2';
-$route['admin/assets/(:any)']                        = 'admin/assets/index/$1';
-$route['admin/assets/create']                        = 'admin/assets/create';
-$route['admin/assets/edit/(:num)']                   = 'admin/assets/update/$1';
-$route['admin/assets/delete/(:num)']                 = 'admin/assets/delete/$1';
+$route['admin/assets/(:any)']                        = 'admin/assets/index/$1';;
+$route['admin/assets/(:any)/delete/(:num)']          = 'admin/assets/delete/$1/$2';
 
 /*categories*/
 $route['admin/categories/(:any)']                 = 'admin/categories/index/$1';

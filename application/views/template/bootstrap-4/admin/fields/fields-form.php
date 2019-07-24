@@ -268,7 +268,6 @@
         <label class="heading" for="inputSource">Source</label>
         <small class="form-text text-muted">Which source do you want to select categories from?</small>
         <select name="categoriesSource" class="form-control costum-select">
-          <option value="0">- Select Categories -</option>
           <?php if ($categories): ?>
             <?php foreach ($categories as $key): ?>
             <option value="<?php echo $key->id ?>" 
