@@ -77,17 +77,17 @@ class Section extends My_Controller {
 		if ($this->form_validation->run() == TRUE) {
 			if ($_POST['button'] == 'create') {
 				$data = array(
-					'name'        =>	ucfirst($this->input->post('name')),
-					'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-					'type_id'     =>	$this->input->post('section-type'),
-          'sites_id'  =>  $settings['sites']->id,
-					'slug'        =>  url_title(strtolower($this->input->post('name'))),
+          'name'        =>	ucfirst($this->input->post('name')),
+          'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
+          'type_id'     =>	$this->input->post('section-type'),
+          'sites_id'    =>  $settings['sites']->id,
+          'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'url'         =>  $this->input->post('url'),
           'template'    =>  $this->input->post('template'),
-          'activated'   =>  ($this->input->post('activated') ? $this->input->post('activated') : 0),
-					'description' =>	$this->input->post('description'),
-					'order'       =>	$this->input->post('order'),
-					'created_by'  =>	$this->data['userdata']['id'],
+          'activated'   =>  (($this->input->post('activated') == 'on' || $this->input->post('activated')) ? 1 : 0),
+          'description' =>	$this->input->post('description'),
+          'order'       =>	$this->input->post('order'),
+          'created_by'  =>	$this->data['userdata']['id'],
 				);
         // create session
 				$section_id = $this->section_m->create($data);
@@ -167,11 +167,11 @@ class Section extends My_Controller {
           'name'        =>  ucfirst($this->input->post('name')),
           'handle'      =>  lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
           'type_id'     =>  $this->input->post('section-type'),
-          'sites_id'  =>  $settings['sites']->id,
+          'sites_id'    =>  $settings['sites']->id,
           'slug'        =>  url_title(strtolower($this->input->post('name'))),
           'url'         =>  $this->input->post('url'),
           'template'    =>  $this->input->post('template'),
-          'activated'   =>  ($this->input->post('activated') ? $this->input->post('activated') : 0),
+          'activated'   =>  (($this->input->post('activated') == 'on' || $this->input->post('activated')) ? 1 : 0),
           'description' =>  $this->input->post('description'),
           'order'       =>  $this->input->post('order'),
           'updated_by'  =>  $this->data['userdata']['id'],

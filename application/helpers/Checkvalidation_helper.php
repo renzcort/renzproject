@@ -43,6 +43,44 @@
         return FALSE;
       }
     }
+
+    /*Validation Postdate*/
+    function check_postdate($data, $post, $expiry) {
+      $CI =& get_instance();
+      $today      = now();
+      $postdate   = strtotime(str_replace('/', '-', $post));
+      $expirydate = strtotime(str_replace('/', '-', $expiry));
+      if (!empty($data)) {
+        if ($today > $postdate) {
+          $CI->form_validation->set_message('postdate_check', "Postdate must greater than today");
+          return FALSE;
+        } elseif (!empty($expirydate) && $postdate > $expirydate) {
+          $CI->form_validation->set_message('postdate_check', "Postdate must less then expirydate");
+          return FALSE;
+        } else {
+          return TRUE;
+        }
+      }
+    }
+
+    /*Validation Exprydate*/
+    function check_expirydate($data, $post, $expiry) {
+      $CI =& get_instance();
+      $today      = now();
+      $postdate   = strtotime(str_replace('/', '-', $post));
+      $expirydate = strtotime(str_replace('/', '-', $expiry));
+      if (!empty($data)) {
+        if ($today > $expirydate) {
+          $CI->form_validation->set_message('expirydate_check', "Expirydate must greater than today");
+          return FALSE;
+        } elseif (!empty($postdate) && $postdate > $expirydate) {
+          $CI->form_validation->set_message('expirydate_check', "Expirydate must greater than postdate");
+          return FALSE;
+        } else {
+          return TRUE;
+        }
+      }
+    }
   }
 
 ?>

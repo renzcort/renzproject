@@ -139,10 +139,10 @@ class Categories extends My_Controller {
   public function update($handle, $id) {
     $params = (($handle != '') ? $this->general_m->get_row_by_fields('categories', array('handle' => $handle)) : '');
     $settings = array(
-      'title'              =>  'categories',
-      'subtitle'           =>  FALSE,
-      'breadcrumb'         =>  array('settings'),
-      'subbreadcrumb'      =>  FALSE,
+      'title'              =>  "{$handle}",
+      'subtitle'           =>  'edit',
+      'breadcrumb'         =>  array('categories'),
+      'subbreadcrumb'      =>  array('edit'),
       'table'              =>  'categories_content',
       'action'             =>  "admin/categories/{$handle}",
       'session'            =>  $this->data,

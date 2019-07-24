@@ -210,7 +210,8 @@
                       echo '</ul>';
                       echo '<div>
                               <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#entriesModal"
-                              data-entries-id = "'.$settings->entriesSource.'" 
+                              data-entries-id = "'.$settings->entriesSource.'"
+                              data-entries-limit ="'.$settings->entriesLimit.'" 
                               data-entries-fields="fields_'.$key->handle.'">
                               + '.($settings->entriesSelectionLabel ? ucwords($settings->entriesSelectionLabel) : 'New Categories').'</button></div>';
                       echo '</div>';

@@ -682,13 +682,14 @@
     var parent_id     = $('input[name="parent_id"]').val();
     var ent_id        = $('[data-target="#entriesModal"]').data('entries-id');
     var ent_fields    = $('[data-target="#entriesModal"]').data('entries-fields');
+    var ent_limit     = $('[data-target="#entriesModal"]').data('entries-limit');
 
     $('[data-target="#entriesModal"]').click(function(e) {
       e.preventDefault();
       var list_selected = $('.ent-list').map(function() {
         return this.value;
       }).get();
-      console.log(list_selected);
+      console.log(list_selected.length);
 
       $.ajax({
         type: 'POST',
@@ -698,7 +699,8 @@
           id: id,
           parent_id: parent_id,
           ent_id: ent_id,
-          ent_fields: ent_fields
+          ent_fields: ent_fields,
+          ent_limit: ent_limit
         },
         // url : '<?php echo base_url("admin/Api/jsonAssetsEntriesUpload") ?>',
         url: base_url + "admin/Api/jsonEntEntriesUpload",
@@ -740,14 +742,28 @@
             ent_id: ent_id,
             ent_fields: ent_fields,
             ent_content_Id: id_content,
-            list_selected: list_selected
+            list_selected: list_selected,
+            ent_limit: ent_limit
           },
         })
         .done(function(data) {
           $('#fields-entries-entries .selected').html(data.html);
-          console.log("success");
+          if (data.counter >= ent_limit) {
+            $('#fields-entries-entries button').attr('disabled', 'disabled');
+          } else {
+            $('#fields-entries-entries button').removeAttr("disabled", "disabled");
+          }
+
           $("#fields-entries-entries ul.selected li a").click(function(e) {
             $(this).closest('li').remove();
+            var list_selected = $('.ent-list').map(function() {
+              return this.value;
+            }).get();
+            if (list_selected.length < ent_limit) {
+              $('#fields-entries-entries button').removeAttr("disabled", "disabled");
+            } else {
+              $('#fields-entries-entries button').attr('disabled', 'disabled');
+            }
           });
         })
         .fail(function() {

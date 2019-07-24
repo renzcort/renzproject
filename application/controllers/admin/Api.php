@@ -626,13 +626,12 @@ class Api extends My_Controller {
       'parent_table' => (($this->input->post('parent_table') == 'section_entries') ? 'entries' : $this->input->post('parent_table')),
       'parent_id'    => $this->input->post('parent_id'),
       'id'           => $this->input->post('id'),
+      'activated'    => (($this->input->post('activated') == 'on' || $this->input->post('activated')) ? 1 : 0),
     ); 
-
     if ($this->input->post('parent_table') == 'section_entries') {
       $settings['section_id']  = $this->input->post('section_id');
       $settings['entriestype'] = $this->input->post('entriestype');
     }
-
     $parent_id = (($this->input->post('parent_table') == 'section_entries') ? 
                   $settings['entriestype'] : $settings['parent_id']);
 
@@ -643,29 +642,8 @@ class Api extends My_Controller {
 
     if ($settings['button'] == 'create') {
       $this->form_validation->set_rules('title', 'Title', "trim|required|is_unique[renz_{$settings['table']}.title]");
-      $this->form_validation->set_rules('postdate', 'Postdate',       
-        array('required', 
-          function($str){
-            if (!empty($str)) {
-              $today    = now();
-              $postdate = strtotime(str_replace('/', '-', $this->input->post('postdate')));
-              return (($today > $postdate) ? FALSE : TRUE);
-            }
-          }
-        )
-      );
-      $this->form_validation->set_rules('expirydate', 'Expirydate',       
-        array('required', 
-          function($str){
-            if (!empty($str)) {
-              $postdate   = strtotime(str_replace('/', '-', $this->input->post('postdate')));
-              $expirydate = strtotime(str_replace('/', '-', $this->input->post('expirydate')));
-              return (($postdate > $expirydate ? FALSE : TRUE));
-            }
-          }
-        )
-      );
-
+      $this->form_validation->set_rules('postdate', 'Postdate', "trim|required|callback_postdate_check");
+      $this->form_validation->set_rules('expirydate', 'Expirydate', "trim|required|callback_expirydate_check");
     } else {
       $this->form_validation->set_rules('title', 'Title',      
         array('required','trim', 
@@ -674,10 +652,9 @@ class Api extends My_Controller {
           }
         )
       );
-      $this->form_validation->set_rules('postdate', 'Postdate', "trim|required");
-      $this->form_validation->set_rules('expirydate', 'Expirydate', "trim|required");
+      $this->form_validation->set_rules('postdate', 'Postdate', "trim|required|callback_postdate_check");
+      $this->form_validation->set_rules('expirydate', 'Expirydate', "trim|required|callback_expirydate_check");
     }
-
     if ($this->form_validation->run() == TRUE) {
       $data = array(
         'title'                          => $this->input->post('title'),
@@ -690,7 +667,7 @@ class Api extends My_Controller {
 
       (($this->input->post('parent_table') == 'section_entries') ? $data['section_id'] = $settings['section_id'] : ''  );
       if ($this->input->post('parent_table') != 'globals') {
-        $data['activated']  = ($this->input->post('activated') ? $this->input->post('activated') : 0);
+        $data['activated']  = $settings['activated'];
       }
 
       $keys = array_keys($this->input->post());
@@ -725,6 +702,14 @@ class Api extends My_Controller {
       $settings['status'] = FALSE;
       echo json_encode($settings);
     }   
+  }
+
+  public function postdate_check($data){
+   return check_postdate($data, $this->input->post('postdate'), $this->input->post('expirydate'));
+  }
+
+  public function expirydate_check($data){
+   return check_expirydate($data, $this->input->post('postdate'), $this->input->post('expirydate'));
   }
 
   /**
@@ -1322,6 +1307,8 @@ class Api extends My_Controller {
     $parent_id     = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
     $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
     $ent_id        = (empty($this->input->post('ent_id')) ? '0' : $this->input->post('ent_id'));
+    $ent_limit         = (empty($this->input->post('ent_limit')) ? '' : $this->input->post('ent_limit'));
+
     $settings = array(
       'section'         => $this->general_m->get_row_by_id('section', $ent_id),
       'section_entries' => $this->general_m->get_row_by_id('section_entries', $ent_id, 'section_id'),
@@ -1333,7 +1320,8 @@ class Api extends My_Controller {
         <input type="hidden" class="form-control" name="table" value="'.$table_content.'">
         <input type="hidden" class="form-control" name="id" value="'.$id.'">
         <input type="hidden" class="form-control" name="parent_id" value="'.$parent_id.'">
-        <input type="hidden" class="form-control" name="ent_id" value="'.$ent_id.'">';
+        <input type="hidden" class="form-control" name="ent_id" value="'.$ent_id.'">
+        <input type="hidden" class="form-control" name="ent_id" value="'.$ent_limit.'">';
     if ($settings['content']) {
       $table_view .= '
         <table class="table table-sm text-left datatableModal">
@@ -1378,6 +1366,7 @@ class Api extends My_Controller {
     $list_selected   = $this->input->post('list_selected');
     $ent_content_Id  = $this->input->post('ent_content_Id');
     $ent_fields      = $this->input->post('ent_fields');
+    $ent_limit       = (empty($this->input->post('ent_limit')) ? '' : $this->input->post('ent_limit'));
 
     if ($ent_content_Id && $list_selected) {
       $entList = array_unique( array_merge($list_selected, $ent_content_Id));
@@ -1390,18 +1379,25 @@ class Api extends My_Controller {
     }
 
     $view = '';
+    $i = 0;
     foreach ($entList as $key => $value) {
-      $entContentby_id = $this->general_m->get_row_by_id('content', $value);
-      $view .= '
-          <li><input type="hidden" name="'.$ent_fields.'[]" value="'.$value.'" class="ent-list">
-            <label for="input'.$entContentby_id->title.'">'.$entContentby_id->title.'</label>
-            <a><i class="fa fa-times" aria-hidden="true"></i></a
-          </li>
-        ';
+      if ($ent_limit) {
+        ++$i;
+        if ($i <= $ent_limit) {
+          $entContentby_id = $this->general_m->get_row_by_id('content', $value);
+          $view .= '
+              <li><input type="hidden" name="'.$ent_fields.'[]" value="'.$value.'" class="ent-list">
+                <label for="input'.$entContentby_id->title.'">'.$entContentby_id->title.'</label>
+                <a><i class="fa fa-times" aria-hidden="true"></i></a
+              </li>
+            ';
+        }
+      }
     }
 
     $data = array(
       'html' =>  $view,
+      'counter' => $i
     );
     echo json_encode($data);
   }
