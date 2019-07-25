@@ -69,8 +69,9 @@
         ?>
         <tr>
           <th style="width:5%" scope="row"><?php echo ++$no; ?></th>
-          <td><img src="<?php echo $file_thumb ?>" class="img-thumbnail" heigth="10" width="20"/><?php echo $name; ?></a></td>
-          <td><?php echo ($key->file ? $key->file : ''); ?></td>
+          <td><img src="<?php echo $file_thumb ?>" class="img-thumbnail" heigth="10" width="20"/>
+            <?php echo ((strlen($name) <= 25) ? ucfirst($name) : substr(ucfirst($name), 0, 25)."..."); ?></a></td>
+          <td><?php echo ((strlen($key->file) <= 25) ? $key->file : substr($key->file, 0, 25)."...".$key->ext) ?></td>
           <td style="width:10% "><?php echo $key->size; ?> kB</td>
           <td style="width:20% "><?php echo ($key->created_at ? $key->created_at : ''); ?></td>
           <td scope="row">

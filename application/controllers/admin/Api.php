@@ -521,9 +521,10 @@ class Api extends My_Controller {
 
     //upload.php
     if($_FILES["file"]["name"] != ''){
+      $file = str_replace(' ', '-', $_FILES['file']['name']);
       $config = $this->config->item('setting_upload');
       $config['upload_path'] = $settings['upload_path'];
-      $config['file_name']   = $_FILES["file"]["name"];
+      $config['file_name']   = $file;
       if (!is_dir($config['upload_path'])) {
         mkdir($config['upload_path'], 0777, TRUE);
       } 
@@ -553,7 +554,7 @@ class Api extends My_Controller {
 
       // create Thumbs
       $config = $this->config->item('settings_image');
-      $config['source_image'] = "{$settings['upload_path']}/{$_FILES["file"]["name"]}";
+      $config['source_image'] = "{$settings['upload_path']}/{$file}";
       $config['create_thumb'] = TRUE;
       $config['new_image']    = "{$settings['upload_path']}/thumb";
       if (!is_dir($config['new_image'])) {
@@ -601,8 +602,9 @@ class Api extends My_Controller {
           $getSize = get_headers($file_thumb, 1); 
           $table_view .= '<tr>
               <td scope="row">'.++$no.'</td>
-              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
-              <td>'.($key->file ? $key->file : '').'</td>
+              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>
+              '.((strlen($name) <= 25) ? ucfirst($name) : substr(ucfirst($name), 0, 25)."...").'</td>
+              <td>'.((strlen($name) <= 25) ? $key->file : substr($key->file, 0, 25)."...".$key->ext).'</td>
               <td>'.$getSize['Content-Length'].' kB </td>
               <td>'.date("d/m/Y", strtotime($key->created_at)).'</td>
               </tr>';
