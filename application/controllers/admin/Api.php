@@ -606,7 +606,7 @@ class Api extends My_Controller {
               '.((strlen($name) <= 25) ? ucfirst($name) : substr(ucfirst($name), 0, 25)."...").'</td>
               <td>'.((strlen($name) <= 25) ? $key->file : substr($key->file, 0, 25)."...".$key->ext).'</td>
               <td>'.$getSize['Content-Length'].' kB </td>
-              <td>'.date("d/m/Y", strtotime($key->created_at)).'</td>
+              <td>'.date("d/m/Y h:i A", strtotime($key->created_at)).'</td>
               </tr>';
         }
         $table_view .= '</tbody></table>';
@@ -984,7 +984,7 @@ class Api extends My_Controller {
             <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
             <td>'.($key->file ? $key->file : '').'</td>
             <td style="width:15%;">'.$key->size.' kB </td>
-            <td style="width:25%;">'.date("d/m/Y", strtotime($key->created_at)).'</td>
+            <td style="width:25%;">'.date("d/m/Y h:i A", strtotime($key->created_at)).'</td>
             </tr>';
       }
       $table_view .= '</tbody></table>';
@@ -1150,7 +1150,7 @@ class Api extends My_Controller {
             <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
             <td>'.($key->file ? $key->file : '').'</td>
             <td style="width:15%;">'.$key->size.' kB </td>
-            <td style="width:25%;">'.date("d/m/Y", strtotime($key->created_at)).'</td>
+            <td style="width:25%;">'.date("d/m/Y h:i A", strtotime($key->created_at)).'</td>
             </tr>';
       }
       $table_view .= '</tbody></table>';

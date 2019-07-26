@@ -73,7 +73,7 @@
             <?php echo ((strlen($name) <= 25) ? ucfirst($name) : substr(ucfirst($name), 0, 25)."..."); ?></a></td>
           <td><?php echo ((strlen($key->file) <= 25) ? $key->file : substr($key->file, 0, 25)."...".$key->ext) ?></td>
           <td style="width:10% "><?php echo $key->size; ?> kB</td>
-          <td style="width:20% "><?php echo ($key->created_at ? $key->created_at : ''); ?></td>
+          <td style="width:20% "><?php echo date("d/m/Y h:i A", strtotime($key->created_at)); ?></td>
           <td scope="row">
             <a href="<?php echo base_url("{$action}/{$handle}/delete/{$key->id}"); ?>"><i class="fas fa-minus-circle"></i></a>
           </td>
