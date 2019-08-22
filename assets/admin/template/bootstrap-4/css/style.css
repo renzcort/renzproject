@@ -683,7 +683,7 @@ header nav.menu .navbar-nav > li {
   max-width: 170px;
   background: #fff;
 }
-#sortable1, #sortable2{
+#sortable1, #sortable2, .sortable {
   min-height: 2rem;
 }
 .middle-content #layout .nav-tabs .nav-item {
@@ -1195,6 +1195,11 @@ table .no {
 }
 #categoriesModal .modal-footer {
   background: #EBECEE
+}
+
+span.ui-icon-close {
+  float : right;
+  margin: 2px 0;
 }
 
 /* #uploadModal tbody tr:nth-child(odd) {

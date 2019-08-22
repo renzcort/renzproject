@@ -828,3 +828,92 @@
     });
   }
 
+  /**
+   * This is function to tabs add and remoave 
+   */
+  function tabsMultisortable() {
+    $('#dialog').append('<form> <fieldset class="ui-helper-reset"> <label for="tab_title">Title</label><input type="text" name="tab_title" id="tab_title" value="Tab Title" class="ui-widget-content ui-corner-all"></fieldset> </form>');
+    var tabTitle = $( "#tab_title" ),
+      tabContent = $( "#tab_content" ),
+      // tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>",
+      tabTemplate = '<a href="#{href}" class="nav-link active #{id}"  data-toggle="tab" role="tab" aria-controls="#{id}" aria-selected="true">#{label}<span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></a>',
+      tabCounter = 2;
+
+     // add tabs layout
+    removeTab();
+    $('#add_tab').click(function() {
+      dialog.dialog( "open" );
+    });
+ 
+    // Modal dialog init: custom buttons and a "close" callback resetting the form inside
+    var dialog = $( "#dialog" ).dialog({
+      autoOpen: false,
+      modal: true,
+      buttons: {
+        Add: function() {
+          addTab();
+          $( this ).dialog( "close" );
+        },
+        Cancel: function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      close: function() {
+        form[ 0 ].reset();
+      }
+    });
+ 
+    // AddTab form: calls addTab function on submit and closes the dialog
+    var form = dialog.find( "form" ).on( "submit", function( event ) {
+      addTab();
+      dialog.dialog( "close" );
+      event.preventDefault();
+    });
+ 
+    // Actual addTab function: adds new tab using the input from the form above
+    function addTab() {
+      var label = tabTitle.val() || "Tab " + tabCounter,
+        id = "tabs-" + tabCounter,
+        li = tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ).replace( /#\{id\}/g, id ),
+        tabContentHtml = tabContent.val() || "Tab " + tabCounter + " content.";
+
+      $('.field-tabs').append('<div class="field-group" id="'+ id +'"> <ul class="nav nav-tabs" role="tablist"> <li class="nav-item" data-id="'+id+'">' + li + '</li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab"> <ul class="sortable text-center list-group connectedSortable"></ul> </div> </div> </div>');
+      
+      tabCounter++;
+
+      $('.sortable').multisortable({
+        items: 'li',
+        connectWith: '.sortable',
+        container: '.tab-content',
+      });
+
+      // Close icon: removing the tab on click
+      $("#"+id).on( "click", "span.ui-icon-close", function( event ) {
+        event.preventDefault();
+        var panelId = $( this ).closest('a').attr( "aria-controls" );
+        var panelSelector = "#" + panelId + " .sortable";
+        var count   = $(panelSelector).children().length;
+        if (count == 0) {
+          $( "#" + panelId ).remove();
+        } else {
+          confirm("your tabs is not empty, please drag and drop your list");
+        }
+      });
+    }
+  
+    function removeTab() {
+      // Close icon: removing the tab on click
+      $('span.ui-icon-close').on( "click", function( event ) {
+        event.preventDefault();
+        var panelId = $( this ).closest('a').attr( "aria-controls" );
+        var panelSelector = "#" + panelId + " .sortable";
+        var count   = $(panelSelector).children().length;
+        if (count == 0) {
+          $( "#" + panelId ).remove();
+        } else {
+          confirm("your tabs is not empty, please drag and drop your list");
+        }
+      });
+    }
+  }
+

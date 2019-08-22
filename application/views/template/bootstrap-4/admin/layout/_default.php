@@ -16,6 +16,15 @@
   
     <title><?php echo ($title ? ucfirst($title) : ''); ?></title>
 
+    <style type="text/css">
+      #dialog label, #dialog input { display:block; }
+      #dialog label { margin-top: 0.5em; }
+      #dialog input, #dialog textarea { width: 95%; }
+      #tabs { margin-top: 1em; }
+      #tabs li .ui-icon-close { float: left; margin: 0.4em 0.2em 0 0; cursor: pointer; }
+      #add_tab { cursor: pointer; }
+    </style>
+
   </head>
   <body>
 
@@ -174,6 +183,7 @@
 
     <script type="text/javascript" src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.9.0/jquery.serializejson.min.js"></script>
+    <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/jquery.multisortable.js"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/main.js"></script>
 
     <script type="text/javascript">
@@ -222,12 +232,6 @@
           }
         });
 
-        // add tabs layout
-        $('.new-tabs button').click(function() {
-          $('.field-tabs').append('<div class="field-group"> <ul class="nav nav-tabs" id="myTab" role="tablist"> <li class="nav-item"> <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a> </li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable1" class="text-center list-group connectedSortable"> <li class="list-group-item active">Lion</li> <li class="list-group-item">Dog</li> <li class="list-group-item">Cat</li> <li class="list-group-item">Tiger</li> </ul> </div> </div> </div>');
-        });
-
-
         // click navbar active
         $('.sidebar .nav-link').click(function(event) {
           console.log($(this));
@@ -258,6 +262,13 @@
         $("#sortable1, #sortable2").sortable({
           connectWith: ".connectedSortable"
         }).disableSelection();
+
+        $('.sortable').multisortable({
+          items: 'li',
+          connectWith: '.sortable',
+          container: '.tab-content',
+        });
+
         /*End Tabs Fields*/
 
         $('#section-entries-list tbody').sortable({
@@ -407,6 +418,7 @@
 
 
         // getTabsFieldsList();
+        tabsMultisortable();
         getGroupsById();
         deleteGroupsById();
         getDataByIdGroups();
