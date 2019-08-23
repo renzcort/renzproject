@@ -259,16 +259,9 @@
         /**
          * Tabs Fields
          */
-        $("#sortable1, #sortable2").sortable({
+        $(".sortable, #sortable1, #sortable2").sortable({
           connectWith: ".connectedSortable"
         }).disableSelection();
-
-        $('.sortable').multisortable({
-          items: 'li',
-          connectWith: '.sortable',
-          container: '.tab-content',
-        });
-
         /*End Tabs Fields*/
 
         $('#section-entries-list tbody').sortable({

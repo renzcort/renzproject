@@ -836,13 +836,23 @@
     var tabTitle = $( "#tab_title" ),
       tabContent = $( "#tab_content" ),
       // tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>",
-      tabTemplate = '<a href="#{href}" class="nav-link active #{id}"  data-toggle="tab" role="tab" aria-controls="#{id}" aria-selected="true">#{label}<span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></a>',
+      tabTemplate = '<a href="#{href}" class="nav-link active #{id}"  data-toggle="tab" role="tab" aria-controls="#{id}" aria-selected="true">#{label} <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span> <span class="ui-icon ui-icon-pencil" role="presentation">Edit Tab</span></a>', 
       tabCounter = 2;
 
      // add tabs layout
     removeTab();
     $('#add_tab').click(function() {
       dialog.dialog( "open" );
+    });
+
+   $('span.ui-icon-pencil').click(function(event) {
+      event.preventDefault();
+      $('#dialog').find("fieldset #id").remove();
+      var panelId  = $( this ).closest('a').attr( "aria-controls" );
+      var tabTitle = $.trim($( this ).closest('a').clone().children().remove().end().text());
+      $('#tab_title').val(tabTitle);
+      $('#dialog').find("fieldset").append("<input type='hidden' id='id' value='"+panelId+"'>");
+      dialog2.dialog( "open" );
     });
  
     // Modal dialog init: custom buttons and a "close" callback resetting the form inside
@@ -862,6 +872,23 @@
         form[ 0 ].reset();
       }
     });
+
+    var dialog2 = $( "#dialog" ).dialog({
+      autoOpen: false,
+      modal: true,
+      buttons: {
+        Update: function() {
+          updateTab();
+          $( this ).dialog( "close" );
+        },
+        Cancel : function() {
+          $( this ).dialog( "close" );
+        }
+      },
+      close: function() {
+        form2[ 0 ].reset();
+      }
+    });
  
     // AddTab form: calls addTab function on submit and closes the dialog
     var form = dialog.find( "form" ).on( "submit", function( event ) {
@@ -869,6 +896,14 @@
       dialog.dialog( "close" );
       event.preventDefault();
     });
+
+        // AddTab form: calls addTab function on submit and closes the dialog
+    var form2 = dialog2.find( "form" ).on( "submit", function( event ) {
+      updateTab();
+      dialog.dialog( "close" );
+      event.preventDefault();
+    });
+
  
     // Actual addTab function: adds new tab using the input from the form above
     function addTab() {
@@ -878,14 +913,11 @@
         tabContentHtml = tabContent.val() || "Tab " + tabCounter + " content.";
 
       $('.field-tabs').append('<div class="field-group" id="'+ id +'"> <ul class="nav nav-tabs" role="tablist"> <li class="nav-item" data-id="'+id+'">' + li + '</li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab"> <ul class="sortable text-center list-group connectedSortable"></ul> </div> </div> </div>');
-      
       tabCounter++;
 
-      $('.sortable').multisortable({
-        items: 'li',
-        connectWith: '.sortable',
-        container: '.tab-content',
-      });
+      $(".sortable, #sortable1, #sortable2").sortable({
+        connectWith: ".connectedSortable"
+      }).disableSelection();
 
       // Close icon: removing the tab on click
       $("#"+id).on( "click", "span.ui-icon-close", function( event ) {
@@ -900,6 +932,27 @@
         }
       });
     }
+
+    function updateTab() {
+      var label = tabTitle.val() || "Tab " + tabCounter, 
+        id = $("#id").val(),
+        li = tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ).replace( /#\{id\}/g, id ),
+        panelTitle = "#" + id + " .nav-link";
+      $( panelTitle ).remove();
+      $("#" + id).find("ul.nav-tabs .nav-item").append(li);      
+
+
+      $("#"+id).on( "click", "span.ui-icon-pencil", function( event ) {
+        event.preventDefault();
+        $('#dialog').find("fieldset #id").remove();
+        var panelId  = $( this ).closest('a').attr( "aria-controls" );
+        var tabTitle = $.trim($( this ).closest('a').clone().children().remove().end().text());
+        $('#tab_title').val(tabTitle);
+        $('#dialog').find("fieldset").append("<input type='hidden' id='id' value='"+panelId+"'>");
+        dialog2.dialog( "open" );
+      });
+    }
+
   
     function removeTab() {
       // Close icon: removing the tab on click

@@ -98,7 +98,8 @@
               <ul class="nav nav-tabs" role="tablist">
                 <li class="nav-item" data-id= "tabs-1">
                   <a class="nav-link active tabs-1" data-toggle="tab" href="#tabs-1" role="tab" aria-controls="tabs-1" aria-selected="true">Tabs 1
-                  <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></a>
+                  <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span>
+                  <span class="ui-icon ui-icon-pencil" role="presentation">Edit Tab</span></a>
                 </li>
               </ul>
               <div class="tab-content" id="myTabContent">
@@ -136,7 +137,7 @@
                 </ul>
                 <div class="tab-content" id="myTabContent">
                   <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    <ul id="sortable2" class="sortable text-center list-group connectedSortable">
+                    <ul class="sortable text-center list-group connectedSortable">
                     <?php if ($fields): ?>
                       <?php foreach ($fields as $value): ?>
                         <?php if ($value->group_id == $key->id): ?>
