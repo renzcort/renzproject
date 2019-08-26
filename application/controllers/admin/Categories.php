@@ -128,6 +128,8 @@ class Categories extends My_Controller {
       'parent_table'       =>  'categories',
       'parent_id'          =>  $params->id          
     );
+
+    $settings['tabs_elements'] = $this->tabs_layout($settings['element']);
     // var_dump($settings['fields']);die;
     foreach ($settings['element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
@@ -291,7 +293,11 @@ class Categories extends My_Controller {
       'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
-    
+    $settings['tabs_elements'] = $this->tabs_layout($settings['element']);
+    // $result  = array_merge_value('id', $elm);
+    // echo "<pre>" . var_export($result, true) . "</pre>";
+
+    /*this is function to show tabs fields */
     if ($settings['element']) {
       foreach ($settings['element'] as $key) {
         $fieldsId[] = $key->fields_id; 
@@ -300,50 +306,8 @@ class Categories extends My_Controller {
     } else {
       $settings['elementFields'] = [];
     }
-    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
 
-/*
-    $this->form_validation->set_rules('name', 'Name', "trim|required|is_unique[renz_{$settings['table']}.name]");
-    $this->form_validation->set_rules('handle', 'Handle', "trim|required|is_unique[renz_{$settings['table']}.handle]");
-    if ($this->form_validation->run() == TRUE) {
-      if ($_POST['button'] == 'update') {
-        (empty($this->input->post('locale-es')) ? $locale = $this->input->post('locale-id') : $locale = $this->input->post('locale-es'));
-        (empty($this->input->post('parent-es')) ? $parent = $this->input->post('parent-id') : $parent = $this->input->post('parent-es'));
-        $data = array(
-          'name'       => ucfirst($this->input->post('name')),
-          'handle'     => lcfirst(str_replace(' ', '', ucwords($this->input->post('name')))),
-          'url'        => $this->input->post('url'),
-          'template'   => $this->input->post('template'),
-          'locale'     => $locale,
-          'parent'     => $parent,
-          'maxlevel'   => $this->input->post('maxlevel'),
-          'description'=> $this->input->post('description'),
-          'created_by' => $this->data['userdata']['id'],
-        );
-        $this->general_m->update($settings['table'], $data, $id);
-       helper_log('edit', "Update {$settings['title']} has successfully");
-        //get fields to element 
-        $fieldsId = $this->input->post('fieldsId');
-        (isset($id) ? $id = $tableFieldsId : $id = $id);
-        $this->general_m->delete("{$settings['table']}_element", $id);
-        if (!empty($fieldsId)) {
-          $i = 0;
-          foreach ($fieldsId as $value) {
-            $element = array(
-              'categories_id' =>  $id,
-              'fields_id'     =>  $value,
-              'order'         =>  ++$i,
-            );
-            $this->general_m->create("{$settings['table']}_element", $element, FALSE);
-          }
-          helper_log('add', "add element create has successfully {$element['order']} record");
-        }        
-        $this->session->set_flashdata("message", "{$settings['title']} has successfully updated");
-        redirect($settings['action']);
-      } 
-    } else {
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }*/
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }  
 
   /*DELETE*/
@@ -407,6 +371,36 @@ class Categories extends My_Controller {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
       redirect($settings['action']);
     }
+  }
+
+  /*This is function to tabs layout */
+  public function tabs_layout($data) {
+    $tabs_id = [];
+    foreach ($data as $key) {
+      $tabs_settings = json_decode($key->tabs_settings);
+      if (in_array($tabs_settings->id, array_unique($tabs_id))) {
+        $fields[$tabs_settings->id][]   = $key->fields_id;
+        $tabs_title[$tabs_settings->id] = $tabs_settings->title;  
+        $tabs_count[$tabs_settings->id] = $tabs_settings->count;  
+      } else {
+        $fields[$tabs_settings->id][]   = $key->fields_id;
+        $tabs_title[$tabs_settings->id] = $tabs_settings->title;  
+        $tabs_count[$tabs_settings->id] = $tabs_settings->count;  
+      }
+      $tabs_id[]  = $tabs_settings->id;
+    }
+
+    foreach ($fields as $key => $value) {
+      if (in_array($key, array_unique($tabs_id))) {
+        $elm[] = array(
+          'id'     => $key,
+          'title'  => $tabs_title[$key],
+          'count'  => $tabs_count[$key],
+          'fields' => $value,
+        );
+      }
+    }
+    return $elm;
   }
 
 }

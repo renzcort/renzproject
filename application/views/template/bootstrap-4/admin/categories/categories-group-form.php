@@ -90,71 +90,7 @@
         </div>
       </div>
       <div class="tab-pane fade" id="layout" role="tabpanel" aria-labelledby="layout-tab">
-        <div class="form-tabs" id="layout">
-          <h5 class="heading">Design Your Field Layout</h5>
-          <div class="field-tabs d-flex flex-row flex-wrap">
-            <div id="dialog" title="Tab data"></div>
-            <div class="field-group" id="tabs-1" >
-              <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item" data-id= "tabs-1">
-                  <a class="nav-link active tabs-1" data-toggle="tab" href="#tabs-1" role="tab" aria-controls="tabs-1" aria-selected="true">Tabs 1
-                  <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span>
-                  <span class="ui-icon ui-icon-pencil" role="presentation">Edit Tab</span></a>
-                </li>
-              </ul>
-              <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="tabs-1">
-                  <ul class="sortable text-center list-group connectedSortable">
-                    <?php 
-                      foreach ($element as $elm) {
-                        foreach ($fields as $key) {
-                          if ($elm->fields_id == $key->id) {
-                            echo '<li class="list-group-item fields-list" data-fieldsId="'.$key->id.'">'.$key->name.'</li>';
-                          }
-                        }
-                      }
-                    ?> 
-                  </ul>
-                </div>
-              </div>
-            </div>        
-          </div>
-          <div class="">
-            <button type="button" class="btn btn-info" id="add_tab">+ New Tabs</button>
-          </div>
-          <hr class="break-line"></hr>
-          <div class="field-column d-flex flex-row flex-wrap">
-            <?php if ($fields_group): ?>
-              <?php $i = 0; ?>
-              <?php foreach ($fields_group as $key): ?>
-              <div class="field-group">
-                <ul class="nav nav-tabs" id="myTab" role="tablist">
-                  <li class="nav-item">
-                    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">
-                      <?php echo ucfirst($key->name); ?>
-                    </a>
-                  </li>
-                </ul>
-                <div class="tab-content" id="myTabContent">
-                  <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
-                    <ul class="sortable text-center list-group connectedSortable">
-                    <?php if ($fields): ?>
-                      <?php foreach ($fields as $value): ?>
-                        <?php if ($value->group_id == $key->id): ?>
-                          <?php if (!in_array($value->id, $elementFields)): ?>
-                            <li class="list-group-item fields-list" data-fieldsId='<?php echo $value->id; ?>'><?php echo $value->name; ?></li>
-                          <?php endif ?>
-                        <?php endif ?>
-                      <?php endforeach ?>
-                    <?php endif ?>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-              <?php endforeach ?>
-            <?php endif ?>
-          </div>
-        </div>
+        <?php $this->load->view('template/bootstrap-4/admin/partial/tabs-form'); ?>
       </div>
     </div>
   </div>

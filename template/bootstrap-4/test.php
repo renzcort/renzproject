@@ -37,61 +37,23 @@
     </style>
   </head>
   <body>
-    <div id="dialog" title="Tab data">
-      <form>
-        <fieldset class="ui-helper-reset">
-          <label for="tab_title">Title</label>
-          <input type="text" name="tab_title" id="tab_title" value="Tab Title" class="ui-widget-content ui-corner-all">
-          <label for="tab_content">Content</label>
-          <textarea name="tab_content" id="tab_content" class="ui-widget-content ui-corner-all">Tab content</textarea>
-        </fieldset>
-      </form>
-    </div>
-
-    <button id="add_tab">Add Tab</button>
     
-
-    <div id="tabs">
-      <ul>
-        <li><a href="#tabs-1">Nunc tincidunt</a> <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>
-      </ul>
-      <div id="tabs-1">
-        <p>Proin elit arcu, rutrum commodo, vehicula tempus, commodo a, risus. Curabitur nec arcu. Donec sollicitudin mi sit amet mauris. Nam elementum quam ullamcorper ante. Etiam aliquet massa et lorem. Mauris dapibus lacus auctor risus. Aenean tempor ullamcorper leo. Vivamus sed magna quis ligula eleifend adipiscing. Duis orci. Aliquam sodales tortor vitae ipsum. Aliquam nulla. Duis aliquam molestie erat. Ut et mauris vel pede varius sollicitudin. Sed ut dolor nec orci tincidunt interdum. Phasellus ipsum. Nunc tristique tempus lectus.</p>
-      </div>
-    </div>
-     
-<!-- 
-      <div class="field-tabs d-flex flex-row flex-wrap">
-        <div class="field-group" id="tabs">
-          <ul class="nav nav-tabs" role="tablist">
-            <li><a href="#tabs-1">Nunc tincidunt</a> <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span></li>
-          </ul>
-          <div class="tab-content">
-            <div id="tabs-1">
-              <ul class="sortable"></ul>
-            </div>
-          </div>
-        </div>        
-      </div> -->
-
-    <div class="" style="margin-top: 10rem;">
-      <ul class="sortable">
-        <li class="ui-state-default">Item 1</li>
-        <li class="ui-state-default">Item 2</li>
-        <li class="ui-state-default">Item 3</li>
-        <li class="ui-state-default">Item 4</li>
-        <li class="ui-state-default">Item 5</li>
-      </ul>
-
-      <ul class="sortable">
-        <li class="ui-state-highlight">Item 1</li>
-        <li class="ui-state-highlight">Item 2</li>
-        <li class="ui-state-highlight">Item 3</li>
-        <li class="ui-state-highlight">Item 4</li>
-        <li class="ui-state-highlight">Item 5</li>
-      </ul>
-    </div>
-
+    <ul class="nav nav-pills mb-3" id="" role="">
+  <li class="nav-item">
+    <a class="nav-link active" id="pills-ho-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Home</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</a>
+  </li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-ho-tab">...1</div>
+  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...2</div>
+  <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...3</div>
+</div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

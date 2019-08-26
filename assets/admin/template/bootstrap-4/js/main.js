@@ -138,12 +138,37 @@
   }
 
   function getTabsFieldsList() {
-    var fieldsId = $('#sortable1 .fields-list').map(function() {
+    var fieldsId = $('#sortable-in .fields-list').map(function() {
       return $(this).data('fieldsid');
     }).get();
+
+    /*Multiple sortable tabs*/
+    var id_maps, tabs_title, lists = [];
+    var list;
+    var multipleTabs = $(".my-tabs").each(function() {
+      var tabs_fields = [];
+      var id = $(this).attr('id');
+      var title = $("#"+id+" li.nav-item").data('tabs-title');
+      var count = $("#"+id).data('count');
+      var fields = $("#"+id+" #sortable-in .fields-list").each(function() {
+        tabs_fields.push($(this).data('fieldsid'));
+      });
+      if (tabs_fields.length != 0) {
+        list = {
+          'id' : id,
+          'title' : title,
+          'count' : count,
+          'fields' : tabs_fields,
+        };
+        lists.push(list);
+      }
+      console.log(lists);
+    });
+
     var jTable = ConvertFormToJSON();
     var jFields = {
-      fieldsId: fieldsId
+      fieldsId: fieldsId,
+      multipleTabs : lists,
     };
 
     // assets FIELD
@@ -157,6 +182,7 @@
       var url = base_url + "admin/Api/jsonUsersFieldsForm";
     } else {
       var jData = Object.assign(jTable, jFields);
+      console.log(jData);
       // var url   = '<?php echo base_url("admin/Api/jsonTabsFields") ?>';
       var url = base_url + "admin/Api/jsonTabsFields";
     }
@@ -836,23 +862,43 @@
     var tabTitle = $( "#tab_title" ),
       tabContent = $( "#tab_content" ),
       // tabTemplate = "<li><a href='#{href}'>#{label}</a> <span class='ui-icon ui-icon-close' role='presentation'>Remove Tab</span></li>",
-      tabTemplate = '<a href="#{href}" class="nav-link active #{id}"  data-toggle="tab" role="tab" aria-controls="#{id}" aria-selected="true">#{label} <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span> <span class="ui-icon ui-icon-pencil" role="presentation">Edit Tab</span></a>', 
-      tabCounter = 2;
+      tabTemplate = '<a href="#{href}" class="nav-link active #{id}"  data-toggle="tab" role="tab" aria-controls="#{id}" aria-selected="true">#{label} <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span> <span class="ui-icon ui-icon-pencil" role="presentation">Edit Tab</span></a>'; 
+      
+    /*Get Counter Tabs*/
+    if ($('.my-tabs').length) {
+      var tabCounter = $('.my-tabs').last().data('count') + 1
+    } else {
+      var tabCounter = 1;
+    }
 
      // add tabs layout
-    removeTab();
     $('#add_tab').click(function() {
+      $("#dialog_id").remove();
       dialog.dialog( "open" );
     });
 
+    // Close icon: removing the tab on click
+    $('span.ui-icon-close').on( "click", function( event ) {
+      event.preventDefault();
+      var panelId = $( this ).closest('a').attr( "aria-controls" );
+      var panelSelector = "#" + panelId + " .sortable";
+      var count   = $(panelSelector).children().length;
+      if (count == 0) {
+        $( "#" + panelId ).remove();
+      } else {
+        confirm("your tabs is not empty, please drag and drop your list");
+      }
+    });
+  
+   // Update Title Heading 
    $('span.ui-icon-pencil').click(function(event) {
       event.preventDefault();
-      $('#dialog').find("fieldset #id").remove();
+      $("#dialog_id").remove();
       var panelId  = $( this ).closest('a').attr( "aria-controls" );
       var tabTitle = $.trim($( this ).closest('a').clone().children().remove().end().text());
       $('#tab_title').val(tabTitle);
-      $('#dialog').find("fieldset").append("<input type='hidden' id='id' value='"+panelId+"'>");
-      dialog2.dialog( "open" );
+      $('#dialog').find("fieldset").append("<input type='hidden' id='dialog_id' value='"+panelId+"'>");
+      dialog.dialog( "open" );
     });
  
     // Modal dialog init: custom buttons and a "close" callback resetting the form inside
@@ -860,8 +906,12 @@
       autoOpen: false,
       modal: true,
       buttons: {
-        Add: function() {
-          addTab();
+        Submit: function() {
+          if ($("#dialog_id").length == 0) {
+            addTab();
+          } else {
+            updateTab();
+          }
           $( this ).dialog( "close" );
         },
         Cancel: function() {
@@ -873,46 +923,27 @@
       }
     });
 
-    var dialog2 = $( "#dialog" ).dialog({
-      autoOpen: false,
-      modal: true,
-      buttons: {
-        Update: function() {
-          updateTab();
-          $( this ).dialog( "close" );
-        },
-        Cancel : function() {
-          $( this ).dialog( "close" );
-        }
-      },
-      close: function() {
-        form2[ 0 ].reset();
-      }
-    });
  
     // AddTab form: calls addTab function on submit and closes the dialog
     var form = dialog.find( "form" ).on( "submit", function( event ) {
-      addTab();
+      if ( $("#dialog_id").length == 0 ) {
+        addTab();
+      } else {
+        updateTab();
+      }
       dialog.dialog( "close" );
       event.preventDefault();
     });
-
-        // AddTab form: calls addTab function on submit and closes the dialog
-    var form2 = dialog2.find( "form" ).on( "submit", function( event ) {
-      updateTab();
-      dialog.dialog( "close" );
-      event.preventDefault();
-    });
-
  
     // Actual addTab function: adds new tab using the input from the form above
     function addTab() {
-      var label = tabTitle.val() || "Tab " + tabCounter,
+      var label = tabTitle.val().charAt(0).toUpperCase() + tabTitle.val().slice(1) || "Tab " + tabCounter,
+        slug = label.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,''),
         id = "tabs-" + tabCounter,
         li = tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ).replace( /#\{id\}/g, id ),
         tabContentHtml = tabContent.val() || "Tab " + tabCounter + " content.";
 
-      $('.field-tabs').append('<div class="field-group" id="'+ id +'"> <ul class="nav nav-tabs" role="tablist"> <li class="nav-item" data-id="'+id+'">' + li + '</li> </ul> <div class="tab-content" id="myTabContent"> <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab"> <ul class="sortable text-center list-group connectedSortable"></ul> </div> </div> </div>');
+      $('.field-tabs').append('<div class="field-group my-tabs" id="'+ id +'" data-count="'+ tabCounter +'"> <ul class="nav nav-tabs" role="tablist"> <li class="nav-item" data-tabs-title="'+slug+'">' + li + '</li> </ul> <div class="tab-content"> <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab"> <ul id="sortable-in" class="sortable text-center list-group connectedSortable"></ul> </div> </div> </div>');
       tabCounter++;
 
       $(".sortable, #sortable1, #sortable2").sortable({
@@ -931,41 +962,46 @@
           confirm("your tabs is not empty, please drag and drop your list");
         }
       });
+
+      // Update Icon Label Tabs
+       $("#"+id).on( "click", "span.ui-icon-pencil", function( event ) {
+        // event.preventDefault();
+        $("#dialog_id").remove();
+        var panelId  = $( this ).closest('a').attr( "aria-controls" );
+        var tabTitle = $.trim($( this ).closest('a').clone().children().remove().end().text());
+        $('#tab_title').val(tabTitle);
+        $('#dialog').find("fieldset").append("<input type='hidden' id='dialog_id' value='"+panelId+"'>");
+        dialog.dialog( "open" );
+      });
     }
 
     function updateTab() {
-      var label = tabTitle.val() || "Tab " + tabCounter, 
-        id = $("#id").val(),
-        li = tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ).replace( /#\{id\}/g, id ),
-        panelTitle = "#" + id + " .nav-link";
+      var label = tabTitle.val().charAt(0).toUpperCase() + tabTitle.val().slice(1) || "Tab " + tabCounter, 
+          slug = label.toLowerCase().replace(/ /g,'-').replace(/[^\w-]+/g,''),
+          id = $("#dialog_id").val(),
+          li = tabTemplate.replace( /#\{href\}/g, "#" + id ).replace( /#\{label\}/g, label ).replace( /#\{id\}/g, id ),
+          dataTabsTitle = "#" + id + " li.nav-item",
+          panelTitle    = "#" + id + " .nav-link";
+
+      $( dataTabsTitle ).removeAttr('data-tabs-title');
+      $( dataTabsTitle ).attr('data-tabs-title', slug);
       $( panelTitle ).remove();
       $("#" + id).find("ul.nav-tabs .nav-item").append(li);      
 
 
+      $(".sortable, #sortable1, #sortable2").sortable({
+        connectWith: ".connectedSortable"
+      }).disableSelection();
+
+
       $("#"+id).on( "click", "span.ui-icon-pencil", function( event ) {
-        event.preventDefault();
+        // event.preventDefault();
         $('#dialog').find("fieldset #id").remove();
         var panelId  = $( this ).closest('a').attr( "aria-controls" );
         var tabTitle = $.trim($( this ).closest('a').clone().children().remove().end().text());
         $('#tab_title').val(tabTitle);
         $('#dialog').find("fieldset").append("<input type='hidden' id='id' value='"+panelId+"'>");
         dialog2.dialog( "open" );
-      });
-    }
-
-  
-    function removeTab() {
-      // Close icon: removing the tab on click
-      $('span.ui-icon-close').on( "click", function( event ) {
-        event.preventDefault();
-        var panelId = $( this ).closest('a').attr( "aria-controls" );
-        var panelSelector = "#" + panelId + " .sortable";
-        var count   = $(panelSelector).children().length;
-        if (count == 0) {
-          $( "#" + panelId ).remove();
-        } else {
-          confirm("your tabs is not empty, please drag and drop your list");
-        }
       });
     }
   }

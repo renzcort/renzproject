@@ -166,7 +166,7 @@ class Api extends My_Controller {
         $this->general_m->delete($settings['fields_element'], $id, $table_id);
       }
       /*add elements*/
-      if (!empty($fieldsId)) {
+      /*if (!empty($fieldsId)) {
         $i = 0;
         foreach ($fieldsId as $value) {
           if ($settings['table'] == 'section_entries') {
@@ -186,7 +186,35 @@ class Api extends My_Controller {
           $this->general_m->create($settings['fields_element'], $element, FALSE);
         }
         helper_log('add', "add element create has successfully {$element['order']} record");
-      } 
+      } */
+
+      /*multiple tabs element*/
+      $multipleTabs = $this->input->post('multipleTabs');
+      if (!empty($multipleTabs)) {
+        $i = 0;
+        foreach ($multipleTabs as $key) {
+          foreach ($key['fields'] as $value) {
+            if ($settings['table'] == 'section_entries') {
+              $element = array(
+                "{$table_id}"   => $id,
+                'section_id'    => $section_id,
+                'fields_id'     => $value,
+                'tabs_settings' => json_encode(array('id' => $key['id'], 'title' => $key['title'], 'count' => $key['count'])),
+                'order'         =>  ++$i
+              );
+            } else {
+              $element = array(
+                "{$table_id}"   => $id,
+                'fields_id'     => $value,
+                'tabs_settings' => json_encode(array('id' => $key['id'], 'title' => $key['title'], 'count' => $key['count'])),
+                'order'         =>  ++$i
+              );
+            }
+            $this->general_m->create($settings['fields_element'], $element, FALSE);
+          }
+        }
+        helper_log('add', "add multiple tabs element create has successfully {$element['order']} record");
+      }
 
       (($settings['table'] == 'section_entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
       $getFieldsAll     = $this->fields_m->get_all_results();
