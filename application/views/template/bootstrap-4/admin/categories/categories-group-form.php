@@ -1,21 +1,25 @@
-<div class="tabs flex-grow-1" id="categories-group-form"> 
-  <ul class="nav nav-tabs d-flex flex-row flex-nowrap" id="myTab" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link active" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="true">Settings</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" id="layout-tab" data-toggle="tab" href="#layout" role="tab" aria-controls="layout" aria-selected="false">Field Layout</a>
-    </li>
-  </ul>
-
-  <?php
-    $attributes = array('class' => 'form',
-                        'id' => 'MyForm',
-                  ); 
-    echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
-  ?>
-  <div class="middle-content">
-    <div class="tab-content" id="myTabContent">
+<div class="content-body tabs flex-grow-1" id="categories">
+  <div class="categories-group-form" id="middle-content">
+    <?php
+      $attributes = array(
+        'class' => 'form',
+        'id'    => 'MyForm',
+      );
+      echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes);
+    ?>
+    <div class="heading" id="tabs-heading">
+      <ul class="nav d-flex flex-row flex-nowrap" role="tablist">
+        <li class="nav-item">
+          <a class="nav-link active" id="settings-tab" data-toggle="tab" href="#settings" role="tab" 
+          aria-controls="settings" aria-selected="true">Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="layout-tab" data-toggle="tab" href="#layout" role="tab" 
+          aria-controls="layout" aria-selected="false">Field Layout</a>
+        </li>
+      </ul>
+    </div>
+    <div class="tab-content" id="tabs-content-main">
       <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
         <input type="hidden" id="button_name" name="button" value="<?php echo $button_name; ?>">
         <input type="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
@@ -29,14 +33,14 @@
         <div class="form-group">
           <label class="heading required" for="inputName">Name</label>
           <small class="form-text text-muted">What this site will be called in the CP.</small>
-          <input type="text" name="name" class="form-control"  placeholder="Name" 
+          <input type="text" name="name" class="form-control"  placeholder="Name"
           value="<?php echo (!empty($getDataby_id->name) ? $getDataby_id->name : set_value('name')); ?>">
           <div class="form-error"><?php echo form_error('name'); ?></div>
         </div>
         <div class="form-group">
           <label class="heading required" for="inputHandle">Handle</label>
           <small class="form-text text-muted">How you’ll refer to this site in the templates.</small>
-          <input type="text" name="handle" class="form-control"  placeholder="Handle" 
+          <input type="text" name="handle" class="form-control"  placeholder="Handle"
           value="<?php echo (!empty($getDataby_id->handle) ? $getDataby_id->handle : set_value('handle')); ?>">
           <div class="form-error"><?php echo form_error('handle'); ?></div>
         </div>
@@ -57,19 +61,19 @@
             <tbody>
               <tr>
                 <td>id_id</td>
-                <td><input type="text" name="locale-id" class="form-control" 
+                <td><input type="text" name="locale-id" class="form-control"
                   value="<?php echo (!empty($getDataby_id->locale) ? $getDataby_id->locale : set_value('locale')); ?>">
                 </td>
-                <td><input type="text" name="parent-id" class="form-control" placeholder="{parent.uri}/{slug}" 
+                <td><input type="text" name="parent-id" class="form-control" placeholder="{parent.uri}/{slug}"
                   value="<?php echo (!empty($getDataby_id->parent) ? $getDataby_id->parent : set_value('parent')); ?>">
                 </td>
               </tr>
               <tr>
                 <td>es_us</td>
-                <td><input type="text" name="locale-es" class="form-control" 
+                <td><input type="text" name="locale-es" class="form-control"
                   value="<?php echo (!empty($getDataby_id->locale) ? $getDataby_id->locale : set_value('locale')); ?>">
                 </td>
-                <td><input type="text" name="parent-es" class="form-control" placeholder="{parent.uri}/{slug}" 
+                <td><input type="text" name="parent-es" class="form-control" placeholder="{parent.uri}/{slug}"
                   value="<?php echo (!empty($getDataby_id->parent) ? $getDataby_id->parent : set_value('parent')); ?>">
                 </td>
               </tr>
@@ -79,13 +83,13 @@
         <div class="form-group">
           <label class="heading" for="inputCategoryTemplate">Category Template</label>
           <small class="form-text text-muted">The template to use when a category’s URL is requested.</small>
-          <input type="text" name="template" class="form-control" 
+          <input type="text" name="template" class="form-control"
           value="<?php echo (!empty($getDataby_id->template) ? $getDataby_id->template : set_value('template')); ?>">
         </div>
         <div class="form-group">
           <label class="heading" for="inputMaxlevel">Max Levels</label>
           <small class="form-text text-muted">The maximum number of levels this category group can have. Leave blank if you don’t care.</small>
-          <input type="text" name="maxlevel" class="form-control form-number" 
+          <input type="text" name="maxlevel" class="form-control form-number"
           value="<?php echo (!empty($getDataby_id->maxlevel) ? $getDataby_id->maxlevel : set_value('maxlevel')); ?>">
         </div>
       </div>
@@ -93,6 +97,6 @@
         <?php $this->load->view('template/bootstrap-4/admin/partial/tabs-form'); ?>
       </div>
     </div>
+    <?php echo form_close(); ?>
   </div>
-  <?php echo form_close(); ?>
 </div>

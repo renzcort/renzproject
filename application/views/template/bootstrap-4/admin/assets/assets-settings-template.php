@@ -1,16 +1,8 @@
-  <div id="left-content" class="left-content" id="assets-group-list">
-    <div class="sidebar-content">
-      <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="assetsButton"
-      data-table="<?php echo ($table ? $table : ''); ?>">
-        <li class="nav-item">
-          <a href="volumes" class="nav-link <?php echo (($this->uri->segment(4) == 'volumes') ? 'active' : '')?>" data-id="volumes">Volumes</a>
-        </li>
-        <li class="nav-item">
-          <a href="transforms" class="nav-link <?php echo (($this->uri->segment(4) == 'transforms') ? 'active' : '')?>" data-id="transforms">Images Transforms</a>
-        </li>
-      </ul>
-    </div>
+<div class="content-body d-flex flex-row flex-grow-1 justify-content-start assets-list" id="assets">
+  <div id="left-content">
+    <?php $this->load->view('template/bootstrap-4/admin/partial/sidebar-groups'); ?>
   </div>
-  <div id="right-content" class="right-content ml-auto">
+  <div id="right-content">
     <?php $this->load->view($right_content); ?>
   </div>
+</div>

@@ -37,35 +37,39 @@ class Globals extends My_Controller {
   public function index($handle){
     $params = (($handle != '') ? $this->general_m->get_row_by_fields('globals', array('handle' => $handle)) : '');
     $settings = array(
-      'title'          =>  'globals',
-      'subtitle'       =>  FALSE,
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  FALSE,
-      'table'          =>  'globals_content',
-      'action'         =>  "admin/globals/{$handle}",
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(3),
-      'button'         =>  'Save',
-      'button_type'    =>  'submit',
-      'button_name'    =>  'update',
-      'button_tabs'    =>  TRUE,      
-      'content'        =>  'template/bootstrap-4/admin/globals/globals-form',
-      'fields_element' =>  'globals_element',
-      'element'        =>  $this->general_m->get_result_by_fields('globals_element', array('globals_id' => $params->id)),
-      'group_name'     =>  'globals',
-      'group'          =>  $this->general_m->get_all_results('globals'),
-      'group_count'    =>  $this->general_m->count_all_results('globals'),
-      'group_id'       =>  ($this->input->post('group') ? $this->input->post('group') : ''),
-      'fields'         =>  $this->fields_m->get_all_results(),
-      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
-      'assets'         =>  $this->general_m->get_all_results('assets'),
-      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
-      'elementFields'  =>  [],
-      'order'          =>  $this->general_m->get_max_fields('globals', 'order'),
-      'parent_table'   =>  'globals',
-      'parent_id'      =>  $params->id,
-      'getDataby_id'   =>  $this->general_m->get_row_by_id('globals_content', $params->id, 'globals_id'),      
+      'title'              =>  'globals',
+      'subtitle'           =>  FALSE,
+      'breadcrumb'         =>  array('settings'),
+      'subbreadcrumb'      =>  FALSE,
+      'table'              =>  'globals_content',
+      'action'             =>  "admin/globals/{$handle}",
+      'session'            =>  $this->data,
+      'no'                 =>  $this->uri->segment(3),
+      'button'             =>  'Save',
+      'button_type'        =>  'submit',
+      'button_name'        =>  'update',
+      'button_tabs'        =>  TRUE,      
+      'content'            =>  'template/bootstrap-4/admin/globals/globals-form',
+      'fields_element'     =>  'globals_element',
+      'element'            =>  $this->general_m->get_result_by_fields('globals_element', array('globals_id' => $params->id)),
+      'group_name'         =>  'globals',
+      'group'              =>  $this->general_m->get_all_results('globals'),
+      'group_count'        =>  $this->general_m->count_all_results('globals'),
+      'group_id'           =>  ($this->input->post('group') ? $this->input->post('group') : ''),
+      'fields'             =>  $this->fields_m->get_all_results(),
+      'fields_type'        =>  $this->general_m->get_all_results('fields_type'),
+      'assets'             =>  $this->general_m->get_all_results('assets'),
+      'assets_content'     =>  $this->general_m->get_all_results('assets_content'),
+      'categories'         =>  $this->general_m->get_all_results('categories'),
+      'categories_content' =>  $this->general_m->get_all_results('categories_content'),
+      'entries_content'    =>  $this->general_m->get_all_results('content'),
+      'elementFields'      =>  [],
+      'order'              =>  $this->general_m->get_max_fields('globals', 'order'),
+      'parent_table'       =>  'globals',
+      'parent_id'          =>  $params->id,
+      'getDataby_id'       =>  $this->general_m->get_row_by_id('globals_content', $params->id, 'globals_id'),      
     );
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
     foreach ($settings['element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
     }
@@ -127,7 +131,7 @@ class Globals extends My_Controller {
       'elementFields'  =>  [],
       'order'          =>  $this->general_m->get_max_fields('assets', 'order'),
     );
-
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
@@ -156,7 +160,9 @@ class Globals extends My_Controller {
       'order'          =>  $this->general_m->get_max_fields('globals', 'order'),
     );
 
-    $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
+    $settings['getDataby_id']  = $this->general_m->get_row_by_id($settings['table'], $id);
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
+
     if ($settings['element']) {
       foreach ($settings['element'] as $key) {
         $fieldsId[] = $key->fields_id; 

@@ -1,23 +1,25 @@
-<div class="middle-content flex-grow-1" id="fields">
-  <?php
-    $attributes = array('class' => 'form',
-                        'id' => 'MyForm',
-                  ); 
-    echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
-  ?>
+<div class="content-body flex-grow-1" id="fields">
+  <div class="fields-form" id="middle-content">
+    <?php
+      $attributes = array(
+        'class' => 'form',
+        'id'    => 'MyForm',
+      );
+      echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes);
+    ?>
     <input type ="hidden" name="button" value="<?php echo $button_name; ?>">
     <input type ="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
     <input type ="hidden" name="table" value="<?php echo $table; ?>">
     <div class="form-group">
       <label class="heading" for="inputGroup">Group</label>
       <small class="form-text text-muted">Which group should this field be displayed in?</small>
-      <!-- <input type="hidden" name="fieldsGroupId" value="3"> -->
-      <select name="fieldsGroupId" class="form-control costum-select">
+      <!-- <input type="hidden" name="fields-group" value="3"> -->
+      <select name="fields-group" class="form-control costum-select">
         <?php foreach ($group as $key): ?>
-          <option value="<?php echo $key->id; ?>" data-id="<?php echo $key->id; ?>" 
-            <?php echo ((!empty($getDataby_id->group_id) && $getDataby_id->group_id == $key->id) ? 'selected' : '' ) ?>>
-            <?php echo ucfirst($key->name); ?>
-          </option>
+        <option value="<?php echo $key->id; ?>" data-id="<?php echo $key->id; ?>"
+          <?php echo ((!empty($getDataby_id->group_id) && $getDataby_id->group_id == $key->id) ? 'selected' : '' ) ?>>
+          <?php echo ucfirst($key->name); ?>
+        </option>
         <?php endforeach ?>
       </select>
     </div>
@@ -31,7 +33,7 @@
     <div class="form-group">
       <label class="heading required" for="inputHandle">Handle</label>
       <small class="form-text text-muted">How you’ll refer to this field in the templates.</small>
-      <input type="text" name="handle" class="form-control"  placeholder="Handle" 
+      <input type="text" name="handle" class="form-control"  placeholder="Handle"
       value="<?php echo (!empty($getDataby_id->handle) ? $getDataby_id->handle : set_value('handle')); ?>">
       <div class="form-error"><?php echo form_error('handle'); ?></div>
     </div>
@@ -48,12 +50,12 @@
       <label class="heading" for="inputType">Field Type</label>
       <small class="form-text text-muted">What type of field is this?</small>
       <input type="hidden" name="fieldsTypeId" value="<?php echo (!empty($getDataby_id->type_id) ? $getDataby_id->type_id : ''); ?>">
-      <select name="fieldsType" class="form-control costum-select">
+      <select name="fields-type" class="form-control costum-select">
         <?php foreach ($fields_type as $key): ?>
-          <option value ="<?php echo $key->handle; ?>" data-id="<?php echo $key->id; ?>"
-            <?php echo ((!empty($getDataby_id->type_id) && $getDataby_id->type_id == $key->id) ? 'selected' : '' ) ?> >
-            <?php echo $key->name; ?>
-          </option>
+        <option value ="<?php echo $key->handle; ?>" data-id="<?php echo $key->id; ?>"
+          <?php echo ((!empty($getDataby_id->type_id) && $getDataby_id->type_id == $key->id) ? 'selected' : '' ) ?> >
+          <?php echo $key->name; ?>
+        </option>
         <?php endforeach ?>
       </select>
     </div>
@@ -95,7 +97,7 @@
     <div id="assets" class="fields <?php echo ((!empty($getDataby_id->type_id) && $typeFields->handle == 'assets') ? '' : 'd-none');?>">
       <div class="form-group">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="assetsRestrictUpload" 
+          <input class="form-check-input" type="checkbox" name="assetsRestrictUpload"
           value="1" <?php echo (!empty($getFieldType->assetsRestrictUpload) ? 'checked' : '') ?>>
           <label class="form-check-label" for="restrictAssets">Restrict uploads to a single folder?</label>
         </div>
@@ -107,14 +109,14 @@
           <select name="assetsSourcesList" class="form-control costum-select">
             <option value="0">Default</option>
             <?php if ($assets): ?>
-              <?php foreach ($assets as $key): ?>
-                <option value="<?php echo $key->id; ?>" <?php echo ((!empty($getFieldType->assetsSourcesList) && $getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
-                  <?php echo $key->name; ?>
-                </option>
-              <?php endforeach ?>
+            <?php foreach ($assets as $key): ?>
+            <option value="<?php echo $key->id; ?>" <?php echo ((!empty($getFieldType->assetsSourcesList) && $getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
+              <?php echo $key->name; ?>
+            </option>
+            <?php endforeach ?>
             <?php endif ?>
           </select>
-          <input type="text" name="assetsSourcesInput" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2" 
+          <input type="text" name="assetsSourcesInput" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2"
           value="<?php echo (!empty($getFieldType->assetsSourcesInput) ? $getFieldType->assetsSourcesInput : set_value('assetsSourcesInput')); ?>">
         </div>
       </div>
@@ -126,12 +128,12 @@
           <label class="form-check-label" for="defaultCheck1"><strong>All</strong></label>
         </div>
         <?php if ($assets): ?>
-          <?php foreach ($assets as $key): ?>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="<?php echo $key->id; ?>" name="assetsSources[]" checked disabled>
-            <label class="form-check-label" for="defaultCheck1"><?php echo $key->name; ?></label>
-          </div>
-          <?php endforeach ?>
+        <?php foreach ($assets as $key): ?>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="<?php echo $key->id; ?>" name="assetsSources[]" checked disabled>
+          <label class="form-check-label" for="defaultCheck1"><?php echo $key->name; ?></label>
+        </div>
+        <?php endforeach ?>
         <?php endif ?>
       </div>
       <div class="form-group noAssetsRestrictUpload">
@@ -141,33 +143,33 @@
           <select name="assetsSourcesList" class="form-control costum-select">
             <option value="0">Default</option>
             <?php if ($assets): ?>
-              <?php foreach ($assets as $key): ?>
-                <option value="<?php echo $key->id; ?>" <?php echo ((!empty($getFieldType->assetsSourcesList) && $getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
-                  <?php echo $key->name; ?>
-                </option>
-              <?php endforeach ?>
+            <?php foreach ($assets as $key): ?>
+            <option value="<?php echo $key->id; ?>" <?php echo ((!empty($getFieldType->assetsSourcesList) && $getFieldType->assetsSourcesList == $key->id) ? 'selected' : '');?>>
+              <?php echo $key->name; ?>
+            </option>
+            <?php endforeach ?>
             <?php endif ?>
           </select>
-          <input type="text" name="assetsSourcesInput" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2" 
+          <input type="text" name="assetsSourcesInput" placeholder="path/to/subfolder" class="form-control flex-grow-1 ml-2"
           value="<?php echo (!empty($getFieldType->assetsSourcesInput) ? $getFieldType->assetsSourcesInput : set_value('assetsSourcesInput')); ?>">
         </div>
       </div>
       <div class="form-group">
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" name="assetsRestrictFileType" 
+          <input class="form-check-input" type="checkbox" name="assetsRestrictFileType"
           value="1" <?php echo (!empty($getFieldType->assetsRestrictFileType) ? 'checked' : '') ?>>
           <label class="form-check-label" for="restrictAssets">Restrict allowed file types?</label>
         </div>
       </div>
       <div class="form-group assetsRestrictFileType">
         <?php if ($file): ?>
-          <?php foreach ($file as $key => $value): ?>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="<?php echo $value; ?>" name="assetsType[]" 
-            <?php echo ((!empty($getFieldType->assetsType) && in_array($value, $getFieldType->assetsType)) ? 'checked' : '');?>>
-            <label class="form-check-label" for="defaultCheck1"><?php echo $value ?></label>
-          </div>
-          <?php endforeach ?>
+        <?php foreach ($file as $key => $value): ?>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" value="<?php echo $value; ?>" name="assetsType[]"
+          <?php echo ((!empty($getFieldType->assetsType) && in_array($value, $getFieldType->assetsType)) ? 'checked' : '');?>>
+          <label class="form-check-label" for="defaultCheck1"><?php echo $value ?></label>
+        </div>
+        <?php endforeach ?>
         <?php endif ?>
       </div>
       <div class="form-group">
@@ -180,27 +182,27 @@
       <div class="form-group">
         <label class="heading" for="inputLimit">Limit</label>
         <small class="form-text text-muted">Limit the number of selectable assets.</small>
-        <input type="text" name="assetsLimit" class="form-control form-number" 
-        value="<?php echo (!empty($getFieldType->assetsLimit) ? $getFieldType->assetsLimit : set_value('assetsLimit')); ?>"> 
+        <input type="text" name="assetsLimit" class="form-control form-number"
+        value="<?php echo (!empty($getFieldType->assetsLimit) ? $getFieldType->assetsLimit : set_value('assetsLimit')); ?>">
       </div>
       <div class="form-group">
         <label class="heading" for="inputMode">View Mode</label>
         <small class="form-text text-muted">Choose how the field should look for authors.</small>
         <select name="assetsViewMode" class="form-control costum-select">
-        <?php if ($mode): ?>
+          <?php if ($mode): ?>
           <?php foreach ($mode as $key => $value): ?>
-          <option value="<?php echo $value; ?>" 
+          <option value="<?php echo $value; ?>"
             <?php echo ((!empty($getFieldType->assetsViewMode) && $getFieldType->assetsViewMode == $value) ? 'selected' : '');?>>
             <?php echo $value; ?>
           </option>
           <?php endforeach ?>
-        <?php endif ?>
+          <?php endif ?>
         </select>
       </div>
       <div class="form-group">
         <label class="heading" for="inputSelectionLabel">Selection Label</label>
         <small class="form-text text-muted">Enter the text you want to appear on the assets selection input.</small>
-        <input type="text" name="assetsSelectionLabel" class="form-control" placeholder="Add an asset" 
+        <input type="text" name="assetsSelectionLabel" class="form-control" placeholder="Add an asset"
         value="<?php echo (!empty($getFieldType->assetsSelectionLabel) ? $getFieldType->assetsSelectionLabel : set_value('assetsSelectionLabel')); ?>">
       </div>
     </div>
@@ -220,21 +222,21 @@
           <label class="form-check-label" for="defaultCheck1">All</label>
         </div>
         <?php if ($assets): ?>
-          <?php foreach ($assets as $key): ?>
-          <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="richAssetsSources[]" value="<?php echo $key->id; ?>" 
-            <?php echo ((!empty($getFieldType->assetsType) && in_array($value, $getFieldType->assetsType)) ? 'checked' : '');?>
-            >
-            <label class="form-check-label" for="defaultCheck1"><?php echo $key->name; ?></label>
-          </div>
-          <?php endforeach ?>
+        <?php foreach ($assets as $key): ?>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="richAssetsSources[]" value="<?php echo $key->id; ?>"
+          <?php echo ((!empty($getFieldType->assetsType) && in_array($value, $getFieldType->assetsType)) ? 'checked' : '');?>
+          >
+          <label class="form-check-label" for="defaultCheck1"><?php echo $key->name; ?></label>
+        </div>
+        <?php endforeach ?>
         <?php endif ?>
       </div>
       <div class="form-group">
         <label class="heading" for="inputTransforms">Available Image Transforms</label>
         <small class="form-text text-muted">The image transforms that should be available when selecting images (if the selected config has an Image button).</small>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" \name="richSources" 
+          <input class="form-check-input" type="checkbox" \name="richSources"
           value="1" <?php echo (!empty($getFieldType->richSources) ? 'checked' : '') ?>>
           <label class="form-check-label" for="defaultCheck1">All</label>
         </div>
@@ -269,13 +271,13 @@
         <small class="form-text text-muted">Which source do you want to select categories from?</small>
         <select name="categoriesSource" class="form-control costum-select">
           <?php if ($categories): ?>
-            <?php foreach ($categories as $key): ?>
-            <option value="<?php echo $key->id ?>" 
-              <?php echo ((!empty($getFieldType->categoriesSource) && $getFieldType->categoriesSource == $key->id) ? 'selected' : '');?>>
-              <?php echo ucfirst($key->name); ?>
-            </option>
-            <?php endforeach ?>
-          <?php endif ?>  
+          <?php foreach ($categories as $key): ?>
+          <option value="<?php echo $key->id ?>"
+            <?php echo ((!empty($getFieldType->categoriesSource) && $getFieldType->categoriesSource == $key->id) ? 'selected' : '');?>>
+            <?php echo ucfirst($key->name); ?>
+          </option>
+          <?php endforeach ?>
+          <?php endif ?>
         </select>
       </div>
       <div class="form-group">
@@ -288,7 +290,7 @@
       <div class="form-group">
         <label class="heading" for="inputLimit">Limit</label>
         <small class="form-text text-muted">Limit the number of selectable assets.</small>
-        <input type="text" name="categoriesLimit" class="form-control form-number" 
+        <input type="text" name="categoriesLimit" class="form-control form-number"
         value="<?php echo (!empty($getFieldType->categoriesLimit) ? $getFieldType->categoriesLimit : set_value('categoriesLimit')); ?>">
       </div>
       <div class="form-group">
@@ -312,30 +314,29 @@
             </tr>
           </thead>
           <tbody>
-            <?php 
-              if (!empty($getFieldType->checkboxesLabel)):
-                $val = $getFieldType->checkboxesValue; 
-                $i = 0;
-                foreach ($getFieldType->checkboxesLabel as $key => $value) :
-                  $dataResult[] = array(
-                              'label' => $value,
-                              'value' => $val[$i]
-                            );
-                  $i++;
-                endforeach;
+            <?php
+            if (!empty($getFieldType->checkboxesLabel)):
+            $val = $getFieldType->checkboxesValue;
+            $i = 0;
+            foreach ($getFieldType->checkboxesLabel as $key => $value) :
+            $dataResult[] = array(
+            'label' => $value,
+            'value' => $val[$i]
+            );
+            $i++;
+            endforeach;
             ?>
-              <?php foreach ($dataResult as $key) : ?>
-              <tr>
-
-                <td><input type="text" name="checkboxesLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
-                <td><input type="text" name="checkboxesValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
-                <td class="action"><input type="checkbox" name="checkboxesDefault[]"></td>
-                <td scope="row" colspan="2">
-                  <a href="#"><i class="fas fa-arrows-alt"></i></a>
-                  <a class="remove-row"><i class="fas fa-minus-circle"></i></a>
-                </td>
-              </tr>
-              <?php endforeach; ?>
+            <?php foreach ($dataResult as $key) : ?>
+            <tr>
+              <td><input type="text" name="checkboxesLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
+              <td><input type="text" name="checkboxesValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
+              <td class="action"><input type="checkbox" name="checkboxesDefault[]"></td>
+              <td scope="row" colspan="2">
+                <a href="#"><i class="fas fa-arrows-alt"></i></a>
+                <a class="remove-row"><i class="fas fa-minus-circle"></i></a>
+              </td>
+            </tr>
+            <?php endforeach; ?>
             <?php endif; ?>
           </tbody>
         </table>
@@ -359,7 +360,7 @@
         <div class="form-check">
           <input class="form-check-input" type="radio" name="datetimeList" value="3">
           <label class="form-check-label" for="datetimeList3">
-            Show date and time 
+            Show date and time
           </label>
         </div>
       </div>
@@ -385,30 +386,29 @@
             </tr>
           </thead>
           <tbody>
-            <?php 
-              if (!empty($getFieldType->dropdownLabel)):
-                $val = $getFieldType->dropdownValue; 
-                $i = 0;
-                foreach ($getFieldType->dropdownLabel as $key => $value) :
-                  $dataResult[] = array(
-                              'label' => $value,
-                              'value' => $val[$i]
-                            );
-                  $i++;
-                endforeach;
+            <?php
+            if (!empty($getFieldType->dropdownLabel)):
+            $val = $getFieldType->dropdownValue;
+            $i = 0;
+            foreach ($getFieldType->dropdownLabel as $key => $value) :
+            $dataResult[] = array(
+            'label' => $value,
+            'value' => $val[$i]
+            );
+            $i++;
+            endforeach;
             ?>
-              <?php foreach ($dataResult as $key) : ?>
-              <tr>
-
-                <td><input type="text" name="dropdownLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
-                <td><input type="text" name="dropdownValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
-                <td class="action"><input type="checkbox" name="dropdownDefault[]"></td>
-                <td scope="row" colspan="2">
-                  <a href="#"><i class="fas fa-arrows-alt"></i></a>
-                  <a class="remove-row"><i class="fas fa-minus-circle"></i></a>
-                </td>
-              </tr>
-              <?php endforeach; ?>
+            <?php foreach ($dataResult as $key) : ?>
+            <tr>
+              <td><input type="text" name="dropdownLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
+              <td><input type="text" name="dropdownValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
+              <td class="action"><input type="checkbox" name="dropdownDefault[]"></td>
+              <td scope="row" colspan="2">
+                <a href="#"><i class="fas fa-arrows-alt"></i></a>
+                <a class="remove-row"><i class="fas fa-minus-circle"></i></a>
+              </td>
+            </tr>
+            <?php endforeach; ?>
             <?php endif; ?>
           </tbody>
         </table>
@@ -429,30 +429,29 @@
             </tr>
           </thead>
           <tbody>
-            <?php 
-              if (!empty($getFieldType->radioLabel)):
-                $val = $getFieldType->radioValue; 
-                $i = 0;
-                foreach ($getFieldType->radioLabel as $key => $value) :
-                  $dataResult[] = array(
-                              'label' => $value,
-                              'value' => $val[$i]
-                            );
-                  $i++;
-                endforeach;
+            <?php
+            if (!empty($getFieldType->radioLabel)):
+            $val = $getFieldType->radioValue;
+            $i = 0;
+            foreach ($getFieldType->radioLabel as $key => $value) :
+            $dataResult[] = array(
+            'label' => $value,
+            'value' => $val[$i]
+            );
+            $i++;
+            endforeach;
             ?>
-              <?php foreach ($dataResult as $key) : ?>
-              <tr>
-
-                <td><input type="text" name="radioLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
-                <td><input type="text" name="radioValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
-                <td class="action"><input type="checkbox" name="radioDefault[]"></td>
-                <td scope="row" colspan="2">
-                  <a href="#"><i class="fas fa-arrows-alt"></i></a>
-                  <a class="remove-row"><i class="fas fa-minus-circle"></i></a>
-                </td>
-              </tr>
-              <?php endforeach; ?>
+            <?php foreach ($dataResult as $key) : ?>
+            <tr>
+              <td><input type="text" name="radioLabel[]" class="form-control" value="<?php echo $key['label']; ?>"></td>
+              <td><input type="text" name="radioValue[]" class="form-control" value="<?php echo $key['value']; ?>"></td>
+              <td class="action"><input type="checkbox" name="radioDefault[]"></td>
+              <td scope="row" colspan="2">
+                <a href="#"><i class="fas fa-arrows-alt"></i></a>
+                <a class="remove-row"><i class="fas fa-minus-circle"></i></a>
+              </td>
+            </tr>
+            <?php endforeach; ?>
             <?php endif; ?>
           </tbody>
         </table>
@@ -466,18 +465,18 @@
         <select name="entriesSource" class="form-control costum-select">
           <option value="0">All</option>
           <?php if ($section): ?>
-            <?php foreach ($section as $key): ?>
-              <option value="<?php echo $key->id; ?>" <?php echo ((!empty($getFieldType->entriesSource) && $getFieldType->entriesSource == $key->id) ? 'selected' : '');?>>
-                <?php echo $key->name; ?>
-              </option>
-            <?php endforeach ?>
+          <?php foreach ($section as $key): ?>
+          <option value="<?php echo $key->id; ?>" <?php echo ((!empty($getFieldType->entriesSource) && $getFieldType->entriesSource == $key->id) ? 'selected' : '');?>>
+            <?php echo $key->name; ?>
+          </option>
+          <?php endforeach ?>
           <?php endif ?>
         </select>
       </div>
       <div class="form-group">
         <label class="heading" for="inputLimit">Limit</label>
         <small class="form-text text-muted">Limit the number of selectable entries.</small>
-        <input type="text" name="entriesLimit" class="form-control form-number" 
+        <input type="text" name="entriesLimit" class="form-control form-number"
         value="<?php echo (!empty($getFieldType->entriesLimit) ? $getFieldType->entriesLimit : set_value('entriesLimit')); ?>">
       </div>
       <div class="form-group">
@@ -487,5 +486,6 @@
         value="<?php echo (!empty($getFieldType->entriesSelectionLabel) ? $getFieldType->entriesSelectionLabel : set_value('categoriesSelectionLabel')); ?>">
       </div>
     </div>
-  <?php echo form_close(); ?>
+    <?php echo form_close(); ?>
+  </div>
 </div>

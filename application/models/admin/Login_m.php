@@ -21,26 +21,25 @@ class Login_m extends My_Model {
     }
   }
 
-  // register
-  public function create($data) {
-    $this->db->insert($this->_table, $data);
-  }
-
-  // activation users
+  /**
+   * This function used to activation code
+   */
   public function activated($data) {
-    if($data['code']) {
-      $query = $this->db->get_where($this->_table, array('username' => $data['username'],
-                                                          'token'           => $data['token'], 
-                                                          'activation_code' => $data['code'])
-      );      
+    if (empty($data['code'])) {
+      $settings = array(
+        'username'        => $data['username'],
+        'token'           => $data['token'], 
+      );
     } else {
-      $query = $this->db->get_where($this->_table, array('username' =>  $data['username'], 
-                                                        'token' =>  $data['token'])
+      $settings = array(
+        'username'        => $data['username'],
+        'token'           => $data['token'], 
+        'activation_code' => $data['code'],   
       );
     }
-
+    $query = $this->db->get_where($this->_table, $settings);
     if ($query->num_rows() > 0) {
-      $result  = $query->row();
+      $result = $query->row();
       $this->db->where('id', $result->id);
       $this->db->update($this->_table, array('activated' => 1));
       return $result;
@@ -50,8 +49,10 @@ class Login_m extends My_Model {
     }
   }
 
-  /*forgoted password*/
-  public function forgot_password($data, $reset=FALSE) {
+  /**
+   * This Function Used to Forgoted Password with email
+   */
+  public function reset_password($data, $reset=FALSE) {
     // check email
     $query = $this->db->get_where($this->_table, array('email' => $data['email']));
     if ($query->num_rows() > 0) {
@@ -69,7 +70,6 @@ class Login_m extends My_Model {
       return FALSE;
     }
   }
-
   
 }
 

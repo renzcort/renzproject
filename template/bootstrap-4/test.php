@@ -38,23 +38,20 @@
   </head>
   <body>
     
-    <ul class="nav nav-pills mb-3" id="" role="">
+   <ul class="nav nav-tabs">
   <li class="nav-item">
-    <a class="nav-link active" id="pills-ho-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Home</a>
+    <a class="nav-link active" href="#">Active</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Profile</a>
+    <a class="nav-link" href="#">Link</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contact</a>
+    <a class="nav-link" href="#">Link</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
   </li>
 </ul>
-<div class="tab-content" id="pills-tabContent">
-  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-ho-tab">...1</div>
-  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">...2</div>
-  <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...3</div>
-</div>
-
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>

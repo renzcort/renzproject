@@ -210,6 +210,7 @@ class Section extends My_Controller {
 
   /*Entries Section*/
   public function entrytypes($section_id='') {
+    // var_dump($section_id);die;
     $section = $this->section_m->get_row_by_id($section_id);
     $settings = array(
       'title'         =>  "{$section->name}",
@@ -220,23 +221,26 @@ class Section extends My_Controller {
       'action'        =>  "admin/settings/section/{$section_id}/entrytypes",
       'session'       =>  $this->data,
       'no'            =>  $this->uri->segment(5),
-      'button'        =>  '+ New entry type',
-      'button_link'   =>  "entrytypes/create",
       'content'       =>  'template/bootstrap-4/admin/section/section-entries-list',
+      'section'       =>  $section,
+      'section_id'    =>  $section_id,
     );
+    (($section->type_id == 5) ? '' : $settings['button'] = '+ New entry type');
+    (($section->type_id == 5) ? '' : $settings['button_link'] = 'entrytypes/create');
 
     // pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
-    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
+    $config['total_rows']   = $this->general_m->count_all_results_by_id($settings['table'], $section_id, 'section_id');
     $config['per_page']     = 10;
     $num_pages              = $config['total_rows'] / $config['per_page'];
     $config['uri_segment']  = 5;
     $config['num_links']    = round($num_pages);
     $this->pagination->initialize($config);
     $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
-    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $section_id, 'section_id');
+    $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, $section_id, 'section_id', 'order');
     $settings['links']      = $this->pagination->create_links();
+    $settings['total_rows'] = $this->general_m->count_all_results_by_id($settings['table'], $section_id, 'section_id');
     // end pagination
     
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -265,7 +269,7 @@ class Section extends My_Controller {
       'fields'         =>  $this->fields_m->get_all_results(),
       'element'        =>  [],
       'elementFields'  =>  [],
-      'order'          =>  $this->general_m->get_max_fields('section_entries', 'order'),
+      'order'          =>  $this->general_m->get_max_fields('section_entries', 'order', $data=array('section_id' => $section_id)),
     );
 
     $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
@@ -296,6 +300,7 @@ class Section extends My_Controller {
       'element'        =>  $this->general_m->get_result_by_id('element', $id, 'entries_id'),
     );
 
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
     if ($settings['element']) {
       foreach ($settings['element'] as $key) {
         $fieldsId[] = $key->fields_id; 
@@ -316,12 +321,13 @@ class Section extends My_Controller {
       'section_id'     => $section_id,
       'fields_element' => 'element',
       'getDataby_id'   => $this->general_m->get_row_by_id('section_entries', $id),
-      'action'         =>  "admin/settings/section/{$section_id}/entrytypes",
+      'action'         => "admin/settings/section/{$section_id}/entrytypes",
     );
 
     if ($settings['getDataby_id']) {
-      $deleteElement = $this->general_m->delete('element', $id, 'entries_id');
-      $delete        = $this->general_m->delete('section_entries', $id);
+      $delete_element = $this->general_m->delete('element', $id, 'entries_id');
+      $delete_content = $this->general_m->delete('content', $id, 'entries_id');
+      $delete         = $this->general_m->delete('section_entries', $id);
       helper_log('delete', "Delete {$settings['title']} with id = {$id} has successfully");
       $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");
       redirect($settings['action']);

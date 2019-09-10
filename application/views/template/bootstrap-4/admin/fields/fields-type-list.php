@@ -1,4 +1,4 @@
-<div class="middle-content flex-grow-1">
+<div class="middle-content flex-grow-1 fields-type-list" id="fields">
   <?php if ($record_all): ?>
   <table class="table table-sm">
     <thead>

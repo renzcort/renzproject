@@ -3,11 +3,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Login extends CI_Controller {
 
-  public function __construct()
-  {
+  public function __construct() {
     parent::__construct();
     //Do your magic here
     $this->load->model('admin/login_m', 'login_m');
+    $this->load->model('admin/General_m', 'general_m');
     $this->session->unset_userdata('logged_in');
   }
 
@@ -21,6 +21,9 @@ class Login extends CI_Controller {
     }
   }
 
+  /**
+   * This used to check login when login 
+   */
   public function check_login() {
     $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email');
     $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]', 
@@ -47,15 +50,27 @@ class Login extends CI_Controller {
   }
 
 
-  /*register*/
+  /**
+   * Register users and validation data
+   */
   public function register() {
-    $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]');
+    $settings = array(
+      'title'          =>  'Register',
+      'subtitle'       =>  FALSE,
+      'breadcrumb'     =>  FALSE,
+      'subbreadcrumb'  =>  FALSE,
+      'table'          =>  'users',
+      'action'         =>  'admin/validation-token/',
+      'content'        =>  'template/bootstrap-4/admin/login/register',
+    );
+
+    $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]|is_unique[renz_users.username]');
     $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[renz_users.email]');
     $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]', 
       array('required' => 'You must provide a %s.')
     );
     $this->form_validation->set_rules('passconf', 'Password Confirmation', 'trim|required|matches[password]');
-    $this->form_validation->set_rules('accept_terms', 'Accepts Term', 'required');
+    $this->form_validation->set_rules('aggreement', 'Accepts Term', 'required');
 
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['create'])) {
@@ -63,31 +78,22 @@ class Login extends CI_Controller {
           'username'        =>  $this->input->post('username'),
           'email'           =>  $this->input->post('email'),
           'password'        =>  md5($this->input->post('password')),
-          'created_at'      =>  mdate("%Y-%m-%d %H:%i:%s"), 
-          'updated_at'      =>  mdate("%Y-%m-%d %H:%i:%s"), 
           'token'           =>  random_string('alnum', 30),
           'activation_code' =>  random_string('numeric', 6),
         );
-        $this->send_email($data, TRUE);
+        email_send($data, TRUE);
         // save log
-        $this->login_m->create($data);
+        $this->general_m->create($settings['table'], $data, TRUE);
         helper_log('register', "register {$data['username']} successfully");
         $this->session->set_flashdata('message', 'data has successfully created');
-        redirect("admin/validation-token/?username={$data['username']}&token={$data['token']}","refresh");
-      } else {
-        $this->session->set_flashdata('message', 'Please correct your data');
-        $data['content'] = 'template/bootstrap-4/admin/login/register';
-        $this->load->view('template/bootstrap-4/admin/layout/_register', $data);
-      }
+        redirect("{$settings['action']}?username={$data['username']}&token={$data['token']}","refresh");
+      } 
     } else {
-      // $data['content']  = 'admin/register';
-      // $this->load->view('admin/layout/_register', $data);
-      $data['content'] = 'template/bootstrap-4/admin/login/register';
-      $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
+      $this->load->view('template/bootstrap-4/admin/layout/_login', $settings);
     }
   }
 
-  public function send_email($data, $register=FALSE) {  
+  /*public function send_email($data, $register=FALSE) {  
     // call congig email
     $email = $this->config->item('setting_email');
     $this->email->initialize($email);
@@ -110,44 +116,99 @@ class Login extends CI_Controller {
     } else {
       echo $this->email->print_debugger();
     } 
-  }
+  }*/
 
-  /*validation token*/
+  /**
+   * Validation token after register with code 
+   */
   public function validation_token($token='') {  
-    $params   = $_SERVER['QUERY_STRING'];
+    $params = $_SERVER['QUERY_STRING'];
     parse_str($params, $data);
+    $settings = array(
+      'title'         =>  'Validation Token',
+      'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'table'         =>  'users',
+      'action'        =>  'admin/validation-token/?'.$params,
+      'content'       =>  'template/bootstrap-4/admin/login/activation-code',
+    );
 
-    if (isset($_POST['submit'])) {
-      $data['code'] = $this->input->post('code');
-      // var_dump($data);die;
-      $activated = $this->login_m->activated($data);
-      if ($activated) {
-        $data['content'] = 'template/bootstrap-4/admin/login/activation-success';
-        $this->load->view('template/bootstrap-4/admin/layout/_activate', $data);
-      } else {
-        $this->session->set_flashdata('message', 'Please Correct, your code not valid');
-        $data['params']  = $arams;
-        $data['content'] = 'tpemplate/bootstrap-4/admin/login/activation-code';
-        $this->load->view('template/bootstrap-4/admin/layout/_activate', $data);
-      }
+    $this->form_validation->set_rules('code', 'Code', 'trim|required');
+    if ($this->form_validation->run() == TRUE) {
+      if (isset($_POST['submit'])) {
+        $data['code'] = $this->input->post('code');
+        $activated = $this->login_m->activated($data);
+        if ($activated) {
+          helper_log('add', "Create {$settings['title']} has successfully");
+          $this->session->set_flashdata('message', "{$data['code']} has successfully validation");
+          redirect('admin/activation-success','refresh');
+        } else {
+          $this->session->set_flashdata('message', 'Please Correct, your code not valid');
+        }
+        $this->load->view('template/bootstrap-4/admin/layout/_activate', $settings);
+      } 
     } else {
-      $data['params']  = $params;
-      $data['content'] = 'template/bootstrap-4/admin/login/activation-code';
-      $this->load->view('template/bootstrap-4/admin/layout/_activate', $data);
-    }     
+      $this->load->view('template/bootstrap-4/admin/layout/_activate', $settings);
+    }    
   }
 
-  /*activated*/
+  /**
+   * Activation Token with URL send by email
+   */
   public function activated() {
-    $params   = $_SERVER['QUERY_STRING'];
+    $params = $_SERVER['QUERY_STRING'];
     parse_str($params, $data);
-    $this->login_m->activated($data);
-    $data['content'] = 'template/bootstrap-4/admin/login/activated';
-    $this->load->view('template/bootstrap-4/admin/layout/_default', $data);
+    $settings = array(
+      'title'         =>  'Activation Code',
+      'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'table'         =>  'users',
+      'action'        =>  'admin/validation-token/?'.$params,
+      'content'       =>  'template/bootstrap-4/admin/login/activated',
+    );
+    $data['code'] = '';
+    $activated = $this->login_m->activated($data);
+    if ($activated) {
+      helper_log('add', "Create {$settings['title']} has successfully");
+      $this->session->set_flashdata('message', "{$data['code']} has successfully validation");
+      redirect('admin/activation-success','refresh');
+    } else {
+      $this->session->set_flashdata('message', 'Please Correct, your code not valid');
+    }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
-  /*Forgoted password*/
+  /**
+   * Activation Success 
+   */
+  public function activation_success() {
+    $settings = array(
+      'title'         =>  'Activation Success',
+      'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'table'         =>  'users',
+      'content'       =>  'template/bootstrap-4/admin/login/activation-success',
+    );
+    $this->load->view('template/bootstrap-4/admin/layout/_activate', $settings);
+  }
+
+  /**
+   * Forgot Password 
+   */
   public function forgot_password() {
+    $settings = array(
+      'title'         =>  'Forgot Password',
+      'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'table'         =>  'users',
+      'action'        =>  'admin/forgot-password',
+      'content'       =>  'template/bootstrap-4/admin/login/forgot-password',
+    );
+
     $this->form_validation->set_rules('email', 'Email', 'trim|required');
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['submit'])) {
@@ -157,19 +218,17 @@ class Login extends CI_Controller {
         );
         $forgot_password = $this->login_m->forgot_password($data);
         if ($forgot_password) {
-          $this->send_email($forgot_password);  
+          email_send($forgot_password);  
           helper_log('forgot_password', "Forgoted password {$data['email']} successfully send email");
           $this->session->set_flashdata('message', 'Reset your password send by your email');      
         } else {
           helper_log('forgot-password', "Your Email {$data['email']} invalid");
           $this->session->set_flashdata('message', 'Your email is invalid');
         }
-        $data['content'] = 'template/bootstrap-4/admin/login/forgot-password';
-        $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
+        $this->load->view('template/bootstrap-4/admin/layout/_login', $settings);
       }     
     } else {
-      $data['content'] = 'template/bootstrap-4/admin/login/forgot-password';
-      $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
+      $this->load->view('template/bootstrap-4/admin/layout/_login', $settings);
     }
   }
 
@@ -177,28 +236,52 @@ class Login extends CI_Controller {
   public function reset_password() {
     $params = $_SERVER['QUERY_STRING'];
     parse_str($params, $data);
+    $settings = array(
+      'title'         =>  'Reset Password',
+      'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'table'         =>  'users',
+      'action'        =>  'admin/reset-password/?'.$params,
+      'content'       =>  'template/bootstrap-4/admin/login/reset-password',
+    );
+
     $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[8]', 
       array('required' => 'You must provide a %s.')
     );
     $this->form_validation->set_rules('passconf', 'Password Confirmation', 'trim|required|matches[password]');
-  
     if ($this->form_validation->run() == TRUE) {
       if (isset($_POST['submit'])) {
         $data['password'] = md5($this->input->post('password'));
-        $new_password     = $this->login_m->forgot_password($data, TRUE);
+        $reset_password   = $this->login_m->reset_password($data, TRUE);
         helper_log('success', "reset password {$data['email']} successfully");
         $this->session->set_flashdata('message', 'Your Password has changes');
+        redirect('admin/reset-password-success','refresh');
       }
+    } else {
+     $this->load->view('template/bootstrap-4/admin/layout/_login', $settings);
     }     
-    $data['params']  = $params;
-    $data['content'] = 'template/bootstrap-4/admin/login/reset-password';
-    $this->load->view('template/bootstrap-4/admin/layout/_login', $data);
-  
   }
 
-  /*Logout*/
-  public function logout()
-  {
+  /**
+   * Activation Success 
+   */
+  public function reset_password_success() {
+    $settings = array(
+      'title'         =>  'Activation Success',
+      'subtitle'      =>  FALSE,
+      'breadcrumb'    =>  FALSE,
+      'subbreadcrumb' =>  FALSE,
+      'table'         =>  'users',
+      'content'       =>  'template/bootstrap-4/admin/login/reset-password-success',
+    );
+    $this->load->view('template/bootstrap-4/admin/layout/_activate', $settings);
+  }
+
+  /**
+   * Logout And Section Destroy
+   */
+  public function logout(){
     $this->session->unset_userdata('logged_in');
     $this->session->sess_destroy();
     redirect('admin','refresh');

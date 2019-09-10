@@ -5,7 +5,6 @@ class Users extends My_Controller {
 
 	public function __construct(){
 		parent::__construct();
-		//Do your magic here
 		$this->load->model('admin/General_m', 'general_m');
 		$this->load->model('admin/Fields_m', 'fields_m');
     $this->load->model('admin/Users_m', 'users_m');
@@ -87,32 +86,41 @@ class Users extends My_Controller {
 
   public function create() {
     $settings = array(
-      'title'          =>  'users',
-      'subtitle'       =>  'create',
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  array('create'),
-      'table'          =>  'users',
-      'action'         =>  'admin/users/account',
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(4),
-      'button'         =>  'save',
-      'button_type'    =>  'submit',
-      'button_name'    =>  'create',
-      'content'        =>  'template/bootstrap-4/admin/users/users-form',
-      'fields_element' => 'users_settings',
-      'users_settings' =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
-      'usersgroup'     =>  $this->general_m->get_all_results('usersgroup'),
-      'permissions'    =>  $this->general_m->get_all_results('users_role'),
-      'section'        =>  $this->general_m->get_all_results('section'),
-      'globals'        =>  $this->general_m->get_all_results('globals'),
-      'assets'         =>  $this->general_m->get_all_results('assets'),
-      'element'        =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
-      'fields'         =>  $this->fields_m->get_all_results(),
-      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
-      'assets'         =>  $this->general_m->get_all_results('assets'),
-      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
+      'title'          => 'users',
+      'subtitle'       => 'create',
+      'breadcrumb'     => array('settings'),
+      'subbreadcrumb'  => array('create'),
+      'table'          => 'users',
+      'action'         => 'admin/users/account',
+      'session'        => $this->data,
+      'no'             => $this->uri->segment(4),
+      'button'         => 'save',
+      'button_type'    => 'submit',
+      'button_name'    => 'create',
+      'content'        => 'template/bootstrap-4/admin/users/users-form',
+      'fields_element' => 'users_element',
+      'users_settings' => $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
+      'usersgroup'     => $this->general_m->get_all_results('usersgroup'),
+      'permissions'    => $this->general_m->get_all_results('users_role'),
+      'section'        => $this->general_m->get_all_results('section'),
+      'globals'        => $this->general_m->get_all_results('globals'),
+      'assets'         => $this->general_m->get_all_results('assets'),
+      'element'        => $this->general_m->get_result_by_fields('users_element', array('users_settings_id' => 2)),
+      'fields'         => $this->fields_m->get_all_results(),
+      'fields_type'    => $this->general_m->get_all_results('fields_type'),
+      'fields_id'      => [],
+      'assets'         => $this->general_m->get_all_results('assets'),
+      'assets_content' => $this->general_m->get_all_results('assets_content'),
     );
-    $settings['fields_id']  = json_decode($settings['element']->fields_id);
+
+    if ($settings['element'] != NULL) {
+      foreach ($settings['element'] as $key) {
+        $fields_id[] = $key->fields_id;
+      }
+      $settings['fields_id']  = $fields_id;
+    }
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
+    
 
     $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]');
     $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[renz_users.email]');
@@ -124,12 +132,17 @@ class Users extends My_Controller {
           'generalAccessOff'              => $this->input->post('generalAccessOff'),
           'generalAccessCP'               => $this->input->post('generalAccessCP'),
           'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
+          'generalAccessCPOffline'        => $this->input->post('generalAccessCPOffline'),
+          'generalPerformPluginUpdate'    => $this->input->post('generalPerformPluginUpdate'),
+          'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
           'usersEdit'                     => $this->input->post('usersEdit'),
           'usersModerate'                 => $this->input->post('usersModerate'),
           'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
           'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
-          'usersAssign'                   => $this->input->post('usersAssign'),
+          'usersAssigns'                   => $this->input->post('usersAssigns'),
           'usersAdministrate'             => $this->input->post('usersAdministrate'),
+          'usersImpersonate'              => $this->input->post('usersImpersonate'),
+          'usersDelete'                   => $this->input->post('usersDelete'),
           'sectionEdit'                   => $this->input->post('sectionEdit'),
           'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
           'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
@@ -298,7 +311,7 @@ class Users extends My_Controller {
           'usersModerate'                 => $this->input->post('usersModerate'),
           'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
           'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
-          'usersAssign'                   => $this->input->post('usersAssign'),
+          'usersAssigns'                   => $this->input->post('usersAssigns'),
           'usersAdministrate'             => $this->input->post('usersAdministrate'),
           'sectionEdit'                   => $this->input->post('sectionEdit'),
           'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
@@ -386,55 +399,70 @@ class Users extends My_Controller {
     $table = (($handle == 'groups') ? 'usersgroup' : 'users_settings');
     if ($handle == 'groups') {
       $right_content = 'users-group-list';
-      $id = FALSE;
     } elseif ($handle == 'fields') {
       $right_content = 'users-fields-form';
-      $settings = $this->general_m->get_row_by_fields($table, $data = array('handle' => 'settings'));
-      $id = $settings->handle;
+      $settings = $this->general_m->get_row_by_fields($table, $data = array('handle' => 'fields'));
     } else {
       $right_content = 'users-settings-form';
       $settings = $this->general_m->get_row_by_fields($table, $data = array('handle' => 'settings'));
-      $id = $settings->handle;
     }
 
 		$settings = array(
-     'title'          =>  "users {$handle}",
-     'subtitle'       =>  FALSE,
-     'breadcrumb'     =>  array('settings'),
-     'subbreadcrumb'  =>  FALSE,
-     'table'          =>  $table,
-     'action'         =>  "admin/settings/users/{$handle}",
-     'session'        =>  $this->data,
-     'no'             =>  $this->uri->segment(5),
-     'button'         =>  (($handle == 'groups') ? "+ New Users{$handle}" : 'save'),
-     'button_type'    =>  (($handle == 'groups') ? FALSE : 'submit'),
-     'button_name'    =>  (($handle == 'groups') ? FALSE : 'update'),
-     'content'        =>  'template/bootstrap-4/admin/users/users-settings-template',
-     'right_content'  =>  "template/bootstrap-4/admin/users/{$right_content}",
-     'fields_element' =>  'users_settings',
-     'fields_group'   =>  $this->general_m->get_all_results('fields_group'),
-     'fields'         =>  $this->fields_m->get_all_results(),
-     'assets'         =>  $this->general_m->get_all_results('assets'),
-     'assets_content' =>  $this->general_m->get_all_results('assets_content'),
-     'usersgroup'     =>  $this->general_m->get_all_results('usersgroup'),
-     'getDataby_id'   =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
-     'elementFields'  =>  [],
-     'id'             => $id,
-     'handle'         => $handle,
+      'title'              =>  "users {$handle}",
+      'subtitle'           =>  FALSE,
+      'breadcrumb'         =>  array('settings'),
+      'subbreadcrumb'      =>  FALSE,
+      'table'              =>  $table,
+      'action'             =>  "admin/settings/users/{$handle}",
+      'session'            =>  $this->data,
+      'no'                 =>  $this->uri->segment(5),
+      'button'             =>  (($handle == 'groups') ? "+ New Users{$handle}" : 'save'),
+      'button_type'        =>  (($handle == 'groups') ? FALSE : 'submit'),
+      'button_name'        =>  (($handle == 'groups') ? FALSE : 'update'),
+      'content'            =>  'template/bootstrap-4/admin/users/users-settings-template',
+      'right_content'      =>  "template/bootstrap-4/admin/users/{$right_content}",
+      'fields'             =>  $this->fields_m->get_all_results(),
+      'fields_group'       =>  $this->general_m->get_all_results('fields_group'),
+      'fields_type'        =>  $this->general_m->get_all_results('fields_type'),
+      'fields_element'     =>  'users_element',
+      'assets'             =>  $this->general_m->get_all_results('assets'),
+      'assets_content'     =>  $this->general_m->get_all_results('assets_content'),
+      'categories'         =>  $this->general_m->get_all_results('categories'),
+      'categories_content' =>  $this->general_m->get_all_results('categories_content'),
+      'entries_content'    =>  $this->general_m->get_all_results('content'),
+      'usersgroup'         =>  $this->general_m->get_all_results('usersgroup'),
+      'getDataby_id'       =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => $handle)),
+      'elementFields'      =>  [],
+      'id'                 =>  (($handle == 'groups') ? FALSE : $settings->id),
+      'handle'             =>  $handle,
     );
-  	
-    $settings['users_settings'] = json_decode($settings['getDataby_id']->settings);
-    if ($settings['getDataby_id']) {
-      $settings['element'] = ($settings['getDataby_id']->fields_id ? json_decode($settings['getDataby_id']->fields_id) : []);
-      $settings['elementFields'] = ($settings['element'] ? $settings['element'] : []);
-    } else {
-      $settings['element'] = [];
-      $settings['elementFields'] = [];      
+
+    if ($handle != 'groups') {
+      $users_settings = $settings['getDataby_id']->settings;
+      if (empty($users_settings)) {
+        $set = array(
+          'assetsSourcesList'  => '',
+          'path'               => '',
+          'email_verification' => '',
+          'allowRegistration'  => '',
+          'default_group'      => '',
+        );
+        $users_settings = json_encode($set);
+      }
+      $settings['users_settings'] = json_decode($users_settings);
+      $settings['element'] = $this->general_m->get_result_by_id($settings['fields_element'], $settings['id'], 'users_settings_id'); 
+      $settings['tabs_elements'] = tabs_layout($settings['element']);
+      if ($settings['element']) {
+        foreach ($settings['element'] as $key) {
+          $fieldsId[] = $key->fields_id; 
+        }
+        $settings['elementFields'] = $fieldsId;
+      } else {
+        $settings['elementFields'] = [];
+      }
     }
 
-    (($handle == 'groups') ? '' : $settings['getDataby_id'] = $this->general_m->get_row_by_id($table, $id, 'handle'));
     (($handle == 'groups') ? $settings['button_link'] = "{$handle}/create" : $settings['button_tabs'] = TRUE);
-
     // Pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);
@@ -479,19 +507,24 @@ class Users extends My_Controller {
           'generalAccessOff'              => $this->input->post('generalAccessOff'),
           'generalAccessCP'               => $this->input->post('generalAccessCP'),
           'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
+          'generalAccessCPOffline'        => $this->input->post('generalAccessCPOffline'),
+          'generalPerformPluginUpdate'    => $this->input->post('generalPerformPluginUpdate'),
+          'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
           'usersEdit'                     => $this->input->post('usersEdit'),
           'usersModerate'                 => $this->input->post('usersModerate'),
           'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
           'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
-          'usersAssign'                   => $this->input->post('usersAssign'),
+          'usersAssigns'                   => $this->input->post('usersAssigns'),
           'usersAdministrate'             => $this->input->post('usersAdministrate'),
+          'usersImpersonate'              => $this->input->post('usersImpersonate'),
+          'usersDelete'                   => $this->input->post('usersDelete'),
           'sectionEdit'                   => $this->input->post('sectionEdit'),
           'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
           'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
           'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
           'sectionDelete'                 => $this->input->post('sectionDelete'),
           'editGlobal'                    => $this->input->post('editGlobal'),
-          'volumeView'              => $this->input->post('volumeView'),
+          'volumeView'                    => $this->input->post('volumeView'),
           'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
           'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
           'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
@@ -648,12 +681,17 @@ class Users extends My_Controller {
           'generalAccessOff'              => $this->input->post('generalAccessOff'),
           'generalAccessCP'               => $this->input->post('generalAccessCP'),
           'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
+          'generalAccessCPOffline'        => $this->input->post('generalAccessCPOffline'),
+          'generalPerformPluginUpdate'    => $this->input->post('generalPerformPluginUpdate'),
+          'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
           'usersEdit'                     => $this->input->post('usersEdit'),
           'usersModerate'                 => $this->input->post('usersModerate'),
           'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
           'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
-          'usersAssign'                   => $this->input->post('usersAssign'),
+          'usersAssigns'                   => $this->input->post('usersAssigns'),
           'usersAdministrate'             => $this->input->post('usersAdministrate'),
+          'usersImpersonate'              => $this->input->post('usersImpersonate'),
+          'usersDelete'                   => $this->input->post('usersDelete'),
           'sectionEdit'                   => $this->input->post('sectionEdit'),
           'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
           'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),

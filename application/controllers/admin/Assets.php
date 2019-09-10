@@ -68,8 +68,8 @@ class Assets extends My_Controller {
       'fields_content_count' =>  $this->general_m->count_all_results('assets_content'),
       'content_name'         => 'assets_content',
       'group_name'           =>  'assets',
-      'assets'               =>  $this->general_m->get_all_results('assets'),
-      'assets_count'         =>  $this->general_m->count_all_results('assets'),
+      'group'                =>  $this->general_m->get_all_results('assets'),
+      'group_count'          =>  $this->general_m->count_all_results('assets'),
     );
 
     // Pagination
@@ -266,6 +266,7 @@ class Assets extends My_Controller {
       'id'                     => $id
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
     if ($settings['element']) {
       foreach ($settings['element'] as $key) {
         $fieldsId[] = $key->fields_id; 

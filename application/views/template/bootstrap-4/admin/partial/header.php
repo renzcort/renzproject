@@ -54,16 +54,16 @@
   </ol>
 </nav>
 
-<div class="container title d-flex flex-row flex-wrap justify-content-between align-items-center">
+<div class="heading-title container d-flex flex-row flex-wrap justify-content-between align-items-center">
   <h4><?php echo ($subtitle ? ucwords($title).'&nbsp;'.ucfirst($subtitle) : ucwords($title)) ;?></h4>
   <?php if (isset($button)): ?>
     <div class="d-flex flex-row flex-wrap justify-content-start">
     	<?php if (isset($button_link)): ?>
         <?php if ($button_link == 'Upload'){ ?>
-          <div class="header-upload">
+          <div class="header-button">
             <button class="btn btn-danger btn-sm mx-1"><?php echo ucfirst($button);?></button>
-            <input type="file" name="file" id="file" />
           </div>
+          <input class="header-upload" type="file" name="file" id="file" />
         <?php } elseif ($button_link == 'dropdown') { ?>
           <a href="<?php echo $button_link; ?>" 
             class="btn btn-danger btn-sm mx-1" 

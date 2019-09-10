@@ -16,30 +16,22 @@
         <input type="text" class="form-control" placeholder="Username" name="username" value="<?php echo set_value('username') ?>">
         <span class="glyphicon glyphicon-user form-control-feedback"></span>
       </div>
-      <p class="form-error">
-        <?php echo form_error('username'); ?>
-      </p>
+      <p class="form-error"><?php echo form_error('username'); ?></p>
       <div class="form-group has-feedback">
         <input type="email" class="form-control" placeholder="Email" name="email" value="<?php echo set_value('email') ?>">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
-      <p class="form-error">
-        <?php echo form_error('email'); ?>
-      </p>
+      <p class="form-error"><?php echo form_error('email'); ?></p>
       <div class="form-group has-feedback">
         <input type="password" class="form-control" placeholder="Password" name="password" value="<?php echo set_value('password') ?>">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
-      <p class="form-error">
-        <?php echo form_error('password'); ?>
-      </p>
+      <p class="form-error"><?php echo form_error('password'); ?></p>
       <div class="form-group has-feedback">
         <input type="password" class="form-control" placeholder="Retype password" name="passconf" value="<?php echo set_value('passconf') ?>">
         <span class="glyphicon glyphicon-log-in form-control-feedback"></span>
       </div>
-      <p class="form-error">
-        <?php echo form_error('passconf'); ?>
-      </p>
+      <p class="form-error"><?php echo form_error('passconf'); ?></p>
       <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">
@@ -48,7 +40,8 @@
             </label>
           </div>
         </div>
-        <!-- /.col -->
+        <p class="form-error"><?php echo form_error('accept_terms'); ?></p>
+          <!-- /.col -->
         <div class="col-xs-4">
           <button type="submit" class="btn btn-primary btn-block btn-flat" name="create">Register</button>
         </div>

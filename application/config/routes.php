@@ -53,13 +53,15 @@ $route['default_controller']   = 'welcome';
 $route['404_override']         = '';
 $route['translate_uri_dashes'] = FALSE;
 
-$route['admin']                  =  'admin/login';
-$route['admin/check-login']      =  'admin/login/check_login';
-$route['admin/register']         =  'admin/login/register';
-$route['admin/validation-token'] =  'admin/login/validation_token';
-$route['admin/activated']        =	 'admin/login/activated';
-$route['admin/forgot-password']  =  'admin/login/forgot_password';
-$route['admin/reset-password']   =  'admin/login/reset_password';
+$route['admin']                        =  'admin/login';
+$route['admin/check-login']            =  'admin/login/check_login';
+$route['admin/register']               =  'admin/login/register';
+$route['admin/validation-token']       =  'admin/login/validation_token';
+$route['admin/activated']              =	'admin/login/activated';
+$route['admin/activation-success']     =	'admin/login/activation_success';
+$route['admin/forgot-password']        =  'admin/login/forgot_password';
+$route['admin/reset-password']         =  'admin/login/reset_password';
+$route['admin/reset-password-success'] =  'admin/login/reset_password_success';
 
 /*Users*/
 $route['admin/users/(:any)']                        =  'admin/users/index/$1';

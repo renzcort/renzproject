@@ -17,11 +17,19 @@ class General_m extends My_Model {
     return $this->db->count_all_results($table);
   }
 
+  /*Count All Result By Id*/
+  public function count_all_results_by_id($table, $id, $key) {
+    $key = ($key ? $key : 'id');
+    ($id ? $this->db->where("{$table}.{$key}", $id) : '');
+    return $this->db->count_all_results($table);
+  }
+
   /*Get All Data Records*/
-  public function get_all_results($table, $limit = '', $offset = '', $id='', $key='') {
+  public function get_all_results($table, $limit = '', $offset = '', $id='', $key='', $orderby=FALSE) {
     ((!empty($key)) ? $key : $key = 'id');
     ((!empty($id) || $id == '0') ? $this->db->where("{$table}.{$key}", $id) : '');
     ($limit ? $this->db->limit($limit, $offset) : '' );
+    ($orderby ? $this->db->order_by($orderby) : '');
     $result = $this->db->get($table);
     if($result->num_rows() > 0) {
       return $result->result();
@@ -37,8 +45,9 @@ class General_m extends My_Model {
   }
 
   /*Get Result data By ID*/
-  public function get_result_by_id($table, $id, $key='') {
+  public function get_result_by_id($table, $id, $key='', $orderby=FALSE) {
     ((!empty($key)) ? $key : $key = 'id');
+    ($orderby ? $this->db->order_by($orderby) : '');
     return $this->db->get_where($table, array("{$key}" => $id))->result();
   }
 
@@ -48,7 +57,8 @@ class General_m extends My_Model {
   }
 
   // get result by fields
-  public function get_result_by_fields($table, $data) {
+  public function get_result_by_fields($table, $data, $orderby=FALSE) {
+    ($orderby ? $this->db->order_by($orderby) : '');
     return $this->db->get_where($table, $data)->result();
   }
 
@@ -94,7 +104,8 @@ class General_m extends My_Model {
   }
 
   /*Get Max order*/
-  public function get_max_fields($table, $field) {
+  public function get_max_fields($table, $field, $data=FALSE) {
+    ($data ? $this->db->where($data) : '');
     $this->db->select_max($field);
     $result = $this->db->get($table);
     if($result->num_rows() > 0) {

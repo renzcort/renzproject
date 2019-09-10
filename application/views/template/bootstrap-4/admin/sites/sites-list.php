@@ -1,42 +1,8 @@
-  <div id="left-content" class="left-content">
-    <div class="sidebar-content">
-      <ul class="nav d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebarGroups" 
-        data-groups-name="<?php echo ($group_name ? $group_name : ''); ?>" 
-        data-table="<?php echo ($table ? $table : ''); ?>" 
-        data-action-name="<?php echo ($action ? $action : '');?>"
-        data-element="<?php echo ($element_name ? $element_name : ''); ?>">
-       
-        <li class="nav-item">
-          <a class="nav-link active" data-id="all">All Fields</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" data-id="0">Default</a>
-        </li>
-        <?php if ($group): ?>
-          <?php foreach ($group as $key): ?>
-            <li class="nav-item">
-              <a class="nav-link" data-id="<?php echo $key->id; ?>"><?php echo ucfirst($key->name); ?></a>
-            </li>
-          <?php endforeach ?>
-        <?php endif ?>
-      </ul>
-      <div class="btn-new text-center d-flex flex-row flex-wrap justify-content-start">
-        <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#groupsModal">+ New Group</button>
-        <?php if ($group_count >= 1) { ?>
-          <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fas fa-cog"></i>
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" id="groupsRename">Rename Selected Group</a>
-              <a class="dropdown-item" id="groupsDelete">Delete Selected Group</a>
-            </div>
-          </div>
-        <?php } ?>
-      </div>
-    </div>
+<div class="content-body d-flex flex-row flex-grow-1 justify-content-start sites-list" id="sites">
+  <div id="left-content">
+    <?php $this->load->view('template/bootstrap-4/admin/partial/sidebar-groups-manage'); ?>
   </div>
-  <div id="right-content" class="right-content ml-auto">
+  <div id="right-content">
     <?php if ($record_all): ?>
     <table class="table table-sm">
       <thead>
@@ -61,12 +27,13 @@
           <td><?php echo (!empty($key->url) ? $key->url : ''); ?></td>
           <td scope="row">
             <a href="<?php echo base_url($action.'/delete/'.$key->id); ?>"><i class="fas fa-minus-circle"></i></a>
-          </td>        
+          </td>
         </tr>
         <?php endforeach ?>
       </tbody>
     </table>
     <?php else: ?>
-      <p class="empty-data">Data is Empty</p>
+    <p class="empty-data">Data is Empty</p>
     <?php endif ?>
   </div>
+</div>

@@ -19,20 +19,20 @@ class Api extends My_Controller {
 
   /**
    * Section Entries Create
-   * This function use if template tabs and there is Fields
-   * @return [type] [description]
+   * This Function Used  to Submit  template tabs and there is Fields
    */
-  public function jsonTabsFields() {
-    ($this->input->post('id') ? $id = $this->input->post('id') : $id = '');
-    ($this->input->post('section_id') ? $section_id = $this->input->post('section_id') : $section_id = '');
+  public function jsonSubmitLayoutTabsFields() {
+    $id         = ($this->input->post('id') ? $this->input->post('id') : '');
+    $section_id = ($this->input->post('section_id') ? $this->input->post('section_id') : '');
+    $button     = ($this->input->post('button') ? $this->input->post('button') : '');
+    $table      = ($this->input->post('table') ? $this->input->post('table') : '');
 
-    $button     = $this->input->post('button');
     $settings = array(
       'title'          =>  $this->input->post('header'),
       'subtitle'       =>  ($this->input->post('subtitle') ? $this->input->post('subtitle') : FALSE),
       'breadcrumb'     =>  FALSE,
       'subbreadcrumb'  =>  FALSE,
-      'table'          =>  $this->input->post('table'),
+      'table'          =>  $table,
       'action'         =>  $this->input->post('action'),
       'session'        =>  $this->data,
       'no'             =>  $this->uri->segment(3),
@@ -49,8 +49,8 @@ class Api extends My_Controller {
     );
     $table_id = (($settings['table'] == 'section_entries') ? 'entries_id' : "{$settings['table']}_id" );  
     if ($button == 'update') {
-      $settings['getDataby_id']  =  $this->general_m->get_row_by_id($settings['table'], $id);
-      $settings['element']       =  $this->general_m->get_result_by_id($settings['fields_element'], $id, $table_id);
+      $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
+      $settings['element']      = $this->general_m->get_result_by_id($settings['fields_element'], $id, $table_id);
 
       if ($settings['element']) {
         foreach ($settings['element'] as $key) {
@@ -82,9 +82,7 @@ class Api extends My_Controller {
       );
     }
     
-    if (isset($_POST['title'])) {
-      $this->form_validation->set_rules('title', 'Title', 'trim|required');
-    }
+    if (isset($_POST['title'])) { $this->form_validation->set_rules('title', 'Title', 'trim|required'); }
 
     if ($this->form_validation->run() == TRUE) {
       $settings['errors'] = array(
@@ -134,15 +132,30 @@ class Api extends My_Controller {
           'description'=> $this->input->post('description'),
           'order'      => $this->input->post('order'),
         );
+      } elseif ($settings['table'] == 'users_settings') {
+        $handle = ($this->input->post('handle') ? $this->input->post('handle') : '');
+        $data = array(
+          'name'     => ucfirst($handle),
+          'handle'   => $handle,
+        );
+        if ($handle == 'settings') {
+          $users_settings = array(
+            'assetsSourcesList'  => $this->input->post('assetsSourcesList'),
+            'path'               => $this->input->post('path'),
+            'email_verification' => $this->input->post('email_verification'),
+            'allowRegistration'  => $this->input->post('allowRegistration'),
+            'default_group'      => $this->input->post('default_group'),
+          );
+          $data['settings'] = json_encode($users_settings);
+        }
       }
-
       
       if ($button == 'create') {
         $data['created_by'] = $this->data['userdata']['id'];
-        $tableFieldsId      = $this->general_m->create($settings['table'], $data);
+        $table_fieldsId      = $this->general_m->create($settings['table'], $data);
         if ($settings['table'] == 'globals') {
           $globals = array(
-            'globals_id'  =>  $tableFieldsId,
+            'globals_id'  =>  $table_fieldsId,
           );
           $this->general_m->create("{$settings['table']}_content", $globals); 
         }
@@ -154,17 +167,24 @@ class Api extends My_Controller {
         helper_log('update', "Update {$settings['title']} has successfully");        
         $this->session->set_flashdata("message", "{$settings['title']} has successfully updated");  
       }
-
+      
       /*add contents*/
       $fieldsId = $this->input->post('fieldsId');
 
-      //get fields to element 
-      $id = (empty($id) ? $tableFieldsId : $id);
-      // vheck content by id 
+      /*get fields to element*/ 
+      $id = (empty($id) ? $table_fieldsId : $id);
+
+      /*check users groups forms*/
+      if ($table == 'users_settings') {
+        $table  = 'users';
+      }
+      
+      // check content by id 
       $checkContent = $this->general_m->get_row_by_id($settings['fields_element'], $id, $table_id);
       if ($checkContent) {
         $this->general_m->delete($settings['fields_element'], $id, $table_id);
       }
+
       /*add elements*/
       /*if (!empty($fieldsId)) {
         $i = 0;
@@ -216,7 +236,7 @@ class Api extends My_Controller {
         helper_log('add', "add multiple tabs element create has successfully {$element['order']} record");
       }
 
-      (($settings['table'] == 'section_entries') ? $table_content = 'content' : $table_content = "{$settings['table']}_content");
+      (($settings['table'] == 'section_entries') ? $table_content = 'content' : $table_content = "{$table}_content");
       $getFieldsAll     = $this->fields_m->get_all_results();
       $getContentFields = $this->db->list_fields($table_content);
       $getElement = $this->general_m->get_all_results($settings['fields_element']);
@@ -283,128 +303,139 @@ class Api extends My_Controller {
     }    
   }
 
-  // Update Move Order 
-  public function jsonUpdateOrderEntrytypes(){
-    $id = $this->input->post('id');
-    $order = $this->input->post('order');
+  /**
+   * This Function used to Change Order Entrytypes In Section
+   */
+  public function jsonChangeOrderEntryTypes(){
+    $settings = array(
+      'table'         => $this->input->post('table'),
+      'section_id'    => $this->input->post('section_id'),
+      'entrytypes_id' => $this->input->post('entrytypes_id'),
+      'order'         => $this->input->post('order'),
+    );
     $i = 0;
-    foreach ($id as $key => $val) {
+    foreach ($settings['entrytypes_id'] as $key => $val) {
       $data = array('order' => ++$i);
-      $update = $this->entries_m->update($data, $val);
+      $update = $this->general_m->update($settings['table'], $data, $val);
     }
     echo json_encode($update);
   }
-  /*END Section*/
 
   /**
    * GROUP API
    */
-    // JSON update data 
-  public function jsonGetGroupsById() {
-    header('Content-type: application/json');
-    $group_id   = $this->input->post('group_id');
-    $group_name = $this->input->post('group_name');
-    $groups     = $this->general_m->get_row_by_id($group_name, $group_id);
-    echo json_encode($groups);
+  // Add Groups by Table and Group name
+  public function jsonModalAddGroups() {
+    $settings = array(
+      'table'       =>  $this->input->post('table'),
+      'table_group' => $this->input->post('table_group'),
+    );
+    $data = $this->general_m->create($settings['table_group']);
+    echo json_encode($data);
   }
 
+  // get data groups by ID 
+  public function jsonModalShowGroupsById() {
+    header('Content-type: application/json');
+    $settings = array(
+      'table'       =>  $this->input->post('table'),
+      'group_id'    => $this->input->post('group_id'),
+      'table_group' => $this->input->post('table_group'),
+    );
+    $data = $this->general_m->get_row_by_id($settings['table_group'], $settings['group_id']);
+    echo json_encode($data);
+  }
 
-  /**
-   * This function use to delete Groups By Id
-   */
+  // This function use to delete Groups By Id
   public function jsonDeleteGroupsById() {
     header('Content-type: application/json');
-    $group_id     = $this->input->post('group_id');
-    $group_name   = $this->input->post('group_name');
-    $element_name = $this->input->post('element_name');
-    $table        = $this->input->post('table');
-    $getFields  = $this->general_m->get_result_by_id($table, $group_id, 'group_id');
-    if ($getFields) {
-      if ($table == 'fields') {
-        $opt_id = [];
-        foreach ($getFields as $key) {
-          $getContentFields = $this->db->list_fields('content');
-          foreach ($getContentFields as $value) {
-            if ($value == "fields_{$key->handle}") {
+    $settings = array(
+      'table'        => $this->input->post('table'),
+      'table_group'  => $this->input->post('table_group'),
+      'group_id'     => $this->input->post('group_id'),
+      'element_name' => ($this->input->post('element_name') ? $this->input->post('element_name') : ''),
+    );
+    $get_data_orderby_groups  = $this->general_m->get_result_by_id($settings['table'], $settings['group_id'], 'group_id');
+    if ($get_data_orderby_groups) {
+      var_dump('test');
+      if ($settings['table'] == 'fields') {
+        $option_id = [];
+        foreach ($get_data_orderby_groups as $key) {
+          $get_data_list_fields = $this->db->list_fields('content');
+          foreach ($get_data_list_fields as $val) {
+            if ($val == "fields_{$key->handle}") {
               $fields = array(
                 'handle' => $key->handle,
               );
               modifyColumn($fields, 'drop');
             }
           }
-          $opt_id[] = $key->option_id;
-          $getElement = $this->general_m->get_row_by_id('element', $key->id, 'fields_id');
-          if ($getElement) {
-            $deleteElement = $this->general_m->delete('element', $key->id, 'fields_id');
+          
+          $option_id[] = $key->option_id;
+          $get_data_fields_elements = $this->general_m->get_row_by_id('element', $key->id, 'fields_id');
+          if ($get_data_fields_elements) {
+            $delete_element = $this->general_m->delete('element', $key->id, 'fields_id');
           }
         } 
-        $deleteTable = $this->general_m->delete($table, $group_id, 'group_id'); 
+        $delete_fields_orderby_groups = $this->general_m->delete($settings['table'], $settings['group_id'], 'group_id'); 
         foreach ($opt_id as $value) {
-          $deleteOption = $this->general_m->delete('fields_option', $value);  
+          $delete_fields_option = $this->general_m->delete('fields_option', $val);  
         }
       } else {
-        if ($element_name) {
-          foreach ($getFields as $key) {
-            $getElement = $this->general_m->get_row_by_id("{$table}_element", $key->id, "{$table}_id");
-            if ($getElement) {
-              $deleteElement = $this->general_m->delete("{$table}_element", $key->id, "{$table}_id");
+        if ($settings['element_name']) {
+          foreach ($get_data_orderby_groups as $key) {
+            $get_data_element = $this->general_m->get_row_by_id("{$settings['table']}_element", $key->id, "{$settings['table']}_id");
+            if ($get_data_element) {
+              $delete_element = $this->general_m->delete("{$settings['table']}_element", $key->id, "{$settings['table']}_id");
             }
           }
         }
-        $delete = $this->general_m->delete($table, $group_id, 'group_id');
+        $delete_fields_orderby_groups = $this->general_m->delete($settings['table'], $settings['group_id'], 'group_id');
       }
     }
-    $deleteGroup = $this->general_m->delete($group_name, $group_id);
+    $delete_group = $this->general_m->delete($settings['table_group'], $settings['group_id']);
+    helper_log('delete', "Delete fields with id = {$settings['group_id']} has successfully");
     $data = array(
-      'action' => "admin/{$table}",
+      'action' => "admin/{$settings['table']}",
       'delete' => 'success'
     );
     $this->session->set_flashdata('message', "Groups has successfully deleted");
     echo json_encode($data);
   }
   
-  /**
-   * This function use to Show Fields By Id Groups
-   * @return [type] [description]
-   */
-  public function jsonGetDataByIdGroups(){
+  // This function use to Show Fields By Id Groups
+  public function jsonDisplayDataByGroups(){
     header('content-type: application/json');
-    $table       = ($this->input->post('table') ? $this->input->post('table') : '');
-    $group_name  = ($this->input->post('group_name') ? $this->input->post('group_name') : '');
-    $action_name = ($this->input->post('action_name') ? $this->input->post('action_name') : '');
-    if ($this->input->post('group_id') == 'all') {
-      $group_id = '';
-    } else {
-      $group_id = (($this->input->post('group_id') == '0') ? '0' : $this->input->post('group_id'));
-    }
-
     $settings = array(
-      'table'       =>  $table,
-      'action'      =>  $action_name,
-      'group'       =>  $this->general_m->get_all_results($group_name),
-      'group_count' =>  $this->general_m->count_all_results($group_name),
+      'table'       => $this->input->post('table'),
+      'table_group' => ($this->input->post('table_group') ? $this->input->post('table_group') : ''),
+      'group_id'    => (($this->input->post('group_id') == 'all') ? '' : (($this->input->post('group_id') == 0) ? 0 : $this->input->post('group_id'))),
+      'action'      => ($this->input->post('action') ? $this->input->post('action') : ''),
+      'group'       => ($this->input->post('table_group') ? $this->general_m->get_all_results($this->input->post('table_group')) : ''),
+      'group_count' => ($this->input->post('table_group') ? $this->general_m->count_all_results($this->input->post('table_group')) : ''),
     );
-    $fields = ((in_array($table, array('fields', 'sites'))) ? 'group_id' : "{$group_name}_id");
-    // Pagination
-    $config                 = $this->config->item('setting_pagination');
-    $config['base_url']     = base_url($settings['action']);
-    $config['total_rows']   = $this->general_m->count_all_results($settings['table']);
-    $config['per_page']     = 10;
-    $num_pages              = $config["total_rows"] / $config["per_page"];
-    $config['uri_segment']  = 3;
-    $config['num_links']    = round($num_pages);
-    $this->pagination->initialize($config);
-    $start_offset           = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
+    $fields = ((in_array($settings['table'], array('fields', 'sites'))) ? 'group_id' : "{$settings['table_group']}_id");
 
-    if ($group_id == '') {
-     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
+    // Pagination
+    $config                = $this->config->item('setting_pagination');
+    $config['base_url']    = base_url($settings['action']);
+    $config['total_rows']  = $this->general_m->count_all_results($settings['table']);
+    $config['per_page']    = 10;
+    $num_pages             = $config["total_rows"] / $config["per_page"];
+    $config['uri_segment'] = 3;
+    $config['num_links']   = round($num_pages);
+    $this->pagination->initialize($config);
+    $start_offset = ($this->uri->segment($config['uri_segment']) ? $this->uri->segment($config['uri_segment']) : 0);
+
+    if ($settings['group_id'] == '') {
+     $record_all = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset);
     } else {
-     $settings['record_all'] = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, strval($group_id), $fields);
+     $record_all = $this->general_m->get_all_results($settings['table'], $config['per_page'], $start_offset, strval($settings['group_id']), $fields);
     }
 
     $settings['links'] = $this->pagination->create_links();
-    if($settings['record_all']) {
-      if ($table == 'sites') {
+    if($record_all) {
+      if ($settings['table'] == 'sites') {
         $table_view = '
           <table class="table table-sm text-left">
             <thead>
@@ -420,7 +451,7 @@ class Api extends My_Controller {
             </thead>
             <tbody>'; 
           $no = 0;
-          foreach ($settings['record_all'] as $key) {
+          foreach ($record_all as $key) {
              $table_view .= '<tr>
                 <td scope="row">'.++$no.'</td>
                 <td><a href="'.base_url($settings['action'].'/edit/'.$key->id).'">'.($key->name ? $key->name : '').'</a></td>
@@ -435,7 +466,7 @@ class Api extends My_Controller {
               </tr>';
             }
           $table_view .= '</tbody></table>';
-      } elseif ($table == 'fields') {
+      } elseif ($settings['table'] == 'fields') {
         $table_view = '
           <table class="table table-sm text-left">
             <thead>
@@ -449,7 +480,7 @@ class Api extends My_Controller {
             </thead>
             <tbody>'; 
           $no = 0;
-          foreach ($settings['record_all'] as $key) {
+          foreach ($record_all as $key) {
             $type = $this->general_m->get_row_by_id('fields_type', $key->type_id);
              $table_view .= '<tr>
                 <th scope="row">'.++$no.'</th>
@@ -462,7 +493,7 @@ class Api extends My_Controller {
               </tr>';
             }
           $table_view .= '</tbody></table>';
-      } elseif ($table = 'assets_content') {
+      } elseif ($settings['table'] = 'assets_content') {
         $table_view = '
           <table class="table table-sm text-left">
             <thead>
@@ -476,7 +507,7 @@ class Api extends My_Controller {
             </thead>
             <tbody>'; 
           $no = 0;
-        foreach ($settings['record_all'] as $key) {
+        foreach ($record_all as $key) {
           $filename   = explode('.', $key->file);
           $name       = current($filename);
           $thumb      = current($filename).'_thumb.'.end($filename);
@@ -502,6 +533,7 @@ class Api extends My_Controller {
   
 
   /**
+   * fungsi ga jelas
    * This function use to Delete Fields By ID
    */
   public function jsonDeleteFieldsById() {
@@ -529,18 +561,14 @@ class Api extends My_Controller {
   /**
    * This function for upload assets without submit button in assets List
    */
-  public function jsonUploadWithoutSubmit() {
-    $id     = (in_array($this->input->post('group_id'), array('all', 'default')) ? '0' : $this->input->post('group_id'));
-    $assets = (($id == '0') ? '' : $this->general_m->get_row_by_id('assets', $id));
-    if ($this->input->post('assets_Source')) {
-      $folder = lcfirst($this->input->post('assets_source'));
-    } else {
-      $folder = (($id == '0') ? 'default' : lcfirst($assets->path));
-    }
-
+  public function jsonUploadAssetsList() {
     $settings = array(
-      'upload_path' => "uploads/admin/assets/{$folder}",
+      'assets_id' => (in_array($this->input->post('group_id'), array('all', 'default')) ? 0 : $this->input->post('group_id'))
     );
+    $assets = (($settings['assets_id'] == 0) ? '' : $this->general_m->get_row_by_id('assets', $settings['assets_id']));
+    $folder = ($assets ? $assets->path : 'default');
+
+    $settings['upload_path'] = "uploads/admin/assets/{$folder}";
 
     // if (file_exists("{$settings['upload_path']}/{$_FILES["file"]["name"]}")) {
     //   $this->output->set_status_header(401);
@@ -549,7 +577,7 @@ class Api extends My_Controller {
 
     //upload.php
     if($_FILES["file"]["name"] != ''){
-      $file = str_replace(' ', '-', $_FILES['file']['name']);
+      $file   = str_replace(' ', '-', $_FILES['file']['name']);
       $config = $this->config->item('setting_upload');
       $config['upload_path'] = $settings['upload_path'];
       $config['file_name']   = $file;
@@ -566,7 +594,7 @@ class Api extends My_Controller {
         $filename   = explode('.', $result['upload_data']['file_name']);
         $file_thumb = current($filename).'_thumb.'.end($filename);
         $data = array(
-          'assets_id'  => (($id == '') ? 0 : $id),
+          'assets_id'  => $settings['assets_id'],
           'file'       => $result['upload_data']['file_name'],
           'file_thumb' => $file_thumb,
           'ext'        => $result['upload_data']['file_ext'],
@@ -604,9 +632,8 @@ class Api extends My_Controller {
       $location = './upload/' . $name;  
       move_uploaded_file($_FILES["file"]["tmp_name"], $location);*/
 
-      $query = (($id == '0') ? $this->general_m->get_all_results('assets_content') : 
-                $this->general_m->get_result_by_id('assets_content', $id, 'assets_id'));
-      $record_all = $query;
+      $record_all = 
+      ($assets ? $this->general_m->get_result_by_id('assets_content', $settings['assets_id'], 'assets_id') : $this->general_m->get_all_results('assets_content'));
       $no = 0;
       if ($record_all) {
         $table_view = '
@@ -641,7 +668,6 @@ class Api extends My_Controller {
       } else {
         $table_view = '<p class="empty-data">Data is Empty</p>';
       }
-
       echo $table_view;
     }
   }
@@ -651,43 +677,37 @@ class Api extends My_Controller {
    * Manage Entries Template
    * This function use to manage form template entries
    */
-  public function jsonEntriesManage() {
+  public function jsonSubmitEntriesForm() {
     $settings = array(
-      'table'        => $this->input->post('table'),
-      'button'       => $this->input->post('button'),
-      'action'       => $this->input->post('action'),
-      'parent_table' => (($this->input->post('parent_table') == 'section_entries') ? 'entries' : $this->input->post('parent_table')),
-      'parent_id'    => $this->input->post('parent_id'),
-      'id'           => $this->input->post('id'),
-      'activated'    => (($this->input->post('activated') == 'on' || $this->input->post('activated')) ? 1 : 0),
-    ); 
+      'parent_id'     => ($this->input->post('parent_id') ? $this->input->post('parent_id') : ''),
+      'parent_table'  => ($this->input->post('parent_table') ? $this->input->post('parent_table') : ''),
+      'table_content' => ($this->input->post('table_content') ? $this->input->post('table_content') : ''),
+      'id'            => ($this->input->post('id') ? $this->input->post('id') : ''),
+      'button'        => $this->input->post('button'),
+      'action'        => $this->input->post('action'), 
+      'activated'     => (($this->input->post('activated') == 'on' || $this->input->post('activated')) ? 1 : 0),
+    );
+
     if ($this->input->post('parent_table') == 'section_entries') {
       $settings['section_id']  = $this->input->post('section_id');
       $settings['entriestype'] = $this->input->post('entriestype');
     }
-    $parent_id = (($this->input->post('parent_table') == 'section_entries') ? 
-                  $settings['entriestype'] : $settings['parent_id']);
-
+    $parent_id = (($this->input->post('parent_table') == 'section_entries') ? $settings['entriestype'] : $this->input->post('parent_id'));
     // check Datetime
     $today         = now();
     $postdate      = strtotime(str_replace('/', '-', $this->input->post('postdate')));
     $expirydate    = strtotime(str_replace('/', '-', $this->input->post('expirydate')));
 
     if ($settings['button'] == 'create') {
-      $this->form_validation->set_rules('title', 'Title', "trim|required|is_unique[renz_{$settings['table']}.title]");
+      $this->form_validation->set_rules('title', 'Title', "trim|required|callback_title_child_check");
       $this->form_validation->set_rules('postdate', 'Postdate', "trim|required|callback_postdate_check");
       $this->form_validation->set_rules('expirydate', 'Expirydate', "trim|required|callback_expirydate_check");
     } else {
-      $this->form_validation->set_rules('title', 'Title',      
-        array('required','trim', 
-          function($str){
-            return check_title($this->input->post('table'), $this->input->post('id'), $str);
-          }
-        )
-      );
+      $this->form_validation->set_rules('title', 'Title', "trim|required|callback_title_child_check");
       $this->form_validation->set_rules('postdate', 'Postdate', "trim|required|callback_postdate_check");
       $this->form_validation->set_rules('expirydate', 'Expirydate', "trim|required|callback_expirydate_check");
     }
+
     if ($this->form_validation->run() == TRUE) {
       $data = array(
         'title'                          => $this->input->post('title'),
@@ -697,7 +717,6 @@ class Api extends My_Controller {
         'postdate_at'                    => date("Y-m-d H:i:s", $postdate),
         'expirydate_at'                  => date("Y-m-d H:i:s", $expirydate),
       );
-
       (($this->input->post('parent_table') == 'section_entries') ? $data['section_id'] = $settings['section_id'] : ''  );
       if ($this->input->post('parent_table') != 'globals') {
         $data['activated']  = $settings['activated'];
@@ -713,17 +732,19 @@ class Api extends My_Controller {
           }
         }
       }
+
       if ($settings['button'] == 'create') {
         $data['created_by'] = $this->data['userdata']['id'];
-        $this->general_m->create($settings['table'], $data);
-        helper_log('add', "Create {$settings['table']} has successfully");
+        $this->general_m->create($settings['table_content'], $data);
+        helper_log('add', "Create {$settings['table_content']} has successfully");
         $this->session->set_flashdata('message', "data has successfully created");
       } elseif ($settings['button'] == 'update') {
         $data['updated_by'] = $this->data['userdata']['id'];
-        $this->general_m->update($settings['table'], $data, $settings['id']);
-        helper_log('edit', "Update {$settings['table']} has successfully");
+        $this->general_m->update($settings['table_content'], $data, $settings['id']);
+        helper_log('edit', "Update {$settings['table_content']} has successfully");
         $this->session->set_flashdata('message', "data has successfully updated");
       } 
+    
       $settings['status'] = TRUE;
       echo json_encode($settings);
     } else {
@@ -735,6 +756,17 @@ class Api extends My_Controller {
       $settings['status'] = FALSE;
       echo json_encode($settings);
     }   
+  }
+
+  public function title_child_check($str) {
+    /*Check title in childeren parent*/
+    $parent_id    = (($this->input->post('parent_table') == 'section_entries') ? $this->input->post('entriestype') : $this->input->post('parent_id'));
+    $parent_table = (($this->input->post('parent_table') == 'section_entries') ? 'entries' : $this->input->post('parent_table'));
+    $data = array(
+      'title' =>  $str,
+      "{$parent_table}_id" => $parent_id, 
+    );
+    return check_title_child($this->input->post('table_content'), $parent_id, $this->input->post('id'), $data);
   }
 
   public function postdate_check($data){
@@ -749,285 +781,277 @@ class Api extends My_Controller {
    * Select Entries Type
    * This function use to change entries type in right tabs
    */
-  public function jsonSelectEntriesType(){
-    $id = $this->input->post('id');
-    $section_entries = $this->general_m->get_row_by_id('section_entries', $id);
-    $section         = $this->section_m->get_row_by_id($section_entries->section_id);
+  public function jsonChangeFormByEntryTypes(){
     $settings = array(
-      'title'          =>  'entries',
-      'subtitle'       =>  'create',
-      'breadcrumb'     =>  array('settings'),
-      'subbreadcrumb'  =>  array('create'),
-      'button'         =>  'Save',
-      'button_type'    =>  'submit',
-      'button_name'    =>  'create',
-      'button_tabs'    =>  TRUE,      
-      'content'        =>  'template/bootstrap-4/admin/entries/entries-form',
-      'table'          =>  'content',
-      'action'         =>  "admin/entries/{$section->handle}",
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(4),
-      'section_id'     =>  $section->id,
-      'section_entries'=>  $section_entries,
-      'fields_element' =>  $this->general_m->get_result_by_fields('element', array('entries_id' => $id)),
-      'fields'         =>  $this->fields_m->get_all_results(),
-      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
-      'assets'         =>  $this->general_m->get_all_results('assets'),
-      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
-      'elementFields'  =>  [],
-      'order'          =>  $this->general_m->get_max_fields('section', 'order'),
-      'parent_table'   =>  'section_entries',
-      'parent_id'      =>  $section_entries->id,
-      'id'             =>  $id,
-      'getDataby_id'   =>  $this->general_m->get_row_by_id('content', $id),    
+      'parent_table'  => ($this->input->post('parent_table') ? $this->input->post('parent_table') : ''),
+      'section_id'    => ($this->input->post('section_id') ? $this->input->post('section_id') : '' ),
+      'table_content' => ($this->input->post('table_content') ? $this->input->post('table_content') : ''),
+      'id'            => ($this->input->post('id') ? $this->input->post('id') : ''),
+      'button'        => ($this->input->post('button') ? $this->input->post('button') : ''),
+      'action'        => ($this->input->post('action') ? $this->input->post('action') : ''),
+      'element_table' => ($this->input->post('element_table') ? $this->input->post('element_table') : ''),
+      'entrytypes_id' => ($this->input->post('entrytypes_id') ? $this->input->post('entrytypes_id') : ''),
     );
-    // var_dump($settings['fields']);die;
-    $fields_id = [];
-    foreach ($settings['fields_element'] as $key) {
-      $fields_id[] = $key->fields_id;
-    }
-    $parent_id      = $settings['parent_id'];
-    $fields_element = $settings['fields_element'];
-    $fields         = $settings['fields'];
-    $assets         = $settings['assets'];
+    $section            = $this->general_m->get_row_by_id('section', $settings['section_id']);
+    $entriestype        = $this->general_m->get_row_by_id($settings['parent_table'], $settings['entrytypes_id']);
+    $element            = $this->general_m->get_result_by_fields($settings['element_table'], array('entries_id' => $settings['entrytypes_id']));
+    $tabs_elements      = tabs_layout($element);
+    $fields             = $this->fields_m->get_all_results();
+    $fields_type        = $this->general_m->get_all_results('fields_type');
+    $assets             = $this->general_m->get_all_results('assets');
+    $assets_content     = $this->general_m->get_all_results('assets_content');
+    $categories         = $this->general_m->get_all_results('categories');
+    $categories_content = $this->general_m->get_all_results('categories_content');
+    $entries_content    = $this->general_m->get_all_results('content');
 
-    $html = '';
-    if ($fields_element) {
-      $html .= '<input type="hidden" name="parent_id" value="'.$parent_id.'">';
-      foreach ($fields as $key) {
-        if (in_array($key->id, $fields_id)) {
-          $settings   = json_decode($key->settings);
-          $fieldsName = "fields_{$key->handle}";
-          $html .= '<div class="form-group">
-            <label class="heading" for="input'.$key->handle.'">'.ucfirst($key->name).'</label>';
-            if ($key->type_name == 'plainText') {
-              if ($settings->plainLineBreak == 1) {
-                $html .= '<textarea class="form-control"
+
+    $tabs = '';
+    $i = 0; 
+    foreach ($tabs_elements as $elm) {
+      ++$i; 
+      $tabs .= '
+        <li class="nav-item">
+          <a class="nav-link '.(($i == 1) ? 'active' : '').'" id="pills-'.$elm['id'].'-tab" 
+          data-toggle="pill" href="#'.$elm['id'].'" role="tab" aria-controls="'.$elm['title'].'" 
+          aria-selected="true">'.ucwords($elm['title']).'</a>
+        </li>';
+    }
+    $content ='
+        <div class="tab-content" id="myTabContent">';
+    
+    $i = 0; 
+    foreach ($tabs_elements as $elm) {
+      ++$i; 
+      $content .= '
+        <div class="tab-pane fade '.(($i == 1) ? 'show active' : '').'" id="'.$elm['id'].'" role="tabpanel" aria-labelledby="pills-'.$elm['id'].'-tab">
+          <div class="form-group">
+            <label for="inputTitle" class="heading">Title</label>
+            <input type="text" name="title" placeholder="Title" class="form-control" 
+            value="'.(!empty($getDataby_id->title) ? $getDataby_id->title : set_value('title')).'">
+            <div class="form-error">'.form_error('title').'</div>
+          </div>';
+      foreach ($elm['fields'] as $val) {
+        foreach ($fields as $key) {
+          if ($val == $key->id) {
+            $settings    = json_decode($key->settings);
+            $fields_name = "fields_{$key->handle}";
+            $content .= '
+              <div class="form-group">
+                <label class="heading" for="input'.$key->handle.'">'.ucfirst($key->name).'</label>';
+              if ($key->type_name == 'plainText') {
+                if ($settings->plainLineBreak == 1) {
+                  $content .= '
+                    <textarea class="form-control"
                       name="fields_'.$key->handle.'" 
                       id="textarea"
                       rows="'.$settings->plainInitialRows.'"
-                      placeholder="'.$settings->plainPlaceholder.'">'.(!empty($getDataby_id->$fieldsName) ? trim(strip_tags($getDataby_id->$fieldsName)) : '').'</textarea>';        
-              } else {
-                $html .= '<input type="text" class="form-control" 
-                        name="fields_'.$key->handle.'" 
-                        placeholder="'.(!empty($setttings->plainPlaceholder) ? $setttings->plainPlaceholder : '').'"
-                        maxlength="'.(!empty($settings->plainCharlimit) ? $settings->plainCharlimit : '').'"
-                        value="'.(!empty($getDataby_id->$fieldsName) ? $getDataby_id->$fieldsName : set_value($fieldsName)).'">';                    
-              }
-            } elseif ($key->type_name == 'assets') {
-              foreach ($assets as $key2) {
-                if ($key2->id == $settings->assetsSourcesList) {
-                  $data['name'] = $key2->name;
+                      placeholder="'.$settings->plainPlaceholder.'">'.(!empty($getDataby_id->$fields_name) ? trim(strip_tags($getDataby_id->$fields_name)) : '').'
+                    </textarea>';        
+                } else {
+                  $content .= '
+                    <input type="text" class="form-control" 
+                      name="fields_'.$key->handle.'" 
+                      placeholder="'.(!empty($setttings->plainPlaceholder) ? $setttings->plainPlaceholder : '').'"
+                      maxlength="'.(!empty($settings->plainCharlimit) ? $settings->plainCharlimit : '').'"
+                      value="'.(!empty($getDataby_id->$fields_name) ? $getDataby_id->$fields_name : set_value($fields_name)).'">';                    
                 }
-              }
+              } elseif ($key->type_name == 'assets') {
+                foreach ($assets as $ast) {
+                  if ($ast->id == $settings->assetsSourcesList) {
+                    $data['name'] = $ast->name;
+                  }
+                }
 
-              $html .= '<div id="fields-assets-entries">
-                      <ul class="list-unstyled selected">';
-                        if (!empty($getDataby_id->$fieldsName)) {
-                          $assetsList = explode(', ', $getDataby_id->$fieldsName);
-                          foreach ($assets_content as $ast) {
-                            $filename   = explode('.', $ast->file);
+                $content .= '
+                  <div id="assetscontent-list-selected">
+                    <ul class="list-unstyled selected">';
+                      if (!empty($getDataby_id->$fields_name)) {
+                        $assetsList = explode(', ', $getDataby_id->$fields_name);
+                        if ($assets_content) {
+                          foreach ($assets_content as $astcont) {
+                            $filename   = explode('.', $astcont->file);
                             $name       = current($filename);
                             $thumb      = current($filename).'_thumb.'.end($filename);
-                            $file_thumb = base_url("{$ast->path}/{$thumb}");
+                            $file_thumb = base_url("{$astcont->path}/{$thumb}");
                             $getSize    = get_headers($file_thumb, 1);
-                            if (in_array($ast->id, $assetsList)) {
-                              $html .= '
-                                  <li><input type="hidden" name="'.$fieldsName.'[]" value="'.$ast->id.'">
-                                    <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$ast->id.'" heigth="20" width="30"/>
-                                    <label for="input'.$name.'">'.$name.'</label>
-                                    <a><i class="fa fa-times" aria-hidden="true"></i></a
-                                  </li>';
+                            if (in_array($astcont->id, $assetsList)) {
+                              $content .= '
+                                <li><input type="hidden" name="'.$fields_name.'[]" value="'.$astcont->id.'" class="assets-list">
+                                  <img src="'.$file_thumb.'" class="img-thumbnail list" 
+                                  data-id="'.$astcont->id.'" heigth="20" width="30"/>
+                                  <label for="input'.$name.'">'.$name.'</label>
+                                  <a><i class="fa fa-times" aria-hidden="true"></i></a
+                                </li>';
                             }
                           }
                         }
-              $html .= '</ul>';
-              $html .= '<div>
-                      <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#assetsModal"
-                      data-assets-id = "'.$settings->assetsSourcesList.'" 
-                      data-assets-fields="fields_'.$key->handle.'">
-                    + New Assets</button></div>';
-              $html .= '</div>';
-            } elseif ($key->type_name == 'richText') {
-            } elseif ($key->type_name == 'categories') {
-            } elseif ($key->type_name == 'checkboxes') {
-              $val = $settings->checkboxesValue; 
-              $i = 0;
-              foreach ($settings->checkboxesLabel as $key2 => $value) {
-                $dataResult[] = array(
-                            'label' => $value,
-                            'value' => $val[$i]
-                          );
-                $i++;
-              }
+                      }
+                $content .= '</ul>';
+                $content .= '
+                  <div class="button-add">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#assetsModal"
+                    data-assets-id = "'.$settings->assetsSourcesList.'" 
+                    data-assets-limit ="'.$settings->assetsLimit.'" 
+                    data-assets-fields="fields_'.$key->handle.'"
+                    data-assets-source="'.$settings->assetsSourcesInput.'">
+                    + '.($settings->assetsSelectionLabel ? ucwords($settings->assetsSelectionLabel) : 'New Assets').'</button>
+                  </div>';
+                $content .='</div>';
+              } elseif ($key->type_name == 'richText') {
+              } elseif ($key->type_name == 'categories') {
+                foreach ($categories as $cat) {
+                  if ($cat->id == $settings->categoriesSource) {
+                    $data['name'] = $cat->name;
+                  }
+                }
 
-              if (!empty($getDataby_id->$fieldsName)) {
-                $checkList = explode(', ', $getDataby_id->$fieldsName);
-              }
+                $content .= '
+                  <div id="categoriescontent-list-selected">
+                   <ul class="list-unstyled selected">';
+                    if (!empty($getDataby_id->$fields_name)) {
+                      $catList = explode(', ', $getDataby_id->$fields_name);
+                      if ($categories_content) {
+                        foreach ($categories_content as $catCont) {
+                          if (in_array($catCont->id, $catList)) {
+                            $content .= '
+                              <li><input type="hidden" name="'.$fields_name.'[]" value="'.$catCont->id.'" class="categories-list">
+                                <label for="input'.$catCont->title.'">'.$catCont->title.'</label>
+                                <a><i class="fa fa-times" aria-hidden="true"></i></a
+                              </li>';
+                          }
+                        }
+                      }
+                    }
+                $content .= '</ul>';
+                $content .= '
+                  <div class="button-add">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#categoriesModal"
+                    data-categories-id = "'.$settings->categoriesSource.'" 
+                    data-categories-limit ="'.$settings->categoriesLimit.'" 
+                    data-categories-fields="fields_'.$key->handle.'">
+                    + '.($settings->categoriesSelectionLabel ? ucwords($settings->categoriesSelectionLabel) : 'New Categories').'</button>
+                  </div>';
+                $content .= '</div>';
+              } elseif ($key->type_name == 'checkboxes') {
+                $val = $settings->checkboxesValue; 
+                $i = 0;
+                foreach ($settings->checkboxesLabel as $chk => $value) {
+                  $checkResult[] = array(
+                    'label' => $value,
+                    'value' => $val[$i]
+                  );
+                  $i++;
+                }
 
-              foreach ($dataResult as $key3) {
-                $html .= '<div class="form-check">
-                        <input class="form-check-input" 
-                          type="checkbox" 
-                          name="fields_'.$key->handle.'[]" 
-                          value="'.$key3['value'].'"
-                          '.((!empty($getDataby_id->$fieldsName) && in_array($key3['value'], $checkList)) ? 'checked' : '').'>
-                        <label class="form-check-label" 
-                          for="defaultCheck1">'.$key3['label'].'
-                        </label>
-                      </div>';
+                if (!empty($getDataby_id->$fields_name)) {
+                  $checkList = explode(', ', $getDataby_id->$fields_name);
+                }
+
+                foreach ($checkResult as $chkResult) {
+                  $content .= '
+                    <div class="form-check">
+                      <input class="form-check-input" 
+                        type="checkbox" 
+                        name="fields_'.$key->handle.'[]" 
+                        value="'.$chkResult['value'].'"
+                        '.((!empty($getDataby_id->$fields_name) && in_array($chkResult['value'], $checkList)) ? 'checked' : '').'>
+                      <label class="form-check-label" 
+                        for="defaultCheck1">'.ucfirst($chkResult['label']).'
+                      </label>
+                    </div>';
+                }
+              } elseif ($key->type_name == 'dateTime') {
+              } elseif ($key->type_name == 'dropdown') {
+                $val = $settings->dropdownValue; 
+                $i = 0;
+                foreach ($settings->dropdownLabel as $drp => $value) {
+                  $dropResult[] = array(
+                    'label' => $value,
+                    'value' => $val[$i]
+                  );
+                  $i++;
+                }
+                if (!empty($getDataby_id->$fields_name)) {
+                  $checkList = explode(', ', $getDataby_id->$fields_name);
+                }
+                $content .= '<select class="form-control costum-select" name="fields_'.$key->handle.'">';
+                foreach ($dropResult as $drpResult) {
+                  $content .= '
+                    <option value="'.$drpResult['value'].'"
+                    '.((!empty($getDataby_id->$fields_name) && in_array($drpResult['value'], $checkList)) ? 'selected' : '').'>
+                    '.ucfirst($drpResult['label']).'</option>';
+                }
+                $content .= '</select>';
+              } elseif ($key->type_name == 'radio') {
+                $val = $settings->radioValue; 
+                $i = 0;
+                foreach ($settings->radioLabel as $rad => $value) {
+                  $radioResult[] = array(
+                    'label' => $value,
+                    'value' => $val[$i]
+                  );
+                  $i++;
+                }
+                if (!empty($getDataby_id->$fields_name)) {
+                  $checkList = explode(', ', $getDataby_id->$fields_name);
+                }
+                foreach ($radioResult as $radResult) {
+                  $content .= '
+                    <div class="form-check">
+                      <input class="form-check-input" type="radio" name="fields_'.$key->handle.'[]"  value="'.$radResult['value'].'"
+                      '.((!empty($getDataby_id->$fields_name) && in_array($radResult['value'], $checkList)) ? 'checked' : '').'>
+                      <label class="form-check-label" for="defaultCheck1">'.ucfirst($radResult['label']).'</label>
+                    </div>';
+                }
+              } elseif ($key->type_name == 'entries') {
+                $content .= '
+                  <div id="entriescontent-list-selected">
+                    <ul class="list-unstyled selected">';
+                      if (!empty($getDataby_id->$fields_name)) {
+                        $entList = explode(', ', $getDataby_id->$fields_name);
+                        if ($entries_content) {
+                          foreach ($entries_content as $entCont) {
+                            if (in_array($entCont->id, $entList)) {
+                              $content .= '
+                                <li><input type="hidden" name="'.$fields_name.'[]" value="'.$entCont->id.'" class="entries-list">
+                                  <label for="input'.$entCont->title.'">'.$entCont->title.'</label>
+                                  <a><i class="fa fa-times" aria-hidden="true"></i></a
+                                </li>';
+                            }
+                          }
+                        }
+                      }
+                $content .= '</ul>';
+                $content .= '
+                  <div class="button-add">
+                    <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle="modal" data-target="#entriesModal"
+                    data-section-id = "'.$settings->entriesSource.'"
+                    data-entries-limit ="'.$settings->entriesLimit.'" 
+                    data-entries-fields="fields_'.$key->handle.'">
+                    + '.($settings->entriesSelectionLabel ? ucwords($settings->entriesSelectionLabel) : 'New Categories').'</button>
+                  </div>';
+                $content .= '</div>';
               }
-            } elseif ($key->type_name == 'dateTime') {
-            } elseif ($key->type_name == 'dropdown') {
-              $val = $settings->dropdownValue; 
-              $i = 0;
-              foreach ($settings->dropdownLabel as $key2 => $value) {
-                $dataResult[] = array(
-                            'label' => $value,
-                            'value' => $val[$i]
-                          );
-                $i++;
-              }
-              $html .= '<select class="form-control costum-select" name="fields_{$key->handle}">';
-              foreach ($dataResult as $key3) {
-                $html .= '<option value="'.$key3['value'].'">'.$key3['label'].'</option>';
-              }
-              $html .= '</select>';
-            } elseif ($key->type_name == 'radio') {
-              $val = $settings->radioValue; 
-              $i = 0;
-              foreach ($settings->radioLabel as $key2 => $value) {
-                $dataResult[] = array(
-                            'label' => $value,
-                            'value' => $val[$i]
-                          );
-                $i++;
-              }
-              foreach ($dataResult as $key3) {
-                $html .= '<div class="form-check">
-                        <input class="form-check-input" type="radio" name="fields_'.$key->handle.'[]" value="'.$key3['value'].'">
-                        <label class="form-check-label" for="defaultCheck1">'.$key3['label'].'</label>
-                      </div>';
-              }
-            }
-          $html .= '</div>';
+            $content .= '</div>';
+          }
         }
       }
-    } 
-    echo json_encode($html);
-  }
-
-  /**
-   * Function upload assets in entries
-   * This function use to upload assets in entries template and auto reload in modal
-   */
-  public function jsonUploadAssetsInEntries(){
-    $id     = (in_array($this->input->post('group_id'), array('all', 'default')) ? '0' : $this->input->post('group_id'));
-    $assets = (($id == '0') ? '' : $this->general_m->get_row_by_id('assets', $id));
-    if ($this->input->post('assets_Source')) {
-      $folder = lcfirst($this->input->post('assets_Source'));
-    } else {
-      $folder = (($id == '0') ? 'default' : lcfirst($assets->handle));
+      
+      $content .= '</div>';
     }
-    
-    $settings = array(
-      'upload_path' => "uploads/admin/assets/{$folder}",
+    $content .= '</div>';
+
+    $data = array(
+      'tabs'    => $tabs,
+      'content' => $content,
     );
-
-    //upload.php
-    if($_FILES["entries-file"]["name"] != ''){
-      $config = $this->config->item('setting_upload');
-      $config['upload_path'] = $settings['upload_path'];
-      $config['file_name']   = $_FILES["entries-file"]["name"];
-
-      if (!is_dir($config['upload_path'])) {
-        mkdir($config['upload_path'], 0777, TRUE);
-      } 
-      $this->upload->initialize($config);
-
-      if ( ! $this->upload->do_upload('entries-file')){
-        $error = array('error' => $this->upload->display_errors());
-      } else{
-        $result = array('upload_data' => $this->upload->data());
-        $path = "{$settings['upload_path']}/thumb";
-        $data = array(
-          'assets_id'  => (($id == '') ? 0 : $id),
-          'file'       => $result['upload_data']['file_name'],
-          'ext'        => $result['upload_data']['file_ext'],
-          'size'       => $result['upload_data']['file_size'],
-          'path'       => $path,
-          'created_by' => $this->data['userdata']['id'],
-        );
-        //INSERT Assets content 
-        $this->general_m->create('assets_content', $data);
-        helper_log('add', "Create Assets Content has successfully");
-      }
-
-      // create Thumbs
-      $config = $this->config->item('settings_image');
-      $config['source_image'] = "{$settings['upload_path']}/{$_FILES["entries-file"]["name"]}";
-      $config['create_thumb'] = TRUE;
-      $config['new_image']    = "{$settings['upload_path']}/thumb";
-      if (!is_dir($config['new_image'])) {
-        mkdir($config['new_image'], 0777, TRUE);
-      } 
-      $this->image_lib->initialize($config);
-      if ( ! $this->image_lib->resize()){
-        echo $this->image_lib->display_errors();
-      }
-      // clear //
-      $this->image_lib->clear();
-
-      $query = (($id == '0') ? $this->general_m->get_all_results('assets_content') : 
-                $this->general_m->get_result_by_id('assets_content', $id, 'assets_id'));
-      $record_all = $query;
-      $no = 0;
-
-      $table_view = '
-      <div id="uploadModal">
-        <input type="hidden" class="form-control" id="assets-source" data-folder="'.$folder.'" name="folder" value="'.$folder.'">';
-      if ($record_all) {
-       $table_view = '
-        <table class="table table-sm text-left" id="datatableModal">
-          <thead>
-            <tr>
-              <th style="width:5%" scope="row">#</th>
-              <th scope="col">Title</th>
-              <th scope="col">Filename</th>
-              <th style="width:15%" scope="col">File Size</th>
-              <th style="width:25%" scope="col">File Modified Date</th>
-            </tr>
-          </thead>
-          <tbody>'; 
-        $no = 0;
-      foreach ($record_all as $key) {
-        $filename   = explode('.', $key->file);
-        $name       = current($filename);
-        $thumb      = current($filename).'_thumb.'.end($filename);
-        $file_thumb = base_url("{$key->path}/{$thumb}");
-        $getSize    = get_headers($file_thumb, 1); 
-        $table_view .= '<tr>
-            <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
-            <td style:"width:5%;" scope="row">'.++$no.'</td>
-            <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
-            <td>'.($key->file ? $key->file : '').'</td>
-            <td style="width:15%;">'.$key->size.' kB </td>
-            <td style="width:25%;">'.date("d/m/Y h:i A", strtotime($key->created_at)).'</td>
-            </tr>';
-      }
-      $table_view .= '</tbody></table>';
-    } else {
-      $table_view .= '<p class="empty-data">Data is Empty</p>';
-    }
-    $table_view .= '</div>';
-
-      echo $table_view;
-    }
+    echo json_encode($data);
   }
 
 
+
   /**
-   * This function use to update data Fields in Users settkngs
+   * This function use to update data Fields in Users settings
    */
   public function jsonUsersFieldsForm(){
     $settings = array(
@@ -1134,89 +1158,119 @@ class Api extends My_Controller {
    * Assets Upload
    * This Function Use TO Show Modal Assets By ID
    */
-  public function jsonAssetsEntriesUpload(){
-    $table_content = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
-    $id            = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
-    $parent_id     = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
-    $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
-    $assets_id     = (empty($this->input->post('assets_id')) ? '0' : $this->input->post('assets_id'));
-    $assets_source = (empty($this->input->post('assets_source')) ? '' : $this->input->post('assets_source'));
-    $ass_limit     = (empty($this->input->post('ass_limit')) ? '' : $this->input->post('ass_limit'));
-
+  public function jsonDisplayModalAssets(){
     $settings = array(
-      'assets'         => $this->general_m->get_row_by_id('assets', $assets_id),
-      'assets_content' => $this->general_m->get_result_by_id('assets_content', $assets_id, 'assets_id'),
+      'parent_id'      => ($this->input->post('parent_id') ? $this->input->post('parent_id') : ''),
+      'parent_table'   => ($this->input->post('parent_table') ? $this->input->post('parent_table') : ''),
+      'table_content'  => ($this->input->post('table_content') ? $this->input->post('table_content') : ''),
+      'id'             => ($this->input->post('id') ? $this->input->post('id') : ''),
+      'assets_fields'  => $this->input->post('assets_fields'),
+      'assets_id'      => ($this->input->post('assets_id') ? $this->input->post('assets_id') : 0 ),
+      'assets_source'  => ($this->input->post('assets_source') ?  $this->input->post('assets_source') : 'default'),
+      'assets_limit'   => ($this->input->post('assets_limit') ? $this->input->post('assets_limit') : ''),      
+      'list_selected'  => ($this->input->post('list_selected') ? $this->input->post('list_selected') : ''),
     );
-    $folder = (($assets_source == '') ? $settings['assets']->handle : lcfirst($assets_source));
-    $table_view = '
-      <div id="uploadModal">
-        <input type="hidden" class="form-control" id="assets-source" data-folder="'.$folder.'" name="folder" value="'.$folder.'">';
 
+    $settings['assets']         = $this->general_m->get_row_by_id('assets', $settings['assets_id']);
+    $settings['assets_content'] = $this->general_m->get_result_by_id('assets_content', $settings['assets_id'], 'assets_id');
+    $folder = (($settings['assets']) ? $settings['assets']->handle : lcfirst($settings['assets_source']));
+    $i = 0;
+    $table_view = '
+      <div class="row  d-flex flex-row flex-wrap justify-content-between p-1">
+        <div class="col-2">
+          <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">';
+    $table_view .= '
+      <a class="nav-link '.((++$i == 1) ? 'active' : '').'" id="v-pills-'.$settings['assets_id'].'-tab" data-toggle="pill" 
+      href="#v-pills-'.$settings['assets_id'].'" role="tab" aria-controls="v-pills-'.$settings['assets_id'].'" aria-selected="true">'
+      .($settings['assets'] ? ucfirst($settings['assets']->name) : 'Default').'</a>';
+    $table_view .= '</div></div>';
+
+    $table_view .= '
+    <div class="col-10">
+      <div class="tab-content" id="v-pills-tabContent">
+        <input type="hidden" class="form-control" name="parent_id" value="'.$settings['parent_id'].'">
+        <input type="hidden" class="form-control" name="parent_table" value="'.$settings['parent_table'].'">
+        <input type="hidden" class="form-control" name="table_content" value="'.$settings['table_content'].'">
+        <input type="hidden" class="form-control" name="id" value="'.$settings['id'].'">
+        <input type="hidden" class="form-control" name="assets_id" value="'.$settings['assets_id'].'">
+        <input type="hidden" class="form-control" name="assets_source" value="'.$folder.'">
+        <input type="hidden" class="form-control" name="assets_limit" value="'.$settings['assets_limit'].'">';
+
+
+    $i = 0;
     if ($settings['assets_content']) {
       $table_view .= '
-        <table class="table table-sm text-left datatableModal">
-          <thead>
-            <tr>
-              <th style="width:5%" scope="row">#</th>
-              <th scope="col">Title</th>
-              <th scope="col">Filename</th>
-              <th style="width:15%" scope="col">File Size</th>
-              <th style="width:25%" scope="col">File Modified Date</th>
-            </tr>
-          </thead>
-          <tbody>'; 
+        <div class="tab-pane fade '.((++$i == 1) ? 'show active' : '').'" id="v-pills-'.$settings['assets_id'].'" 
+        role="tabpanel" aria-labelledby="v-pills-'.$settings['assets_id'].'-tab">';
+      $check_content = $this->general_m->get_row_by_id('assets_content', $settings['assets_id'], 'assets_id');
+      if ($check_content) {
+        $table_view .= '
+          <table class="table table-sm text-left assets-content-list datatableModal">
+            <thead>
+              <tr>
+                <th style="width:5%" scope="row">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Filename</th>
+                <th style="width:15%" scope="col">File Size</th>
+                <th style="width:25%" scope="col">File Modified Date</th>
+              </tr>
+            </thead>
+            <tbody>';  
         $no = 0;
-      foreach ($settings['assets_content'] as $key) {
-        $filename   = explode('.', $key->file);
-        $name       = current($filename);
-        $thumb      = current($filename).'_thumb.'.end($filename);
-        $file_thumb = base_url("{$key->path}/{$thumb}");
-        $getSize    = get_headers($file_thumb, 1); 
-        $table_view .= '<tr>
-            <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
-            <td style:"width:5%;" scope="row">'.++$no.'</td>
-            <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>'.ucfirst($name).'</td>
-            <td>'.($key->file ? $key->file : '').'</td>
-            <td style="width:15%;">'.$key->size.' kB </td>
-            <td style="width:25%;">'.date("d/m/Y h:i A", strtotime($key->created_at)).'</td>
+        foreach ($settings['assets_content'] as $key) {
+          $filename   = explode('.', $key->file);
+          $name       = current($filename);
+          $thumb      = current($filename).'_thumb.'.end($filename);
+          $file_thumb = base_url("{$key->path_thumb}/{$thumb}");
+          $getSize    = get_headers($file_thumb, 1); 
+          $table_view .= '
+            <tr>
+              <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
+              <td style:"width:5%;" scope="row">'.++$no.'</td>
+              <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>
+              '.((strlen($name) <= 25) ? ucfirst($name) : substr(ucfirst($name), 0, 25)."...").'</td>
+              <td>'.((strlen($name) <= 25) ? $key->file : substr($key->file, 0, 25)."...".$key->ext).'</td>
+              <td style="width:15%;">'.$key->size.' kB </td>
+              <td style="width:25%;">'.date("d/m/Y h:i A", strtotime($key->created_at)).'</td>
             </tr>';
+        }
+        $table_view .= '</tbody></table>';
+      } else {
+        $table_view .= '<p class="empty-data assets-content-list">Data is Empty</p>';
       }
-      $table_view .= '</tbody></table>';
+      $table_view .= '</div>';
     } else {
-      $table_view .= '<p class="empty-data">Data is Empty</p>';
+      $table_view .= '<p class="empty-data assets-content-list">Data is Empty</p>';
     }
-    $table_view .= '</div>';
+    $table_view .= '</div></div>';
 
-    $nameAssets = '<a class="active" data-id="'.(!empty($settings['assets']->id) ? $settings['assets']->id : '0').'">
-                  '.(!empty($settings['assets']->name) ? $settings['assets']->name : 'Default').'
-                  </a>';
-    $data = array(
-      'name'  =>  $nameAssets,
-      'table' =>  $table_view,
-    );
-    echo json_encode($data);
+    echo json_encode($table_view);
   }
 
  
   /**
    * This Function Use To Choice Assets In Modal Show 
    */
-  public function jsonAssetsSelectSubmit(){
-    $table_content      = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
-    $id                 = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
-    $parent_id          = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
-    $list_selected      = $this->input->post('list_selected');
-    $assets_content_Id  = $this->input->post('assets_content_Id');
-    $assets_fields      = $this->input->post('assets_fields');
-    $assetsContentby_id = $this->general_m->get_row_by_id($table_content, $id);
-    $ass_limit          = (empty($this->input->post('ass_limit')) ? '' : $this->input->post('ass_limit'));
+  public function jsonSubmitModalAssets(){
+    $settings = array(
+      'parent_id'         => ($this->input->post('parent_id') ? $this->input->post('parent_id') : ''),
+      'parent_table'      => ($this->input->post('parent_table') ? $this->input->post('parent_table') : ''),
+      'table_content'     => ($this->input->post('table_content') ? $this->input->post('table_content') : ''),
+      'id'                => ($this->input->post('id') ? $this->input->post('id') : ''),
+      'assets_fields'     => $this->input->post('assets_fields'),
+      'assets_id'         => ($this->input->post('assets_id') ? $this->input->post('assets_id') : 0 ),
+      'assets_source'     => ($this->input->post('assets_source') ?  $this->input->post('assets_source') : 'default'),
+      'assets_limit'      => ($this->input->post('assets_limit') ? $this->input->post('assets_limit') : ''),      
+      'list_selected'     => ($this->input->post('list_selected') ? $this->input->post('list_selected') : ''),
+      'assets_content_Id' => $this->input->post('assets_content_Id'),
+    );
 
-    if ($assets_content_Id && $list_selected) {
-      $assetsList = array_unique( array_merge($list_selected, $assets_content_Id));
-    } elseif ($assets_content_Id && empty($list_selected)) {
-      $assetsList = $assets_content_Id;
-    } elseif (empty($assets_content_Id) && $list_selected) {
-      $assetsList = $list_selected;
+    if ($settings['assets_content_Id'] && $settings['list_selected']) {
+      $assetsList = array_unique( array_merge($settings['list_selected'], $settings['assets_content_Id']));
+    } elseif ($settings['assets_content_Id'] && empty($settings['list_selected'])) {
+      $assetsList = $settings['assets_content_Id'];
+    } elseif (empty($settings['assets_content_Id']) && $settings['list_selected']) {
+      $assetsList = $settings['list_selected'];
     } else {
       $assetsList = [];
     }
@@ -1224,33 +1278,28 @@ class Api extends My_Controller {
     $view = '';
     $i = 0;
     foreach ($assetsList as $key => $value) {
-      if ($ass_limit) {
+      $assetsContentById = $this->general_m->get_row_by_id('assets_content', $value);
+      $filename   = explode('.', $assetsContentById->file);
+      $name       = current($filename);
+      $thumb      = current($filename).'_thumb.'.end($filename);
+      $file_thumb = base_url("{$assetsContentById->path}/{$thumb}");
+      $getSize    = get_headers($file_thumb, 1);
+
+      if ($settings['assets_limit']) {
         ++$i;
-        if ($i <= $ass_limit) {
-          $assetsContentby_id = $this->general_m->get_row_by_id('assets_content', $value);
-          $filename   = explode('.', $assetsContentby_id->file);
-          $name       = current($filename);
-          $thumb      = current($filename).'_thumb.'.end($filename);
-          $file_thumb = base_url("{$assetsContentby_id->path}/{$thumb}");
-          $getSize    = get_headers($file_thumb, 1); 
+        if ($i <= $settings['assets_limit']) {
           $view .= '
-              <li><input type="hidden" name="'.$assets_fields.'[]" value="'.$value.'" class="ass-list">
-                <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>
+              <li><input type="hidden" name="'.$settings['assets_fields'].'[]" value="'.$value.'" class="assets-list">
+                <img src="'.$file_thumb.'" class="img-thumbnail list" data-id="'.$value.'" heigth="20" width="30"/>
                 <label for="input'.$name.'">'.$name.'</label>
                 <a><i class="fa fa-times" aria-hidden="true"></i></a
               </li>
             ';
         }
       } else {
-        $assetsContentby_id = $this->general_m->get_row_by_id('assets_content', $value);
-        $filename   = explode('.', $assetsContentby_id->file);
-        $name       = current($filename);
-        $thumb      = current($filename).'_thumb.'.end($filename);
-        $file_thumb = base_url("{$assetsContentby_id->path}/{$thumb}");
-        $getSize    = get_headers($file_thumb, 1); 
         $view .= '
-            <li><input type="hidden" name="'.$assets_fields.'[]" value="'.$value.'" class="ass-list">
-              <img src="'.$file_thumb.'" class="img-thumbnail assets-list" data-id="'.$value.'" heigth="20" width="30"/>
+            <li><input type="hidden" name="'.$settings['assets_fields'].'[]" value="'.$value.'" class="assets-list">
+              <img src="'.$file_thumb.'" class="img-thumbnail list" data-id="'.$value.'" heigth="20" width="30"/>
               <label for="input'.$name.'">'.$name.'</label>
               <a><i class="fa fa-times" aria-hidden="true"></i></a
             </li>
@@ -1265,101 +1314,234 @@ class Api extends My_Controller {
     echo json_encode($data);
   }
 
+  /**
+   * Function upload assets in entries
+   * This function use to upload assets in entries template and auto reload in modal
+   */
+  public function jsonUploadModalAssets(){
+    $settings = array(
+      'assets_id'     => $this->input->post('assets_id'),
+      'assets_source' => $this->input->post('assets_source'),
+      'upload_path'   => "uploads/admin/assets/{$this->input->post('assets_source')}",
+    );
+
+    //upload.php
+    if($_FILES["assetsmodal-file"]["name"] != ''){
+      $file = str_replace(' ', '-', $_FILES['assetsmodal-file']['name']);
+      $config = $this->config->item('setting_upload');
+      $config['upload_path'] = $settings['upload_path'];
+      $config['file_name']   = $file;
+
+      if (!is_dir($config['upload_path'])) {
+        mkdir($config['upload_path'], 0777, TRUE);
+      } 
+      $this->upload->initialize($config);
+
+      if ( ! $this->upload->do_upload('assetsmodal-file')){
+        $error = array('error' => $this->upload->display_errors());
+      } else{
+        $result     = array('upload_data' => $this->upload->data());
+        $path_thumb = "{$settings['upload_path']}/thumb";
+        $filename   = explode('.', $result['upload_data']['file_name']);
+        $file_thumb = current($filename).'_thumb.'.end($filename);
+        $data = array(
+          'assets_id'  => $settings['assets_id'],
+          'file'       => $result['upload_data']['file_name'],
+          'file_thumb' => $file_thumb,
+          'ext'        => $result['upload_data']['file_ext'],
+          'size'       => $result['upload_data']['file_size'],
+          'path'       => $settings['upload_path'],
+          'path_thumb' => $path_thumb,
+          'created_by' => $this->data['userdata']['id'],
+        );
+        //INSERT Assets content 
+        $this->general_m->create('assets_content', $data);
+        helper_log('add', "Create Assets Content has successfully");
+      }
+
+      // create Thumbs
+      $config = $this->config->item('settings_image');
+      $config['source_image'] = "{$settings['upload_path']}/{$file}";
+      $config['create_thumb'] = TRUE;
+      $config['new_image']    = "{$settings['upload_path']}/thumb";
+      if (!is_dir($config['new_image'])) {
+        mkdir($config['new_image'], 0777, TRUE);
+      } 
+      $this->image_lib->initialize($config);
+      if ( ! $this->image_lib->resize()){
+        echo $this->image_lib->display_errors();
+      }
+      // clear //
+      $this->image_lib->clear();
+  
+      $table_view = '';
+      $settings['assets_content'] = $this->general_m->get_result_by_id('assets_content', $settings['assets_id'], 'assets_id');
+      $i = 0;
+      if ($settings['assets_content']) {
+        $check_content = $this->general_m->get_row_by_id('assets_content', $settings['assets_id'], 'assets_id');
+        if ($check_content) {
+          $table_view .= '
+            <table class="table table-sm text-left assets-content-list datatableModal">
+              <thead>
+                <tr>
+                  <th style="width:5%" scope="row">#</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Filename</th>
+                  <th style="width:15%" scope="col">File Size</th>
+                  <th style="width:25%" scope="col">File Modified Date</th>
+                </tr>
+              </thead>
+              <tbody>';  
+            $no = 0;
+            foreach ($settings['assets_content'] as $key) {
+              $filename   = explode('.', $key->file);
+              $name       = current($filename);
+              $thumb      = current($filename).'_thumb.'.end($filename);
+              $file_thumb = base_url("{$key->path_thumb}/{$thumb}");
+              $getSize    = get_headers($file_thumb, 1); 
+              $table_view .= '
+                <tr>
+                  <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
+                  <td style:"width:5%;" scope="row">'.++$no.'</td>
+                  <td><img src="'.$file_thumb.'" class="img-thumbnail" heigth="10" width="20"/>
+                  '.((strlen($name) <= 25) ? ucfirst($name) : substr(ucfirst($name), 0, 25)."...").'</td>
+                  <td>'.((strlen($name) <= 25) ? $key->file : substr($key->file, 0, 25)."...".$key->ext).'</td>
+                  <td style="width:15%;">'.$key->size.' kB </td>
+                  <td style="width:25%;">'.date("d/m/Y h:i A", strtotime($key->created_at)).'</td>
+                </tr>';
+            }
+            $table_view .= '</tbody></table>';
+        } else {
+          $table_view .= '<p class="empty-data assets-content-list">Data is Empty</p>';
+        }
+      } else {
+        $table_view .= '<p class="empty-data assets-content-list">Data is Empty</p>';
+      }
+      echo json_encode($table_view);
+    }
+  }
+
 
   /**
    * This Function Use TO Show Modal Categories By ID
    */
-  public function jsonCategoriesEntriesUpload(){
-    $table_content = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
-    $id            = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
-    $parent_id     = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
-    $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
-    $cat_id        = (empty($this->input->post('cat_id')) ? '0' : $this->input->post('cat_id'));
-    $cat_limit     = (empty($this->input->post('cat_limit')) ? '' : $this->input->post('cat_limit'));
-
+  public function jsonDisplayModalCategories(){
     $settings = array(
-      'categories'         => $this->general_m->get_row_by_id('categories', $cat_id),
-      'categories_content' => $this->general_m->get_result_by_id('categories_content', $cat_id, 'categories_id'),
+      'parent_id'          => ($this->input->post('parent_id') ? $this->input->post('parent_id') : ''),
+      'parent_table'       => ($this->input->post('parent_table') ? $this->input->post('parent_table') : ''),
+      'table_content'      => ($this->input->post('table_content') ? $this->input->post('table_content') : ''),
+      'id'                 => ($this->input->post('id') ? $this->input->post('id') : ''),
+      'categories_fields'  => $this->input->post('categories_fields'),
+      'categories_id'      => ($this->input->post('categories_id') ? $this->input->post('categories_id') : '' ),
+      'categories_limit'   => ($this->input->post('categories_limit') ? $this->input->post('categories_limit') : ''),      
+      'list_selected'      => ($this->input->post('list_selected') ? $this->input->post('list_selected') : ''),
+      'categories'         => $this->general_m->get_row_by_id('categories', $this->input->post('categories_id')),
+      'categories_content' => $this->general_m->get_result_by_id('categories_content', $this->input->post('categories_id'), 'categories_id'),
     );
 
+    $i = 0;
     $table_view = '
-      <div id="uploadModal">
-        <input type="hidden" class="form-control" name="table" value="'.$table_content.'">
-        <input type="hidden" class="form-control" name="id" value="'.$id.'">
-        <input type="hidden" class="form-control" name="parent_id" value="'.$parent_id.'">
-        <input type="hidden" class="form-control" name="cat_id" value="'.$cat_id.'">
-        <input type="hidden" class="form-control" name="cat_id" value="'.$cat_limit.'">';
+      <div class="row  d-flex flex-row flex-wrap justify-content-between p-1">
+        <div class="col-3">
+          <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">';
+    $table_view .= '
+      <a class="nav-link '.((++$i == 1) ? 'active' : '').'" id="v-pills-'.$settings['categories']->id.'-tab" data-toggle="pill" href="#v-pills-'.$settings['categories']->id.'" role="tab" aria-controls="v-pills-'.$settings['categories']->id.'" aria-selected="true">'.ucfirst($settings['categories']->name).'</a>';
+    $table_view .= '</div></div>';
+
+    $table_view .= '
+    <div class="col-9">
+      <div class="tab-content" id="v-pills-tabContent">
+        <input type="hidden" class="form-control" name="parent_id" value="'.$settings['parent_id'].'">
+        <input type="hidden" class="form-control" name="parent_table" value="'.$settings['parent_table'].'">
+        <input type="hidden" class="form-control" name="table_content" value="'.$settings['table_content'].'">
+        <input type="hidden" class="form-control" name="id" value="'.$settings['id'].'">
+        <input type="hidden" class="form-control" name="categories_id" value="'.$settings['categories_id'].'">
+        <input type="hidden" class="form-control" name="categories_limit" value="'.$settings['categories_limit'].'">';
+
+
+    $i = 0;
     if ($settings['categories_content']) {
-      $table_view .= '
-        <table class="table table-sm text-left datatableModal">
-          <thead>
-            <tr>
-              <th style="width:5%" scope="row">#</th>
-              <th scope="col">Title</th>
-            </tr>
-          </thead>
-          <tbody>'; 
-        $no = 0;
-      foreach ($settings['categories_content'] as $key) {
-        $table_view .= '<tr>
-            <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
-            <td style:"width:5%;" scope="row">'.++$no.'</td>
-            <td>'.ucfirst($key->title).'</td>
-            </tr>';
-      }
-      $table_view .= '</tbody></table>';
+        $table_view .= '
+          <div class="tab-pane fade '.((++$i == 1) ? 'show active' : '').'" id="v-pills-'.$settings['categories']->id.'" 
+          role="tabpanel" aria-labelledby="v-pills-'.$settings['categories']->id.'-tab">';
+        $check_content = $this->general_m->get_row_by_id('categories_content', $settings['categories_id'], 'categories_id');
+        if ($check_content) {
+          $table_view .= '
+            <table class="table table-sm text-left datatableModal">
+              <thead>
+                <tr>
+                  <th style="width:5%" scope="row">#</th>
+                  <th scope="col">Title</th>
+                </tr>
+              </thead>
+              <tbody>'; 
+          $no = 0;
+          foreach ($settings['categories_content'] as $val) {
+            $table_view .= '<tr>
+                <input type="hidden" name="id" value="'.$val->id.'" data-id="'.$val->id.'">
+                <td style:"width:5%;" scope="row">'.++$no.'</td>
+                <td>'.ucfirst($val->title).'</td>
+                </tr>';
+          }
+          $table_view .= '</tbody></table>';
+        } else {
+          $table_view .= '<p class="empty-data">Data is Empty</p>';
+        }
+        $table_view .= '</div>';
     } else {
       $table_view .= '<p class="empty-data">Data is Empty</p>';
     }
-    $table_view .= '</div>';
+    $table_view .= '</div></div>';
 
-    $data = array(
-      'table' =>  $table_view,
-    );
-    echo json_encode($data);
+    echo json_encode($table_view);
   }
 
    /**
    * This Function Use To Choice Categories In Modal Show 
    */
-  public function jsonCategoriesSelectSubmit(){
-    $table_content   = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
-    $id              = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
-    $parent_id       = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
-    $list_selected   = $this->input->post('list_selected');
-    $cat_content_Id  = $this->input->post('cat_content_Id');
-    $cat_fields      = $this->input->post('cat_fields');
-    $cat_limit       = (empty($this->input->post('cat_limit')) ? '' : $this->input->post('cat_limit'));
+  public function jsonSubmitModalCategories(){
+    $settings = array(
+      'parent_id'             => ($this->input->post('parent_id') ? $this->input->post('parent_id') : ''),
+      'parent_table'          => ($this->input->post('parent_table') ? $this->input->post('parent_table') : ''),
+      'table_content'         => ($this->input->post('table_content') ? $this->input->post('table_content') : ''),
+      'id'                    => ($this->input->post('id') ? $this->input->post('id') : ''),
+      'categories_fields'     => $this->input->post('categories_fields'),
+      'categories_id'         => ($this->input->post('categories_id') ? $this->input->post('categories_id') : '' ),
+      'categories_limit'      => ($this->input->post('categories_limit') ? $this->input->post('categories_limit') : ''),      
+      'list_selected'         => ($this->input->post('list_selected') ? $this->input->post('list_selected') : ''),
+      'categories'            => $this->general_m->get_row_by_id('categories', $this->input->post('categories_id')),
+      'categories_content'    => $this->general_m->get_result_by_id('categories_content', $this->input->post('categories_id'), 'categories_id'),
+      'categories_content_id' => $this->input->post('categories_content_id'),
+    );
 
-    if ($cat_content_Id && $list_selected) {
-      $catList = array_unique( array_merge($list_selected, $cat_content_Id));
-    } elseif ($cat_content_Id && empty($list_selected)) {
-      $catList = $cat_content_Id;
-    } elseif (empty($cat_content_Id) && $list_selected) {
-      $catList = $list_selected;
+    if ($settings['categories_content_id'] && $settings['list_selected']) {
+      $categories_list = array_unique( array_merge($settings['list_selected'], $settings['categories_content_id']));
+    } elseif ($settings['categories_content_id'] && empty($settings['list_selected'])) {
+      $categories_list = $settings['categories_content_id'];
+    } elseif (empty($settings['categories_content_id']) && $settings['list_selected']) {
+      $categories_list = $settings['list_selected'];
     } else {
-      $catList = [];
+      $categories_list = [];
     }
   
-    $view = '';
+    $list_view = '';
     $i = 0;
-    foreach ($catList as $key => $value) {
-      if ($cat_limit) {
+    foreach ($categories_list as $key => $value) {
+      $categoriesContentby_id = $this->general_m->get_row_by_id($settings['table_content'], $value);
+      if ($settings['categories_limit']) {
         ++$i;
-        if ($i <= $cat_limit) {
-          $catContentby_id = $this->general_m->get_row_by_id('categories_content', $value);
-          $view .= '
-              <li><input type="hidden" name="'.$cat_fields.'[]" value="'.$value.'" class="cat-list">
-                <label for="input'.$catContentby_id->title.'">'.$catContentby_id->title.'</label>
+        if ($i <= $settings['categories_limit']) {
+          $list_view .= '
+              <li><input type="hidden" name="'.$settings['categories_fields'].'[]" value="'.$value.'" class="categories-list">
+                <label for="input'.$categoriesContentby_id->title.'">'.$categoriesContentby_id->title.'</label>
                 <a><i class="fa fa-times" aria-hidden="true"></i></a
               </li>
             ';
         }
       } else {
-        $catContentby_id = $this->general_m->get_row_by_id('categories_content', $value);
-        $view .= '
-            <li><input type="hidden" name="'.$cat_fields.'[]" value="'.$value.'" class="cat-list">
-              <label for="input'.$catContentby_id->title.'">'.$catContentby_id->title.'</label>
+        $list_view .= '
+            <li><input type="hidden" name="'.$settings['categories_fields'].'[]" value="'.$value.'" class="cat-list">
+              <label for="input'.$categoriesContentby_id->title.'">'.$categoriesContentby_id->title.'</label>
               <a><i class="fa fa-times" aria-hidden="true"></i></a
             </li>
           ';
@@ -1367,8 +1549,8 @@ class Api extends My_Controller {
     }
 
     $data = array(
-      'html' =>  $view,
-      'counter' => $i
+      'list_view' =>  $list_view,
+      'counter'   => $i
     );
     echo json_encode($data);
   }
@@ -1376,110 +1558,140 @@ class Api extends My_Controller {
   /**
    * This Function Use TO Show Modal Entries By ID
    */
-  public function jsonEntEntriesUpload(){
-    $table_content = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
-    $id            = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
-    $parent_id     = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
-    $list_selected = (empty($this->input->post('list_selected')) ? '0' : $this->input->post('list_selected'));
-    $ent_id        = (empty($this->input->post('ent_id')) ? '0' : $this->input->post('ent_id'));
-    $ent_limit     = (empty($this->input->post('ent_limit')) ? '' : $this->input->post('ent_limit'));
-
+  public function jsonDisplayModalEntries(){
     $settings = array(
-      'section'         => $this->general_m->get_row_by_id('section', $ent_id),
-      'section_entries' => $this->general_m->get_row_by_id('section_entries', $ent_id, 'section_id'),
-      'content'         => $this->general_m->get_result_by_id('content', $ent_id, 'section_id'),
+      'parent_id'       => ($this->input->post('parent_id') ? $this->input->post('parent_id') : ''),
+      'parent_table'    => ($this->input->post('parent_table') ? $this->input->post('parent_table') : ''),
+      'table_content'   => ($this->input->post('table_content') ? $this->input->post('table_content') : ''),
+      'id'              => ($this->input->post('id') ? $this->input->post('id') : ''),
+      'entries_fields'  => $this->input->post('entries_fields'),
+      'section_id'      => ($this->input->post('section_id') ? $this->input->post('section_id') : '' ),
+      'entries_limit'   => ($this->input->post('entries_limit') ? $this->input->post('entries_limit') : ''),      
+      'list_selected'   => ($this->input->post('list_selected') ? $this->input->post('list_selected') : ''),
+      'section'         => $this->general_m->get_row_by_id('section', $this->input->post('section_id')),
+      'section_entries' => $this->general_m->get_result_by_id('section_entries', $this->input->post('section_id'), 'section_id'),
+      'content'         => $this->general_m->get_result_by_id('content', $this->input->post('section_id'), 'section_id'),
     );
 
+    $i = 0;
     $table_view = '
-      <div id="uploadModal">
-        <input type="hidden" class="form-control" name="table" value="'.$table_content.'">
-        <input type="hidden" class="form-control" name="id" value="'.$id.'">
-        <input type="hidden" class="form-control" name="parent_id" value="'.$parent_id.'">
-        <input type="hidden" class="form-control" name="ent_id" value="'.$ent_id.'">
-        <input type="hidden" class="form-control" name="ent_id" value="'.$ent_limit.'">';
-    if ($settings['content']) {
+    <div class="row  d-flex flex-row flex-wrap justify-content-between p-1">
+      <div class="col-3">
+        <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">';
+    foreach ($settings['section_entries'] as $key) {
+      ++$i;
       $table_view .= '
-        <table class="table table-sm text-left datatableModal">
-          <thead>
-            <tr>
-              <th style="width:5%" scope="row">#</th>
-              <th scope="col">Title</th>
-            </tr>
-          </thead>
-          <tbody>'; 
-        $no = 0;
-      foreach ($settings['content'] as $key) {
-        $table_view .= '<tr>
-            <input type="hidden" name="id" value="'.$key->id.'" data-id="'.$key->id.'">
-            <td style:"width:5%;" scope="row">'.++$no.'</td>
-            <td>'.ucfirst($key->title).'</td>
-            </tr>';
+          <a class="nav-link '.(($i == 1) ? 'active' : '').'" id="v-pills-'.$key->id.'-tab" data-toggle="pill" href="#v-pills-'.$key->id.'" role="tab" aria-controls="v-pills-'.$key->id.'" aria-selected="true">'.ucfirst($key->title).'</a>';
+    }
+    $table_view .= '</div></div>';
+
+    $table_view .= '
+    <div class="col-9">
+      <div class="tab-content" id="v-pills-tabContent">
+        <input type="hidden" class="form-control" name="parent_id" value="'.$settings['parent_id'].'">
+        <input type="hidden" class="form-control" name="parent_table" value="'.$settings['parent_table'].'">
+        <input type="hidden" class="form-control" name="table_content" value="'.$settings['table_content'].'">
+        <input type="hidden" class="form-control" name="id" value="'.$settings['id'].'">
+        <input type="hidden" class="form-control" name="section_id" value="'.$settings['section_id'].'">
+        <input type="hidden" class="form-control" name="entries_limit" value="'.$settings['entries_limit'].'">';
+
+
+    $i = 0;
+    if ($settings['content']) {
+      foreach ($settings['section_entries'] as $key) {
+        ++$i;
+        $table_view .= '<div class="tab-pane fade '.(($i == 1) ? 'show active' : '').'" id="v-pills-'.$key->id.'" role="tabpanel" aria-labelledby="v-pills-'.$key->id.'-tab">';
+        $check_content = $this->general_m->get_row_by_id('content', $key->id, 'entries_id');
+        if ($check_content) {
+          $table_view .= '
+            <table class="table table-sm text-left datatableModal">
+              <thead>
+                <tr>
+                  <th style="width:5%" scope="row">#</th>
+                  <th scope="col">Title</th>
+                </tr>
+              </thead>
+              <tbody>'; 
+          $no = 0;
+          foreach ($settings['content'] as $val) {
+            if ($key->id == $val->entries_id) {
+              $table_view .= '<tr>
+                  <input type="hidden" name="id" value="'.$val->id.'" data-id="'.$val->id.'">
+                  <td style:"width:5%;" scope="row">'.++$no.'</td>
+                  <td>'.ucfirst($val->title).'</td>
+                  </tr>';
+              
+            }
+          }
+         $table_view .= '</tbody></table>';
+        } else {
+          $table_view .= '<p class="empty-data">Data is Empty</p>';
+        }
+        $table_view .= '</div>';
       }
-      $table_view .= '</tbody></table>';
     } else {
       $table_view .= '<p class="empty-data">Data is Empty</p>';
     }
-    $table_view .= '</div>';
+    $table_view .= '</div></div>';
 
-    $entries_name = '<a class="active" data-id="'.(!empty($settings['section']->id) ? $settings['section']->id : '0').'">
-                  '.(!empty($settings['section']->name) ? $settings['section']->name : 'Default').'
-                  </a>';
-    $data = array(
-      'name'  =>  $entries_name,
-      'table' =>  $table_view,
-    );
-    echo json_encode($data);
+    echo json_encode($table_view);
   }
 
    /**
    * This Function Use To Choice Entries In Modal Show 
    */
-  public function jsonEntSelectSubmit(){
-    $table_content   = (empty($this->input->post('table')) ? '' : $this->input->post('table'));
-    $id              = (empty($this->input->post('id')) ? '0' : $this->input->post('id'));
-    $parent_id       = (empty($this->input->post('parent_id')) ? '0' : $this->input->post('parent_id'));
-    $list_selected   = $this->input->post('list_selected');
-    $ent_content_Id  = $this->input->post('ent_content_Id');
-    $ent_fields      = $this->input->post('ent_fields');
-    $ent_limit       = (empty($this->input->post('ent_limit')) ? '' : $this->input->post('ent_limit'));
+  public function jsonSubmitModalEntries(){
+    $settings = array(
+      'parent_id'          => ($this->input->post('parent_id') ? $this->input->post('parent_id') : ''),
+      'parent_table'       => ($this->input->post('parent_table') ? $this->input->post('parent_table') : ''),
+      'table_content'      => ($this->input->post('table_content') ? $this->input->post('table_content') : ''),
+      'id'                 => ($this->input->post('id') ? $this->input->post('id') : ''),
+      'entries_fields'     => $this->input->post('entries_fields'),
+      'section_id'         => ($this->input->post('section_id') ? $this->input->post('section_id') : '' ),
+      'entries_limit'      => ($this->input->post('entries_limit') ? $this->input->post('entries_limit') : ''),      
+      'list_selected'      => ($this->input->post('list_selected') ? $this->input->post('list_selected') : ''),
+      'section'            => $this->general_m->get_row_by_id('section', $this->input->post('section_id')),
+      'section_entries'    => $this->general_m->get_result_by_id('section_entries', $this->input->post('section_id'), 'section_id'),
+      'content'            => $this->general_m->get_result_by_id('content', $this->input->post('section_id'), 'section_id'),
+      'entries_content_id' => $this->input->post('entries_content_id'),
+    );
 
-    if ($ent_content_Id && $list_selected) {
-      $entList = array_unique( array_merge($list_selected, $ent_content_Id));
-    } elseif ($ent_content_Id && empty($list_selected)) {
-      $entList = $ent_content_Id;
-    } elseif (empty($ent_content_Id) && $list_selected) {
-      $entList = $list_selected;
+    if ($settings['entries_content_id'] && $settings['list_selected']) {
+      $entries_List = array_unique( array_merge($settings['list_selected'], $settings['entries_content_id']));
+    } elseif ($settings['entries_content_id'] && empty($settings['list_selected'])) {
+      $entries_List = $settings['entries_content_id'];
+    } elseif (empty($settings['entries_content_id']) && $settings['list_selected']) {
+      $entries_List = $settings['list_selected'];
     } else {
-      $entList = [];
+      $entries_List = [];
     }
 
-    $view = '';
+    $list_view = '';
     $i = 0;
-    foreach ($entList as $key => $value) {
-      if ($ent_limit) {
+    foreach ($entries_List as $key => $value) {
+      $entriescontentby_id = $this->general_m->get_row_by_id('content', $value);
+      if ($entries_List) {
         ++$i;
-        if ($i <= $ent_limit) {
-          $entContentby_id = $this->general_m->get_row_by_id('content', $value);
-          $view .= '
-              <li><input type="hidden" name="'.$ent_fields.'[]" value="'.$value.'" class="ent-list">
-                <label for="input'.$entContentby_id->title.'">'.$entContentby_id->title.'</label>
+        if ($i <= $settings['entries_limit']) {
+          $list_view .= '
+              <li><input type="hidden" name="'.$settings['entries_fields'].'[]" value="'.$value.'" class="entries-list">
+                <label for="input'.$entriescontentby_id->title.'">'.$entriescontentby_id->title.'</label>
                 <a><i class="fa fa-times" aria-hidden="true"></i></a
               </li>
             ';
         }
       } else {
-        $entContentby_id = $this->general_m->get_row_by_id('content', $value);
-          $view .= '
-              <li><input type="hidden" name="'.$ent_fields.'[]" value="'.$value.'" class="ent-list">
-                <label for="input'.$entContentby_id->title.'">'.$entContentby_id->title.'</label>
-                <a><i class="fa fa-times" aria-hidden="true"></i></a
-              </li>
-            ';
+        $list_view .= '
+            <li><input type="hidden" name="'.$settings['entries_fields'].'[]" value="'.$value.'" class="entries-list">
+              <label for="input'.$entriescontentby_id->title.'">'.$entriescontentby_id->title.'</label>
+              <a><i class="fa fa-times" aria-hidden="true"></i></a
+            </li>
+          ';
       }
     }
 
     $data = array(
-      'html' =>  $view,
+      'list_view' =>  $list_view,
       'counter' => $i
     );
     echo json_encode($data);

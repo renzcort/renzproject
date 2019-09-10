@@ -129,7 +129,7 @@ class Categories extends My_Controller {
       'parent_id'          =>  $params->id          
     );
 
-    $settings['tabs_elements'] = $this->tabs_layout($settings['element']);
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
     // var_dump($settings['fields']);die;
     foreach ($settings['element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
@@ -173,7 +173,8 @@ class Categories extends My_Controller {
       'parent_id'          =>  $params->id,
       'getDataby_id'       =>  $this->general_m->get_row_by_id('categories_content', $id),          
     );
-
+    
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
     foreach ($settings['element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
     }
@@ -293,10 +294,8 @@ class Categories extends My_Controller {
       'order'          =>  $this->general_m->get_max_fields('categories', 'order'),
     );
     $settings['getDataby_id'] = $this->general_m->get_row_by_id($settings['table'], $id);
-    $settings['tabs_elements'] = $this->tabs_layout($settings['element']);
-    // $result  = array_merge_value('id', $elm);
-    // echo "<pre>" . var_export($result, true) . "</pre>";
-
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
+    
     /*this is function to show tabs fields */
     if ($settings['element']) {
       foreach ($settings['element'] as $key) {
@@ -371,36 +370,6 @@ class Categories extends My_Controller {
       $this->session->set_flashdata('message', 'Your Id Not Valid');
       redirect($settings['action']);
     }
-  }
-
-  /*This is function to tabs layout */
-  public function tabs_layout($data) {
-    $tabs_id = [];
-    foreach ($data as $key) {
-      $tabs_settings = json_decode($key->tabs_settings);
-      if (in_array($tabs_settings->id, array_unique($tabs_id))) {
-        $fields[$tabs_settings->id][]   = $key->fields_id;
-        $tabs_title[$tabs_settings->id] = $tabs_settings->title;  
-        $tabs_count[$tabs_settings->id] = $tabs_settings->count;  
-      } else {
-        $fields[$tabs_settings->id][]   = $key->fields_id;
-        $tabs_title[$tabs_settings->id] = $tabs_settings->title;  
-        $tabs_count[$tabs_settings->id] = $tabs_settings->count;  
-      }
-      $tabs_id[]  = $tabs_settings->id;
-    }
-
-    foreach ($fields as $key => $value) {
-      if (in_array($key, array_unique($tabs_id))) {
-        $elm[] = array(
-          'id'     => $key,
-          'title'  => $tabs_title[$key],
-          'count'  => $tabs_count[$key],
-          'fields' => $value,
-        );
-      }
-    }
-    return $elm;
   }
 
 }

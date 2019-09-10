@@ -1,10 +1,12 @@
-<div class="middle-content flex-grow-1" id="sections-form">
-  <?php
-    $attributes = array('class' => 'form',
-                        'id'  =>  'MyForm'
-                  ); 
-    echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
-  ?>
+<div class="content-body flex-grow-1" id="section">
+  <div class="section-form" id="middle-content">
+    <?php
+      $attributes = array(
+        'class' => 'form',
+        'id'  =>  'MyForm'
+      ); 
+      echo form_open($action.(isset($id) ? '/'.$id : ''), $attributes); 
+    ?>
     <input type="hidden" name="button" value="<?php echo $button_name; ?>">
     <input type ="hidden" name="id" value="<?php echo (!empty($getDataby_id->id) ? $getDataby_id->id : ''); ?>">
     <input type ="hidden" name="table" value="<?php echo $table; ?>">
@@ -39,30 +41,33 @@
     <div class="form-group" id="site-settings">
       <label class="heading" for="inputSiteSettings">Site Settings</label>
       <label class="form-text text-muted">Choose which sites this section should be available in, and configure the site-specific settings.</label>
-      <table class="table table-bordered text-center">
-        <thead class="thead-dark">
-          <th style="width: 10%;">Site</th>
-          <th>Entry URI Format</th>
-          <th>Template</th>
-          <th class="status  <?php echo ((!empty($getDataby_id->type_id) && $getDataby_id->type_id == '6') ? '' : 'd-none'); ?>" style="width: 10%;">Default Status</th>
-        </thead>
-        <tbody>
-          <tr class="start">
-            <td class="first py-0" style="width: 10%;"><?php echo $sites->name; ?></td>
-            <td class="p-0"><input type="text" name="url" class="form-control" value="<?php echo (!empty($getDataby_id->url) ? $getDataby_id->url : set_value('url')); ?>"></td>
-            <td class="p-0"><input type="text" name="template" class="form-control" value="<?php echo (!empty($getDataby_id->template) ? $getDataby_id->template : set_value('template')); ?>"></td>
-            <td class="py-0 status  <?php echo ((!empty($getDataby_id->type_id) && $getDataby_id->type_id == '6') ? '' : 'd-none'); ?>" style="width: 10%;">
-              <div class="custom-control custom-switch">
-                <input type="checkbox" name="activated" class="custom-control-input customSwitch" id="customSwitch1"
-                <?php echo ((!empty($getDataby_id->activated) && $getDataby_id->activated == 1) ? 'checked' : '') ?>>
-                <label class="custom-control-label" for="customSwitch1"> 
-                  <?php echo ((!empty($getDataby_id->activated) && $getDataby_id->activated == 1) ? 'Enabled' : 'Disabled') ?> 
-                </label>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="table-responsive-sm table-responsive-md table-responsive-lg table-responsive-xl">
+        <table class="table table-bordered text-center">
+          <thead class="thead-dark">
+            <th style="width: 10%;">Site</th>
+            <th>Entry URI Format</th>
+            <th>Template</th>
+            <th class="status  <?php echo ((!empty($getDataby_id->type_id) && $getDataby_id->type_id == '6') ? '' : 'd-none'); ?>" style="width: 10%;">Default Status</th>
+          </thead>
+          <tbody>
+            <tr class="start">
+              <td class="first py-0" style="width: 10%;"><?php echo (empty($sites->name) ? '' : $sites->name); ?></td>
+              <td class="p-0"><input type="text" name="url" class="form-control" value="<?php echo (!empty($getDataby_id->url) ? $getDataby_id->url : set_value('url')); ?>"></td>
+              <td class="p-0"><input type="text" name="template" class="form-control" value="<?php echo (!empty($getDataby_id->template) ? $getDataby_id->template : set_value('template')); ?>"></td>
+              <td class="py-0 status  <?php echo ((!empty($getDataby_id->type_id) && $getDataby_id->type_id == '6') ? '' : 'd-none'); ?>" style="width: 20%;">
+                <div class="custom-control custom-switch">
+                  <input type="checkbox" name="activated" class="custom-control-input customSwitch" id="customSwitch1"
+                  <?php echo ((!empty($getDataby_id->activated) && $getDataby_id->activated == 1) ? 'checked' : '') ?>>
+                  <label class="custom-control-label" for="customSwitch1"> 
+                    <?php echo ((!empty($getDataby_id->activated) && $getDataby_id->activated == 1) ? 'Enabled' : 'Disabled') ?> 
+                  </label>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
     <?php echo form_close(); ?>
+  </div>
 </div>

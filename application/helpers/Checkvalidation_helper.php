@@ -81,6 +81,22 @@
         }
       }
     }
+
+    /*Check validation in children title from content*/
+    function check_title_child($table, $parent_id, $id, $child) {
+      $CI =& get_instance();
+      $check_title = $CI->general_m->get_row_by_fields($table, $child);
+      if (empty($check_title)) {
+        return TRUE; 
+      } else {
+        if ($check_title->id == $id) {
+          return TRUE;
+        } else {
+          $CI->form_validation->set_message('title_child_check', "The Title field must contain a unique value.");
+          return FALSE;
+        }
+      }
+    }
   }
 
 ?>
