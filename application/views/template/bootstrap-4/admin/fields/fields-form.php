@@ -91,6 +91,8 @@
         <small class="form-text text-muted">The type of column this field should get in the database.</small>
         <select name="plainColumnType" class="form-control costum-select">
           <option value="0">- Select Type -</option>
+          <option value="1">Varchar 255b</option>
+          <option value="1">Text 64KB</option>
         </select>
       </div>
     </div>
@@ -124,13 +126,13 @@
         <label class="heading" for="inputSource">Sources</label>
         <small class="form-text text-muted">Which sources do you want to select assets from?</small>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="all" name="assetsSources[]" checked>
+          <input class="form-check-input" type="checkbox" value="all" name="assetsSourcesAll" checked>
           <label class="form-check-label" for="defaultCheck1"><strong>All</strong></label>
         </div>
         <?php if ($assets): ?>
         <?php foreach ($assets as $key): ?>
         <div class="form-check">
-          <input class="form-check-input" type="checkbox" value="<?php echo $key->id; ?>" name="assetsSources[]" checked disabled>
+          <input class="form-check-input" type="checkbox" value="<?php echo $key->id; ?>" name="assetsSources" checked disabled>
           <label class="form-check-label" for="defaultCheck1"><?php echo $key->name; ?></label>
         </div>
         <?php endforeach ?>
@@ -270,6 +272,7 @@
         <label class="heading" for="inputSource">Source</label>
         <small class="form-text text-muted">Which source do you want to select categories from?</small>
         <select name="categoriesSource" class="form-control costum-select">
+          <option value="0">- Select Source -</option>
           <?php if ($categories): ?>
           <?php foreach ($categories as $key): ?>
           <option value="<?php echo $key->id ?>"

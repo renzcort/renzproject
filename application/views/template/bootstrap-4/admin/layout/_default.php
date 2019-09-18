@@ -24,7 +24,7 @@
   <body>
     <?php $this->load->view('template/bootstrap-4/admin/partial/nav'); ?>
     <div class="wraper">
-      <div class="d-flex flex-row flex-wrap justify-content-start align-items-start">
+      <div class="d-flex flex-wrap align-items-stretch justify-content-start">
         <div class="left-main" id="sidebar-main">
           <?php $this->load->view('template/bootstrap-4/admin/partial/sidebar'); ?>
         </div>
@@ -34,12 +34,6 @@
               <div id="header">
                 <?php $this->load->view('template/bootstrap-4/admin/partial/header'); ?>
               </div>
-              <?php if ($this->session->userdata('message')) { ?>
-              <div class="alert alert-danger alert-dismissible text-center mx-auto" role="alert" id="message">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <?php echo $this->session->userdata('message'); ?>
-              </div>
-              <?php } ?>
               <div class="container d-flex flex-row flex-wrap justify-content-start" id="content-wraper">
                 <?php $this->load->view($content); ?>
               </div>
@@ -54,6 +48,11 @@
     <!-- Show Modal Dialog  -->
     <?php $this->load->view('template/bootstrap-4/admin/partial/modal-dialog'); ?>
     <!-- Optional JavaScript -->
+    <div id="wait">
+      <div class="icon">
+        <img src='<?php echo base_url('assets/admin/image/ajax-loader.gif') ?>' width="64" height="64" /><br>Loading..
+      </div>
+    </div>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -64,6 +63,8 @@
     <!-- <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sortable/0.9.13/jquery-sortable-min.js"></script> -->
     <script type="text/javascript" src="http://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.serializeJSON/2.9.0/jquery.serializejson.min.js"></script>
+    <script src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/adminlte.js"></script>
+
     <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/jquery.multisortable.js"></script>
     <script type="text/javascript" src="<?php echo base_url('assets/admin/template/bootstrap-4/')?>js/main.js"></script>
     <script type = "text/javascript">
@@ -130,7 +131,7 @@
           manageEntrieslayout();
           tabsMultisortable();
           manageUsersSettings();
-          // layout();
+          layout();
       })
     </script>
   </body>

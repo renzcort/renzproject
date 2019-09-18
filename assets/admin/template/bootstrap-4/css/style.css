@@ -302,6 +302,12 @@ input[type="file"].header-upload  {
   width: 100%;
   max-width: 50%;
   font-weight: 600;
+  opacity: .8;
+  border-radius: 15px;
+  margin-bottom: .5rem;
+}
+#message h5 {
+  font-size: 13px;
 }
 .right-main #content-wraper {
   background: #fff;
@@ -314,6 +320,9 @@ input[type="file"].header-upload  {
   padding: .75rem 0 0;
   width: 100%;
   /*margin-top: 2rem;*/
+}
+.content-body.globals-form#globals{
+  padding: 0;
 }
 .content-body .table tr.start > td {
   vertical-align: middle;
@@ -442,7 +451,7 @@ input[type="file"].header-upload  {
   overflow-y: auto;
   width: 100%;
   /*height: 100%;*/
-  max-height: calc(60vh - 50px);
+  max-height: calc(60vh - 128px);
 }
 #left-content.fixed-left-content .sidebar-content{
   height: 80%;
@@ -553,7 +562,7 @@ input[type="file"].header-upload  {
 }
 .content-filter-input input[type="checkbox"],
 .content-filter-input input[type="text"] {
-  margin-right: .2rem;
+  margin-right: .5rem;
 }
 .content-filter-input .form-control {
   max-width: 35rem;
@@ -672,6 +681,13 @@ input[type="file"].header-upload  {
 #tabs-entries-main #tabs-entries-content {
   padding: 1rem 1.5rem;
 }
+
+#tabs-entries-main #tabs-heading li.nav-item {
+  max-width: 15%;
+}
+#tabs-entries-main ul li a > i {
+  font-size: 12px;
+}
 /* end Left content entries layout */
 
 
@@ -691,7 +707,9 @@ input[type="file"].header-upload  {
 }
 /* End Right Content Entries Layout */
 
-
+.table-sm td, .table-sm th {
+    padding: .4rem;
+}
 .nav-item.header{
   color: #fff;
   background: #363738;
@@ -888,6 +906,43 @@ span.ui-icon {
   margin: 2px 0;
 }
 
+#wait {
+  display:none;
+  width: 100%;
+  height: auto;
+  min-height: 200%;
+  border: 1px solid black;
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 2px;
+  z-index: 1040;
+  background: #E4E6E8;
+  opacity: .5;
+}
+#wait .icon {
+  left: 50%;
+  top : 13rem;
+  position: relative;
+}
+#assetsModal .modal-dialog,
+#entriesModal .modal-dialog,
+#categoriesModal .modal-dialog {
+  max-width: 1000px !important;
+}
+#assetsModal .modal-body,
+#entriesModal .modal-body,
+#categoriesModal .modal-body {
+  padding : .75rem !important;
+}
+#modal-main-left {
+  padding: 0 !important;
+}
+#modal-main-right .img-thumbnail{
+  width: 20px;
+  height: 20px;
+  margin: .5rem .25rem;
+}
 
 /* Layout to Login Form */
 #login.wraper {
@@ -1023,7 +1078,7 @@ span.ui-icon {
  */
 
 /* Smartphones (portrait and landscape) ----------- */
-@media only screen and (min-width : 320px) and (max-width : 480px) {
+/* @media only screen and (min-width : 320px) and (max-width : 480px) {
   header {
     flex-direction: column;
     text-align: center;
@@ -1091,7 +1146,7 @@ span.ui-icon {
     margin-top: 0;
   }
   #content-wraper .content-body{
-    /*padding: 0;*/
+    padding: 0;
     flex-direction: column !important;
   }
   .content-body #middle-content{
@@ -1157,15 +1212,67 @@ span.ui-icon {
   #middle-content.users-form .tab-content {
     padding: .5rem;
   }
-}
+} */
 
 /* // Extra small devices (portrait phones, less than 576px) */
 @media (max-width: 575.98px) { 
+  #login.wraper {
+    background: #fff;
+  }
+  .sidebar-open #sidebar-main.left-main {
+    /* -webkit-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+    transform: translate(0, 0);
+    background-color: #333F4D;
+    position: absolute;
+    top : 5rem;
+    bottom: auto;
+    max-width: 40%;
+    height: auto;
+    padding: .75rem .25rem; */
+    margin-left: 0;
+    position: relative;
+    width: 100%;
+    max-width: 40%;
+  }
+  .sidebar-open #content-main.right-main {
+    /*    -webkit-transform: translate(230px, 0);
+    -ms-transform: translate(230px, 0);
+    -o-transform: translate(230px, 0);
+    transform: translate(230px, 0);*/
+    margin-left: 250px;
+    max-width: 60%;
+  }
+
+  #sidebar-main.left-main {
+    /* -webkit-transform: translate(-230px, 0);
+    -ms-transform: translate(-230px, 0);
+    -o-transform: translate(-230px, 0);
+    transform: translate(-230px, 0); 
+    position: absolute;
+    top : 5rem;
+    bottom: auto;
+    max-width: 40%;
+    height: auto;
+    padding: .75rem .25rem; */
+    margin-left: -250px;
+  }
+
+  #content-main.right-main{
+    /*-webkit-transform: translate(0, 0);
+    -ms-transform: translate(0, 0);
+    -o-transform: translate(0, 0);
+    transform: translate(0, 0);*/
+    max-width: 100%;
+    background: #EBEDEF;
+  }
+
   header {
     flex-direction: column;
     text-align: center;
-    position: fixed;
-    z-index: 1030;
+    position: relative;
+    top: auto;
     width: 100%;
   }
   header nav {
@@ -1200,19 +1307,17 @@ span.ui-icon {
 
   .wraper {
     margin : 0 !important;
+    background: #333F4D;
   }
-  #sidebar-main.left-main {
-    display: none;
+  .left-main #users-bar {
+    margin-top: 0;
   }
 
-  #content-main.right-main{
-    max-width: 100%;
-  }
   .right-main #header{
     max-width: 100%;
     position: relative;
     z-index: 1020;
-    margin: 3rem 0 0;
+    top: auto;
   }
   .breadcrumb {
     margin-bottom: .5rem;
@@ -1228,7 +1333,7 @@ span.ui-icon {
     font-size: 11px;
   }
   .right-main #content-wraper{
-    margin-top: 2rem;
+    margin-top: .5rem;
     padding: .5rem 0;
   }
   #content-wraper .content-body{
@@ -1303,6 +1408,30 @@ span.ui-icon {
 
 /* // Small devices (landscape phones, 576px and up) */
 @media (min-width: 576px) and (max-width: 767.98px) {
+  #login.wraper {
+    background: none;
+  }
+  .sidebar-open #sidebar-main.left-main {
+    margin-left: 0;
+    position: relative;
+    width: 100%;
+    max-width: 40%;
+    margin-top: 3rem;
+  }
+  .sidebar-open #content-main.right-main {
+    margin-left: 250px;
+    max-width: 60%;
+  }
+
+  #sidebar-main.left-main {
+    margin-left: -250px;
+    margin-top: 3rem;
+  }
+
+  #content-main.right-main{
+    max-width: 100%;
+    background: #EBEDEF;
+  }
  header {
     flex-direction: column;
     text-align: center;
@@ -1341,12 +1470,7 @@ span.ui-icon {
   }
   .wraper {
     margin : 0 !important;
-  }
-  #sidebar-main.left-main {
-    display: none;
-  }
-  #content-main.right-main{
-    max-width: 100%;
+    background: #333F4D;
   }
   .container {
     max-width: 100%;

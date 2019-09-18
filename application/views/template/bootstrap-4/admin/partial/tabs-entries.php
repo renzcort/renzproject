@@ -17,14 +17,23 @@ value="<?php echo (empty($parent_id) ? $section_id : $parent_id); ?>">
   <div class="heading" id="tabs-heading">
     <ul class="nav nav-tabs d-flex flex-row flex-nowrap" id="myTab" role="tablist">
       <?php
-        $i = 0; 
-        foreach ($tabs_elements as $elm) {
-        ++$i; 
+        if ($tabs_elements) {
+          $i = 0; 
+          foreach ($tabs_elements as $elm) {
+            ++$i; 
       ?>
       <li class="nav-item">
         <a class="nav-link <?php echo (($i == 1) ? 'active' : ''); ?>" id="pills-<?php echo $elm['id']; ?>-tab" 
         data-toggle="pill" href="#<?php echo $elm['id']; ?>" role="tab" aria-controls="<?php echo $elm['title']; ?>" 
         aria-selected="true"><?php echo ucwords($elm['title']); ?></a>
+      </li>
+    <?php 
+        }
+      } else { ?>
+      <li class="nav-item">
+        <a class="nav-link active" id="pills-settings-tab" 
+        data-toggle="pill" href="#settings" role="tab" aria-controls="settings" 
+        aria-selected="true">settings</a>
       </li>
     <?php } ?>
     </ul>  
@@ -33,9 +42,10 @@ value="<?php echo (empty($parent_id) ? $section_id : $parent_id); ?>">
   <div class="entries-content" id="tabs-entries-content">
     <div class="tab-content" id="myTabContent">
       <?php 
-        $i = 0; 
-        foreach ($tabs_elements as $elm) {
-        ++$i; 
+        if ($tabs_elements) {
+          $i = 0; 
+          foreach ($tabs_elements as $elm) {
+          ++$i; 
       ?>
       <div class="tab-pane fade <?php echo (($i == 1) ? 'show active' : ''); ?>" id="<?php echo $elm['id']; ?>" 
         role="tabpanel" aria-labelledby="pills-<?php echo $elm['id']; ?>-tab">
@@ -238,7 +248,20 @@ value="<?php echo (empty($parent_id) ? $section_id : $parent_id); ?>">
           }
         ?>
       </div>
-      <?php } ?>
+      <?php 
+          }
+        } else { 
+      ?>
+      <div class="tab-pane fade show active" id="settings" 
+        role="tabpanel" aria-labelledby="pills-settings-tab">
+        <div class="form-group">
+          <label for="inputTitle" class="heading">Title</label>
+          <input type="text" name="title" placeholder="Title" class="form-control" 
+          value="<?php echo (!empty($getDataby_id->title) ? $getDataby_id->title : set_value('title')); ?>">
+          <div class="form-error"><?php echo form_error('title'); ?></div>
+        </div>
+      </div>
+    <?php } ?>
     </div>
   </div>
 </div>

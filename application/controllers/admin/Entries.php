@@ -164,7 +164,7 @@ class Entries extends My_Controller {
       'content'            =>  'template/bootstrap-4/admin/entries/entries-form',
       'section_id'         =>  $params->id,
       'section_entries'    =>  $this->general_m->get_result_by_fields('section_entries', array('section_id' => $params->id)),
-      'element'            =>  $this->general_m->get_result_by_fields('element', array('section_id' => $content->entries_id)),
+      'element'            =>  $this->general_m->get_result_by_fields('element', array('entries_id' => $content->entries_id)),
       'fields'             =>  $this->fields_m->get_all_results(),
       'fields_type'        =>  $this->general_m->get_all_results('fields_type'),
       'assets'             =>  $this->general_m->get_all_results('assets'),
@@ -176,6 +176,7 @@ class Entries extends My_Controller {
       'id'                 =>  $id,
       'getDataby_id'       =>  $content,    
     );
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
     foreach ($settings['element'] as $key) {
       $settings['fields_id'][] = $key->fields_id;
     }

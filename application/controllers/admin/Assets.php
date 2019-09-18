@@ -131,8 +131,6 @@ class Assets extends My_Controller {
       'right_content'      =>  "template/bootstrap-4/admin/assets/assets-{$handle}-list",
       'element_name'       =>  'assets_element',
       'group_name'         =>  'assets_group',
-      'assets_group'       =>  $this->general_m->get_all_results('assets_group'),
-      'assets_group_count' =>  $this->general_m->count_all_results('assets_group'),
       'handle'             =>  $handle,
     );
 
@@ -169,10 +167,6 @@ class Assets extends My_Controller {
       'button_tabs'      =>  (($handle == 'volumes') ? TRUE : FALSE),
       'content'          =>  "template/bootstrap-4/admin/assets/assets-{$handle}-form",
       'assets_type'      =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
-      'group_name'       =>  'assets_group',
-      'group'            =>  $this->general_m->get_all_results('assets_group'),
-      'group_count'      =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'         =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
       'fields_element'   =>  'assets_element',
       'element'          =>  [],
       'fields_group'     =>  $this->general_m->get_all_results('fields_group'),
@@ -239,10 +233,6 @@ class Assets extends My_Controller {
       'button_tabs'      =>  (($handle == 'volumes') ? TRUE : FALSE),
       'content'          =>  "template/bootstrap-4/admin/assets/assets-{$handle}-form",
       'assets_type'      =>  array('Amazon S3', 'Local Folder', 'Google Cloud Storage'),
-      'group_name'       =>  'assets_group',
-      'group'            =>  $this->general_m->get_all_results('assets_group'),
-      'group_count'      =>  $this->general_m->count_all_results('assets_group'),
-      'group_id'         =>  ($this->input->get('group_id') ? $this->input->get('group_id') : ''),
       'fields_element'   =>  'assets_element',
       'element'          =>  $this->general_m->get_result_by_id('assets_element', $id, "assets_id"),
       'fields_group'     =>  $this->general_m->get_all_results('fields_group'),
@@ -384,6 +374,33 @@ class Assets extends My_Controller {
         }
       }
       $delete = $this->general_m->delete($settings['table'], $id);
+
+      /*check Fields contain assets volumes*/
+      $all_fields_with_assets = $this->general_m->get_result_by_fields('fields', array('type_id' => 3));
+      if ($all_fields_with_assets) {
+        foreach ($all_fields_with_assets as $key ) {
+          $settings = json_decode($key->settings);
+          if ($settings->assetsSourcesList == $id) {
+            $opt_settings = array(
+              'assetsRestrictUpload'     => $settings->assetsRestrictUpload,
+              'assetsSourcesList'        => 0,
+              'assetsSourcesInput'       => '',
+              'assetsSources'            => $settings->assetsSources,
+              'assetsRestrictFileType'   => $settings->assetsRestrictFileType,
+              'assetsType'               => $settings->assetsType,
+              'assetsTargetLocale'       => $settings->assetsTargetLocale,
+              'assetsLimit'              => $settings->assetsLimit,
+              'assetsViewMode'           => $settings->assetsViewMode,
+              'assetsSelectionLabel'     => $settings->assetsSelectionLabel,
+            );
+            $data = array(
+              'settings' => json_encode($opt_settings),
+            );
+            $this->general_m->update('fields', $data, $key->id);
+          }
+        }
+      }
+
       helper_log('delete', "Delete {$settings['title']} with id = has successfully");
       $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");      
       redirect($settings['action']);

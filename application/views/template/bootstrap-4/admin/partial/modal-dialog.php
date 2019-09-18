@@ -42,9 +42,9 @@
       </div>
       <div class="modal-body"></div>
       <div class="modal-footer">
-        <input type="file" name="assets" id="assetsmodal-file" class="btn btn-primary mr-auto p-2 ">
+        <input type="file" name="assets" id="assets-modal-file" class="btn btn-primary mr-auto p-2 ">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="assetsmodal-select" data-dismiss="modal">Select</button>
+        <button type="button" class="btn btn-primary" id="assets-modal-select" data-dismiss="modal">Select</button>
       </div>
     </div>
   </div>
@@ -62,7 +62,7 @@
       <div class="modal-body"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="categoriesmodal-select" data-dismiss="modal">Select</button>
+        <button type="button" class="btn btn-primary" id="categories-modal-select" data-dismiss="modal">Select</button>
       </div>
     </div>
   </div>
@@ -80,7 +80,7 @@
       <div class="modal-body"></div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" id="entriesmodal-select" data-dismiss="modal">Select</button>
+        <button type="button" class="btn btn-primary" id="entries-modal-select" data-dismiss="modal">Select</button>
       </div>
     </div>
   </div>

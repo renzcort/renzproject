@@ -3,9 +3,10 @@
     <a class="navbar-brand" href="#">Navbar</a>
   </nav>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top bg-dark menu">
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#sidebar" aria-controls="sidebarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler sidebar-toggle" type="button" data-toggle="push-menu" data-target="#sidebar" aria-controls="sidebar-collapse" aria-expanded="false" aria-label="Toggle navigation" role="button">
     <span class="navbar-toggler-icon"></span>
     </button>
+
     <ul class="navbar-nav ml-auto d-flex flex-row justify-content-end" id="nav-module">
       <li class="nav-item dropdown">
         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

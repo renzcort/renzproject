@@ -1,12 +1,12 @@
-<div class="d-flex flex-column flex-wrap justify-content-center">
-  <div class="d-flex flex-row flex-wrap justify-content-start align-items-center" id="users-bar">
+<div class="d-flex flex-column flex-wrap justify-content-center align-items-stretch">
+  <div class="d-flex flex-wrap justify-content-start align-items-center" id="users-bar">
     <img src="http://dummyimage.com/800x600/4d494d/686a82.gif&text=placeholder+image" alt="placeholder+image" class="rounded-circle">
     <div class="users-info">
       <p><?php echo (isset($session['userdata']['username']) ? $session['userdata']['username'] : ''); ?></p>
       <p class="online">Online</p>
     </div>
   </div>
-  <div class="d-flex flex-column justify-content-start align-content-start align-items-start" id="sidebar-menu">
+  <div class="d-flex flex-column justify-content-start align-items-start" id="sidebar-menu">
     <ul class="nav">
       <li class="nav-item header">Main Dashboard</li>
       <li class="nav-item">

@@ -1,22 +1,58 @@
 <div class="fields-layout" id="tabs-forms">
   <h5 class="heading">Design Your Field Layout</h5>
-  <div class="d-flex flex-row flex-wrap" id="fields-tabs-group">
-    <div id="dialog" title="Tab data"></div>
-    <?php if ($element) { ?>
-      <?php foreach ($tabs_elements as $elm) { ?>
-      <div class="fields-group my-tabs" id="<?php echo $elm['id'] ?>" data-count="<?php echo $elm['count']; ?>">
-        <ul class="nav nav-tabs" role="tablist">
-          <li class="nav-item" data-tabs-title= "<?php echo $elm['title']; ?>">
-            <a class="nav-link active <?php echo $elm['id']; ?>" data-toggle="tab" href="#<?php echo $elm['id'] ?>" role="tab" 
-              aria-controls="<?php echo $elm['id']; ?>" aria-selected="true"><?php echo $elm['title']; ?>
-            <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span>
-            <span class="ui-icon ui-icon-pencil" role="presentation">Edit Tab</span></a>
-          </li>
-        </ul>
-        <div class="tab-content">
-          <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="tabs-1">
-            <ul id="sortable-in" class="sortable text-center list-group connectedSortable">
-              <?php 
+  <?php if (!in_array($table, array('assets'))) { ?>
+    <div class="d-flex flex-row flex-wrap" id="fields-tabs-group">
+      <div id="dialog" title="Tab data"></div>
+      <?php if ($element) { ?>
+        <?php foreach ($tabs_elements as $elm) { ?>
+        <div class="fields-group my-tabs" id="<?php echo $elm['id'] ?>" data-count="<?php echo $elm['count']; ?>">
+          <ul class="nav nav-tabs" role="tablist">
+            <li class="nav-item" data-tabs-title= "<?php echo $elm['title']; ?>">
+              <a class="nav-link active <?php echo $elm['id']; ?>" data-toggle="tab" href="#<?php echo $elm['id'] ?>" role="tab" 
+                aria-controls="<?php echo $elm['id']; ?>" aria-selected="true"><?php echo $elm['title']; ?>
+              <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span>
+              <span class="ui-icon ui-icon-pencil" role="presentation">Edit Tab</span></a>
+            </li>
+          </ul>
+          <div class="tab-content">
+            <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="tabs-1">
+              <ul id="sortable-in" class="sortable text-center list-group connectedSortable">
+                <?php 
+                  foreach ($elm['fields'] as $val) {
+                    foreach ($fields as $key) {
+                      if ($val == $key->id) {
+                        echo '<li class="list-group-item fields-list" data-fieldsId="'.$key->id.'">'.$key->name.'</li>';
+                      }
+                    }
+                  }
+                ?> 
+              </ul>
+            </div>
+          </div>
+        </div>
+        <?php } ?>
+      <?php } ?>        
+    </div>
+    <div class="tabs-add-group text-left">
+      <button type="button" class="btn btn-info" id="add_tab">+ New Tabs</button>
+    </div>
+  <?php } else { ?>
+  <div class="fields-group my-tabs" id="tabs-1" data-count="1">
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item" data-tabs-title="tab-title">
+        <a href="#tabs-1" class="nav-link active tabs-1" data-toggle="tab" role="tab"
+          aria-controls="tabs-1" aria-selected="true">Settings
+          <span class="ui-icon ui-icon-close" role="presentation">Remove Tab</span>
+          <span class="ui-icon ui-icon-pencil" role="presentation">Edit Tab</span>
+        </a>
+      </li>
+    </ul>
+    <div class="tab-content">
+      <div class="tab-pane fade show active" role="tabpanel" aria-labelledby="home-tab">
+        <ul id="sortable-in" class="sortable text-center list-group connectedSortable ui-sortable">
+          <?php 
+            if ($element) {
+              foreach ($tabs_elements as $elm) {
                 foreach ($elm['fields'] as $val) {
                   foreach ($fields as $key) {
                     if ($val == $key->id) {
@@ -24,17 +60,14 @@
                     }
                   }
                 }
-              ?> 
-            </ul>
-          </div>
-        </div>
+              }
+            } 
+          ?>
+        </ul>
       </div>
-      <?php } ?>
-    <?php } ?>        
-  </div>
-  <div class="tabs-add-group text-left">
-    <button type="button" class="btn btn-info" id="add_tab">+ New Tabs</button>
-  </div>
+    </div>
+  </div
+  <?php } ?>
   <hr class="break-line"></hr>
   <div class="d-flex flex-row flex-wrap" id="fields-tabs-exist">
     <?php if ($fields_group): ?>

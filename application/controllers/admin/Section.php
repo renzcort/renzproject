@@ -199,6 +199,26 @@ class Section extends My_Controller {
       $deleteElement = $this->general_m->delete('element', $id, 'section_id');
       $deleteEntries = $this->general_m->delete('section_entries', $id, 'section_id');
       $delete        = $this->section_m->delete($id);
+
+      /*check Fields contain assets volumes*/
+      $all_fields_with_assets = $this->general_m->get_result_by_fields('fields', array('type_id' => 11));
+      if ($all_fields_with_assets) {
+        foreach ($all_fields_with_assets as $key ) {
+          $settings = json_decode($key->settings);
+          if ($settings->entriesSource == $id) {
+            $opt_settings = array(
+              'entriesSource'         => 0,
+              'entriesLimit'          => $settings->entriesLimit,
+              'entriesSelectionLabel' => $settings->entriesSelectionLabel,
+            );
+            $data = array(
+              'settings' => json_encode($opt_settings),
+            );
+            $this->general_m->update('fields', $data, $key->id);
+          }
+        }
+      }
+
       helper_log('delete', "Delete {$settings['title']} with id = {$id} has successfully");
       $this->session->set_flashdata('message', "{$settings['title']} has deleted {$delete} records");      
       redirect($this->data['parentLink']);

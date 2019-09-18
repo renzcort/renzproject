@@ -1,4 +1,4 @@
-<div class="content-body d-flex flex-row flex-grow-1 justify-content-start entries-form" id="entries">
+<div class="content-body d-flex flex-row flex-grow-1 justify-content-start entries-template entries-form" id="entries">
   <div id="left-content-entries">
     <?php $this->load->view('template/bootstrap-4/admin/partial/tabs-entries'); ?>
   </div>

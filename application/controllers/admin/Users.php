@@ -86,31 +86,35 @@ class Users extends My_Controller {
 
   public function create() {
     $settings = array(
-      'title'          => 'users',
-      'subtitle'       => 'create',
-      'breadcrumb'     => array('settings'),
-      'subbreadcrumb'  => array('create'),
-      'table'          => 'users',
-      'action'         => 'admin/users/account',
-      'session'        => $this->data,
-      'no'             => $this->uri->segment(4),
-      'button'         => 'save',
-      'button_type'    => 'submit',
-      'button_name'    => 'create',
-      'content'        => 'template/bootstrap-4/admin/users/users-form',
-      'fields_element' => 'users_element',
-      'users_settings' => $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
-      'usersgroup'     => $this->general_m->get_all_results('usersgroup'),
-      'permissions'    => $this->general_m->get_all_results('users_role'),
-      'section'        => $this->general_m->get_all_results('section'),
-      'globals'        => $this->general_m->get_all_results('globals'),
-      'assets'         => $this->general_m->get_all_results('assets'),
-      'element'        => $this->general_m->get_result_by_fields('users_element', array('users_settings_id' => 2)),
-      'fields'         => $this->fields_m->get_all_results(),
-      'fields_type'    => $this->general_m->get_all_results('fields_type'),
-      'fields_id'      => [],
-      'assets'         => $this->general_m->get_all_results('assets'),
-      'assets_content' => $this->general_m->get_all_results('assets_content'),
+      'title'              => 'users',
+      'subtitle'           => 'create',
+      'breadcrumb'         => array('settings'),
+      'subbreadcrumb'      => array('create'),
+      'table'              => 'users_content',
+      'action'             => 'admin/users/account',
+      'session'            => $this->data,
+      'no'                 => $this->uri->segment(4),
+      'button'             => 'save',
+      'button_type'        => 'submit',
+      'button_name'        => 'create',
+      'button_tabs'        =>  TRUE,  
+      'content'            => 'template/bootstrap-4/admin/users/users-form',
+      'fields_element'     => 'users_element',
+      'users_settings'     => $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
+      'usersgroup'         => $this->general_m->get_all_results('usersgroup'),
+      'permissions'        => $this->general_m->get_all_results('users_role'),
+      'section'            => $this->general_m->get_all_results('section'),
+      'globals'            => $this->general_m->get_all_results('globals'),
+      'assets'             => $this->general_m->get_all_results('assets'),
+      'element'            => $this->general_m->get_result_by_fields('users_element', array('users_settings_id' => 2)),
+      'fields'             => $this->fields_m->get_all_results(),
+      'fields_type'        => $this->general_m->get_all_results('fields_type'),
+      'assets'             => $this->general_m->get_all_results('assets'),
+      'assets_content'     => $this->general_m->get_all_results('assets_content'),
+      'categories'         => $this->general_m->get_all_results('categories'),
+      'categories_content' => $this->general_m->get_all_results('categories_content'),
+      'entries_content'    => $this->general_m->get_all_results('content'),
+      'parent_table'       => 'users',
     );
 
     if ($settings['element'] != NULL) {
@@ -120,258 +124,112 @@ class Users extends My_Controller {
       $settings['fields_id']  = $fields_id;
     }
     $settings['tabs_elements'] = tabs_layout($settings['element']);
-    
 
-    $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]');
-    $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[renz_users.email]');
-    $this->form_validation->set_rules('firstname', 'firstname', 'trim|required');
-    $this->form_validation->set_rules('lastname', 'lastname', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if ($_POST['button'] == 'create') {
-        $opt_settings = array(
-          'generalAccessOff'              => $this->input->post('generalAccessOff'),
-          'generalAccessCP'               => $this->input->post('generalAccessCP'),
-          'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
-          'generalAccessCPOffline'        => $this->input->post('generalAccessCPOffline'),
-          'generalPerformPluginUpdate'    => $this->input->post('generalPerformPluginUpdate'),
-          'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
-          'usersEdit'                     => $this->input->post('usersEdit'),
-          'usersModerate'                 => $this->input->post('usersModerate'),
-          'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
-          'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
-          'usersAssigns'                   => $this->input->post('usersAssigns'),
-          'usersAdministrate'             => $this->input->post('usersAdministrate'),
-          'usersImpersonate'              => $this->input->post('usersImpersonate'),
-          'usersDelete'                   => $this->input->post('usersDelete'),
-          'sectionEdit'                   => $this->input->post('sectionEdit'),
-          'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
-          'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
-          'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
-          'sectionDelete'                 => $this->input->post('sectionDelete'),
-          'editGlobal'                    => $this->input->post('editGlobal'),
-          'volumeView'                    => $this->input->post('volumeView'),
-          'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
-          'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
-          'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
-          'volumeEditImages'              => $this->input->post('volumeEditImages'),
-          'utilitiesUpdates'              => $this->input->post('utilitiesUpdates'),
-          'utilitiesSystemReport'         => $this->input->post('utilitiesSystemReport'),
-          'utilitiesPHPInfo'              => $this->input->post('utilitiesPHPInfo'),
-          'utilitiesSystemMessage'        => $this->input->post('utilitiesSystemMessage'),
-          'utilitiesAssetIndexes'         => $this->input->post('utilitiesAssetIndexes'),
-          'utilitiesClearCaches'          => $this->input->post('utilitiesClearCaches'),
-          'utilitiesDeprecationWarnings'  => $this->input->post('utilitiesDeprecationWarnings'),
-          'utilitiesDatabaseBackup'       => $this->input->post('utilitiesDatabaseBackup'),
-          'utilitiesFindAndReplace'       => $this->input->post('utilitiesFindAndReplace'),
-          'utilitiesMigrations'           => $this->input->post('utilitiesMigrations'),
-        );
-
-        $data = array(
-          'username'        =>  $this->input->post('username'),
-          'group_id'        =>  $this->input->post('group'),
-          'role_id'         =>  $this->input->post('role'),
-          'email'           =>  $this->input->post('email'),
-          'firstname'       =>  $this->input->post('firstname'),
-          'lastname'        =>  $this->input->post('lastname'),
-          'token'           =>  random_string('alnum', 30),
-          'activation_code' =>  random_string('numeric', 6),
-          'created_by'      =>  $this->data['userdata']['id'],
-          'settings'        =>  json_encode($opt_settings),
-        );        
-        $users = $this->general_m->create($settings['table'], $data);
-
-        /*Insert to Data COntent*/
-        $data_content = array(
-          'users_id'   =>  $users,
-          'created_by' =>  $this->data['userdata']['id'],
-        ); 
-        $keys = array_keys($this->input->post());
-        foreach ($keys as $key) {
-          if (strpos($key, 'fields') !== false) {
-            if (is_array($this->input->post($key))) {
-              $data_content[$key] = implode(', ', $this->input->post($key));
-            } else {
-              $data_content[$key] = $this->input->post($key);
-            }
-          }
-        }
-        $users_content = $this->general_m->create('users_content', $data_content);
-        helper_log('add', "Create {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully created");
-        redirect($settings['action']);
-      } 
-    } else {
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
-    }
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
   public function update($id) {
     $settings = array(
-      'title'          =>  'users',
-      'subtitle'       =>  'create',
-      'breadcrumb'     =>  array('users'),
-      'subbreadcrumb'  =>  array('edit'),
-      'table'          =>  'users',
-      'action'         =>  'admin/users/account',
-      'session'        =>  $this->data,
-      'no'             =>  $this->uri->segment(4),
-      'button'         =>  'save',
-      'button_type'    =>  'submit',
-      'button_name'    =>  'create',
-      'content'        =>  'template/bootstrap-4/admin/users/users-form',
-      'fields_element' => 'users_settings',
-      'users_settings' =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
-      'usersgroup'     =>  $this->general_m->get_all_results('usersgroup'),
-      'permissions'    =>  $this->general_m->get_all_results('users_role'),
-      'section'        =>  $this->general_m->get_all_results('section'),
-      'globals'        =>  $this->general_m->get_all_results('globals'),
-      'assets'         =>  $this->general_m->get_all_results('assets'),
-      'element'        =>  $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
-      'fields'         =>  $this->fields_m->get_all_results(),
-      'fields_type'    =>  $this->general_m->get_all_results('fields_type'),
-      'assets'         =>  $this->general_m->get_all_results('assets'),
-      'assets_content' =>  $this->general_m->get_all_results('assets_content'),
-      'id'             =>  $id,
-      'getDataby_id'   =>  $this->users_m->get_row_by_id($id),
+      'title'              => 'users',
+      'subtitle'           => 'Edit',
+      'breadcrumb'         => array('users'),
+      'subbreadcrumb'      => array('edit'),
+      'table'              => 'users_content',
+      'action'             => 'admin/users/account',
+      'session'            => $this->data,
+      'no'                 => $this->uri->segment(4),
+      'button'             => 'Update',
+      'button_type'        => 'submit',
+      'button_name'        => 'update',
+      'button_tabs'        => TRUE,
+      'content'            => 'template/bootstrap-4/admin/users/users-form',
+      'fields_element'     => 'users_settings',
+      'users_settings'     => $this->general_m->get_row_by_fields('users_settings', array('handle' => 'settings')),
+      'usersgroup'         => $this->general_m->get_all_results('usersgroup'),
+      'permissions'        => $this->general_m->get_all_results('users_role'),
+      'section'            => $this->general_m->get_all_results('section'),
+      'globals'            => $this->general_m->get_all_results('globals'),
+      'assets'             => $this->general_m->get_all_results('assets'),
+      'element'            => $this->general_m->get_result_by_fields('users_element', array('users_settings_id' => 2)),
+      'fields'             => $this->fields_m->get_all_results(),
+      'fields_type'        => $this->general_m->get_all_results('fields_type'),
+      'assets'             => $this->general_m->get_all_results('assets'),
+      'assets_content'     => $this->general_m->get_all_results('assets_content'),
+      'categories'         => $this->general_m->get_all_results('categories'),
+      'categories_content' => $this->general_m->get_all_results('categories_content'),
+      'entries_content'    => $this->general_m->get_all_results('content'),
+      'id'                 => $id,
+      'getDataby_id'       => $this->general_m->get_row_by_id('users', $id),
+      'getContentby_Id'    => $this->general_m->get_row_by_id('users_content', $id, 'users_id'),
+      'parent_table'       => 'users',
     );
-    $settings['fields_id']  = json_decode($settings['element']->fields_id);
-    $settings['permission'] = json_decode($settings['getDataby_id']->settings);
+    $settings['tabs_elements'] = tabs_layout($settings['element']);
+    $users_settings = $settings['getDataby_id']->settings;
+    if ($users_settings) {
+      $settings['permission'] = json_decode($settings['getDataby_id']->settings);
 
-    // permission section
-    if ($settings['permission']->sectionEdit) {
-      foreach ($settings['permission']->sectionEdit as $key => $value) {
-        $settings['sectionEdit'][] = $key;
-      }
-      if ($settings['permission']->sectionPublishLiveChange) {
-        foreach ($settings['permission']->sectionPublishLiveChange as $key => $value) {
-          $settings['sectionPublishLiveChange'][] = $key;
+      // permission section
+      if ($settings['permission']->sectionEdit) {
+        foreach ($settings['permission']->sectionEdit as $key => $value) {
+          $settings['sectionEdit'][] = $key;
         }
-      }
-      if ($settings['permission']->sectionEditOtherAuthors) {
-        foreach ($settings['permission']->sectionEditOtherAuthors as $key => $value) {
-          $settings['sectionEditOtherAuthors'][] = $key;
-        }
-      }
-      if ($settings['permission']->sectionPublishOtherAuthors) {
-        foreach ($settings['permission']->sectionPublishOtherAuthors as $key => $value) {
-          $settings['sectionPublishOtherAuthors'][] = $key;
-        }
-      }
-      if ($settings['permission']->sectionDelete) {
-        foreach ($settings['permission']->sectionDelete as $key => $value) {
-          $settings['sectionDelete'][] = $key;
-        }
-      }
-    }
-    // permission globals
-    if ($settings['permission']->editGlobal) {
-      foreach ($settings['permission']->editGlobal as $key => $value) {
-        $settings['editGlobal'][] = $key;
-      }
-    }
-    
-    // permission volume assets
-    if ($settings['permission']->volumeView) {
-      foreach ($settings['permission']->volumeView as $key => $value) {
-        $settings['volumeView'][] = $key;
-      }
-      if ($settings['permission']->volumeUploadFiles) {
-        foreach ($settings['permission']->volumeUploadFiles as $key => $value) {
-          $settings['volumeUploadFiles'][] = $key;
-        }
-      }
-      if ($settings['permission']->volumeCreateSubfolder) {
-        foreach ($settings['permission']->volumeCreateSubfolder as $key => $value) {
-          $settings['volumeCreateSubfolder'][] = $key;
-        }
-      }
-      if ($settings['permission']->volumeRemoveFilesAndFolders) {
-        foreach ($settings['permission']->volumeRemoveFilesAndFolders as $key => $value) {
-          $settings['volumeRemoveFilesAndFolders'][] = $key;
-        }
-      }
-      if ($settings['permission']->volumeEditImages) {
-        foreach ($settings['permission']->volumeEditImages as $key => $value) {
-          $settings['volumeEditImages'][] = $key;
-        }
-      }
-    }
-
-    $this->form_validation->set_rules('username', 'Username', 'trim|required|min_length[5]|max_length[12]');
-    $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[renz_users.email]');
-    $this->form_validation->set_rules('firstname', 'firstname', 'trim|required');
-    $this->form_validation->set_rules('lastname', 'lastname', 'trim|required');
-    if ($this->form_validation->run() == TRUE) {
-      if ($_POST['button'] == 'create') {
-        $opt_settings = array(
-          'generalAccessOff'              => $this->input->post('generalAccessOff'),
-          'generalAccessCP'               => $this->input->post('generalAccessCP'),
-          'generalCustomizeElementSource' => $this->input->post('generalCustomizeElementSource'),
-          'usersEdit'                     => $this->input->post('usersEdit'),
-          'usersModerate'                 => $this->input->post('usersModerate'),
-          'usersAssignEdit'               => $this->input->post('usersAssignEdit'),
-          'usersAssignGroups'             => $this->input->post('usersAssignGroups'),
-          'usersAssigns'                   => $this->input->post('usersAssigns'),
-          'usersAdministrate'             => $this->input->post('usersAdministrate'),
-          'sectionEdit'                   => $this->input->post('sectionEdit'),
-          'sectionPublishLiveChange'      => $this->input->post('sectionPublishLiveChange'),
-          'sectionEditOtherAuthors'       => $this->input->post('sectionEditOtherAuthors'),
-          'sectionPublishOtherAuthors'    => $this->input->post('sectionPublishOtherAuthors'),
-          'sectionDelete'                 => $this->input->post('sectionDelete'),
-          'editGlobal'                    => $this->input->post('editGlobal'),
-          'volumeView'                    => $this->input->post('volumeView'),
-          'volumeUploadFiles'             => $this->input->post('volumeUploadFiles'),
-          'volumeCreateSubfolder'         => $this->input->post('volumeCreateSubfolder'),
-          'volumeRemoveFilesAndFolders'   => $this->input->post('volumeRemoveFilesAndFolders'),
-          'volumeEditImages'              => $this->input->post('volumeEditImages'),
-          'utilitiesUpdates'              => $this->input->post('utilitiesUpdates'),
-          'utilitiesSystemReport'         => $this->input->post('utilitiesSystemReport'),
-          'utilitiesPHPInfo'              => $this->input->post('utilitiesPHPInfo'),
-          'utilitiesSystemMessage'        => $this->input->post('utilitiesSystemMessage'),
-          'utilitiesAssetIndexes'         => $this->input->post('utilitiesAssetIndexes'),
-          'utilitiesClearCaches'          => $this->input->post('utilitiesClearCaches'),
-          'utilitiesDeprecationWarnings'  => $this->input->post('utilitiesDeprecationWarnings'),
-          'utilitiesDatabaseBackup'       => $this->input->post('utilitiesDatabaseBackup'),
-          'utilitiesFindAndReplace'       => $this->input->post('utilitiesFindAndReplace'),
-          'utilitiesMigrations'           => $this->input->post('utilitiesMigrations'),
-        );
-        $data = array(
-          'username'        =>  $this->input->post('username'),
-          'group_id'        =>  $this->input->post('group'),
-          'role_id'         =>  $this->input->post('role'),
-          'email'           =>  $this->input->post('email'),
-          'firstname'       =>  $this->input->post('firstname'),
-          'lastname'        =>  $this->input->post('lastname'),
-          'token'           =>  random_string('alnum', 30),
-          'activation_code' =>  random_string('numeric', 6),
-          'updated_by'      =>  $this->data['userdata']['id'],
-          'settings'        =>  json_encode($opt_settings),
-        );        
-        $this->general_m->update($settings['table'], $data, $id);
-
-        /*Insert to Data COntent*/
-        $data_content = array(
-          'users_id'   =>  $id,
-          'updated_by' =>  $this->data['userdata']['id'],
-        ); 
-        $keys = array_keys($this->input->post());
-        foreach ($keys as $key) {
-          if (strpos($key, 'fields') !== false) {
-            if (is_array($this->input->post($key))) {
-              $data_content[$key] = implode(', ', $this->input->post($key));
-            } else {
-              $data_content[$key] = $this->input->post($key);
-            }
+        if ($settings['permission']->sectionPublishLiveChange) {
+          foreach ($settings['permission']->sectionPublishLiveChange as $key => $value) {
+            $settings['sectionPublishLiveChange'][] = $key;
           }
         }
-        $users_content = $this->general_m->update('users_content', $data_content, $id, 'users_id');
-        helper_log('add', "updated {$settings['title']} has successfully");
-        $this->session->set_flashdata('message', "{$settings['title']} has successfully updated");
-        redirect($settings['action']);
-      } 
-    } else {
-      $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
+        if ($settings['permission']->sectionEditOtherAuthors) {
+          foreach ($settings['permission']->sectionEditOtherAuthors as $key => $value) {
+            $settings['sectionEditOtherAuthors'][] = $key;
+          }
+        }
+        if ($settings['permission']->sectionPublishOtherAuthors) {
+          foreach ($settings['permission']->sectionPublishOtherAuthors as $key => $value) {
+            $settings['sectionPublishOtherAuthors'][] = $key;
+          }
+        }
+        if ($settings['permission']->sectionDelete) {
+          foreach ($settings['permission']->sectionDelete as $key => $value) {
+            $settings['sectionDelete'][] = $key;
+          }
+        }
+      }
+      // permission globals
+      if ($settings['permission']->editGlobal) {
+        foreach ($settings['permission']->editGlobal as $key => $value) {
+          $settings['editGlobal'][] = $key;
+        }
+      }
+      
+      // permission volume assets
+      if ($settings['permission']->volumeView) {
+        foreach ($settings['permission']->volumeView as $key => $value) {
+          $settings['volumeView'][] = $key;
+        }
+        if ($settings['permission']->volumeUploadFiles) {
+          foreach ($settings['permission']->volumeUploadFiles as $key => $value) {
+            $settings['volumeUploadFiles'][] = $key;
+          }
+        }
+        if ($settings['permission']->volumeCreateSubfolder) {
+          foreach ($settings['permission']->volumeCreateSubfolder as $key => $value) {
+            $settings['volumeCreateSubfolder'][] = $key;
+          }
+        }
+        if ($settings['permission']->volumeRemoveFilesAndFolders) {
+          foreach ($settings['permission']->volumeRemoveFilesAndFolders as $key => $value) {
+            $settings['volumeRemoveFilesAndFolders'][] = $key;
+          }
+        }
+        if ($settings['permission']->volumeEditImages) {
+          foreach ($settings['permission']->volumeEditImages as $key => $value) {
+            $settings['volumeEditImages'][] = $key;
+          }
+        }
+      }
     }
+
+    $this->load->view('template/bootstrap-4/admin/layout/_default', $settings);
   }
 
   public function delete($id) {
@@ -406,7 +264,6 @@ class Users extends My_Controller {
       $right_content = 'users-settings-form';
       $settings = $this->general_m->get_row_by_fields($table, $data = array('handle' => 'settings'));
     }
-
 		$settings = array(
       'title'              =>  "users {$handle}",
       'subtitle'           =>  FALSE,
@@ -436,6 +293,7 @@ class Users extends My_Controller {
       'id'                 =>  (($handle == 'groups') ? FALSE : $settings->id),
       'handle'             =>  $handle,
     );
+    (($handle == 'groups') ? $settings['button_link'] = "{$handle}/create" : $settings['button_tabs'] = TRUE);
 
     if ($handle != 'groups') {
       $users_settings = $settings['getDataby_id']->settings;
@@ -462,7 +320,6 @@ class Users extends My_Controller {
       }
     }
 
-    (($handle == 'groups') ? $settings['button_link'] = "{$handle}/create" : $settings['button_tabs'] = TRUE);
     // Pagination
     $config                 = $this->config->item('setting_pagination');
     $config['base_url']     = base_url($settings['action']);

@@ -194,6 +194,7 @@ class Categories extends My_Controller {
       'getDataby_id' =>  $this->general_m->get_row_by_id('categories_content', $id),          
     );
 
+
     if ($settings['getDataby_id']) {
       $delete = $this->general_m->delete('categories_content', $id); 
       helper_log('delete', "Delete {$params->handle} with id = {$id} has successfully");
@@ -363,6 +364,26 @@ class Categories extends My_Controller {
         }
       }
       $delete = $this->general_m->delete($settings['table'], $id);
+
+      /*check Fields contain assets volumes*/
+      $all_fields_with_assets = $this->general_m->get_result_by_fields('fields', array('type_id' => 5));
+      if ($all_fields_with_assets) {
+        foreach ($all_fields_with_assets as $key ) {
+          $settings = json_decode($key->settings);
+          if ($settings->categoriesSource == $id) {
+            $opt_settings = array(
+              'categoriesSource'         => 0,
+              'categoriesTargetLocale'   => $settings->categoriesTargetLocale,
+              'categoriesLimit'          => $settings->categoriesLimit,
+              'categoriesSelectionLabel' => $settings->categoriesSelectionLabel,
+            );
+            $data = array(
+              'settings' => json_encode($opt_settings),
+            );
+            $this->general_m->update('fields', $data, $key->id);
+          }
+        }
+      }
       helper_log('delete', "Delete data {$settings['title']} has successfully");        
       $this->session->set_flashdata("message", "{$settings['title']} has successfully Deleted {$delete} record");
       redirect($settings['action']);

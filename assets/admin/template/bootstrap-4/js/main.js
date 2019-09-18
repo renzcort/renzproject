@@ -7,7 +7,7 @@
     var rightcontentHeight = rightcontent.offsetHeight;
     window.onscroll = function() {
       if (window.pageYOffset >= 100) {
-        if (window.pageYOffset >= leftcontentTop && window.pageYOffset <= rightcontentHeight) {
+        if (window.pageYOffset >= leftcontentTop && window.pageYOffset <= leftcontentHeight) {
           leftcontent.classList.add("fixed-left-content");
           rightcontent.classList.add("fixed-right-content");
         } else {
@@ -153,7 +153,7 @@
     });
 
     /*Select List Modal Assets*/
-    $('#assetsmodal-select').click(function(e) {
+    $('#assets-modal-select').click(function(e) {
       e.preventDefault();
       var list_selected = $('.assets-list').map(function() {
           return this.value;
@@ -213,8 +213,8 @@
     });
     
     /*Upload Modal Assets*/
-    $('#assetsmodal-file').change(function() {
-      var name          = document.getElementById("assetsmodal-file").files[0].name;
+    $('#assets-modal-file').change(function() {
+      var name          = document.getElementById("assets-modal-file").files[0].name;
       var form_data     = new FormData();
       var ext           = name.split('.').pop().toLowerCase();
       var assets_id     = $("#assetsModal .modal-body [name='assets_id']").val();
@@ -225,13 +225,13 @@
         alert("Invalid Image File");
       }
       var oFReader = new FileReader();
-      oFReader.readAsDataURL(document.getElementById("assetsmodal-file").files[0]);
-      var f = document.getElementById("assetsmodal-file").files[0];
+      oFReader.readAsDataURL(document.getElementById("assets-modal-file").files[0]);
+      var f = document.getElementById("assets-modal-file").files[0];
       var fsize = f.size || f.fileSize;
       if (fsize > 2000000) {
         alert("Image File Size is very big");
       } else {
-        form_data.append("assetsmodal-file", document.getElementById('assetsmodal-file').files[0]);
+        form_data.append("assets-modal-file", document.getElementById('assets-modal-file').files[0]);
         $.ajax({
           // url: '<?php echo base_url("admin/Api/jsonUploadAssetsInEntries") ?>',
           url: base_url + "admin/Api/jsonUploadModalAssets",
@@ -314,7 +314,7 @@
       }).fail(function(error) {});
     });
 
-    $('#categoriesmodal-select').click(function(e) {
+    $('#categories-modal-select').click(function(e) {
       e.preventDefault();
       var list_selected = $('.categories-list').map(function() {
         return this.value;
@@ -434,7 +434,7 @@
       });
     });
 
-    $('#entriesmodal-select').click(function(e) {
+    $('#entries-modal-select').click(function(e) {
       e.preventDefault();
       var list_selected = $('.entries-list').map(function() {
         return this.value;
@@ -575,7 +575,13 @@
      // add tabs layout
     $('#add_tab').click(function() {
       $("#dialog_id").remove();
-      dialog.dialog( "open" );
+      if ($('.my-tabs').length >= 3) {
+        $(this).attr('disabled', 'disabled');
+        dialog.dialog( "close" );
+      } else {
+        $(this).removeAttr('disabled', 'disabled');
+        dialog.dialog( "open" );
+      }
     });
 
     // Close icon: removing the tab on click
@@ -588,6 +594,11 @@
         $( "#" + panelId ).remove();
       } else {
         confirm("your tabs is not empty, please drag and drop your list");
+      }
+      if ($('.my-tabs').length >= 3) {
+        $('#add_tab').attr('disabled', 'disabled');
+      } else {
+        $('#add_tab').removeAttr('disabled', 'disabled');
       }
     });
   
@@ -661,6 +672,12 @@
           $( "#" + panelId ).remove();
         } else {
           confirm("your tabs is not empty, please drag and drop your list");
+        }
+
+        if ($('.my-tabs').length >= 3) {
+          $('#add_tab').attr('disabled', 'disabled');
+        } else {
+          $('#add_tab').removeAttr('disabled', 'disabled');
         }
       });
 
@@ -746,14 +763,14 @@
     };
 
     // assets FIELD
-    if ($("#entries-template").length) {
+    if ($(".entries-template").length) {
       var jData = $('#MyForm').serializeJSON();
       // var url   = '<?php echo base_url("admin/Api/jsonEntriesManage") ?>';
       var url = base_url + "admin/Api/jsonSubmitEntriesForm";
-    } else if ($("#users-settings").length) {
-      var jData = Object.assign(jTable, jFields);
+    } else if ($(".users-form").length) {
+      var jData = $('#MyForm').serializeJSON();
       // var url   = '<?php echo base_url("admin/Api/jsonUsersFieldsForm") ?>';
-      var url = base_url + "admin/Api/jsonUsersFieldsForm";
+      var url = base_url + "admin/Api/jsonSubmitUsersForm";
     } else {
       var jData = Object.assign(jTable, jFields);
       // var url   = '<?php echo base_url("admin/Api/jsonTabsFields") ?>';
@@ -765,7 +782,12 @@
       dataType: 'json',
       data: jData,
       url: url,
+      beforeSend: 
+        function(){
+          $("#wait").show();
+        },
     }).done(function(data) {
+      $("#wait").hide();
       if (data.status == true) {
         // window.location.href = '<?php echo base_url() ?>'+data.action;
         window.location.href = base_url + data.action;
@@ -775,7 +797,7 @@
         });
       }
     }).fail(function(error) {
-
+      $("#wait").hide();
     });
 
     function ConvertFormToJSON() {
@@ -845,72 +867,72 @@
    * @return {[type]} [description]
    */
   function manageUsersSettings() {
-    if ($('#users .users-group-form [name="generalAccessCP"]').is(':checked') == true) {
-      $('#users .users-group-form [name="generalPerformPluginUpdate"]').removeAttr("disabled", "disabled");
-      $('#users .users-group-form [name="generalAccessCPOffline"]').removeAttr("disabled", "disabled");
+    if ($('#users [name="generalAccessCP"]').is(':checked') == true) {
+      $('#users [name="generalPerformPluginUpdate"]').removeAttr("disabled", "disabled");
+      $('#users [name="generalAccessCPOffline"]').removeAttr("disabled", "disabled");
     } else {
-      $('#users .users-group-form [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
-      $('#users .users-group-form [name="generalAccessCPOffline"]').attr("disabled", "disabled");
+      $('#users [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
+      $('#users [name="generalAccessCPOffline"]').attr("disabled", "disabled");
     }
 
-    $('#users .users-group-form [name="generalAccessCP"]').click(function() {
+    $('#users [name="generalAccessCP"]').click(function() {
       if ($(this).is(':checked') == true) {
-        $('#users .users-group-form [name="generalPerformPluginUpdate"]').removeAttr("disabled", "disabled");
-        $('#users .users-group-form [name="generalAccessCPOffline"]').removeAttr("disabled", "disabled");
+        $('#users [name="generalPerformPluginUpdate"]').removeAttr("disabled", "disabled");
+        $('#users [name="generalAccessCPOffline"]').removeAttr("disabled", "disabled");
       } else {
-        $('#users .users-group-form [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="generalPerformPluginUpdate"]').attr("checked", false);
-        $('#users .users-group-form [name="generalAccessCPOffline"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="generalAccessCPOffline"]').attr("checked", false);
+        $('#users [name="generalPerformPluginUpdate"]').attr("disabled", "disabled");
+        $('#users [name="generalPerformPluginUpdate"]').attr("checked", false);
+        $('#users [name="generalAccessCPOffline"]').attr("disabled", "disabled");
+        $('#users [name="generalAccessCPOffline"]').attr("checked", false);
       }
     });
 
-    if ($('#users .users-group-form [name="usersEdit"]').is(':checked') == true) {
-      $('#users .users-group-form [name="usersModerate"]').removeAttr("disabled", "disabled");
-      $('#users .users-group-form [name="usersAssignEdit"]').removeAttr("disabled", "disabled");
-      $('#users .users-group-form [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
-      $('#users .users-group-form [name="usersAdministrate"]').removeAttr("disabled", "disabled");
-      $('#users .users-group-form [name="usersImpersonate"]').removeAttr("disabled", "disabled");
-      $('#users .users-group-form [name*="usersAssigns"]').removeAttr("disabled", "disabled");
+    if ($('#users [name="usersEdit"]').is(':checked') == true) {
+      $('#users [name="usersModerate"]').removeAttr("disabled", "disabled");
+      $('#users [name="usersAssignEdit"]').removeAttr("disabled", "disabled");
+      $('#users [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
+      $('#users [name="usersAdministrate"]').removeAttr("disabled", "disabled");
+      $('#users [name="usersImpersonate"]').removeAttr("disabled", "disabled");
+      $('#users [name*="usersAssigns"]').removeAttr("disabled", "disabled");
     } else {
-      $('#users .users-group-form [name="usersModerate"]').attr("disabled", "disabled");
-      $('#users .users-group-form [name="usersAssignEdit"]').attr("disabled", "disabled");
-      $('#users .users-group-form [name="usersAssignGroups"]').attr("disabled", "disabled");
-      $('#users .users-group-form [name="usersAdministrate"]').attr("disabled", "disabled");
-      $('#users .users-group-form [name="usersImpersonate"]').attr("disabled", "disabled");
-      $('#users .users-group-form [name*="usersAssigns"]').attr("disabled", "disabled");
+      $('#users [name="usersModerate"]').attr("disabled", "disabled");
+      $('#users [name="usersAssignEdit"]').attr("disabled", "disabled");
+      $('#users [name="usersAssignGroups"]').attr("disabled", "disabled");
+      $('#users [name="usersAdministrate"]').attr("disabled", "disabled");
+      $('#users [name="usersImpersonate"]').attr("disabled", "disabled");
+      $('#users [name*="usersAssigns"]').attr("disabled", "disabled");
     }
     
-    $('#users .users-group-form [name="usersEdit"]').click(function() {
+    $('#users [name="usersEdit"]').click(function() {
       if ($(this).is(':checked') == true) {
-        $('#users .users-group-form [name="usersModerate"]').removeAttr("disabled", "disabled");
-        $('#users .users-group-form [name="usersAssignEdit"]').removeAttr("disabled", "disabled");
-        $('#users .users-group-form [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
-        $('#users .users-group-form [name="usersAdministrate"]').removeAttr("disabled", "disabled");
-        $('#users .users-group-form [name="usersImpersonate"]').removeAttr("disabled", "disabled");
-        // $('#users .users-group-form [name*="usersAssigns"]').removeAttr("disabled", "disabled");
+        $('#users [name="usersModerate"]').removeAttr("disabled", "disabled");
+        $('#users [name="usersAssignEdit"]').removeAttr("disabled", "disabled");
+        $('#users [name="usersAssignGroups"]').removeAttr("disabled", "disabled");
+        $('#users [name="usersAdministrate"]').removeAttr("disabled", "disabled");
+        $('#users [name="usersImpersonate"]').removeAttr("disabled", "disabled");
+        // $('#users [name*="usersAssigns"]').removeAttr("disabled", "disabled");
       } else {
-        $('#users .users-group-form [name="usersModerate"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="usersModerate"]').attr("checked", false);
-        $('#users .users-group-form [name="usersAssignEdit"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="usersAssignEdit"]').attr("checked", false);
-        $('#users .users-group-form [name="usersAssignGroups"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="usersAssignGroups"]').attr("checked", false);
-        $('#users .users-group-form [name="usersAdministrate"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="usersAdministrate"]').attr("checked", false);
-        $('#users .users-group-form [name="usersImpersonate"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="usersImpersonate"]').attr("checked", false);
-        $('#users .users-group-form [name*="usersAssigns"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name*="usersAssigns"]').attr("checked", false);
+        $('#users [name="usersModerate"]').attr("disabled", "disabled");
+        $('#users [name="usersModerate"]').attr("checked", false);
+        $('#users [name="usersAssignEdit"]').attr("disabled", "disabled");
+        $('#users [name="usersAssignEdit"]').attr("checked", false);
+        $('#users [name="usersAssignGroups"]').attr("disabled", "disabled");
+        $('#users [name="usersAssignGroups"]').attr("checked", false);
+        $('#users [name="usersAdministrate"]').attr("disabled", "disabled");
+        $('#users [name="usersAdministrate"]').attr("checked", false);
+        $('#users [name="usersImpersonate"]').attr("disabled", "disabled");
+        $('#users [name="usersImpersonate"]').attr("checked", false);
+        $('#users [name*="usersAssigns"]').attr("disabled", "disabled");
+        $('#users [name*="usersAssigns"]').attr("checked", false);
       }
     });
 
-    $('#users .users-group-form [name="usersAssignGroups"]').click(function() {
+    $('#users [name="usersAssignGroups"]').click(function() {
       if ($(this).is(':checked') == true) {
-        $('#users .users-group-form [name*="usersAssigns"]').removeAttr("disabled", "disabled");
+        $('#users [name*="usersAssigns"]').removeAttr("disabled", "disabled");
       } else {
-        $('#users .users-group-form [name*="usersAssigns"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name*="usersAssigns"]').attr("checked", false);
+        $('#users [name*="usersAssigns"]').attr("disabled", "disabled");
+        $('#users [name*="usersAssigns"]').attr("checked", false);
       }
     });
 
@@ -921,53 +943,53 @@
      * @type {Array}
      */
     var section = [];
-    $('#users .users-group-form [id="section"]').each(function() {
+    $('#users [id="section"]').each(function() {
       // section.push($(this).data('handle'));
       var section = $(this).data('handle');
-      if ($('#users .users-group-form [name="sectionEdit[' + section + ']"]').is(':checked') == true) {
-        $('#users .users-group-form [name="sectionPublishLiveChange[' + section + ']"]').removeAttr("disabled", "disabled");
-        $('#users .users-group-form [name="sectionEditOtherAuthors[' + section + ']"]').removeAttr("disabled", "disabled");
+      if ($('#users [name="sectionEdit[' + section + ']"]').is(':checked') == true) {
+        $('#users [name="sectionPublishLiveChange[' + section + ']"]').removeAttr("disabled", "disabled");
+        $('#users [name="sectionEditOtherAuthors[' + section + ']"]').removeAttr("disabled", "disabled");
       } else {
-        $('#users .users-group-form [name="sectionPublishLiveChange[' + section + ']"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="sectionEditOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="sectionPublishOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="sectionDelete[' + section + ']"]').attr("disabled", "disabled");
+        $('#users [name="sectionPublishLiveChange[' + section + ']"]').attr("disabled", "disabled");
+        $('#users [name="sectionEditOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
+        $('#users [name="sectionPublishOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
+        $('#users [name="sectionDelete[' + section + ']"]').attr("disabled", "disabled");
       }
 
-      if ($('#users .users-group-form [name="sectionEditOtherAuthors[' + section + ']"]').is(':checked') == true) {
-        $('#users .users-group-form [name="sectionPublishOtherAuthors[' + section + ']"]').removeAttr("disabled", "disabled");
-        $('#users .users-group-form [name="sectionDelete[' + section + ']"]').removeAttr("disabled", "disabled");
+      if ($('#users [name="sectionEditOtherAuthors[' + section + ']"]').is(':checked') == true) {
+        $('#users [name="sectionPublishOtherAuthors[' + section + ']"]').removeAttr("disabled", "disabled");
+        $('#users [name="sectionDelete[' + section + ']"]').removeAttr("disabled", "disabled");
       } else {
-        $('#users .users-group-form [name="sectionPublishOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="sectionDelete[' + section + ']"]').attr("disabled", "disabled");
+        $('#users [name="sectionPublishOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
+        $('#users [name="sectionDelete[' + section + ']"]').attr("disabled", "disabled");
       }
 
       // alert(section);
-      $('#users .users-group-form [name="sectionEdit[' + section + ']"]').click(function() {
+      $('#users [name="sectionEdit[' + section + ']"]').click(function() {
         if ($(this).is(':checked') == true) {
-          $('#users .users-group-form [name="sectionPublishLiveChange[' + section + ']"]').removeAttr("disabled", "disabled");
-          $('#users .users-group-form [name="sectionEditOtherAuthors[' + section + ']"]').removeAttr("disabled", "disabled");
+          $('#users [name="sectionPublishLiveChange[' + section + ']"]').removeAttr("disabled", "disabled");
+          $('#users [name="sectionEditOtherAuthors[' + section + ']"]').removeAttr("disabled", "disabled");
         } else {
-          $('#users .users-group-form [name="sectionPublishLiveChange[' + section + ']"]').attr("disabled", "disabled");
-          $('#users .users-group-form [name="sectionPublishLiveChange[' + section + ']"]').attr("checked", false);
-          $('#users .users-group-form [name="sectionEditOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
-          $('#users .users-group-form [name="sectionEditOtherAuthors[' + section + ']"]').attr("checked", false);
-          $('#users .users-group-form [name="sectionPublishOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
-          $('#users .users-group-form [name="sectionPublishOtherAuthors[' + section + ']"]').attr("checked", false);
-          $('#users .users-group-form [name="sectionDelete[' + section + ']"]').attr("disabled", "disabled");
-          $('#users .users-group-form [name="sectionDelete[' + section + ']"]').attr("checked", false);
+          $('#users [name="sectionPublishLiveChange[' + section + ']"]').attr("disabled", "disabled");
+          $('#users [name="sectionPublishLiveChange[' + section + ']"]').attr("checked", false);
+          $('#users [name="sectionEditOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
+          $('#users [name="sectionEditOtherAuthors[' + section + ']"]').attr("checked", false);
+          $('#users [name="sectionPublishOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
+          $('#users [name="sectionPublishOtherAuthors[' + section + ']"]').attr("checked", false);
+          $('#users [name="sectionDelete[' + section + ']"]').attr("disabled", "disabled");
+          $('#users [name="sectionDelete[' + section + ']"]').attr("checked", false);
         }
       });
 
-      $('#users .users-group-form [name="sectionEditOtherAuthors[' + section + ']"]').click(function() {
+      $('#users [name="sectionEditOtherAuthors[' + section + ']"]').click(function() {
         if ($(this).is(':checked') == true) {
-          $('#users .users-group-form [name="sectionPublishOtherAuthors[' + section + ']"]').removeAttr("disabled", "disabled");
-          $('#users .users-group-form [name="sectionDelete[' + section + ']"]').removeAttr("disabled", "disabled");
+          $('#users [name="sectionPublishOtherAuthors[' + section + ']"]').removeAttr("disabled", "disabled");
+          $('#users [name="sectionDelete[' + section + ']"]').removeAttr("disabled", "disabled");
         } else {
-          $('#users .users-group-form [name="sectionPublishOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
-          $('#users .users-group-form [name="sectionPublishOtherAuthors[' + section + ']"]').attr("checked", false);
-          $('#users .users-group-form [name="sectionDelete[' + section + ']"]').attr("disabled", "disabled");
-          $('#users .users-group-form [name="sectionDelete[' + section + ']"]').attr("checked", false);
+          $('#users [name="sectionPublishOtherAuthors[' + section + ']"]').attr("disabled", "disabled");
+          $('#users [name="sectionPublishOtherAuthors[' + section + ']"]').attr("checked", false);
+          $('#users [name="sectionDelete[' + section + ']"]').attr("disabled", "disabled");
+          $('#users [name="sectionDelete[' + section + ']"]').attr("checked", false);
         }
       });
     });
@@ -979,37 +1001,37 @@
      * @type {Array}
      */
     var assets = [];
-    $('#users .users-group-form [id="assets"]').each(function() {
+    $('#users [id="assets"]').each(function() {
       // assets.push($(this).data('handle'));
       var assets = $(this).data('handle');
-      if ($('#users .users-group-form [name="volumeView[' + assets + ']"]').is(':checked') == true) {
-        $('#users .users-group-form [name="volumeUploadFiles[' + assets + ']"]').removeAttr("disabled", "disabled");
-        $('#users .users-group-form [name="volumeCreateSubfolder[' + assets + ']"]').removeAttr("disabled", "disabled");
-        $('#users .users-group-form [name="volumeRemoveFilesAndFolders[' + assets + ']"]').removeAttr("disabled", "disabled");
-        $('#users .users-group-form [name="volumeEditImages[' + assets + ']"]').removeAttr("disabled", "disabled");
+      if ($('#users [name="volumeView[' + assets + ']"]').is(':checked') == true) {
+        $('#users [name="volumeUploadFiles[' + assets + ']"]').removeAttr("disabled", "disabled");
+        $('#users [name="volumeCreateSubfolder[' + assets + ']"]').removeAttr("disabled", "disabled");
+        $('#users [name="volumeRemoveFilesAndFolders[' + assets + ']"]').removeAttr("disabled", "disabled");
+        $('#users [name="volumeEditImages[' + assets + ']"]').removeAttr("disabled", "disabled");
       } else {
-        $('#users .users-group-form [name="volumeUploadFiles[' + assets + ']"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="volumeCreateSubfolder[' + assets + ']"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="volumeRemoveFilesAndFolders[' + assets + ']"]').attr("disabled", "disabled");
-        $('#users .users-group-form [name="volumeEditImages[' + assets + ']"]').attr("disabled", "disabled");
+        $('#users [name="volumeUploadFiles[' + assets + ']"]').attr("disabled", "disabled");
+        $('#users [name="volumeCreateSubfolder[' + assets + ']"]').attr("disabled", "disabled");
+        $('#users [name="volumeRemoveFilesAndFolders[' + assets + ']"]').attr("disabled", "disabled");
+        $('#users [name="volumeEditImages[' + assets + ']"]').attr("disabled", "disabled");
       }
 
       // alert(assets);
-      $('#users .users-group-form [name="volumeView[' + assets + ']"]').click(function() {
+      $('#users [name="volumeView[' + assets + ']"]').click(function() {
         if ($(this).is(':checked') == true) {
-          $('#users .users-group-form [name="volumeUploadFiles[' + assets + ']"]').removeAttr("disabled", "disabled");
-          $('#users .users-group-form [name="volumeCreateSubfolder[' + assets + ']"]').removeAttr("disabled", "disabled");
-          $('#users .users-group-form [name="volumeRemoveFilesAndFolders[' + assets + ']"]').removeAttr("disabled", "disabled");
-          $('#users .users-group-form [name="volumeEditImages[' + assets + ']"]').removeAttr("disabled", "disabled");
+          $('#users [name="volumeUploadFiles[' + assets + ']"]').removeAttr("disabled", "disabled");
+          $('#users [name="volumeCreateSubfolder[' + assets + ']"]').removeAttr("disabled", "disabled");
+          $('#users [name="volumeRemoveFilesAndFolders[' + assets + ']"]').removeAttr("disabled", "disabled");
+          $('#users [name="volumeEditImages[' + assets + ']"]').removeAttr("disabled", "disabled");
         } else {
-          $('#users .users-group-form [name="volumeUploadFiles[' + assets + ']"]').attr("disabled", "disabled");
-          $('#users .users-group-form [name="volumeUploadFiles[' + assets + ']"]').attr("checked", false);
-          $('#users .users-group-form [name="volumeCreateSubfolder[' + assets + ']"]').attr("disabled", "disabled");
-          $('#users .users-group-form [name="volumeCreateSubfolder[' + assets + ']"]').attr("checked", false);
-          $('#users .users-group-form [name="volumeRemoveFilesAndFolders[' + assets + ']"]').attr("disabled", "disabled");
-          $('#users .users-group-form [name="volumeRemoveFilesAndFolders[' + assets + ']"]').attr("checked", false);
-          $('#users .users-group-form [name="volumeEditImages[' + assets + ']"]').attr("disabled", "disabled");
-          $('#users .users-group-form [name="volumeEditImages[' + assets + ']"]').attr("checked", false);
+          $('#users [name="volumeUploadFiles[' + assets + ']"]').attr("disabled", "disabled");
+          $('#users [name="volumeUploadFiles[' + assets + ']"]').attr("checked", false);
+          $('#users [name="volumeCreateSubfolder[' + assets + ']"]').attr("disabled", "disabled");
+          $('#users [name="volumeCreateSubfolder[' + assets + ']"]').attr("checked", false);
+          $('#users [name="volumeRemoveFilesAndFolders[' + assets + ']"]').attr("disabled", "disabled");
+          $('#users [name="volumeRemoveFilesAndFolders[' + assets + ']"]').attr("checked", false);
+          $('#users [name="volumeEditImages[' + assets + ']"]').attr("disabled", "disabled");
+          $('#users [name="volumeEditImages[' + assets + ']"]').attr("checked", false);
         }
       });
     });
@@ -1133,6 +1155,19 @@
         $('#' + field_type).removeClass('d-none');
       });
     });
+
+    $('input[name="assetsSourcesAll"]').click(function() {
+      if ($(this).prop('checked') == true) {
+        $('input[name="assetsSources"]').attr('disabled', 'disabled');
+        $('input[name="assetsSources"]').prop("checked", true);
+        // $('input[name="assetsSources"]').attr('checked', true);
+      } else {
+        $('input[name="assetsSources"]').prop("checked", false);
+        $('input[name="assetsSources"]').removeAttr('disabled', 'disabled');
+        // $('input[name="assetsSources"]').attr('checked', false);
+      }
+    });
+
   }
 
   /**

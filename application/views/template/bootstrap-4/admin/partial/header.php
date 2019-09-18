@@ -56,6 +56,12 @@
 
 <div class="heading-title container d-flex flex-row flex-wrap justify-content-between align-items-center">
   <h4><?php echo ($subtitle ? ucwords($title).'&nbsp;'.ucfirst($subtitle) : ucwords($title)) ;?></h4>
+  <?php if ($this->session->userdata('message')) { ?>
+  <span class="alert alert-danger alert-dismissible text-center mx-auto" role="alert" id="message">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+     <h5><?php echo ucwords($this->session->userdata('message')); ?></h5>
+  </span>
+  <?php } ?>
   <?php if (isset($button)): ?>
     <div class="d-flex flex-row flex-wrap justify-content-start">
     	<?php if (isset($button_link)): ?>

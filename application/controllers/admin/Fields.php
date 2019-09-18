@@ -399,18 +399,84 @@ class fields extends My_Controller {
     }
   }
 
-  /*Delete fields*/
+  /**
+   * This Function To Delete All Fields in each Content and element 
+   * @param  string $id [description]
+   * @return [type]     [description]
+   */
   public function delete($id='') {
     $settings = array(
       'title'        =>  'fields',
       'getDataby_id' => $this->fields_m->get_row_by_id($id)
     );
     if ($settings['getDataby_id']) {
-      $fieldsContent           = $this->db->list_fields('content');
-      $fieldsAssetsContent     = $this->db->list_fields('assets_content');
-      $fieldsCategoriesContent = $this->db->list_fields('categories_content');
+      $fields_content            = $this->db->list_fields('content');
+      $fields_categories_content = $this->db->list_fields('categories_content');
+      $fields_assets_content     = $this->db->list_fields('assets_content');
+      $fields_globals_content    = $this->db->list_fields('globals_content');
+      $fields_users_content      = $this->db->list_fields('users_content');
+      $fields_handle             = "fields_{$settings['getDataby_id']->handle}";
 
-      if (in_array("fields_{$settings['getDataby_id']->handle}", $fieldsContent)) {
+      /*Check Fields in Content Table if exist Drop fields in table content*/
+      if (in_array($fields_handle, $fields_content)) {
+        $fields = array(
+          'handle'    => $settings['getDataby_id']->handle,
+          'type'      => $settings['getDataby_id']->type_id,
+          'option_id' => $settings['getDataby_id']->option_id,
+        );
+        modifyColumn($fields, 'drop');
+
+        // check and drop fields in categories content
+        if (in_array($fields_handle, $fields_categories_content)) {
+          modifyColumn($fields, 'drop-table', 'categories_content');
+        }
+
+        // chekc and drop fields in assets content
+        if (in_array($fields_handle, $fields_assets_content)) {
+          modifyColumn($fields, 'drop-table', 'assets_content');
+        }
+
+        // chekc and drop fields in assets content
+        if (in_array($fields_handle, $fields_globals_content)) {
+          modifyColumn($fields, 'drop-table', 'globals_content');
+        }
+
+        // chekc and drop fields in assets content
+        if (in_array($fields_handle, $fields_users_content)) {
+          modifyColumn($fields, 'drop-table', 'users_content');
+        }
+
+        /*Deleete Element in Each Table */
+        // check element each table element
+        $check_element = $this->general_m->get_result_by_fields('element', array('fields_id' => $id));
+        if ($check_element) {
+          $delete_element = $this->general_m->delete('element', $id, 'fields_id');
+          $delete_fields_option = $this->general_m->delete('fields_option', $fields['option_id']);
+        }
+        // check element each table element
+        $check_categories_element = $this->general_m->get_result_by_fields('categories_element', array('fields_id' => $id));
+        if ($check_categories_element) {
+          $delete_categories_element = $this->general_m->delete('categories_element', $id, 'fields_id');
+        }
+        // check element each table element
+        $check_assets_element = $this->general_m->get_result_by_fields('assets_element', array('fields_id' => $id));
+        if ($check_assets_element) {
+          $delete_assets_element = $this->general_m->delete('assets_element', $id, 'fields_id');
+        }
+        // check element each table element
+        $check_globals_element = $this->general_m->get_result_by_fields('globals_element', array('fields_id' => $id));
+        if ($check_globals_element) {
+          $delete_globals_element = $this->general_m->delete('globals_element', $id, 'fields_id');
+        } 
+        // check element each table element
+        $check_users_element = $this->general_m->get_result_by_fields('users_element', array('fields_id' => $id));
+        if ($check_users_element) {
+          $delete_users_element = $this->general_m->delete('users_element', $id, 'fields_id');
+        } 
+      }
+      $delete = $this->general_m->delete('fields', $id);
+
+      /*if (in_array("fields_{$settings['getDataby_id']->handle}", $fields_content)) {
         $fields = array(
           'handle' => $settings['getDataby_id']->handle,
           'type'   => $settings['getDataby_id']->type_id,
@@ -419,7 +485,7 @@ class fields extends My_Controller {
         modifyColumn($fields, 'drop');
       }
 
-      if (in_array("fields_{$settings['getDataby_id']->handle}", $fieldsAssetsContent)) {
+      if (in_array("fields_{$settings['getDataby_id']->handle}", $fields_assets_content)) {
         $fields = array(
           'handle' => $settings['getDataby_id']->handle,
           'type'   => $settings['getDataby_id']->type_id,
@@ -428,7 +494,7 @@ class fields extends My_Controller {
         modifyColumn($fields, 'drop-table', 'assets_content');
       }
       
-      if (in_array("fields_{$settings['getDataby_id']->handle}", $fieldsCategoriesContent)) {
+      if (in_array("fields_{$settings['getDataby_id']->handle}", $fields_categories_content)) {
         $fields = array(
           'handle' => $settings['getDataby_id']->handle,
           'type'   => $settings['getDataby_id']->type_id,
@@ -441,7 +507,7 @@ class fields extends My_Controller {
       $delAssetsElement     = $this->general_m->delete('assets_element', $id, 'fields_id');
       $delCategoriesElement = $this->general_m->delete('categories_element', $id, 'fields_id');
       $del                  = $this->fields_m->delete($id);
-      $delOption            = $this->general_m->delete('fields_option', $settings['getDataby_id']->option_id);
+      $delOption            = $this->general_m->delete('fields_option', $settings['getDataby_id']->option_id);*/
       helper_log('delete', "Delete {settings['title']} with id = {$id} has successfully");
       $this->session->set_flashdata("message", "Data has deleted {$delete} Records");
       redirect($this->data['parentLink']);
